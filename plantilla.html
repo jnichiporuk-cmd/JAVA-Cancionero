@@ -1458,14 +1458,21 @@ function haceCuanto(ms){
   return `hace ${Math.round(h/24)} días`;
 }
 
-/* Fecha y hora en dd/mm/aa · hh:mm, a partir de un timestamp. Se usa
-   tanto para "fechaReunion" (el día en que se va a tocar, editable) como
-   para mostrarle al usuario el valor actual antes de cambiarlo. */
+/* Nombres de día abreviados, domingo primero (así coincide con
+   Date.getDay()). A mano, sin toLocaleDateString, por la misma razón
+   que fechaHoyTexto(): no depender de la configuración regional. */
+const DIAS_SEMANA = ["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"];
+
+/* Fecha y hora en "ddd dd/mm/aa · hh:mm", a partir de un timestamp. Se
+   usa tanto para "fechaReunion" (el día en que se va a tocar, editable)
+   como para mostrarle al usuario el valor actual antes de cambiarlo. El
+   día de la semana adelante es para verlo de un vistazo sin tener que
+   calcular qué día cae una fecha. */
 function fechaHoraTexto(ms){
   const d = new Date(ms);
   const pad = n => String(n).padStart(2, "0");
   const anio = String(d.getFullYear()).slice(-2);
-  return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${anio} · ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  return `${DIAS_SEMANA[d.getDay()]} ${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${anio} · ${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
 /* Línea "tono · bpm" de cada fila. Si el título del cancionero no trae
