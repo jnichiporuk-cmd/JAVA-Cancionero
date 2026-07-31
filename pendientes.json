@@ -1,0 +1,7519 @@
+[
+ {
+  "p": 326,
+  "titulo": "Libre soy - Libre para correr - C - 133",
+  "nombre": "Libre soy - Libre para correr",
+  "tono": "C",
+  "bpm": 133,
+  "bloques": [
+   {
+    "t": "l",
+    "v": "Los ciegos verán por ti"
+   },
+   {
+    "t": "a",
+    "v": "      C"
+   },
+   {
+    "t": "l",
+    "v": "Los mudos cantarán"
+   },
+   {
+    "t": "a",
+    "v": "      F"
+   },
+   {
+    "t": "l",
+    "v": "Los cojos saltarán"
+   },
+   {
+    "t": "a",
+    "v": "      F"
+   },
+   {
+    "t": "l",
+    "v": "Los muertos vivirán"
+   },
+   {
+    "t": "a",
+    "v": "      A"
+   },
+   {
+    "t": "l",
+    "v": "Las tinieblas huirán"
+   },
+   {
+    "t": "a",
+    "v": "            G"
+   },
+   {
+    "t": "l",
+    "v": "Por ti yo grito"
+   },
+   {
+    "t": "a",
+    "v": "          C"
+   },
+   {
+    "t": "l",
+    "v": "Yo soy libre, (Yo soy libre)"
+   },
+   {
+    "t": "a",
+    "v": "          C"
+   },
+   {
+    "t": "l",
+    "v": "Yo soy libre, (Yo soy libreeee)"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Coro"
+   },
+   {
+    "t": "a",
+    "v": "       C"
+   },
+   {
+    "t": "l",
+    "v": "Libre para Correr"
+   },
+   {
+    "t": "a",
+    "v": "        C"
+   },
+   {
+    "t": "l",
+    "v": "(Libre para correr)"
+   },
+   {
+    "t": "a",
+    "v": "       F"
+   },
+   {
+    "t": "l",
+    "v": "Libre para Danzar"
+   },
+   {
+    "t": "a",
+    "v": "        F"
+   },
+   {
+    "t": "l",
+    "v": "(Libre para danzar)"
+   },
+   {
+    "t": "a",
+    "v": "        A"
+   },
+   {
+    "t": "l",
+    "v": "Libre para vivir por ti"
+   },
+   {
+    "t": "a",
+    "v": "        G"
+   },
+   {
+    "t": "l",
+    "v": "(libre para vivir por ti)"
+   },
+   {
+    "t": "a",
+    "v": "         C"
+   },
+   {
+    "t": "l",
+    "v": "Yo soy libre, (Yo soy libre)"
+   },
+   {
+    "t": "a",
+    "v": "        C"
+   },
+   {
+    "t": "l",
+    "v": "Yo soy libre, (Yo soy libreee)"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Puente"
+   },
+   {
+    "t": "a",
+    "v": "  C        C"
+   },
+   {
+    "t": "l",
+    "v": "OoOoOh (OoOoOh)"
+   },
+   {
+    "t": "a",
+    "v": "  F       F"
+   },
+   {
+    "t": "l",
+    "v": "OoOoOh (OoOoOh)"
+   },
+   {
+    "t": "a",
+    "v": "  A       A"
+   },
+   {
+    "t": "l",
+    "v": "OoOoh  (OoOoh)"
+   },
+   {
+    "t": "a",
+    "v": "  G       G"
+   },
+   {
+    "t": "l",
+    "v": "OoOoh  (OoOoh)"
+   },
+   {
+    "t": "a",
+    "v": "  C"
+   },
+   {
+    "t": "l",
+    "v": "Libre (libre)"
+   },
+   {
+    "t": "a",
+    "v": "   C"
+   },
+   {
+    "t": "l",
+    "v": "Libre (libreee)"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Coro"
+   }
+  ],
+  "problemas": [
+   [
+    "letra-en-acordes",
+    "Verso:      C"
+   ]
+  ]
+ },
+ {
+  "p": 496,
+  "titulo": "Digno de Adorar - G - 66",
+  "nombre": "Digno de Adorar",
+  "tono": "G",
+  "bpm": 66,
+  "bloques": [
+   {
+    "t": "l",
+    "v": "Estrofa"
+   },
+   {
+    "t": "l",
+    "v": "//Ángeles y santos,"
+   },
+   {
+    "t": "l",
+    "v": "se postran ante ti"
+   },
+   {
+    "t": "l",
+    "v": "Los ancianos rinden"
+   },
+   {
+    "t": "l",
+    "v": "sus coronas al Cordero de Dios//"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "l",
+    "v": "Coro"
+   },
+   {
+    "t": "l",
+    "v": "//Digno eres oh Señor,"
+   },
+   {
+    "t": "l",
+    "v": "Digno de adoración"
+   },
+   {
+    "t": "l",
+    "v": "Todo viene de ti"
+   },
+   {
+    "t": "l",
+    "v": "y todo es para ti"
+   },
+   {
+    "t": "l",
+    "v": "Solo tu mereces gloria//"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "l",
+    "v": "Puente (x2)"
+   },
+   {
+    "t": "l",
+    "v": "///Día y noche suba incienso delante de ti"
+   },
+   {
+    "t": "l",
+    "v": "Día y noche suba incienso delante de ti"
+   },
+   {
+    "t": "l",
+    "v": "Día y noche suba incienso delante de ti"
+   },
+   {
+    "t": "l",
+    "v": "Día y noche suba incienso delante de ti///"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "l",
+    "v": "(Ultima vuelta)"
+   },
+   {
+    "t": "l",
+    "v": "Día y noche suba incienso"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "l",
+    "v": "Final"
+   },
+   {
+    "t": "l",
+    "v": "//Te exaltamos, te exaltamos"
+   },
+   {
+    "t": "l",
+    "v": "Te exaltamos oh Dios//"
+   }
+  ],
+  "problemas": [
+   [
+    "acorde-en-letra",
+    "  G             D"
+   ],
+   [
+    "acorde-en-letra",
+    "      C                D"
+   ],
+   [
+    "acorde-en-letra",
+    "  G                 D"
+   ],
+   [
+    "acorde-en-letra",
+    "                  C         D           G"
+   ],
+   [
+    "acorde-en-letra",
+    "                             G"
+   ],
+   [
+    "acorde-en-letra",
+    "                        D"
+   ],
+   [
+    "acorde-en-letra",
+    "                      C"
+   ],
+   [
+    "acorde-en-letra",
+    "                      D"
+   ],
+   [
+    "acorde-en-letra",
+    "                           G"
+   ],
+   [
+    "acorde-en-letra",
+    "     G                                                  D"
+   ],
+   [
+    "acorde-en-letra",
+    "  Em                                    C           D"
+   ],
+   [
+    "acorde-en-letra",
+    "     G                                                  D"
+   ],
+   [
+    "acorde-en-letra",
+    "  Am                                     C         D"
+   ],
+   [
+    "acorde-en-letra",
+    "  Am                              D"
+   ],
+   [
+    "acorde-en-letra",
+    "             G                  Bm"
+   ],
+   [
+    "acorde-en-letra",
+    "           C    Am       G    D"
+   ]
+  ]
+ },
+ {
+  "p": 542,
+  "titulo": "Santo por siempre - G - 70",
+  "nombre": "Santo por siempre",
+  "tono": "G",
+  "bpm": 70,
+  "bloques": [
+   {
+    "t": "r",
+    "v": "Verso 1"
+   },
+   {
+    "t": "a",
+    "v": "G"
+   },
+   {
+    "t": "a",
+    "v": "C G"
+   },
+   {
+    "t": "a",
+    "v": "Em D C"
+   },
+   {
+    "t": "a",
+    "v": "G"
+   },
+   {
+    "t": "a",
+    "v": "C G"
+   },
+   {
+    "t": "a",
+    "v": "Em D C"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Precoro"
+   },
+   {
+    "t": "a",
+    "v": "C"
+   },
+   {
+    "t": "a",
+    "v": "D"
+   },
+   {
+    "t": "a",
+    "v": "Em7 D C"
+   },
+   {
+    "t": "a",
+    "v": "D"
+   },
+   {
+    "t": "a",
+    "v": "Em D Am7"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Coro"
+   },
+   {
+    "t": "a",
+    "v": "C Em D"
+   },
+   {
+    "t": "a",
+    "v": "Am7 Dsus4"
+   },
+   {
+    "t": "a",
+    "v": "D G"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Verso 2"
+   },
+   {
+    "t": "a",
+    "v": "G C G"
+   },
+   {
+    "t": "a",
+    "v": "Em7 D C"
+   },
+   {
+    "t": "a",
+    "v": "G"
+   },
+   {
+    "t": "a",
+    "v": "C G"
+   },
+   {
+    "t": "a",
+    "v": "Em7 D C"
+   },
+   {
+    "t": "a",
+    "v": "Em7 D Am7"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Coro"
+   },
+   {
+    "t": "a",
+    "v": "C D"
+   },
+   {
+    "t": "a",
+    "v": "C D"
+   },
+   {
+    "t": "a",
+    "v": "G"
+   },
+   {
+    "t": "a",
+    "v": "C D"
+   },
+   {
+    "t": "a",
+    "v": "Am7 D"
+   },
+   {
+    "t": "a",
+    "v": "G"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Puente"
+   },
+   {
+    "t": "a",
+    "v": "C Em"
+   },
+   {
+    "t": "a",
+    "v": "D"
+   },
+   {
+    "t": "a",
+    "v": "Em7 D C"
+   },
+   {
+    "t": "a",
+    "v": "Em"
+   },
+   {
+    "t": "a",
+    "v": "D"
+   }
+  ],
+  "problemas": [
+   [
+    "estilo-sin-formatear",
+    "INTRO: G - C - D - G - Em - D - G"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Mil generaciones"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Se postran a adorarle"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Le cantan al cordero que venció"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Los que nos precedieron"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Y los que en Él creerán"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Le cantarán a aquel que ya venció"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Tu nombre es más alto"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Tu nombre es más grande"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Tu nombre, sobre todo es"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Em - D"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Sean tronos, dominios"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Poderes, potestades"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Tu nombre, sobre todo es"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Claman ángeles Sa-anto"
+   ],
+   [
+    "estilo-sin-formatear",
+    "G Bm - Em7"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Clama la creación Santo"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Exaltado Dios Santo"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Santo por siempre"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Si te ha perdonado y tienes salvación"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Cántale al Cordero que venció"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Si te ha libertado,"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Su nombre ha puesto en ti"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Cántale al cordero que venció"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Cantaremos siempre amén"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Claman ángeles Santo"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Bm - G - Bm - Em"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Clama la creación Santo"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Exaltado Dios Santo"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Santo por siempre"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Canta el pueblo al Rey Santo"
+   ],
+   [
+    "estilo-sin-formatear",
+    "G Gm - Bm - Em"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Soberano es Él, Santo"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Y por siempre es, Santo"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Santo por siempre"
+   ],
+   [
+    "estilo-sin-formatear",
+    "//Tu nombre es más alto"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Tu nombre es más grande"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Tu nombre, sobre todo es"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Sean tronos, dominios"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Poderes, potestades"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Em7 D C //"
+   ]
+  ]
+ },
+ {
+  "p": 629,
+  "titulo": "Quiero conocer a Jesús (Jeshua) - G - 73",
+  "nombre": "Quiero conocer a Jesús (Jeshua)",
+  "tono": "G",
+  "bpm": 73,
+  "bloques": [
+   {
+    "t": "r",
+    "v": "Verso"
+   },
+   {
+    "t": "a",
+    "v": "         C                            D"
+   },
+   {
+    "t": "l",
+    "v": "Mi orgullo me saco del jardín"
+   },
+   {
+    "t": "a",
+    "v": "              Em                           D"
+   },
+   {
+    "t": "l",
+    "v": "Su humildad puso el jardín en mi"
+   },
+   {
+    "t": "a",
+    "v": "              C"
+   },
+   {
+    "t": "l",
+    "v": "Y si vendiera lo que tengo"
+   },
+   {
+    "t": "a",
+    "v": "     D                                    Em  D"
+   },
+   {
+    "t": "l",
+    "v": "A cambio de su amor yo fallaría"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "                    C"
+   },
+   {
+    "t": "l",
+    "v": "Porque su amor no se compra"
+   },
+   {
+    "t": "a",
+    "v": "  D"
+   },
+   {
+    "t": "l",
+    "v": "Ni se merece"
+   },
+   {
+    "t": "a",
+    "v": "         Em"
+   },
+   {
+    "t": "l",
+    "v": "Su amor es un regalo"
+   },
+   {
+    "t": "a",
+    "v": "        D"
+   },
+   {
+    "t": "l",
+    "v": "De gracia se recibe"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Coro"
+   },
+   {
+    "t": "a",
+    "v": "     C                        D"
+   },
+   {
+    "t": "l",
+    "v": "Quiero conocer a Jesús"
+   },
+   {
+    "t": "a",
+    "v": "     Em                     D"
+   },
+   {
+    "t": "l",
+    "v": "Quiero conocer a Jesús"
+   },
+   {
+    "t": "a",
+    "v": "     C                        D"
+   },
+   {
+    "t": "l",
+    "v": "Quiero conocer a Jesús"
+   },
+   {
+    "t": "a",
+    "v": "     Em                     D"
+   },
+   {
+    "t": "l",
+    "v": "Quiero conocer a Jesús"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Puente"
+   },
+   {
+    "t": "a",
+    "v": "                         C"
+   },
+   {
+    "t": "l",
+    "v": "Y ser hallado en el"
+   },
+   {
+    "t": "a",
+    "v": "                         D"
+   },
+   {
+    "t": "l",
+    "v": "Y ser hallado en el"
+   },
+   {
+    "t": "a",
+    "v": "                        Em"
+   },
+   {
+    "t": "l",
+    "v": "Y ser hallado en el"
+   },
+   {
+    "t": "a",
+    "v": "                         D"
+   },
+   {
+    "t": "l",
+    "v": "Y ser hallado en el"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Instrumental"
+   },
+   {
+    "t": "a",
+    "v": "C  Am  Em  D"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "       C         Am      Em  D"
+   },
+   {
+    "t": "l",
+    "v": "Yeshua -uu-a ahh... ah   ahh... ah"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "  C                   D    Em"
+   },
+   {
+    "t": "l",
+    "v": "Nuestro Dios, reinara"
+   },
+   {
+    "t": "l",
+    "v": "Por siempre tu reinara"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "………………………………."
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "         C                    Am"
+   },
+   {
+    "t": "l",
+    "v": "Mi amado es el más bello entre"
+   },
+   {
+    "t": "a",
+    "v": "     G             D"
+   },
+   {
+    "t": "l",
+    "v": "Millares y millares"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "………………………………."
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "             C"
+   },
+   {
+    "t": "l",
+    "v": "Mi preferido, mi predilecto"
+   },
+   {
+    "t": "a",
+    "v": "             Em"
+   },
+   {
+    "t": "l",
+    "v": "Mi preferido, mi predilecto"
+   },
+   {
+    "t": "a",
+    "v": "     G        D"
+   },
+   {
+    "t": "l",
+    "v": "Jesús, Jesús"
+   }
+  ],
+  "problemas": [
+   [
+    "acorde-en-letra",
+    "                         D    G"
+   ]
+  ]
+ },
+ {
+  "p": 990,
+  "titulo": "Amigo en lugares altos - G - 170",
+  "nombre": "Amigo en lugares altos",
+  "tono": "G",
+  "bpm": 170,
+  "bloques": [
+   {
+    "t": "r",
+    "v": "Intro"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Estrofa 1"
+   },
+   {
+    "t": "a",
+    "v": "        G"
+   },
+   {
+    "t": "l",
+    "v": "Estaba solo y buscaba un amigo"
+   },
+   {
+    "t": "a",
+    "v": "     G"
+   },
+   {
+    "t": "l",
+    "v": "Una mano en mi soledad"
+   },
+   {
+    "t": "a",
+    "v": "           G              D"
+   },
+   {
+    "t": "l",
+    "v": "Y de mi dolor el me rescato"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "       Am                         Bm C"
+   },
+   {
+    "t": "l",
+    "v": "Dios tiene mucho para mi"
+   },
+   {
+    "t": "a",
+    "v": "                              Em    D"
+   },
+   {
+    "t": "l",
+    "v": "Sus misericordias nuevas son"
+   },
+   {
+    "t": "a",
+    "v": "  Am                   D"
+   },
+   {
+    "t": "l",
+    "v": "Pues su ayuda viene a mi"
+   },
+   {
+    "t": "a",
+    "v": "        G"
+   },
+   {
+    "t": "l",
+    "v": "En oración..."
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Estrofa 2"
+   },
+   {
+    "t": "a",
+    "v": "      G"
+   },
+   {
+    "t": "l",
+    "v": "Yo camino solo por fé"
+   },
+   {
+    "t": "a",
+    "v": "          G"
+   },
+   {
+    "t": "l",
+    "v": "Pues mi Dios tiene el control"
+   },
+   {
+    "t": "a",
+    "v": "          G                     D"
+   },
+   {
+    "t": "l",
+    "v": "Seguro estoy que Dios cuida de mi"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "       Am                        Bm C"
+   },
+   {
+    "t": "l",
+    "v": "Dios tiene mucho para mi"
+   },
+   {
+    "t": "a",
+    "v": "                              Em    D"
+   },
+   {
+    "t": "l",
+    "v": "Sus misericordias nuevas son"
+   },
+   {
+    "t": "a",
+    "v": "  Am                   D"
+   },
+   {
+    "t": "l",
+    "v": "Pues su ayuda viene a mi"
+   },
+   {
+    "t": "a",
+    "v": "        G"
+   },
+   {
+    "t": "l",
+    "v": "En oración..."
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Coro"
+   },
+   {
+    "t": "a",
+    "v": "        Bm        Em"
+   },
+   {
+    "t": "l",
+    "v": "Por la fé ahora creo"
+   },
+   {
+    "t": "a",
+    "v": "       Bm       Em"
+   },
+   {
+    "t": "l",
+    "v": "Llena mi necesidad."
+   },
+   {
+    "t": "a",
+    "v": " Am   Bm   C    Em  D"
+   },
+   {
+    "t": "l",
+    "v": "Yo camino solo por fé"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "           Bm              Em"
+   },
+   {
+    "t": "l",
+    "v": "Tengo un amigo a quien lo hablo"
+   },
+   {
+    "t": "a",
+    "v": "     Bm           Em"
+   },
+   {
+    "t": "l",
+    "v": "A Jesús puedo clamar"
+   },
+   {
+    "t": "a",
+    "v": "   Am     Bm       C      Em    D"
+   },
+   {
+    "t": "l",
+    "v": "Seguro estoy que Dios cuida de mi"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Estrofa 2 (repetición)"
+   },
+   {
+    "t": "a",
+    "v": "      G"
+   },
+   {
+    "t": "l",
+    "v": "Yo camino solo por fé"
+   },
+   {
+    "t": "a",
+    "v": "          G"
+   },
+   {
+    "t": "l",
+    "v": "Pues mi Dios tiene el control"
+   },
+   {
+    "t": "a",
+    "v": "          G                     D"
+   },
+   {
+    "t": "l",
+    "v": "Seguro estoy que Dios cuida de mi"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "       Am                          Bm C"
+   },
+   {
+    "t": "l",
+    "v": "Dios tiene mucho para mi"
+   },
+   {
+    "t": "a",
+    "v": "                               Em    D"
+   },
+   {
+    "t": "l",
+    "v": "Sus misericordias nuevas son"
+   },
+   {
+    "t": "a",
+    "v": "  Am                   D"
+   },
+   {
+    "t": "l",
+    "v": "Pues su ayuda viene a mi"
+   },
+   {
+    "t": "a",
+    "v": "        G"
+   },
+   {
+    "t": "l",
+    "v": "En oración..."
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Coro (repetición)"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Estrofa 2 (un tono arriba)"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Solo de saxo"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Estrofa 2 (un tono arriba, repetición):"
+   }
+  ],
+  "problemas": [
+   [
+    "acorde-en-letra",
+    "G C, G C, G C, G C"
+   ]
+  ]
+ },
+ {
+  "p": 1125,
+  "titulo": "Seas Exaltado oh Dios - D - 66",
+  "nombre": "Seas Exaltado oh Dios",
+  "tono": "D",
+  "bpm": 66,
+  "bloques": [
+   {
+    "t": "r",
+    "v": "Verso"
+   },
+   {
+    "t": "l",
+    "v": "Seas exaltado oh Dios, sobre los cielos"
+   },
+   {
+    "t": "a",
+    "v": "A            G            Em A    D  A"
+   },
+   {
+    "t": "l",
+    "v": "Sobre la tierra, tu Gloria este"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Coro"
+   },
+   {
+    "t": "a",
+    "v": "           D                  Fm#"
+   },
+   {
+    "t": "l",
+    "v": "Te exaltamos, te exaltamos"
+   },
+   {
+    "t": "a",
+    "v": "           G      Em        G  A"
+   },
+   {
+    "t": "l",
+    "v": "Te exaltamos, oh Dios"
+   }
+  ],
+  "problemas": [
+   [
+    "acorde-en-letra",
+    "D            G            A                   Fm#  Bm"
+   ]
+  ]
+ },
+ {
+  "p": 1695,
+  "titulo": "Hay Libertad IBI - D - 106",
+  "nombre": "Hay Libertad IBI",
+  "tono": "D",
+  "bpm": 106,
+  "bloques": [
+   {
+    "t": "r",
+    "v": "Intro (x2)"
+   },
+   {
+    "t": "a",
+    "v": "| D | G | Bm | A |"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Verso 1"
+   },
+   {
+    "t": "a",
+    "v": "       G                  D"
+   },
+   {
+    "t": "l",
+    "v": "Las cadenas de la muerte me quitó"
+   },
+   {
+    "t": "a",
+    "v": "     Bm                    A"
+   },
+   {
+    "t": "l",
+    "v": "Para mi ya no hay condenación,"
+   },
+   {
+    "t": "a",
+    "v": "         G  D       Bm  A"
+   },
+   {
+    "t": "l",
+    "v": "Hay liberta - a - ad, liberta - a - ad."
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Verso 2"
+   },
+   {
+    "t": "a",
+    "v": "          G               D"
+   },
+   {
+    "t": "l",
+    "v": "Siendo esclavo del pecado me libró"
+   },
+   {
+    "t": "a",
+    "v": "       Bm                  A"
+   },
+   {
+    "t": "l",
+    "v": "En la cruz compró mi redención,"
+   },
+   {
+    "t": "a",
+    "v": "       G  D       A4"
+   },
+   {
+    "t": "l",
+    "v": "Y liberta - a - ad, libertad."
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Coro"
+   },
+   {
+    "t": "a",
+    "v": "             D                    G"
+   },
+   {
+    "t": "l",
+    "v": "Rompió mis cadenas, me dió vida nueva"
+   },
+   {
+    "t": "a",
+    "v": "               Bm              A"
+   },
+   {
+    "t": "l",
+    "v": "Y al fondo del mar echó mi maldad."
+   },
+   {
+    "t": "a",
+    "v": "            D                   G"
+   },
+   {
+    "t": "l",
+    "v": "Lavó mis pecados, y me ha perdonado"
+   },
+   {
+    "t": "l",
+    "v": "Sólo en el nombre de Jesús hay libertad."
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Interludio"
+   },
+   {
+    "t": "a",
+    "v": "| D | G | Bm | A |"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Verso 3"
+   },
+   {
+    "t": "a",
+    "v": "        G                         D"
+   },
+   {
+    "t": "l",
+    "v": "Yo proclamo al que en la cruz por mí murió"
+   },
+   {
+    "t": "a",
+    "v": "      Bm              A"
+   },
+   {
+    "t": "l",
+    "v": "Y cambió mi duro corazón"
+   },
+   {
+    "t": "a",
+    "v": "         G  D       Bm  A"
+   },
+   {
+    "t": "l",
+    "v": "Por liberta - a - ad, liberta - a - ad."
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Verso 4"
+   },
+   {
+    "t": "a",
+    "v": "      G                  D"
+   },
+   {
+    "t": "l",
+    "v": "El poder de su evangelio me salvó"
+   },
+   {
+    "t": "a",
+    "v": "        Bm                A"
+   },
+   {
+    "t": "l",
+    "v": "Y no me avergüenzo del Señor"
+   },
+   {
+    "t": "a",
+    "v": "        G  D         A4"
+   },
+   {
+    "t": "l",
+    "v": "MI liberta - A - ad,  libertad,"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Puente (x2)"
+   },
+   {
+    "t": "a",
+    "v": "          D           A        Bm    G      D  A4"
+   },
+   {
+    "t": "l",
+    "v": "Al que el Hijo, hace libre, es libre    en verdad"
+   },
+   {
+    "t": "a",
+    "v": "          D           A         G            D"
+   },
+   {
+    "t": "l",
+    "v": "Al que el Hijo, hace libre, es libre    en verdad"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "SALIDA"
+   },
+   {
+    "t": "a",
+    "v": "| D | G | Bm | A | D | G | Bm | A |"
+   },
+   {
+    "t": "l",
+    "v": "Hay libertad"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "FIN"
+   },
+   {
+    "t": "a",
+    "v": "          D"
+   },
+   {
+    "t": "l",
+    "v": "Hay libertad."
+   }
+  ],
+  "problemas": [
+   [
+    "letra-en-acordes",
+    "           Bm          A          (Interludio)"
+   ]
+  ]
+ },
+ {
+  "p": 1994,
+  "titulo": "Alza tu voz y canta - G - 60",
+  "nombre": "Alza tu voz y canta",
+  "tono": "G",
+  "bpm": 60,
+  "bloques": [
+   {
+    "t": "r",
+    "v": "Estrofa 1"
+   },
+   {
+    "t": "a",
+    "v": "G          D     G"
+   },
+   {
+    "t": "l",
+    "v": "Alza tu voz y canta"
+   },
+   {
+    "t": "a",
+    "v": "                    C"
+   },
+   {
+    "t": "l",
+    "v": "Alabanzas al Rey"
+   },
+   {
+    "t": "a",
+    "v": "                 Cm         Em"
+   },
+   {
+    "t": "l",
+    "v": "Que el clamor ascienda"
+   },
+   {
+    "t": "a",
+    "v": "      D            C                    Am D"
+   },
+   {
+    "t": "l",
+    "v": "Al Rey al Mesías le damos loor"
+   },
+   {
+    "t": "a",
+    "v": "                  G"
+   },
+   {
+    "t": "l",
+    "v": "Alza hoy tu voz"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Coro"
+   },
+   {
+    "t": "l",
+    "v": "//Canta aleluya"
+   },
+   {
+    "t": "a",
+    "v": "              C   Cm"
+   },
+   {
+    "t": "l",
+    "v": "Canta aleluya"
+   },
+   {
+    "t": "a",
+    "v": "              Em"
+   },
+   {
+    "t": "l",
+    "v": "Canta aleluya"
+   },
+   {
+    "t": "a",
+    "v": "D    Am D"
+   },
+   {
+    "t": "l",
+    "v": "Al Rey//"
+   },
+   {
+    "t": "a",
+    "v": "     G"
+   },
+   {
+    "t": "l",
+    "v": "Al Rey"
+   }
+  ],
+  "problemas": [
+   [
+    "letra-en-acordes",
+    "C        D   cuan grande G   G7"
+   ]
+  ]
+ },
+ {
+  "p": 2021,
+  "titulo": "Alaba (Evan Craft) - E - 127",
+  "nombre": "Alaba (Evan Craft)",
+  "tono": "E",
+  "bpm": 127,
+  "bloques": [
+   {
+    "t": "r",
+    "v": "Intro"
+   },
+   {
+    "t": "a",
+    "v": "E"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Verso 1"
+   },
+   {
+    "t": "a",
+    "v": "     E                      F#m/E        E"
+   },
+   {
+    "t": "a",
+    "v": "     B/E             A/E              E"
+   },
+   {
+    "t": "a",
+    "v": "      E                    F#m/E      E"
+   },
+   {
+    "t": "a",
+    "v": "     B/E           A/E                E"
+   },
+   {
+    "t": "a",
+    "v": "       B                 A"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Coro 1ro"
+   },
+   {
+    "t": "a",
+    "v": "C#m       A    E"
+   },
+   {
+    "t": "a",
+    "v": "        B"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "     E                F#m           E"
+   },
+   {
+    "t": "a",
+    "v": "     B             A             E"
+   },
+   {
+    "t": "a",
+    "v": "      E              F#m        E"
+   },
+   {
+    "t": "a",
+    "v": "     B          A              E"
+   },
+   {
+    "t": "a",
+    "v": "      B                     A"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Coro"
+   },
+   {
+    "t": "a",
+    "v": "C#m      A       E"
+   },
+   {
+    "t": "a",
+    "v": "       B"
+   },
+   {
+    "t": "a",
+    "v": "  C#m                        A"
+   },
+   {
+    "t": "a",
+    "v": "  E                B"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Puente"
+   },
+   {
+    "t": "a",
+    "v": "  E                A/E"
+   },
+   {
+    "t": "a",
+    "v": "B/E                 A/E"
+   },
+   {
+    "t": "a",
+    "v": "    E                A/E"
+   },
+   {
+    "t": "a",
+    "v": " B/E              A/E"
+   },
+   {
+    "t": "a",
+    "v": "  E                 F#m"
+   },
+   {
+    "t": "a",
+    "v": "C#m7                 A"
+   },
+   {
+    "t": "a",
+    "v": "    E                 F#m"
+   },
+   {
+    "t": "a",
+    "v": "C#m7            A"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Final"
+   },
+   {
+    "t": "a",
+    "v": "E"
+   }
+  ],
+  "problemas": [
+   [
+    "estilo-sin-formatear",
+    "Que toda la"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Creación"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Alabe a Dios"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Alabe a Dios x2"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Te alabo en el valle, Te alabo en el monte"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Te alabo en el día, Te alabo en la noche"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Te alabo en el medio, Estando rodeado"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Porque cuando alabo, Tú estás a mi lado"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Mientras tenga aliento, Mi alma canta y"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Aaaaa - la - ba a Dios"
+   ],
+   [
+    "estilo-sin-formatear",
+    "SI corazón  //"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Verso 2: (Despues del 1er Coro)"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Te alabo al sentirlo, Y aun cuando no,"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Te alabo y sé, que estás en control,"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Es más que un sonido, es adoración,"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Y cuando alabamos Caerá Jericó."
+   ],
+   [
+    "estilo-sin-formatear",
+    "Mientras tenga aliento, Mi alma canta y…"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Aaaaa - la - ba a Dios"
+   ],
+   [
+    "estilo-sin-formatear",
+    "SI corazón  //"
+   ],
+   [
+    "estilo-sin-formatear",
+    "No me detengo, Mi Dios vivo está"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Cómo me voy a callar"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Alabo al que reina, Alabo al Señor,"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Alabo a aquel que la tumba venció."
+   ],
+   [
+    "estilo-sin-formatear",
+    "Alabo al que es bueno, Alabo al que es fiel,"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Le alabo porque no hay otro como él."
+   ],
+   [
+    "estilo-sin-formatear",
+    "(DROP)"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Alabo al que reina, Alabo al Señor,"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Alabo a aquel que la tumba venció."
+   ],
+   [
+    "estilo-sin-formatear",
+    "Alabo al que es bueno, Alabo al que es fiel,"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Le alabo porque no hay otro como él."
+   ],
+   [
+    "estilo-sin-formatear",
+    "Que toda la (Que toda la)"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Creación (Creación)"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Alabe a Dios (Alabe a Dios)"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Alabe a Dios (Alabe a Dios)"
+   ]
+  ]
+ },
+ {
+  "p": 2102,
+  "titulo": "No hay lugar mas alto - A - 68",
+  "nombre": "No hay lugar mas alto",
+  "tono": "A",
+  "bpm": 68,
+  "bloques": [
+   {
+    "t": "r",
+    "v": "Intro"
+   },
+   {
+    "t": "a",
+    "v": "A  D"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Estrofa"
+   },
+   {
+    "t": "a",
+    "v": "           A                      E/G#"
+   },
+   {
+    "t": "l",
+    "v": "A tus pies arde mi corazón"
+   },
+   {
+    "t": "a",
+    "v": "          F#m                      D"
+   },
+   {
+    "t": "l",
+    "v": "A tus pies entrego lo que soy"
+   },
+   {
+    "t": "a",
+    "v": "          A                      E/G#"
+   },
+   {
+    "t": "l",
+    "v": "Ese lugar de mi seguridad"
+   },
+   {
+    "t": "a",
+    "v": "           F#m                         D"
+   },
+   {
+    "t": "l",
+    "v": "Donde nadie me puede señalar"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "                D                                      E"
+   },
+   {
+    "t": "l",
+    "v": "Me perdonaste, me acercaste a tu presencia"
+   },
+   {
+    "t": "a",
+    "v": "              F#m7                                E/G#"
+   },
+   {
+    "t": "l",
+    "v": "Me levantaste, hoy me postro a adorarte"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Coro"
+   },
+   {
+    "t": "l",
+    "v": "//No hay lugar más alto, más grande"
+   },
+   {
+    "t": "a",
+    "v": "                          F#m7                      A/C#"
+   },
+   {
+    "t": "l",
+    "v": "Que estar a tus pies, que estar a tus pies //"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Puente"
+   },
+   {
+    "t": "a",
+    "v": "        D                 E          A   E         F#m7"
+   },
+   {
+    "t": "l",
+    "v": "Y aquí permaneceré, postrado a tus pies"
+   },
+   {
+    "t": "a",
+    "v": "       D         E                    F#m7    A"
+   },
+   {
+    "t": "l",
+    "v": "Y aquí permaneceré a los pies de Cristo  Oouoh..."
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "         D              E                F#m"
+   },
+   {
+    "t": "l",
+    "v": "Oh Maestro, queremos estar en tu presencia,"
+   },
+   {
+    "t": "a",
+    "v": "                  A"
+   },
+   {
+    "t": "l",
+    "v": "No apartarnos de ti jamás,"
+   },
+   {
+    "t": "a",
+    "v": "          D                   E"
+   },
+   {
+    "t": "l",
+    "v": "Te anhelamos Señor, Tus hijos te adoran,"
+   },
+   {
+    "t": "a",
+    "v": "             F#m               A"
+   },
+   {
+    "t": "l",
+    "v": "Tú eres El Amado, Eres el deseado de nuestro corazón"
+   },
+   {
+    "t": "l",
+    "v": "Señor..."
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "D  E  F#m  A"
+   },
+   {
+    "t": "l",
+    "v": "AMADO MI0..."
+   }
+  ],
+  "problemas": [
+   [
+    "letra-en-acordes",
+    "                (A/C#)   D              E"
+   ],
+   [
+    "letra-en-acordes",
+    "   D  Luego van ah [E]"
+   ]
+  ]
+ },
+ {
+  "p": 2496,
+  "titulo": "Aleluya Cristo vive hoy - D - 155",
+  "nombre": "Aleluya Cristo vive hoy",
+  "tono": "D",
+  "bpm": 155,
+  "bloques": [
+   {
+    "t": "r",
+    "v": "Verso 1"
+   },
+   {
+    "t": "a",
+    "v": "     D      A/C#m"
+   },
+   {
+    "t": "l",
+    "v": "Aleluya Cristo vive hoy"
+   },
+   {
+    "t": "a",
+    "v": "C"
+   },
+   {
+    "t": "l",
+    "v": "El venció a la muerte"
+   },
+   {
+    "t": "a",
+    "v": "          B                B/D#"
+   },
+   {
+    "t": "l",
+    "v": "Al sepulcro derrotó"
+   },
+   {
+    "t": "l",
+    "v": "Cristo esta vivo"
+   },
+   {
+    "t": "a",
+    "v": " Em  F#m  G F#m  Em Em  F#m  G  A"
+   },
+   {
+    "t": "l",
+    "v": "Vi-  ve    hoy,          Vi-  ve     hoy"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Verso 2"
+   },
+   {
+    "t": "a",
+    "v": "     D"
+   },
+   {
+    "t": "l",
+    "v": "Es el alfa y la omega"
+   },
+   {
+    "t": "a",
+    "v": "       A/C#m"
+   },
+   {
+    "t": "l",
+    "v": "Principio y el fin"
+   },
+   {
+    "t": "a",
+    "v": "       C"
+   },
+   {
+    "t": "l",
+    "v": "El diablo fue vencido"
+   },
+   {
+    "t": "a",
+    "v": "            B               B/D#"
+   },
+   {
+    "t": "l",
+    "v": "Hoy hay libertad aquí"
+   },
+   {
+    "t": "a",
+    "v": "     Em"
+   },
+   {
+    "t": "l",
+    "v": "Jesús glorificado"
+   },
+   {
+    "t": "a",
+    "v": " Em  F#m  G F#m  Em Em  F#m  G  A"
+   },
+   {
+    "t": "l",
+    "v": "Vi-  ve    hoy,          Vi-  ve     hoy"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Verso 3"
+   },
+   {
+    "t": "a",
+    "v": "D"
+   },
+   {
+    "t": "l",
+    "v": "Maravilloso"
+   },
+   {
+    "t": "a",
+    "v": "A/C#m"
+   },
+   {
+    "t": "l",
+    "v": "Con solador es Él"
+   },
+   {
+    "t": "a",
+    "v": "       C"
+   },
+   {
+    "t": "l",
+    "v": "Nuestro Padre eterno"
+   },
+   {
+    "t": "a",
+    "v": "            B                     B/D#"
+   },
+   {
+    "t": "l",
+    "v": "Es el príncipe de paz"
+   },
+   {
+    "t": "a",
+    "v": "               Em"
+   },
+   {
+    "t": "l",
+    "v": "El cordero ha vencido"
+   },
+   {
+    "t": "a",
+    "v": "      Em  F#m  G F#m  Em Em  F#m  G  A"
+   },
+   {
+    "t": "l",
+    "v": "Vi-  ve    hoy,          Vi-  ve     hoy"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Verso 1"
+   },
+   {
+    "t": "a",
+    "v": "     A      E/G#"
+   },
+   {
+    "t": "l",
+    "v": "Aleluya Cristo vive hoy"
+   },
+   {
+    "t": "a",
+    "v": "G"
+   },
+   {
+    "t": "l",
+    "v": "El venció a la muerte"
+   },
+   {
+    "t": "a",
+    "v": "        F#                F#/A#"
+   },
+   {
+    "t": "l",
+    "v": "Al sepulcro derrotó"
+   },
+   {
+    "t": "a",
+    "v": "   Bm"
+   },
+   {
+    "t": "l",
+    "v": "Cristo esta vivo"
+   },
+   {
+    "t": "a",
+    "v": " Bm  C#m  D C#m  Bm Bm  C#m  D  E"
+   },
+   {
+    "t": "l",
+    "v": "Vi- ve     hoy,           Vi- ve hoy"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Verso 2"
+   },
+   {
+    "t": "a",
+    "v": "        A"
+   },
+   {
+    "t": "l",
+    "v": "Es el alfa y la omega"
+   },
+   {
+    "t": "a",
+    "v": "       E/G#"
+   },
+   {
+    "t": "l",
+    "v": "Principio y el fin"
+   },
+   {
+    "t": "a",
+    "v": "     G"
+   },
+   {
+    "t": "l",
+    "v": "El diablo fue vencido"
+   },
+   {
+    "t": "a",
+    "v": "             F#              F#/A#"
+   },
+   {
+    "t": "l",
+    "v": "Hoy hay libertad aquí"
+   },
+   {
+    "t": "a",
+    "v": "     Bm"
+   },
+   {
+    "t": "l",
+    "v": "Jesús glorificado"
+   },
+   {
+    "t": "a",
+    "v": " Bm  C#m  D C#m  Bm Bm  C#m  D  E"
+   },
+   {
+    "t": "l",
+    "v": "Vi- ve     hoy,           Vi- ve hoy"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Verso 3"
+   },
+   {
+    "t": "a",
+    "v": "A"
+   },
+   {
+    "t": "l",
+    "v": "Maravilloso"
+   },
+   {
+    "t": "a",
+    "v": "E/G#"
+   },
+   {
+    "t": "l",
+    "v": "Consolador es Él"
+   },
+   {
+    "t": "a",
+    "v": "G"
+   },
+   {
+    "t": "l",
+    "v": "Nuestro Padre eterno"
+   },
+   {
+    "t": "a",
+    "v": "               F#                F#/A#"
+   },
+   {
+    "t": "l",
+    "v": "Es el príncipe de paz"
+   },
+   {
+    "t": "a",
+    "v": "               Bm"
+   },
+   {
+    "t": "l",
+    "v": "El cordero ha vencido"
+   },
+   {
+    "t": "a",
+    "v": "      Bm  C#m  D C#m  Bm Bm  C#m  D  E"
+   },
+   {
+    "t": "l",
+    "v": "Vi- ve     hoy,           Vi- ve hoy"
+   }
+  ],
+  "problemas": [
+   [
+    "letra-en-acordes",
+    " Em."
+   ]
+  ]
+ },
+ {
+  "p": 2919,
+  "titulo": "Santo por siempre - G - 70",
+  "nombre": "Santo por siempre",
+  "tono": "G",
+  "bpm": 70,
+  "bloques": [
+   {
+    "t": "a",
+    "v": "G"
+   },
+   {
+    "t": "a",
+    "v": "   C             G"
+   },
+   {
+    "t": "a",
+    "v": "   Em           D            C"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "    G"
+   },
+   {
+    "t": "a",
+    "v": "  C                  G"
+   },
+   {
+    "t": "a",
+    "v": "   Em          D                C"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Precoro"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "   C"
+   },
+   {
+    "t": "a",
+    "v": "   D"
+   },
+   {
+    "t": "a",
+    "v": "   Em7           D    C"
+   },
+   {
+    "t": "a",
+    "v": "  D"
+   },
+   {
+    "t": "a",
+    "v": "   Em             D   Am7"
+   },
+   {
+    "t": "a",
+    "v": "           C    Em  D"
+   },
+   {
+    "t": "a",
+    "v": "          Am7   Dsus4"
+   },
+   {
+    "t": "a",
+    "v": "D            G"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "G                      C          G"
+   },
+   {
+    "t": "a",
+    "v": "Em7           D             C"
+   },
+   {
+    "t": "a",
+    "v": "G"
+   },
+   {
+    "t": "a",
+    "v": "    C                   G"
+   },
+   {
+    "t": "a",
+    "v": "Em7           D             C"
+   },
+   {
+    "t": "a",
+    "v": " Em7        D       Am7"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Coro"
+   },
+   {
+    "t": "a",
+    "v": "           C       D"
+   },
+   {
+    "t": "a",
+    "v": "           C     D"
+   },
+   {
+    "t": "a",
+    "v": "            G"
+   },
+   {
+    "t": "a",
+    "v": "                    C      D"
+   },
+   {
+    "t": "a",
+    "v": "              Am7    D"
+   },
+   {
+    "t": "a",
+    "v": "            G"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Precoro"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "     C                Em"
+   },
+   {
+    "t": "a",
+    "v": "   D"
+   },
+   {
+    "t": "a",
+    "v": "   Em7           D    C"
+   },
+   {
+    "t": "a",
+    "v": "                    Em"
+   },
+   {
+    "t": "a",
+    "v": "  D"
+   },
+   {
+    "t": "a",
+    "v": "   Em7          D     C"
+   }
+  ],
+  "problemas": [
+   [
+    "estilo-sin-formatear",
+    "INTRO: G C D G Em D G"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Mil generaciones"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Se postran a adorarle"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Le cantan al cordero que venció"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Los que nos precedieron"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Y los que en El creerán"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Le cantarán a aquel que ya venció"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Tu nombre es mas alto"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Tu nombre es mas grande"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Tu nombre, sobre todo es"
+   ],
+   [
+    "estilo-sin-formatear",
+    "                    Em-D"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Sean tronos, dominios"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Poderes, potestades"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Tu nombre, sobre todo es"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Claman ángeles Sa-anto"
+   ],
+   [
+    "estilo-sin-formatear",
+    "              G    Bm-Em7"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Clama la creación Santo"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Exaltado Dios Santo"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Santo por siempre"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Si te ha perdonado y tienes salvación"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Cántale al Cordero que venció"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Si te ha libertado,"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Su nombre ha puesto en ti"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Cántale al cordero que venció"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Cantaremos siempre amén"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Claman ángeles Santo"
+   ],
+   [
+    "estilo-sin-formatear",
+    "              Bm-G-Bm-Em"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Clama la creación Santo"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Exaltado Dios Santo"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Santo por siempre"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Canta el pueblo al Rey Santo"
+   ],
+   [
+    "estilo-sin-formatear",
+    "            G   Gm-Bm-Em"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Soberano es El, Santo"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Y por siempre es, Santo"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Santo por siempre"
+   ],
+   [
+    "estilo-sin-formatear",
+    "//Tu nombre es mas alto"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Tu nombre es mas grande"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Tu nombre, sobre todo es"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Sean tronos, dominios"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Poderes, potestades"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Tu nombre, sobre todo es//"
+   ]
+  ]
+ },
+ {
+  "p": 3006,
+  "titulo": "El Dios que adoramos - G - 110",
+  "nombre": "El Dios que adoramos",
+  "tono": "G",
+  "bpm": 110,
+  "bloques": [
+   {
+    "t": "r",
+    "v": "Verso 1"
+   },
+   {
+    "t": "a",
+    "v": "D"
+   },
+   {
+    "t": "r",
+    "v": "Intro"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Verso 1"
+   },
+   {
+    "t": "a",
+    "v": "               G                            D"
+   },
+   {
+    "t": "l",
+    "v": "El Dios que hizo los cielos y la tierra"
+   },
+   {
+    "t": "a",
+    "v": "                                Em"
+   },
+   {
+    "t": "l",
+    "v": "Con el poder de Su palabra"
+   },
+   {
+    "t": "a",
+    "v": "                            C"
+   },
+   {
+    "t": "l",
+    "v": "Reina con autoridad"
+   },
+   {
+    "t": "a",
+    "v": "               G                            D"
+   },
+   {
+    "t": "l",
+    "v": "El Dios que aun los vientos le obedecen"
+   },
+   {
+    "t": "a",
+    "v": "                               Em"
+   },
+   {
+    "t": "l",
+    "v": "Una palabra es suficiente"
+   },
+   {
+    "t": "a",
+    "v": "                                  C"
+   },
+   {
+    "t": "l",
+    "v": "Para los muertos levantar"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Pre-coro"
+   },
+   {
+    "t": "a",
+    "v": "                 C            D"
+   },
+   {
+    "t": "l",
+    "v": "Nadie es como El, oh gran Yo Soy"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Coro"
+   },
+   {
+    "t": "a",
+    "v": "                       G"
+   },
+   {
+    "t": "l",
+    "v": "Tú eres el Dios que adoramos"
+   },
+   {
+    "t": "a",
+    "v": "                    D"
+   },
+   {
+    "t": "l",
+    "v": "Todopoderoso y Soberano"
+   },
+   {
+    "t": "a",
+    "v": "                         Em    C         G           D"
+   },
+   {
+    "t": "l",
+    "v": "Grande en misericordia y poder para salvar"
+   },
+   {
+    "t": "a",
+    "v": "                       G"
+   },
+   {
+    "t": "l",
+    "v": "Tú eres el Dios que adoramos"
+   },
+   {
+    "t": "a",
+    "v": "                             D"
+   },
+   {
+    "t": "l",
+    "v": "Quien derrotó la muerte y el pecado"
+   },
+   {
+    "t": "a",
+    "v": "               Em         C     Em   D"
+   },
+   {
+    "t": "l",
+    "v": "Glorioso Redentor y Rey, te adoramos"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "l",
+    "v": "MIDTRO     G  - D  - Em  - C  - D"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "               G                           D"
+   },
+   {
+    "t": "l",
+    "v": "VERSO 2    El Dios que descendió desde Su trono"
+   },
+   {
+    "t": "a",
+    "v": "                                  Em"
+   },
+   {
+    "t": "l",
+    "v": "Para llevar sobre sus hombros"
+   },
+   {
+    "t": "a",
+    "v": "                                    C"
+   },
+   {
+    "t": "l",
+    "v": "Nuestra culpa y transgresión"
+   },
+   {
+    "t": "a",
+    "v": "              G                   D"
+   },
+   {
+    "t": "l",
+    "v": "Jesús, exaltado sobre todo"
+   },
+   {
+    "t": "a",
+    "v": "                              Em"
+   },
+   {
+    "t": "l",
+    "v": "Nombre sobre todo nombre"
+   },
+   {
+    "t": "a",
+    "v": "                              C"
+   },
+   {
+    "t": "l",
+    "v": "Solo en El hay Salvación"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Pre-coro"
+   },
+   {
+    "t": "r",
+    "v": "Coro"
+   },
+   {
+    "t": "r",
+    "v": "Puente"
+   },
+   {
+    "t": "a",
+    "v": "C  D  B/D#  Bm"
+   },
+   {
+    "t": "a",
+    "v": "C  D  B/D#  C#/F"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "                 C              D"
+   },
+   {
+    "t": "l",
+    "v": "A Él sea la gloria y el poder"
+   },
+   {
+    "t": "a",
+    "v": "                B/D#        D"
+   },
+   {
+    "t": "l",
+    "v": "Todo es de Él y para El"
+   },
+   {
+    "t": "a",
+    "v": "                 C              D"
+   },
+   {
+    "t": "l",
+    "v": "A Él sea la gloria y el poder"
+   },
+   {
+    "t": "a",
+    "v": "                B/D#        D"
+   },
+   {
+    "t": "l",
+    "v": "Todo es de Él y para El"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Coro"
+   },
+   {
+    "t": "l",
+    "v": "OUTRO"
+   },
+   {
+    "t": "a",
+    "v": "G  D  Em  C  G  D  G"
+   }
+  ],
+  "problemas": [
+   [
+    "acorde-en-letra",
+    "G  - D  - Em  - C  - D   x2"
+   ]
+  ]
+ },
+ {
+  "p": 3206,
+  "titulo": "Quiero estar en tu presencia - dame de beber - D - 57",
+  "nombre": "Quiero estar en tu presencia - dame de beber",
+  "tono": "D",
+  "bpm": 57,
+  "bloques": [
+   {
+    "t": "r",
+    "v": "Intro"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Estrofa"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": " D          Bm           Em7"
+   },
+   {
+    "t": "a",
+    "v": " A                   D"
+   },
+   {
+    "t": "a",
+    "v": "Bm      A             Em7"
+   },
+   {
+    "t": "a",
+    "v": " A              D"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Coro"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "C        D    G   A           F#m"
+   },
+   {
+    "t": "a",
+    "v": "Bm       A   Em7  A         F#m"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Intro"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Estrofa"
+   },
+   {
+    "t": "a",
+    "v": " D          Bm           Em7"
+   },
+   {
+    "t": "a",
+    "v": " A                   D"
+   },
+   {
+    "t": "a",
+    "v": "Bm      A             Em7"
+   },
+   {
+    "t": "a",
+    "v": " A              D"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Coro"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "C        D    G   A           F#m"
+   },
+   {
+    "t": "a",
+    "v": "Bm       A   Em7  A         F#m"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Intro"
+   }
+  ],
+  "problemas": [
+   [
+    "estilo-sin-formatear",
+    "//D  Em7  G//"
+   ],
+   [
+    "estilo-sin-formatear",
+    "   Quiero estar en tu presencia"
+   ],
+   [
+    "estilo-sin-formatear",
+    "   y poderte contemplar"
+   ],
+   [
+    "estilo-sin-formatear",
+    "   necesito  estar contigo,"
+   ],
+   [
+    "estilo-sin-formatear",
+    "   necesito adorar"
+   ],
+   [
+    "estilo-sin-formatear",
+    " //Dame de beber,  de tu manantial"
+   ],
+   [
+    "estilo-sin-formatear",
+    "   dame de beber,  necesito más //"
+   ],
+   [
+    "estilo-sin-formatear",
+    "//D  Em7  G//"
+   ],
+   [
+    "estilo-sin-formatear",
+    "   Quiero estar en tu presencia"
+   ],
+   [
+    "estilo-sin-formatear",
+    "   y poderte contemplar"
+   ],
+   [
+    "estilo-sin-formatear",
+    "   necesito  estar contigo,"
+   ],
+   [
+    "estilo-sin-formatear",
+    "   necesito adorar"
+   ],
+   [
+    "estilo-sin-formatear",
+    " //Dame de beber,  de tu manantial"
+   ],
+   [
+    "estilo-sin-formatear",
+    "   dame de beber,  necesito más //"
+   ],
+   [
+    "estilo-sin-formatear",
+    "//D  Em7  G//"
+   ]
+  ]
+ },
+ {
+  "p": 3257,
+  "titulo": "Yo quiero mas",
+  "nombre": "Yo quiero mas",
+  "tono": null,
+  "bpm": null,
+  "bloques": [
+   {
+    "t": "a",
+    "v": "  E"
+   },
+   {
+    "t": "a",
+    "v": "G#         C#m"
+   },
+   {
+    "t": "a",
+    "v": "F#                           E     A"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "G#            C#m B A              B"
+   },
+   {
+    "t": "a",
+    "v": "G#             C#m         B"
+   },
+   {
+    "t": "a",
+    "v": "F#                   B"
+   }
+  ],
+  "problemas": [
+   [
+    "estilo-sin-formatear",
+    "//Yo quiero más"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Yo quiero más"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Yo quiero más Y más Y más de Ti//"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Quebranta mi vida, moldeame a tu imagen"
+   ],
+   [
+    "estilo-sin-formatear",
+    "y quema en mi todo lo que soy"
+   ],
+   [
+    "estilo-sin-formatear",
+    "para que seas tu en mi."
+   ]
+  ]
+ },
+ {
+  "p": 3345,
+  "titulo": "A tu nombre alabare",
+  "nombre": "A tu nombre alabare",
+  "tono": null,
+  "bpm": null,
+  "bloques": [],
+  "problemas": [
+   [
+    "sin-contenido",
+    "el título no tiene nada debajo"
+   ]
+  ]
+ },
+ {
+  "p": 3347,
+  "titulo": "Rey de gloria - E - 98",
+  "nombre": "Rey de gloria",
+  "tono": "E",
+  "bpm": 98,
+  "bloques": [
+   {
+    "t": "r",
+    "v": "Verso 1"
+   },
+   {
+    "t": "a",
+    "v": "E"
+   },
+   {
+    "t": "l",
+    "v": "¿Quién es el rey de gloria?"
+   },
+   {
+    "t": "a",
+    "v": "A2"
+   },
+   {
+    "t": "l",
+    "v": "Me persigue con su amor"
+   },
+   {
+    "t": "a",
+    "v": "E"
+   },
+   {
+    "t": "l",
+    "v": "Me asombran sus palabras"
+   },
+   {
+    "t": "a",
+    "v": "A2"
+   },
+   {
+    "t": "l",
+    "v": "Susurrando en mi interior"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "A2"
+   },
+   {
+    "t": "l",
+    "v": "Mi conciencia me recuerda"
+   },
+   {
+    "t": "l",
+    "v": "Necesito su perdón"
+   },
+   {
+    "t": "a",
+    "v": "B2"
+   },
+   {
+    "t": "l",
+    "v": "Quien es el rey de gloria"
+   },
+   {
+    "t": "a",
+    "v": "A2              E"
+   },
+   {
+    "t": "l",
+    "v": "El me lo ofrece hoy"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Verso 2"
+   },
+   {
+    "t": "l",
+    "v": "OH rey del universo"
+   },
+   {
+    "t": "l",
+    "v": "Y príncipe de paz"
+   },
+   {
+    "t": "l",
+    "v": "Revelándome los cielos"
+   },
+   {
+    "t": "l",
+    "v": "Los misterios que en Él hay"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "l",
+    "v": "mi espíritu lo anhela"
+   },
+   {
+    "t": "l",
+    "v": "De su gracia y su verdad"
+   },
+   {
+    "t": "l",
+    "v": "Quien es el rey de gloria"
+   },
+   {
+    "t": "l",
+    "v": "Hijo de hombre hijo de Dios"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Coro"
+   },
+   {
+    "t": "a",
+    "v": "                A2"
+   },
+   {
+    "t": "l",
+    "v": "//Su nombre es: Cristo"
+   },
+   {
+    "t": "l",
+    "v": "Jesucristo"
+   },
+   {
+    "t": "a",
+    "v": "B2"
+   },
+   {
+    "t": "l",
+    "v": "Dios poderoso"
+   },
+   {
+    "t": "a",
+    "v": "A2"
+   },
+   {
+    "t": "l",
+    "v": "Rey de mi ser"
+   },
+   {
+    "t": "a",
+    "v": "E"
+   },
+   {
+    "t": "l",
+    "v": "Rey de gloria//"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Verso 3"
+   },
+   {
+    "t": "l",
+    "v": "¿Quién es el rey de gloria?"
+   },
+   {
+    "t": "l",
+    "v": "De poder y majestad"
+   },
+   {
+    "t": "l",
+    "v": "El sabio sin medida"
+   },
+   {
+    "t": "l",
+    "v": "Es el rey de amor y paz"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "l",
+    "v": "El señor de Cielo y tierra"
+   },
+   {
+    "t": "l",
+    "v": "Y el único creador"
+   },
+   {
+    "t": "l",
+    "v": "El es el rey de gloria"
+   },
+   {
+    "t": "l",
+    "v": "El es todo para mi!!!"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Coro…"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Verso 4"
+   },
+   {
+    "t": "l",
+    "v": "¿Quién es el rey de gloria?"
+   },
+   {
+    "t": "l",
+    "v": "Me persigue con su amor"
+   },
+   {
+    "t": "l",
+    "v": "Me asombran sus palabras"
+   },
+   {
+    "t": "l",
+    "v": "Susurrando en mi interior"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "l",
+    "v": "Mi conciencia me recuerda"
+   },
+   {
+    "t": "l",
+    "v": "Necesito su perdón"
+   },
+   {
+    "t": "l",
+    "v": "¿Quién es el rey de gloria?"
+   },
+   {
+    "t": "l",
+    "v": "Que me lo ofrece hoy"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Coro…"
+   }
+  ],
+  "problemas": [
+   [
+    "letra-en-acordes",
+    "C#sus4(C#m)"
+   ],
+   [
+    "letra-en-acordes",
+    "C#sus4(C#m)"
+   ]
+  ]
+ },
+ {
+  "p": 3426,
+  "titulo": "Cristo te exalto / Gloriosa es tu presencia - A",
+  "nombre": "Cristo te exalto / Gloriosa es tu presencia",
+  "tono": "A",
+  "bpm": null,
+  "bloques": [
+   {
+    "t": "r",
+    "v": "Estrofa"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "  A             D"
+   },
+   {
+    "t": "l",
+    "v": "Cristo te exalto"
+   },
+   {
+    "t": "a",
+    "v": "   Bm  E            D A"
+   },
+   {
+    "t": "l",
+    "v": "Cristo  te adoro"
+   },
+   {
+    "t": "a",
+    "v": "             F#m              D"
+   },
+   {
+    "t": "l",
+    "v": "por que tu eres mi Señor"
+   },
+   {
+    "t": "a",
+    "v": "          B7                              E"
+   },
+   {
+    "t": "l",
+    "v": "solo a ti dare la gloria y el honor //"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Coro"
+   },
+   {
+    "t": "a",
+    "v": "   A                      D"
+   },
+   {
+    "t": "l",
+    "v": "Gloriosa es tu presencia"
+   },
+   {
+    "t": "a",
+    "v": "       Bm E              A"
+   },
+   {
+    "t": "l",
+    "v": "me cubre y me da paz"
+   },
+   {
+    "t": "a",
+    "v": "      F#                     Bm7"
+   },
+   {
+    "t": "l",
+    "v": "mi ser siempre proclamara"
+   },
+   {
+    "t": "a",
+    "v": "              D          E"
+   },
+   {
+    "t": "l",
+    "v": "que solo tu eres digno"
+   },
+   {
+    "t": "l",
+    "v": "solo tu eres digno"
+   },
+   {
+    "t": "a",
+    "v": "        D          E                A"
+   },
+   {
+    "t": "l",
+    "v": "solo tu eres digno de adorar"
+   }
+  ],
+  "problemas": [
+   [
+    "acorde-en-letra",
+    "        Cm#7   F#m"
+   ]
+  ]
+ },
+ {
+  "p": 3675,
+  "titulo": "Gracias por la cruz - G",
+  "nombre": "Gracias por la cruz",
+  "tono": "G",
+  "bpm": null,
+  "bloques": [
+   {
+    "t": "r",
+    "v": "Verso 1"
+   },
+   {
+    "t": "a",
+    "v": "  G             C    D  G"
+   },
+   {
+    "t": "l",
+    "v": "Gracias por la cruz oh Dios"
+   },
+   {
+    "t": "a",
+    "v": "G               C    D   G"
+   },
+   {
+    "t": "l",
+    "v": "El precio que pagaste por mí"
+   },
+   {
+    "t": "a",
+    "v": "             Em"
+   },
+   {
+    "t": "l",
+    "v": "Llevando mí pecado ahí"
+   },
+   {
+    "t": "a",
+    "v": "D       C        Am    G   D"
+   },
+   {
+    "t": "l",
+    "v": "Sublime amor Tu gracia me Salvó"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Verso 2"
+   },
+   {
+    "t": "a",
+    "v": "  G             C    D  G"
+   },
+   {
+    "t": "l",
+    "v": "Gracias por tu amor Dios"
+   },
+   {
+    "t": "a",
+    "v": "             C    D   G"
+   },
+   {
+    "t": "l",
+    "v": "Tus manos clavadas por mí"
+   },
+   {
+    "t": "a",
+    "v": "             Em"
+   },
+   {
+    "t": "l",
+    "v": "Me has lavado oh Señor"
+   },
+   {
+    "t": "a",
+    "v": "D       C        Am    G   D"
+   },
+   {
+    "t": "l",
+    "v": "Conozco hoy tu abrazo y tu perdón"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Coro"
+   },
+   {
+    "t": "a",
+    "v": "G            D/F#"
+   },
+   {
+    "t": "l",
+    "v": "Digno es el Señor"
+   },
+   {
+    "t": "a",
+    "v": "Am7   G     C"
+   },
+   {
+    "t": "l",
+    "v": "En su trono esta"
+   },
+   {
+    "t": "a",
+    "v": "D      C    Bm    C"
+   },
+   {
+    "t": "l",
+    "v": "Hoy te coronamos Rey"
+   },
+   {
+    "t": "a",
+    "v": "  Am     G   D"
+   },
+   {
+    "t": "l",
+    "v": "Y Reinas con poder"
+   },
+   {
+    "t": "a",
+    "v": "G        D/F#"
+   },
+   {
+    "t": "l",
+    "v": "Altísimo Señor"
+   },
+   {
+    "t": "a",
+    "v": "Am    G/B         C"
+   },
+   {
+    "t": "l",
+    "v": "Jesús hijo de Dios"
+   },
+   {
+    "t": "a",
+    "v": "       D      C       Bm    C"
+   },
+   {
+    "t": "l",
+    "v": "El amado del cielo en la cruz murió"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Final"
+   },
+   {
+    "t": "l",
+    "v": "Digno es el Señor"
+   },
+   {
+    "t": "l",
+    "v": "Digno es el Señor"
+   }
+  ],
+  "problemas": [
+   [
+    "letra-en-acordes",
+    "                      Am G -D"
+   ],
+   [
+    "letra-en-acordes",
+    "                      Am G -D"
+   ]
+  ]
+ },
+ {
+  "p": 3756,
+  "titulo": "Tu ere el lugar - D - 61",
+  "nombre": "Tu ere el lugar",
+  "tono": "D",
+  "bpm": 61,
+  "bloques": [
+   {
+    "t": "a",
+    "v": "D             Bm    Em"
+   },
+   {
+    "t": "l",
+    "v": "Tu eres el lugar,"
+   },
+   {
+    "t": "a",
+    "v": "A                       G        D"
+   },
+   {
+    "t": "l",
+    "v": "donde me esconderé,"
+   },
+   {
+    "t": "a",
+    "v": "Bm                     Em"
+   },
+   {
+    "t": "l",
+    "v": "Y tu me guardarás"
+   },
+   {
+    "t": "a",
+    "v": "E                    A"
+   },
+   {
+    "t": "l",
+    "v": "en la aflicción"
+   },
+   {
+    "t": "l",
+    "v": "Y tu me rodearás Señor,"
+   },
+   {
+    "t": "a",
+    "v": "            G                    Gm"
+   },
+   {
+    "t": "l",
+    "v": "Con cantos de libertad"
+   },
+   {
+    "t": "a",
+    "v": "D              Bm   Em A                        D"
+   },
+   {
+    "t": "l",
+    "v": "A nada temeré, pues en Ti confié."
+   }
+  ],
+  "problemas": [
+   [
+    "acorde-en-letra",
+    "A7              D                 Fm#"
+   ]
+  ]
+ },
+ {
+  "p": 3773,
+  "titulo": "Firmes y adelante - D",
+  "nombre": "Firmes y adelante",
+  "tono": "D",
+  "bpm": null,
+  "bloques": [
+   {
+    "t": "r",
+    "v": "Verso 1"
+   },
+   {
+    "t": "a",
+    "v": " D                 Em       A                  D"
+   },
+   {
+    "t": "a",
+    "v": "Bm               A           E                   A"
+   },
+   {
+    "t": "a",
+    "v": "                 D        D7              G"
+   },
+   {
+    "t": "a",
+    "v": "Em                G       Em                A"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Coro"
+   },
+   {
+    "t": "a",
+    "v": "D                   Em      A                  D"
+   },
+   {
+    "t": "a",
+    "v": "   Bm               G          Em    A           D"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Verso 2"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Verso 3"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Verso 4"
+   }
+  ],
+  "problemas": [
+   [
+    "estilo-sin-formatear",
+    "Firmes y adelante, huestes de la fe,"
+   ],
+   [
+    "estilo-sin-formatear",
+    "sin temor alguno, que Jesús nos ve!"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Jefe soberano, Cristo al frente va"
+   ],
+   [
+    "estilo-sin-formatear",
+    "y la regia enseña tremolando está."
+   ],
+   [
+    "estilo-sin-formatear",
+    "Firmes y adelante, huestes de la fe,"
+   ],
+   [
+    "estilo-sin-formatear",
+    "¡Sin temor alguno, que Jesús nos ve!"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Al sagrado nombre de nuestro Adalid,"
+   ],
+   [
+    "estilo-sin-formatear",
+    "tiembla el enemigo, y huye de la lid."
+   ],
+   [
+    "estilo-sin-formatear",
+    "Nuestra es la victoria; dad a Dios loor,"
+   ],
+   [
+    "estilo-sin-formatear",
+    "y óigalo el averno lleno de pavor."
+   ],
+   [
+    "estilo-sin-formatear",
+    "Muévese potente la iglesia de Dios,"
+   ],
+   [
+    "estilo-sin-formatear",
+    "De los ya gloriosos marchamos en pos;"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Somos sólo un cuerpo, y uno es el Señor,"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Una la esperanza y uno nuestro amor."
+   ],
+   [
+    "estilo-sin-formatear",
+    "Tronos y coronas pueden perecer,"
+   ],
+   [
+    "estilo-sin-formatear",
+    "De Jesús la iglesia constante ha de ser;"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Nada en contra suya prevalecerá,"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Porque la promesa nunca faltará."
+   ],
+   [
+    "estilo-sin-formatear",
+    "Cristo yo te amo"
+   ]
+  ]
+ },
+ {
+  "p": 3811,
+  "titulo": "Digno de alabar - D",
+  "nombre": "Digno de alabar",
+  "tono": "D",
+  "bpm": null,
+  "bloques": [
+   {
+    "t": "r",
+    "v": "Intro"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Verso I"
+   },
+   {
+    "t": "a",
+    "v": "D"
+   },
+   {
+    "t": "a",
+    "v": "D         Asus     A"
+   },
+   {
+    "t": "l",
+    "v": "Cargaste Tú mi cruz"
+   },
+   {
+    "t": "l",
+    "v": "Mi libertad, con Tu vida compraste"
+   },
+   {
+    "t": "a",
+    "v": "D       Asus  A"
+   },
+   {
+    "t": "l",
+    "v": "Y ahora Tuyo soy"
+   },
+   {
+    "t": "l",
+    "v": "Proclamaré Tu bondad para siempre"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "l",
+    "v": "CORO I"
+   },
+   {
+    "t": "a",
+    "v": "            G"
+   },
+   {
+    "t": "l",
+    "v": "Digno de alabar"
+   },
+   {
+    "t": "a",
+    "v": "    A"
+   },
+   {
+    "t": "l",
+    "v": "Cristo"
+   },
+   {
+    "t": "l",
+    "v": "Nombre sin igual"
+   },
+   {
+    "t": "a",
+    "v": "               Bm"
+   },
+   {
+    "t": "l",
+    "v": "Eres Digno de alabar"
+   },
+   {
+    "t": "a",
+    "v": "            G"
+   },
+   {
+    "t": "l",
+    "v": "Digno de alabar"
+   },
+   {
+    "t": "a",
+    "v": "    A"
+   },
+   {
+    "t": "l",
+    "v": "Cristo"
+   },
+   {
+    "t": "l",
+    "v": "Nombre sin igual"
+   },
+   {
+    "t": "a",
+    "v": "               Bm"
+   },
+   {
+    "t": "l",
+    "v": "Eres Digno de alabar"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Intro"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Verso II"
+   },
+   {
+    "t": "a",
+    "v": "D"
+   },
+   {
+    "t": "a",
+    "v": "D        Asus     A"
+   },
+   {
+    "t": "l",
+    "v": "Vergüenza huye hoy"
+   },
+   {
+    "t": "l",
+    "v": "Rendido estoy ante tu amor innegable"
+   },
+   {
+    "t": "a",
+    "v": "D       Asus     A"
+   },
+   {
+    "t": "l",
+    "v": "Tu gracia eterna es"
+   },
+   {
+    "t": "l",
+    "v": "Proclamaré Tu bondad para siempre"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "l",
+    "v": "CORO II"
+   },
+   {
+    "t": "a",
+    "v": "            G"
+   },
+   {
+    "t": "l",
+    "v": "Digno de alabar"
+   },
+   {
+    "t": "a",
+    "v": "Bm  A"
+   },
+   {
+    "t": "l",
+    "v": "Cristo"
+   },
+   {
+    "t": "l",
+    "v": "Nombre sin igual"
+   },
+   {
+    "t": "a",
+    "v": "               Bm"
+   },
+   {
+    "t": "l",
+    "v": "Eres Digno de alabar"
+   },
+   {
+    "t": "a",
+    "v": "A           G"
+   },
+   {
+    "t": "l",
+    "v": "Digno de alabar"
+   },
+   {
+    "t": "a",
+    "v": "Bm  A"
+   },
+   {
+    "t": "l",
+    "v": "Cristo"
+   },
+   {
+    "t": "l",
+    "v": "Nombre sin igual"
+   },
+   {
+    "t": "a",
+    "v": "               Bm    A"
+   },
+   {
+    "t": "l",
+    "v": "Eres Digno de alabar  [Digno]"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "l",
+    "v": "PUENTE INSTRUMENTAL"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Puente (x6)"
+   },
+   {
+    "t": "a",
+    "v": "       G"
+   },
+   {
+    "t": "l",
+    "v": "Sé exaltado hoy en los cielos"
+   },
+   {
+    "t": "a",
+    "v": "       Em"
+   },
+   {
+    "t": "l",
+    "v": "Ven y llena este lugar"
+   },
+   {
+    "t": "a",
+    "v": "      Bm"
+   },
+   {
+    "t": "l",
+    "v": "Eres digno de alabar"
+   },
+   {
+    "t": "l",
+    "v": "No hay otro nombre igual"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "l",
+    "v": "PUENTE INSTRUMENTAL II"
+   },
+   {
+    "t": "l",
+    "v": "PUENTE INSTRUMENTAL III"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "l",
+    "v": "CORO II (x2)"
+   },
+   {
+    "t": "a",
+    "v": "            G"
+   },
+   {
+    "t": "l",
+    "v": "Digno de alabar"
+   },
+   {
+    "t": "a",
+    "v": "Bm  A"
+   },
+   {
+    "t": "l",
+    "v": "Cristo"
+   },
+   {
+    "t": "l",
+    "v": "Nombre sin igual"
+   },
+   {
+    "t": "a",
+    "v": "               Bm"
+   },
+   {
+    "t": "l",
+    "v": "Eres Digno de alabar"
+   },
+   {
+    "t": "a",
+    "v": "A           G"
+   },
+   {
+    "t": "l",
+    "v": "Digno de alabar"
+   },
+   {
+    "t": "a",
+    "v": "Bm  A"
+   },
+   {
+    "t": "l",
+    "v": "Cristo"
+   },
+   {
+    "t": "l",
+    "v": "Nombre sin igual"
+   },
+   {
+    "t": "a",
+    "v": "               Bm    A"
+   },
+   {
+    "t": "l",
+    "v": "Eres Digno de alabar  [Digno]"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Instrumental"
+   }
+  ],
+  "problemas": [
+   [
+    "acorde-en-letra",
+    "Bm / D  / | G  / A  / | Bm / D  / | G  / A  / |"
+   ],
+   [
+    "acorde-en-letra",
+    "   D  / F#       G        D  / A   A"
+   ],
+   [
+    "acorde-en-letra",
+    "       D  / F#   G       D  / A   A"
+   ],
+   [
+    "acorde-en-letra",
+    "           D  / F#"
+   ],
+   [
+    "acorde-en-letra",
+    "           D  / F#"
+   ],
+   [
+    "acorde-en-letra",
+    "Bm / D  / | G  / A  / | Bm / D  / | G  / A  / |"
+   ],
+   [
+    "acorde-en-letra",
+    "        D  / F#       G     D  / A   A"
+   ],
+   [
+    "acorde-en-letra",
+    "       D  / F#   G       D  / A   A"
+   ],
+   [
+    "acorde-en-letra",
+    "           D  / F#"
+   ],
+   [
+    "acorde-en-letra",
+    "           D  / F#"
+   ],
+   [
+    "acorde-en-letra",
+    "G  / / / | Em / / / | Bm / / / | Asus  / D  / F# / |"
+   ],
+   [
+    "acorde-en-letra",
+    "         A          D  / F#"
+   ],
+   [
+    "acorde-en-letra",
+    "Em / / / | Bm / / / | Bm / D  / / / | A  / / / |"
+   ],
+   [
+    "acorde-en-letra",
+    "Em / / / | Bm / / / | Bm / D  / / / | A  / D  / F# / |"
+   ],
+   [
+    "acorde-en-letra",
+    "           D  / F#"
+   ],
+   [
+    "acorde-en-letra",
+    "           D  / F#"
+   ],
+   [
+    "acorde-en-letra",
+    "A  / / / | G  / / /"
+   ]
+  ]
+ },
+ {
+  "p": 4088,
+  "titulo": "Alabare al Señor (Anástasis) - G - 72",
+  "nombre": "Alabare al Señor (Anástasis)",
+  "tono": "G",
+  "bpm": 72,
+  "bloques": [
+   {
+    "t": "a",
+    "v": "       G  Cmaj7/E  C"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "l",
+    "v": "VERSO I"
+   },
+   {
+    "t": "a",
+    "v": "      G"
+   },
+   {
+    "t": "l",
+    "v": "Recordaré aquella cruz"
+   },
+   {
+    "t": "a",
+    "v": "           D         Em"
+   },
+   {
+    "t": "l",
+    "v": "Donde sangró y murió Jesús"
+   },
+   {
+    "t": "a",
+    "v": "          C          G/B"
+   },
+   {
+    "t": "l",
+    "v": "Heridas que por mí sufrió"
+   },
+   {
+    "t": "a",
+    "v": "      Dadd4      G     Cmaj7/E   C"
+   },
+   {
+    "t": "l",
+    "v": "Crucificado, Salvador"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "l",
+    "v": "VERSO II"
+   },
+   {
+    "t": "a",
+    "v": "            G"
+   },
+   {
+    "t": "l",
+    "v": "Su cuerpo envuelto en dolor"
+   },
+   {
+    "t": "a",
+    "v": "         D        Em"
+   },
+   {
+    "t": "l",
+    "v": "En el sepulcro reposó"
+   },
+   {
+    "t": "a",
+    "v": "       C          G/B"
+   },
+   {
+    "t": "l",
+    "v": "En soledad Él se quedó"
+   },
+   {
+    "t": "a",
+    "v": "         D        G    Cmaj7/E  C"
+   },
+   {
+    "t": "l",
+    "v": "Jesús Mesías, el Señor"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Coro"
+   },
+   {
+    "t": "a",
+    "v": "  G"
+   },
+   {
+    "t": "l",
+    "v": "Alabaré"
+   },
+   {
+    "t": "a",
+    "v": "      C       G"
+   },
+   {
+    "t": "l",
+    "v": "Al Señor mi Dios"
+   },
+   {
+    "t": "a",
+    "v": "    Em           Dsus D"
+   },
+   {
+    "t": "l",
+    "v": "Tu nombre yo proclamaré"
+   },
+   {
+    "t": "a",
+    "v": " G/B            C    Em"
+   },
+   {
+    "t": "l",
+    "v": "Eternamente te cantaré"
+   },
+   {
+    "t": "a",
+    "v": "   C      D       G"
+   },
+   {
+    "t": "l",
+    "v": "Señor, Señor mi Dios"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "l",
+    "v": "VERSO III"
+   },
+   {
+    "t": "a",
+    "v": "        G"
+   },
+   {
+    "t": "l",
+    "v": "Pero al tercer amanecer"
+   },
+   {
+    "t": "a",
+    "v": "            D           Em"
+   },
+   {
+    "t": "l",
+    "v": "Un gran estruendo se escuchó"
+   },
+   {
+    "t": "a",
+    "v": "              C         G/B"
+   },
+   {
+    "t": "l",
+    "v": "¿Dónde está muerte tu aguijón?"
+   },
+   {
+    "t": "a",
+    "v": "         D        G    Gsus    G"
+   },
+   {
+    "t": "l",
+    "v": "Cristo Jesús resucitó"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Coro"
+   },
+   {
+    "t": "a",
+    "v": "  G"
+   },
+   {
+    "t": "l",
+    "v": "Alabaré"
+   },
+   {
+    "t": "a",
+    "v": "      C       G"
+   },
+   {
+    "t": "l",
+    "v": "Al Señor mi Dios"
+   },
+   {
+    "t": "a",
+    "v": "    Em           Dsus D"
+   },
+   {
+    "t": "l",
+    "v": "Tu nombre yo proclamaré"
+   },
+   {
+    "t": "a",
+    "v": " G/B            C    Em"
+   },
+   {
+    "t": "l",
+    "v": "Eternamente te cantaré"
+   },
+   {
+    "t": "a",
+    "v": "   C      D       G"
+   },
+   {
+    "t": "l",
+    "v": "Señor, Señor mi Dios"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "l",
+    "v": "VERSO IV"
+   },
+   {
+    "t": "a",
+    "v": "          G"
+   },
+   {
+    "t": "l",
+    "v": "Muy pronto Él regresará"
+   },
+   {
+    "t": "a",
+    "v": "           D       Em"
+   },
+   {
+    "t": "l",
+    "v": "Su rostro resplandecerá"
+   },
+   {
+    "t": "a",
+    "v": "         C        G/B"
+   },
+   {
+    "t": "l",
+    "v": "En su presencia estaré"
+   },
+   {
+    "t": "a",
+    "v": "         D        G"
+   },
+   {
+    "t": "l",
+    "v": "Y cara a cara le veré"
+   }
+  ],
+  "problemas": [
+   [
+    "letra-en-acordes",
+    "Intro: G  Cmaj7/E  C"
+   ],
+   [
+    "letra-en-acordes",
+    "Intro: G  Cmaj7/E  C"
+   ]
+  ]
+ },
+ {
+  "p": 4165,
+  "titulo": "Al mundo paz - E",
+  "nombre": "Al mundo paz",
+  "tono": "E",
+  "bpm": null,
+  "bloques": [
+   {
+    "t": "r",
+    "v": "Intro"
+   },
+   {
+    "t": "a",
+    "v": "C#m  G#m  F#m  A"
+   },
+   {
+    "t": "a",
+    "v": "C#m  G#m  F#m  A"
+   },
+   {
+    "t": "a",
+    "v": "C#m  G#m  F#m  A"
+   },
+   {
+    "t": "a",
+    "v": "C#m  G#m  F#m  B"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "E              A   B   E"
+   },
+   {
+    "t": "l",
+    "v": "Al mundo paz nació Jesús"
+   },
+   {
+    "t": "a",
+    "v": "A          B      C#m"
+   },
+   {
+    "t": "l",
+    "v": "Nació ya nuestro Rey"
+   },
+   {
+    "t": "a",
+    "v": "C#m     E      A     E"
+   },
+   {
+    "t": "l",
+    "v": "El corazón ya tiene luz"
+   },
+   {
+    "t": "a",
+    "v": "C#m"
+   },
+   {
+    "t": "l",
+    "v": "Y paz su santa grey"
+   },
+   {
+    "t": "a",
+    "v": "B"
+   },
+   {
+    "t": "l",
+    "v": "Y paz su santa grey"
+   },
+   {
+    "t": "a",
+    "v": "E         A      B      E"
+   },
+   {
+    "t": "l",
+    "v": "Y paz, y paz su santa grey"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "l",
+    "v": "Al mundo paz el Salvador"
+   },
+   {
+    "t": "l",
+    "v": "En tierra reinara"
+   },
+   {
+    "t": "l",
+    "v": "Ya es feliz el pecador"
+   },
+   {
+    "t": "l",
+    "v": "Jesús perdón le da"
+   },
+   {
+    "t": "l",
+    "v": "Jesús perdón le da"
+   },
+   {
+    "t": "l",
+    "v": "Jesús, Jesús perdón le da"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "l",
+    "v": "Al mundo el gobernara"
+   },
+   {
+    "t": "l",
+    "v": "Con gracia y con poder"
+   },
+   {
+    "t": "l",
+    "v": "Y a las naciones probara"
+   },
+   {
+    "t": "l",
+    "v": "Su amor y su poder"
+   },
+   {
+    "t": "l",
+    "v": "Su amor y su poder"
+   },
+   {
+    "t": "l",
+    "v": "Su amor, su amor y su poder"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "l",
+    "v": "Al mundo paz nació Jesús"
+   },
+   {
+    "t": "l",
+    "v": "Nació ya nuestro Rey"
+   },
+   {
+    "t": "l",
+    "v": "El corazón ya tiene luz"
+   },
+   {
+    "t": "l",
+    "v": "Y paz su santa grey"
+   },
+   {
+    "t": "l",
+    "v": "Y paz su santa grey"
+   },
+   {
+    "t": "l",
+    "v": "Y paz, y paz su santa grey"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Interludio"
+   },
+   {
+    "t": "a",
+    "v": "E"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "l",
+    "v": "Al mundo el gobernara"
+   },
+   {
+    "t": "l",
+    "v": "Con gracia y con poder"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "l",
+    "v": "Y a las naciones probara"
+   },
+   {
+    "t": "a",
+    "v": "C#m"
+   },
+   {
+    "t": "l",
+    "v": "Su amor y su poder"
+   },
+   {
+    "t": "a",
+    "v": "B"
+   },
+   {
+    "t": "l",
+    "v": "Su amor y su poder"
+   },
+   {
+    "t": "a",
+    "v": "E         A      B      E"
+   },
+   {
+    "t": "l",
+    "v": "Su amor, su amor y su poder"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "E    F#m   E/G#   A     x4"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "C#m     E      A     E"
+   },
+   {
+    "t": "l",
+    "v": "Y a las naciones probara"
+   },
+   {
+    "t": "a",
+    "v": "C#m"
+   },
+   {
+    "t": "l",
+    "v": "Su amor y su poder"
+   },
+   {
+    "t": "a",
+    "v": "B"
+   },
+   {
+    "t": "l",
+    "v": "Su amor y su poder"
+   },
+   {
+    "t": "a",
+    "v": "E         A      B      E"
+   },
+   {
+    "t": "l",
+    "v": "Su amor, su amor y su poder"
+   }
+  ],
+  "problemas": [
+   [
+    "letra-en-acordes",
+    "E     A -B E"
+   ],
+   [
+    "letra-en-acordes",
+    "A -B C#m"
+   ],
+   [
+    "letra-en-acordes",
+    "E     A -B E"
+   ],
+   [
+    "letra-en-acordes",
+    "A -B C#m"
+   ],
+   [
+    "letra-en-acordes",
+    "E     A -B E"
+   ],
+   [
+    "letra-en-acordes",
+    "A -B C#m"
+   ]
+  ]
+ },
+ {
+  "p": 4324,
+  "titulo": "Hay Libertad – Hoy puedo danzar - Dm",
+  "nombre": "Hay Libertad - Hoy puedo danzar",
+  "tono": "Dm",
+  "bpm": null,
+  "bloques": [
+   {
+    "t": "r",
+    "v": "Intro"
+   },
+   {
+    "t": "a",
+    "v": "Dm Bb F C"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "Dm                      Bb"
+   },
+   {
+    "t": "l",
+    "v": "Hoy puedo danzar con libertad"
+   },
+   {
+    "t": "a",
+    "v": "          F                   C"
+   },
+   {
+    "t": "l",
+    "v": "Porque soy su hijo, Porque soy su hijo"
+   },
+   {
+    "t": "a",
+    "v": "Dm                      Bb"
+   },
+   {
+    "t": "l",
+    "v": "Hoy puedo danzar con libertad"
+   },
+   {
+    "t": "a",
+    "v": "        F                  C"
+   },
+   {
+    "t": "l",
+    "v": "Porque soy amado,  Porque soy amado"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "          Dm                      Bb"
+   },
+   {
+    "t": "l",
+    "v": "Podemos sentir Tu gozo, Podemos sentir Tu rio"
+   },
+   {
+    "t": "a",
+    "v": "       F                             C/E"
+   },
+   {
+    "t": "l",
+    "v": "Hay sanidad en las aguas, queremos danzar"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "       Dm"
+   },
+   {
+    "t": "l",
+    "v": "Hay libertad en la casa de Dios"
+   },
+   {
+    "t": "a",
+    "v": "       Bb"
+   },
+   {
+    "t": "l",
+    "v": "Hay libertad en la casa de Dios"
+   },
+   {
+    "t": "a",
+    "v": "       F              C/E"
+   },
+   {
+    "t": "l",
+    "v": "Hay libertad,  Hay libertad"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "        Dm          Bb"
+   },
+   {
+    "t": "l",
+    "v": "Hay libertad en la casa"
+   },
+   {
+    "t": "a",
+    "v": "        F         C"
+   },
+   {
+    "t": "l",
+    "v": "Hay libertad al danzar"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "         Dm"
+   },
+   {
+    "t": "l",
+    "v": "Puedo danzar en la casa de Dios,"
+   },
+   {
+    "t": "a",
+    "v": "         Bb"
+   },
+   {
+    "t": "l",
+    "v": "Puedo danzar en la casa de Dios."
+   },
+   {
+    "t": "a",
+    "v": "         F            C"
+   },
+   {
+    "t": "l",
+    "v": "Puedo danzar y disfrutar."
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "           Dm           Bb"
+   },
+   {
+    "t": "l",
+    "v": "Que somos libres, somos libres"
+   },
+   {
+    "t": "a",
+    "v": "        F             C"
+   },
+   {
+    "t": "l",
+    "v": "Por tu sangre, Libre soy."
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Final"
+   },
+   {
+    "t": "a",
+    "v": "       Bb"
+   },
+   {
+    "t": "l",
+    "v": "Libre Soy ..."
+   }
+  ],
+  "problemas": [
+   [
+    "letra-en-acordes",
+    "Instrumental/Solo: Dm  Bb  F  C"
+   ],
+   [
+    "letra-en-acordes",
+    "             Ultima Parte"
+   ]
+  ]
+ },
+ {
+  "p": 4432,
+  "titulo": "Fiesta en el desierto - C#m",
+  "nombre": "Fiesta en el desierto",
+  "tono": "C#m",
+  "bpm": null,
+  "bloques": [
+   {
+    "t": "a",
+    "v": "C#m"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "      A                   B                   G#7           C#m"
+   },
+   {
+    "t": "a",
+    "v": "      A                   B                   G#7"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Coro"
+   },
+   {
+    "t": "a",
+    "v": "   A              B            G#7               C#m"
+   },
+   {
+    "t": "a",
+    "v": "   A             B             G#7           C#m"
+   },
+   {
+    "t": "a",
+    "v": "     A                 B                 G#7               C#m"
+   },
+   {
+    "t": "a",
+    "v": "     A               B              G#7"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Coro"
+   },
+   {
+    "t": "a",
+    "v": "    A             B             G#7            C#m"
+   },
+   {
+    "t": "a",
+    "v": "     A               B              G#7          C#m       B        C#m"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": " C#m"
+   },
+   {
+    "t": "a",
+    "v": "             A                                 B"
+   },
+   {
+    "t": "a",
+    "v": "            G#/C                         G#7"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Coro"
+   }
+  ],
+  "problemas": [
+   [
+    "estilo-sin-formatear",
+    "En Santiago 1 verso 2, está escrito que tenga gozo"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Cuando pase por diversas pruebas, porque de allí saldré victorioso."
+   ],
+   [
+    "estilo-sin-formatear",
+    "Mi lamento cambiaste por danza, ya no hay tristeza solo alabanza"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Mi lamento cambiaste por danza, ya no hay tristeza."
+   ],
+   [
+    "estilo-sin-formatear",
+    "Yo danzo, danzo, danzo, danzo, danzo, danzo, en el proceso"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Y grito, grito, grito, grito, grito, grito, no moriré"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Doy vueltas, vueltas, vueltas, vueltas, vueltas, vueltas, no me avergüenzo"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Hay fiesta, fiesta, fiesta, fiesta, fiesta…….. fiesta en el desierto"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Solo 1:   Guitarra y sinte  //A B G#7 – (G# F# E B/D#)//  C#m"
+   ],
+   [
+    "estilo-sin-formatear",
+    "SE REPITE TODO"
+   ],
+   [
+    "estilo-sin-formatear",
+    "En Santiago 1 verso 2………"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Mi lamento cambiaste por danza……"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Yo danzo, danzo, danzo, danzo, danzo, danzo, en el proceso"
+   ],
+   [
+    "estilo-sin-formatear",
+    "   A             B            G#7           C#m (riff)"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Y grito, grito, grito, grito, grito, grito, no moriré"
+   ],
+   [
+    "letra-en-acordes",
+    "     A                 B                G#7                C#m(riff)"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Doy vueltas, vueltas, vueltas, vueltas, vueltas, vueltas, no me avergüenzo"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Hay fiesta, fiesta, fiesta, fiesta, fiesta……..  en el    desier-----to"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Solo 1  LA, LA, LA, LA,  ////A B G#7 – (G# F# E B/D#)////      C#m"
+   ],
+   [
+    "estilo-sin-formatear",
+    "//Aunque venga la enfermedad, (mientras viva te alabaré)"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Aunque mis labios quieran callar, (mientras viva te alabaré)"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Aunque el desierto me quiera secar, (mientras viva te alabaré)"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Aunque la higuera no florezca, (mientras viva te alabaré//)"
+   ],
+   [
+    "estilo-sin-formatear",
+    "MI lamento…SOLO 2 Guitarra"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Solo 1   LA, LA, LA, LA  ////A B G#7 – (G# F# E B/D#)////     C#m"
+   ],
+   [
+    "estilo-sin-formatear",
+    "FINAL   C#m"
+   ]
+  ]
+ },
+ {
+  "p": 4559,
+  "titulo": "Quiero conocer a Jesús - Yeshua - G - 73",
+  "nombre": "Quiero conocer a Jesús - Yeshua",
+  "tono": "G",
+  "bpm": 73,
+  "bloques": [
+   {
+    "t": "r",
+    "v": "Estrofa"
+   },
+   {
+    "t": "a",
+    "v": "        C                 D"
+   },
+   {
+    "t": "a",
+    "v": "        Em                    D"
+   },
+   {
+    "t": "a",
+    "v": "        C                        D"
+   },
+   {
+    "t": "a",
+    "v": "                         Em           D"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Pre-coro"
+   },
+   {
+    "t": "a",
+    "v": "           C"
+   },
+   {
+    "t": "a",
+    "v": " D"
+   },
+   {
+    "t": "a",
+    "v": "   Em"
+   },
+   {
+    "t": "a",
+    "v": "      D"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Coro"
+   },
+   {
+    "t": "a",
+    "v": "     C                D"
+   },
+   {
+    "t": "a",
+    "v": "    Em                D"
+   },
+   {
+    "t": "a",
+    "v": "     C                D"
+   },
+   {
+    "t": "a",
+    "v": "    Em                D"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "                    C"
+   },
+   {
+    "t": "a",
+    "v": "                    D"
+   },
+   {
+    "t": "a",
+    "v": "                    Em"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "C           D   Em         A"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "       C               Gsus2"
+   },
+   {
+    "t": "a",
+    "v": "        Em7                D"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "           C"
+   },
+   {
+    "t": "a",
+    "v": "D                           Em        D"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "C                 D"
+   },
+   {
+    "t": "a",
+    "v": "Em                 D"
+   }
+  ],
+  "problemas": [
+   [
+    "estilo-sin-formatear",
+    "*Esta es la tonalidad original en la versión de Misael Valera & Marcos Brunet*"
+   ],
+   [
+    "estilo-sin-formatear",
+    "*Simplemente usa los grados 4 - 5 - 6 - 5 en casi toda la canción*"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Mi orgullo me sacó del jardín"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Su humildad coloco el jardín en mí"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Y si vendiera todo lo que tengo"
+   ],
+   [
+    "estilo-sin-formatear",
+    "A cambio de su amor, yo fallaría"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Porque su amor no se compra"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Ni se merece"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Su amor es un regalo"
+   ],
+   [
+    "estilo-sin-formatear",
+    "De gracia se recibe"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Quiero conocer a Jesús"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Quiero conocer a Jesús"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Quiero conocer a Jesús"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Quiero conocer a Jesús"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Y ser hallado en él"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Y ser hallado en él"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Y ser hallado en él"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Espontaneo* (puedes tocarlo asi, haciendo voicings*"
+   ],
+   [
+    "estilo-sin-formatear",
+    "(el * indica que se mantiene esas notas)"
+   ],
+   [
+    "estilo-sin-formatear",
+    "1---------------------------9---"
+   ],
+   [
+    "estilo-sin-formatear",
+    "2-5-7-5-7-5-7-5-7-5-7-9-10**--9-"
+   ],
+   [
+    "estilo-sin-formatear",
+    "3-------------------------------"
+   ],
+   [
+    "estilo-sin-formatear",
+    "4-7*******************9-11****9-"
+   ],
+   [
+    "estilo-sin-formatear",
+    "5-5*******************7-9*****7-"
+   ],
+   [
+    "estilo-sin-formatear",
+    "6-------------------------------"
+   ],
+   [
+    "estilo-sin-formatear",
+    "  C ***************** D Em    D"
+   ],
+   [
+    "estilo-sin-formatear",
+    "(juego de Dsus2 y D )"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Yeshua ah, Ah, Ah, ah, ah,ah,ah,ah x4"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Mi amado es el más bello"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Entre millares de millares"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Mi preferido, mi predilecto"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Mi preferido, mi predilecto Jesús, Jesús"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Tuyo es el reino, Tuyo es el poder"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Tuya es la gloria, Por siempre amen."
+   ]
+  ]
+ },
+ {
+  "p": 4636,
+  "titulo": "Alaba Evan Craft - G - 127",
+  "nombre": "Alaba Evan Craft",
+  "tono": "G",
+  "bpm": 127,
+  "bloques": [
+   {
+    "t": "r",
+    "v": "Intro"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Verso 1"
+   },
+   {
+    "t": "a",
+    "v": "G                         Am          G"
+   },
+   {
+    "t": "a",
+    "v": "    D/G                  C/G        G"
+   },
+   {
+    "t": "a",
+    "v": "G                        Am      G"
+   },
+   {
+    "t": "a",
+    "v": "   D/G                    C/G       G"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Pre-coro"
+   },
+   {
+    "t": "a",
+    "v": "      D                 C"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Coro"
+   },
+   {
+    "t": "a",
+    "v": "Em    C      G            D      Em    C      G            D"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Verso 2"
+   },
+   {
+    "t": "a",
+    "v": "     G                  Am        G"
+   },
+   {
+    "t": "a",
+    "v": "    D/G               C/G        G"
+   },
+   {
+    "t": "a",
+    "v": "    G                    Am     G"
+   },
+   {
+    "t": "a",
+    "v": "   D/G                C/G    G"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Pre-coro"
+   },
+   {
+    "t": "a",
+    "v": "      D                 C"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Coro"
+   },
+   {
+    "t": "a",
+    "v": "Em    C      G            D      Em    C       G           D"
+   },
+   {
+    "t": "a",
+    "v": "Em                 C               G                D"
+   },
+   {
+    "t": "a",
+    "v": "Em    C       G           D"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Interludio"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Puente"
+   },
+   {
+    "t": "a",
+    "v": "  G                  C/G             D/G                 C/G"
+   },
+   {
+    "t": "a",
+    "v": "  G                     C/G"
+   },
+   {
+    "t": "a",
+    "v": "    D/G                 C/G"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Puente 2"
+   },
+   {
+    "t": "a",
+    "v": "  G                  C/G             D/G                 C/G"
+   },
+   {
+    "t": "a",
+    "v": "  G                     C/G"
+   },
+   {
+    "t": "a",
+    "v": "    D/G                 C/G"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Coro"
+   },
+   {
+    "t": "a",
+    "v": "   Em   C        G           D   Em   C       G            D"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "   Em                 C               G                D"
+   },
+   {
+    "t": "a",
+    "v": "Em    C      G            D"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Instrumental"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Final"
+   },
+   {
+    "t": "a",
+    "v": "G          G         G            G"
+   },
+   {
+    "t": "a",
+    "v": "G          G         G            G"
+   }
+  ],
+  "problemas": [
+   [
+    "estilo-sin-formatear",
+    "//Que toda la Creación, Alabe a Dios alabe a Dios,"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Te alabo en el valle, Te alabo en el monte,"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Te alabo en el día, Te alabo en la noche,"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Te alabo en el medio, Estando rodeado,"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Porque cuando alabo, Tú estás a mi lado."
+   ],
+   [
+    "estilo-sin-formatear",
+    "Mientras tenga aliento, Mi alma canta y…"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Aaaaalaba A Dios, MI corazón y   Aaaaalaba a Dios, Mi corazón,"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Te alabo al sentirlo Y aun cuando no,"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Te alabo y sé, que estás en control,"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Es más que un sonido, es adoración,"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Y cuando alabamos Caerá Jericó."
+   ],
+   [
+    "estilo-sin-formatear",
+    "Mientras tenga aliento, Mi alma canta y…"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Aaaaalaba A Dios, MI corazón y   Aaaaalaba a Dios, Mi corazón,"
+   ],
+   [
+    "estilo-sin-formatear",
+    "No me detengo, Mi Dios vivo está, Cómo me voy a callar,"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Aaaaalaba a Dios, Mi corazón."
+   ],
+   [
+    "estilo-sin-formatear",
+    "Alabo al que reina, Alabo al Señor, Alabo a aquel que la tumba venció."
+   ],
+   [
+    "estilo-sin-formatear",
+    "Alabo al que es bueno, Alabo al que es fiel,"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Le alabo porque no hay otro como él."
+   ],
+   [
+    "estilo-sin-formatear",
+    "Alabo al que reina, Alabo al Señor, Alabo a aquel que la tumba venció."
+   ],
+   [
+    "estilo-sin-formatear",
+    "Alabo al que es bueno, Alabo al que es fiel,"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Le alabo porque no hay otro como él."
+   ],
+   [
+    "estilo-sin-formatear",
+    "// Aaaaalaba a Dios, Mi corazón, Aaaaalaba a Dios, Mi corazón, // X 2"
+   ],
+   [
+    "estilo-sin-formatear",
+    "// No me detengo, Mi Dios vivo está, Cómo me voy a callar, // X3"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Aaaaalaba a Dios, Mi corazón."
+   ],
+   [
+    "estilo-sin-formatear",
+    "//Que toda la Creación, Alabe a Dios alabe a Dios,"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Que toda la Creación, Alabe a Dios alabe a Dios,"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Que toda la Creación, Alabe a Dios alabe a Dios."
+   ]
+  ]
+ },
+ {
+  "p": 4716,
+  "titulo": "Qué harías ¿??",
+  "nombre": "Qué harías ¿??",
+  "tono": null,
+  "bpm": null,
+  "bloques": [],
+  "problemas": [
+   [
+    "sin-contenido",
+    "el título no tiene nada debajo"
+   ]
+  ]
+ },
+ {
+  "p": 4717,
+  "titulo": "Yahweh G",
+  "nombre": "Yahweh G",
+  "tono": null,
+  "bpm": null,
+  "bloques": [
+   {
+    "t": "a",
+    "v": "Em7                         Bm"
+   },
+   {
+    "t": "a",
+    "v": "                   C"
+   },
+   {
+    "t": "a",
+    "v": "                      D"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "Em7                          Bm"
+   },
+   {
+    "t": "a",
+    "v": "                   C"
+   },
+   {
+    "t": "a",
+    "v": "                      D"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "C         D        Bm"
+   },
+   {
+    "t": "a",
+    "v": "Em7       C      D"
+   },
+   {
+    "t": "a",
+    "v": "Em7"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "Em7"
+   },
+   {
+    "t": "a",
+    "v": "D"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "   Em7"
+   },
+   {
+    "t": "a",
+    "v": "   D"
+   },
+   {
+    "t": "a",
+    "v": "   C"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "Em7"
+   },
+   {
+    "t": "a",
+    "v": "D"
+   }
+  ],
+  "problemas": [
+   [
+    "estilo-sin-formatear",
+    "Se siente tu gloria en este lugar"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Algo grande va a pasar"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Se activa lo sobrenatural"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Se siente tu gloria en este lugar"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Algo grande va a pasar"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Se activa lo sobrenatural"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Yahweh, rafa, elohim"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Shaddai, jireh, adonai"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Se manifestará"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Si le adoras él se manifestara"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Si le llamas él se manifiesta"
+   ],
+   [
+    "estilo-sin-formatear",
+    "C                              ( Bm )"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Se le muscas él se manifestará"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Yahweh se manifestará"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Jireh se manifestará"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Rafa se manifestará"
+   ],
+   [
+    "estilo-sin-formatear",
+    "               ( Bm )"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Se manifestará"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Si le adoras él se manifestara"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Si le llamas él se manifiesta"
+   ],
+   [
+    "estilo-sin-formatear",
+    "C                              ( Bm )"
+   ],
+   [
+    "estilo-sin-formatear",
+    "Se le muscas él se manifestará"
+   ]
+  ]
+ },
+ {
+  "p": 4935,
+  "titulo": "En los montes, en los valles - Dm",
+  "nombre": "En los montes, en los valles",
+  "tono": "Dm",
+  "bpm": null,
+  "bloques": [
+   {
+    "t": "l",
+    "v": "Intro:    ////Dm - Bb - A////"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "Dm                  Bb        A"
+   },
+   {
+    "t": "l",
+    "v": "Oh - Oh - Oh - Oh - Oh - Oh - Oh"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "Dm                             Bb                     C"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "          Dm"
+   },
+   {
+    "t": "l",
+    "v": "Alabanza."
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "Dm                           Bb                 C"
+   },
+   {
+    "t": "l",
+    "v": "En las costas de los mares,  Levantamos un sonido de"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "           Dm"
+   },
+   {
+    "t": "l",
+    "v": "Esperanza."
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "Dm"
+   },
+   {
+    "t": "l",
+    "v": "Aclamamos, aclamamos,"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "Bb                C                Dm"
+   },
+   {
+    "t": "l",
+    "v": "Hacemos oír la voz de su alabanza."
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "Dm"
+   },
+   {
+    "t": "l",
+    "v": "Con las manos en lo alto"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "Bb                  C                Dm"
+   },
+   {
+    "t": "l",
+    "v": "Exaltamos al que reina para siempre."
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "Dm                  Bb        A"
+   },
+   {
+    "t": "l",
+    "v": "Oh - Oh - Oh - Oh - Oh - Oh - Oh"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "Dm                  Bb         A"
+   },
+   {
+    "t": "l",
+    "v": "Oh - Oh - Oh - Oh - Oh - Oh - Oh"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "Dm                  Bb         A"
+   },
+   {
+    "t": "l",
+    "v": "Oh - Oh - Oh - Oh - Oh - Oh - Oh"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "Dm                  Bb         A"
+   },
+   {
+    "t": "l",
+    "v": "Oh - Oh - Oh - Oh - Oh - Oh - Oh"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "  Dm                      Gm"
+   },
+   {
+    "t": "l",
+    "v": "Subamos a adorar en el monte de Sión,"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "Dm                     A"
+   },
+   {
+    "t": "l",
+    "v": "Es el gozo de toda nación."
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "      Dm"
+   },
+   {
+    "t": "l",
+    "v": "Donde la tristeza es gozo,"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "    Gm"
+   },
+   {
+    "t": "l",
+    "v": "El llanto es alegría."
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "    Dm                    A"
+   },
+   {
+    "t": "l",
+    "v": "Subamos a adorar al gran Rey."
+   }
+  ],
+  "problemas": [
+   [
+    "letra-en-acordes",
+    "   /Dm  Bb  A/"
+   ],
+   [
+    "letra-en-acordes",
+    "  En los montes, en los valles,  Exaltamos al que es digno de"
+   ]
+  ]
+ },
+ {
+  "p": 5036,
+  "titulo": "Vuelvo a casa - G",
+  "nombre": "Vuelvo a casa",
+  "tono": "G",
+  "bpm": null,
+  "bloques": [
+   {
+    "t": "r",
+    "v": "Intro"
+   },
+   {
+    "t": "a",
+    "v": "G C"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "G"
+   },
+   {
+    "t": "l",
+    "v": "Lejos de casa me encontré"
+   },
+   {
+    "t": "a",
+    "v": "C"
+   },
+   {
+    "t": "l",
+    "v": "Sin saber a dónde ir"
+   },
+   {
+    "t": "a",
+    "v": "G"
+   },
+   {
+    "t": "l",
+    "v": "Nada llenó mi corazón"
+   },
+   {
+    "t": "a",
+    "v": "C"
+   },
+   {
+    "t": "l",
+    "v": "Nada sació mi interior"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "Em    C      G   D"
+   },
+   {
+    "t": "l",
+    "v": "Con - vénceme de mi error"
+   },
+   {
+    "t": "a",
+    "v": "Em  C     G     D     C"
+   },
+   {
+    "t": "l",
+    "v": "A - yúdame a volver a Ti"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "G        D"
+   },
+   {
+    "t": "l",
+    "v": "Vuelvo a casa"
+   },
+   {
+    "t": "a",
+    "v": "         Em"
+   },
+   {
+    "t": "l",
+    "v": "Vuelvo a casa"
+   },
+   {
+    "t": "a",
+    "v": "                C"
+   },
+   {
+    "t": "l",
+    "v": "F FA casa de DO Padre"
+   },
+   {
+    "t": "a",
+    "v": "                G"
+   },
+   {
+    "t": "l",
+    "v": "Que me ama y me llama"
+   },
+   {
+    "t": "a",
+    "v": "                 D"
+   },
+   {
+    "t": "l",
+    "v": "Me llamas por mi nombre"
+   },
+   {
+    "t": "a",
+    "v": "                    Em"
+   },
+   {
+    "t": "l",
+    "v": "Aunque conoces mi pasado"
+   },
+   {
+    "t": "a",
+    "v": "            C"
+   },
+   {
+    "t": "l",
+    "v": "Aun así me aceptas"
+   },
+   {
+    "t": "a",
+    "v": "       G"
+   },
+   {
+    "t": "l",
+    "v": "Y tu hijo soy"
+   },
+   {
+    "t": "a",
+    "v": "D      Em     C"
+   },
+   {
+    "t": "l",
+    "v": "Y tu hijo soy"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "G"
+   },
+   {
+    "t": "l",
+    "v": "En mi mayor dolor alcé"
+   },
+   {
+    "t": "a",
+    "v": "C"
+   },
+   {
+    "t": "l",
+    "v": "Mis ojos hacia Ti"
+   },
+   {
+    "t": "a",
+    "v": "G"
+   },
+   {
+    "t": "l",
+    "v": "Con brazos abiertos"
+   },
+   {
+    "t": "a",
+    "v": "       C"
+   },
+   {
+    "t": "l",
+    "v": "Tú esperaste, esperaste por mí"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "Em  C      G   D"
+   },
+   {
+    "t": "l",
+    "v": "Me abrazas con tu perdón"
+   },
+   {
+    "t": "a",
+    "v": "Em  C     G       D   C"
+   },
+   {
+    "t": "l",
+    "v": "Rodeado estoy por tu amor"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Coro"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "G"
+   },
+   {
+    "t": "l",
+    "v": "Perdido estaba y tu amor me encontró"
+   },
+   {
+    "t": "a",
+    "v": "G"
+   },
+   {
+    "t": "l",
+    "v": "De muerte a vida me llamas, me llamas"
+   },
+   {
+    "t": "a",
+    "v": "C            Em       D"
+   },
+   {
+    "t": "l",
+    "v": "Hay fiesta en tu casa, se alegró tu corazón"
+   },
+   {
+    "t": "a",
+    "v": "C      Em             D"
+   },
+   {
+    "t": "l",
+    "v": "Me has vestido de tu amor"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "G"
+   },
+   {
+    "t": "l",
+    "v": "Tú me salvaste"
+   },
+   {
+    "t": "a",
+    "v": "D"
+   },
+   {
+    "t": "l",
+    "v": "Me perdonaste"
+   },
+   {
+    "t": "a",
+    "v": "Em"
+   },
+   {
+    "t": "l",
+    "v": "Oh gracias Cristo"
+   },
+   {
+    "t": "a",
+    "v": "    C"
+   },
+   {
+    "t": "l",
+    "v": "Por tu preciosa sangre"
+   }
+  ],
+  "problemas": [
+   [
+    "letra-en-acordes",
+    "Interludio: G  D  Em  C"
+   ]
+  ]
+ },
+ {
+  "p": 5436,
+  "titulo": "Te daré lo mejor (Simplificada) - E",
+  "nombre": "Te daré lo mejor (Simplificada)",
+  "tono": "E",
+  "bpm": null,
+  "bloques": [
+   {
+    "t": "r",
+    "v": "Intro"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Estrofa 1"
+   },
+   {
+    "t": "a",
+    "v": "E                  A                 E                    B"
+   },
+   {
+    "t": "l",
+    "v": "Traemos hoy ante tu altar nuestras coronas"
+   },
+   {
+    "t": "a",
+    "v": "E                  A             E                     B"
+   },
+   {
+    "t": "l",
+    "v": "Queremos darte lo mejor de nuestras vidas"
+   },
+   {
+    "t": "a",
+    "v": "F#m                        C#m"
+   },
+   {
+    "t": "l",
+    "v": "Te entregaré mi amor entero"
+   },
+   {
+    "t": "a",
+    "v": "A                             B"
+   },
+   {
+    "t": "l",
+    "v": "Los sueños que logre alcanzar"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Coro"
+   },
+   {
+    "t": "a",
+    "v": "           C#m     A            E"
+   },
+   {
+    "t": "l",
+    "v": "Te daré lo mejor de mi vida"
+   },
+   {
+    "t": "a",
+    "v": "           C#m     A           B"
+   },
+   {
+    "t": "l",
+    "v": "Te daré lo mejor cada día"
+   },
+   {
+    "t": "a",
+    "v": "       G#                                     C#m"
+   },
+   {
+    "t": "l",
+    "v": "Será mucho más que una canción"
+   },
+   {
+    "t": "a",
+    "v": "               A                    F#m        B"
+   },
+   {
+    "t": "l",
+    "v": "Mi obediencia es mi mejor adoración"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Instrumental"
+   },
+   {
+    "t": "a",
+    "v": "E  A  E  B  A"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Estrofa 2"
+   },
+   {
+    "t": "a",
+    "v": "E               A                 E                    B"
+   },
+   {
+    "t": "l",
+    "v": "Traemos hoy ante tu altar nuestras coronas"
+   },
+   {
+    "t": "a",
+    "v": "E                  A             E                     B"
+   },
+   {
+    "t": "l",
+    "v": "Queremos darte lo mejor de nuestras vidas"
+   },
+   {
+    "t": "a",
+    "v": "F#m7                C#m"
+   },
+   {
+    "t": "l",
+    "v": "Daremos solo las primicias"
+   },
+   {
+    "t": "a",
+    "v": "A                          B"
+   },
+   {
+    "t": "l",
+    "v": "Pues tú mereces lo mejor"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Coro"
+   },
+   {
+    "t": "l",
+    "v": "… x2"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Interludio"
+   },
+   {
+    "t": "a",
+    "v": "C#m  A  C#m  B"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "F#m7                C#m"
+   },
+   {
+    "t": "l",
+    "v": "Daremos solo las primicias"
+   },
+   {
+    "t": "a",
+    "v": "A                          B"
+   },
+   {
+    "t": "l",
+    "v": "Pues tú mereces lo mejor"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Coro"
+   },
+   {
+    "t": "l",
+    "v": "… x2"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Final"
+   },
+   {
+    "t": "a",
+    "v": " E            Aadd2      Bsus4"
+   },
+   {
+    "t": "l",
+    "v": "///Te daré lo mejor de mí///"
+   },
+   {
+    "t": "a",
+    "v": "C#m7    Bsus4   Aadd2"
+   }
+  ],
+  "problemas": [
+   [
+    "letra-en-acordes",
+    "E  F#m  E  F#m X2"
+   ]
+  ]
+ },
+ {
+  "p": 5546,
+  "titulo": "Mi ser alaba al Señor - F",
+  "nombre": "Mi ser alaba al Señor",
+  "tono": "F",
+  "bpm": null,
+  "bloques": [
+   {
+    "t": "a",
+    "v": "          F      Bb/C          F      C/E      Bb/D"
+   },
+   {
+    "t": "l",
+    "v": "Mi ser Alaba al Señor"
+   },
+   {
+    "t": "l",
+    "v": "Y se goza mi espíritu en Jesucris---to"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "l",
+    "v": "Mi ser Alaba al Señor"
+   },
+   {
+    "t": "a",
+    "v": "                                                C"
+   },
+   {
+    "t": "l",
+    "v": "Y se goza mi espíritu en Dios"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "Bb  A  C/E  C/G  F"
+   },
+   {
+    "t": "l",
+    "v": "Pues sus obras son podero-----oo--sas"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "l",
+    "v": "Con su Espíritu Él me guiará"
+   },
+   {
+    "t": "a",
+    "v": "Bb  A  A  D  F/C"
+   },
+   {
+    "t": "l",
+    "v": "Bondadoso ha sido mi Señor"
+   },
+   {
+    "t": "a",
+    "v": "G  A  D  F/C"
+   },
+   {
+    "t": "l",
+    "v": "Grande es el Señor"
+   },
+   {
+    "t": "a",
+    "v": "  Eb/Bb          C        F"
+   },
+   {
+    "t": "l",
+    "v": "Grande es el Señor"
+   }
+  ],
+  "problemas": [
+   [
+    "acorde-en-letra",
+    " F/C      Bb               D-7         C       G-    F"
+   ]
+  ]
+ },
+ {
+  "p": 5568,
+  "titulo": "Se exalta nuestro Dios - F",
+  "nombre": "Se exalta nuestro Dios",
+  "tono": "F",
+  "bpm": null,
+  "bloques": [],
+  "problemas": [
+   [
+    "sin-contenido",
+    "el título no tiene nada debajo"
+   ]
+  ]
+ },
+ {
+  "p": 5858,
+  "titulo": "Dios de lo imposible - A#m",
+  "nombre": "Dios de lo imposible",
+  "tono": "A#m",
+  "bpm": null,
+  "bloques": [
+   {
+    "t": "l",
+    "v": "Intro: A#m //// F# //// C# //// G#(add4)////"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Verso"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "A#m                      F#"
+   },
+   {
+    "t": "l",
+    "v": "Jesucristo, reinas con poder"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "C#                  G#(add4)"
+   },
+   {
+    "t": "l",
+    "v": "Soberano, victorioso Rey"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "A#m                    F#"
+   },
+   {
+    "t": "l",
+    "v": "Ni la muerte pudo detener"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "C#              G#(add4)"
+   },
+   {
+    "t": "l",
+    "v": "Tu poder para vencer"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Coro"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "C#"
+   },
+   {
+    "t": "l",
+    "v": "Dios de lo imposible"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "l",
+    "v": "Te        adoramos"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "A#m"
+   },
+   {
+    "t": "l",
+    "v": "Eres invencible"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "G#/F"
+   },
+   {
+    "t": "l",
+    "v": "Soberano"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "F#  G#(add4)  A#m  G#(add4)"
+   },
+   {
+    "t": "l",
+    "v": "Tuya es toda la gloria"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "F#              G#(add4)"
+   },
+   {
+    "t": "l",
+    "v": "Tuyo es todo el honor"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Solo"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "l",
+    "v": "D#m //// A#m //// F# //// G#(add4)/// (2x)"
+   }
+  ],
+  "problemas": [
+   [
+    "letra-en-acordes",
+    "G#(Add4)"
+   ]
+  ]
+ },
+ {
+  "p": 6164,
+  "titulo": "Libertad Freedom - Em",
+  "nombre": "Libertad Freedom",
+  "tono": "Em",
+  "bpm": null,
+  "bloques": [
+   {
+    "t": "l",
+    "v": "[Intro]"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Estrofa 1"
+   },
+   {
+    "t": "a",
+    "v": "          Em    D     C"
+   },
+   {
+    "t": "l",
+    "v": "Veo un mover de libertad"
+   },
+   {
+    "t": "a",
+    "v": "       Em   D        C"
+   },
+   {
+    "t": "l",
+    "v": "Que arropa las naciones"
+   },
+   {
+    "t": "a",
+    "v": "        Em        D           C"
+   },
+   {
+    "t": "l",
+    "v": "Es un sonido que viene del cielo"
+   },
+   {
+    "t": "a",
+    "v": "  Em   D  C"
+   },
+   {
+    "t": "l",
+    "v": "Freedom"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Estrofa 2"
+   },
+   {
+    "t": "a",
+    "v": "    Em     D       C"
+   },
+   {
+    "t": "l",
+    "v": "Se rompen las cadenas"
+   },
+   {
+    "t": "a",
+    "v": "     Em            D    C"
+   },
+   {
+    "t": "l",
+    "v": "La opresión tiene que caer"
+   },
+   {
+    "t": "a",
+    "v": "    Em     D         C"
+   },
+   {
+    "t": "l",
+    "v": "Declaramos en su nombre"
+   },
+   {
+    "t": "a",
+    "v": "  Em   D  C"
+   },
+   {
+    "t": "l",
+    "v": "Freedom x 2"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Coro"
+   },
+   {
+    "t": "a",
+    "v": "         Em           D        C"
+   },
+   {
+    "t": "l",
+    "v": "There is power in the name of Jesus"
+   },
+   {
+    "t": "a",
+    "v": "         Em             D"
+   },
+   {
+    "t": "l",
+    "v": "There is power in the blood"
+   },
+   {
+    "t": "a",
+    "v": "        C"
+   },
+   {
+    "t": "l",
+    "v": "Of the Lamb"
+   },
+   {
+    "t": "a",
+    "v": "       Em        D           C"
+   },
+   {
+    "t": "l",
+    "v": "Hay poder en el sangre de Cristo"
+   },
+   {
+    "t": "a",
+    "v": "       Em        D           C"
+   },
+   {
+    "t": "l",
+    "v": "Hay poder en el nombre del Señor"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Instrumental"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Estrofa 3"
+   },
+   {
+    "t": "a",
+    "v": "      Em        D      C"
+   },
+   {
+    "t": "l",
+    "v": "Veo milagros y maravillas"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "a",
+    "v": "    Em         D       C"
+   },
+   {
+    "t": "l",
+    "v": "En medio de la tempestad"
+   },
+   {
+    "t": "a",
+    "v": "       Em         D        C"
+   },
+   {
+    "t": "l",
+    "v": "Generaciones se unen y cantan"
+   },
+   {
+    "t": "a",
+    "v": "  Em   D  C"
+   },
+   {
+    "t": "l",
+    "v": "Freedom"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Estrofa 4"
+   },
+   {
+    "t": "a",
+    "v": "     Em      D     C"
+   },
+   {
+    "t": "l",
+    "v": "Seguiremos anunciando"
+   },
+   {
+    "t": "a",
+    "v": "    Em          D      C"
+   },
+   {
+    "t": "l",
+    "v": "Que cerca su venida está"
+   },
+   {
+    "t": "a",
+    "v": "    Em     D         C"
+   },
+   {
+    "t": "l",
+    "v": "Que venga lo que venga"
+   },
+   {
+    "t": "a",
+    "v": "  Em   D  C"
+   },
+   {
+    "t": "l",
+    "v": "Freedom x 4"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Coro"
+   },
+   {
+    "t": "l",
+    "v": "… x 2"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Instrumental"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Puente"
+   },
+   {
+    "t": "a",
+    "v": "   C                 D"
+   },
+   {
+    "t": "l",
+    "v": "Escucho el sonido de avivamiento"
+   },
+   {
+    "t": "a",
+    "v": "B             Em"
+   },
+   {
+    "t": "l",
+    "v": "Veo corazones rendidos a tus pies"
+   },
+   {
+    "t": "a",
+    "v": "C                       D"
+   },
+   {
+    "t": "l",
+    "v": "Tú eres la respuesta a cada llanto"
+   },
+   {
+    "t": "a",
+    "v": "B             Em"
+   },
+   {
+    "t": "l",
+    "v": "Clamamos libertad"
+   },
+   {
+    "t": "v"
+   },
+   {
+    "t": "r",
+    "v": "Estribillo"
+   },
+   {
+    "t": "a",
+    "v": "C     D"
+   },
+   {
+    "t": "l",
+    "v": "///Oh Oh Oh Oh"
+   },
+   {
+    "t": "a",
+    "v": "C     D"
+   },
+   {
+    "t": "l",
+    "v": "Oh Oh Oh"
+   },
+   {
+    "t": "a",
+    "v": "C     D"
+   },
+   {
+    "t": "l",
+    "v": "Oh Oh Oh Oh"
+   },
+   {
+    "t": "a",
+    "v": "B             Em"
+   },
+   {
+    "t": "l",
+    "v": "Clamamos libertad///"
+   }
+  ],
+  "problemas": [
+   [
+    "letra-en-acordes",
+    "Em  D  C x 4"
+   ],
+   [
+    "letra-en-acordes",
+    "Em  D  C x 4"
+   ],
+   [
+    "letra-en-acordes",
+    "Em  D  C x 4"
+   ]
+  ]
+ }
+]

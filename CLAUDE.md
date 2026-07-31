@@ -1,0 +1,277 @@
+# Cancionero — contexto del proyecto
+
+Este archivo se llama `CLAUDE.md` a propósito: Claude Code lo lee solo al abrir
+la carpeta, sin que haya que pegarlo en cada conversación. Está escrito para
+que cualquiera —o cualquier Claude— pueda retomar el proyecto sin haber estado
+en las conversaciones anteriores.
+
+---
+
+## 1. Qué es esto y para quién
+
+Cancionero web para un grupo de música de iglesia. Se usa **en el celular,
+arriba del escenario, durante la reunión**. Lo abren varios músicos a la vez y
+todos tienen que ver la misma lista de canciones.
+
+Reemplaza un `.docx` de 133 canciones que se venía manteniendo a mano y se
+sigue actualizando cada tanto.
+
+### Restricciones que mandan sobre cualquier otra consideración
+
+- **Se lee con una guitarra en la mano, de reojo, con poca luz.** Por eso fondo
+  oscuro, tipografía grande y ajustable, y nada que requiera precisión con el
+  dedo.
+- **Los acordes tienen que caer sobre la sílaba exacta.** Todo el cuerpo de la
+  canción se dibuja con tipografía monoespaciada y `white-space: pre`. **Los
+  espacios son contenido, no formato**: cualquier cosa que los normalice,
+  recorte o colapse rompe la app.
+- **El wifi de la iglesia se cae.** El catálogo va dentro del HTML, así que la
+  app abre y funciona sin internet. Solo la lista y las ediciones necesitan red.
+- **Varios a la vez.** La lista de la reunión es compartida y en tiempo real.
+
+---
+
+## 2. Arquitectura
+
+### Catálogo en dos capas
+
+| Capa | Dónde vive | Se modifica |
+|---|---|---|
+| Base: 96 canciones del `.docx` | Dentro del HTML, como JSON | Nunca en runtime |
+| Cambios: ediciones, nuevas, borradas | Firestore | Desde la app |
+
+Al abrir, la app suma las dos (`recalcular()`). La capa base intacta es la red
+de seguridad: si la capa de cambios se corrompe, se borra y vuelve el
+cancionero original.
+
+### Firestore
+
+```
+cancionero/reunion    ->  { ids: [...], porQuien, cuando }
+canciones/{id}        ->  { nombre, tono, bpm, bloques, nueva, borrada, cuando }
+```
+
+**Una canción por documento, a propósito.** Si dos personas editan canciones
+distintas al mismo tiempo, escriben en documentos distintos y no pueden
+pisarse. La primera versión usaba un documento único con toda la capa de
+cambios y el último en guardar borraba el trabajo del otro.
+
+Los borrados **marcan** `borrada: true`, no eliminan el documento: si se
+eliminara, los otros dispositivos no tendrían cómo enterarse.
+
+`onSnapshot` avisa al instante. **No hay sondeo periódico**; si aparece un
+`setInterval` consultando datos, es un retroceso.
+
+### Formato de una canción
+
+```json
+{
+  "id": "glorioso-dia-g",
+  "nombre": "Glorioso día",
+  "tono": "G",
+  "bpm": 72,
+  "bloques": [
+    {"t": "r", "v": "Intro"},
+    {"t": "a", "v": "        D"},
+    {"t": "l", "v": "Mi vergüenza me sepultó"},
+    {"t": "v"}
+  ]
+}
+```
+
+`t` es el tipo de línea y sale directo de los estilos de Word:
+
+| `t` | Qué es | Estilo Word | Color |
+|---|---|---|---|
+| `r` | Rótulo de sección | Subtítulo | Gris `BFBFBF`, cursiva |
+| `a` | Línea de acordes | Estilo1 | Azul `00B0F0` |
+| `l` | Línea de letra | Normal | Negro / blanco |
+| `v` | Línea en blanco | — | — |
+
+`tono` y `bpm` pueden ser `null`. Sin tono, la app **apaga el transporte** en
+vez de suponer uno.
+
+---
+
+## 3. Guía de formato del cancionero (reglas del `.docx`)
+
+Fuente: Arial Nova Cond, 12 pt. Cada canción empieza en página nueva. Orden:
+título → rótulo → acordes/letra → línea en blanco entre secciones. Los acordes
+van siempre en línea propia, arriba de la letra.
+
+**Título**: `NOMBRE - Tono - BPM`, en mayúsculas. El nombre alternativo o autor
+entre paréntesis se conserva: `Alaba (Evan Craft)`.
+
+**Rótulos**: mayúscula inicial, resto minúscula, sin `:`, sin corchetes ni
+barras (`[Coro]`, `/Coro/` → `Coro`). Repetición → `(xN)`: `Puente (x2)`.
+Aclaración pegada a la sección se fusiona en minúscula:
+`Verso 2 (igual a verso 1)`.
+
+**Acordes**: nunca entre paréntesis, salvo extensiones del acorde
+(`G#(add4)`). Compás entre barras: `| E | B | C#m | A |`. Varios acordes en un
+compás, juntos con espacios: `| Bm  D | G  A |`. Secuencia sin compás, con
+espacios y sin barras: `C  G  Am  F`. **Sin guiones**: `D - Bm` → `D  Bm`.
+
+**Aclaraciones de ejecución**: nota gris, entre paréntesis, en línea propia:
+`(Mantenido durante 4 compases)`, `(Drop)`.
+
+**Sección que se repite**: rótulo gris + `…` debajo, también gris.
+
+---
+
+## 4. Decisiones ya tomadas — no revertir sin preguntar
+
+Cada una costó una conversación. Si algo parece una mejora obvia, probablemente
+ya se discutió:
+
+- **El BPM sale de los tempos a los que toca el grupo**, no de la web ni de la
+  grabación oficial, que difieren. Si falta, se deja vacío. **No se completa
+  buscándolo.**
+- **No se agrega el artista al nombre**, salvo para distinguir dos canciones
+  que se llaman igual.
+- **El transporte es por dispositivo y no se guarda**: cada vez que se abre una
+  canción arranca en su tono original. Fue una decisión explícita, no un olvido.
+- **El catálogo no se edita a mano.** Sale del `.docx` vía `extraer.py`. Editar
+  `catalogo.json` directo se pierde en el próximo build.
+- **El nombre del archivo lleva número de versión y la versión se ve en el
+  encabezado de la app.** Sin eso es imposible saber si un celular está
+  abriendo un archivo viejo cacheado; ya pasó tres veces.
+- **Dos canciones con el mismo nombre y distinto tono son versiones a
+  propósito** (`Tómalo` en B y D, `Agradecido Estoy` en G y D). No unificar.
+- **El catálogo va dentro del HTML, no en la base**, para que abra sin internet
+  y el uso de Firestore quede en el plan gratuito.
+
+---
+
+## 5. Flujo de trabajo
+
+```bash
+unzip -o Cancionero_2026-06.docx -d desarmado/   # solo si cambió el .docx
+python3 extraer.py                               # .docx  -> catalogo.json
+python3 build.py                                 # plantilla + catálogo -> index.html
+```
+
+**Se edita `plantilla.html`, nunca el HTML generado.**
+
+`build.py` no genera el archivo si alguna de estas verificaciones falla:
+
+1. No quedan marcadores `__CATALOGO__` / `__VERSION__` sin reemplazar.
+2. El JSON incrustado se vuelve a parsear con la misma cantidad de canciones.
+3. Todos los `id` que busca el JavaScript existen en el HTML.
+4. Las funciones clave están en el `<script>` y no dentro del `<style>`.
+5. `localStorage` solo se usa para `cancionero:ajustes`.
+6. `probar_app.js` ejecuta la app en Node con un DOM simulado y recorre 14
+   caminos de uso sin errores.
+
+Cada verificación existe porque un error de esa clase ya se escapó una vez.
+
+### Para probar en el navegador
+
+**No abrir el HTML con doble clic.** Con `file://` el navegador bloquea la
+carga de módulos desde `gstatic.com` y Firebase no inicializa; se ve "sin
+conexión" y parece un problema de configuración.
+
+```bash
+python3 -m http.server 8000
+```
+
+---
+
+## 6. Trampas conocidas
+
+- **`file://` rompe Firebase.** Ver arriba.
+- **Falta `<meta charset="utf-8">` y los acentos se rompen** al abrir el
+  archivo suelto en Chrome. Tiene que ser lo primero del documento.
+- **Un `id` mal escrito devuelve `null` y corta la función entera en silencio.**
+  Pasó con `lector-pie` vs `l-pie`: rompía el modo reunión sin dar error hasta
+  esa pantalla. Por eso la verificación 3.
+- **Anclar un parche en un comentario que existe en el CSS y en el JS.** Pasó:
+  las funciones terminaron dentro del `<style>`, el navegador las ignoró y no
+  hubo error de sintaxis. Por eso la verificación 4.
+- **El detector de acordes tiene que partir los `/` antes de validar.** `D/F#`
+  son dos notas; validando el token entero, la `F` del bajo parece basura.
+- **Al transportar hay que conservar las columnas.** Si `G` pasa a `A#` y ocupa
+  un carácter más, se come un espacio de al lado en vez de correr toda la línea
+  y desalinear la letra.
+
+---
+
+## 7. Estado actual
+
+**96 canciones en la app, de 133 en el `.docx`.** 37 quedaron afuera, con el
+motivo de cada una en `pendientes.json`:
+
+| Motivo | Canciones |
+|---|---|
+| Nunca pasaron por el formateo: acordes y letra comparten el estilo `HTMLconformatoprevio` | 10 |
+| Líneas de acordes con estilo de letra (`Normal`) | 9 |
+| Letra o anotaciones dentro de la línea de acordes (`Estilo1`) | 15 |
+| Título sin nada debajo en el `.docx` | 3 |
+
+Dentro de las 96 que sí entraron hay ~40 líneas que se ven en el color
+equivocado: rótulos que quedaron como letra (`[Verso 1]`), acordes en cifrado
+latino (`DO RE MI`) y acordes con barras de repetición (`//Em - D - G - C //`).
+No pierden información; salen en blanco en vez de gris o azul.
+
+### Pendiente concreto: notación de 9 canciones
+
+| Canción | Línea | Qué corregir |
+|---|---|---|
+| Seas Exaltado oh Dios | `A   Fm#  Bm` | `Fm#` → `F#m` |
+| Cristo te exalto | `Cm#7   F#m` | `Cm#7` → `C#m7` |
+| Tu ere el lugar | `A7   D   Fm#` | `Fm#` → `F#m` |
+| Mi ser alaba al Señor | `Bb   D-7   C   G-   F` | `D-7` → `Dm7`, `G-` → `Gm` |
+| El Dios que adoramos | `G  - D  - Em  - C  - D   x2` | guiones fuera, `x2` → `(x2)` |
+| Amigo en lugares altos | `G C, G C, G C, G C` | comas fuera |
+| Digno de alabar | `Bm / D  / \| G  / A  / \|` | barras de ritmo fuera (17 líneas) |
+| Digno de Adorar | 16 líneas | solo falta cambiarles el estilo |
+| Quiero conocer a Jesús (Jeshua) | `D    G` | solo falta cambiarles el estilo |
+
+**Caso sin resolver**, en `Digno de alabar`:
+
+```
+   D  / F#       G        D  / A   A
+```
+
+`D  / F#` puede ser **D con bajo en F#** (`D/F#`) o **D, golpe, F#**, siguiendo
+el patrón de la línea de arriba donde la barra es claramente un tiempo. Suenan
+distinto. **Requiere escuchar la canción o mirar el original: no se decide por
+regla.**
+
+### Falta configurar
+
+`FIREBASE_CONFIG` en `plantilla.html` está vacío. Hasta completarlo, la app
+funciona como cancionero local y el indicador dice "sin configurar". Los pasos
+están en `README.md`.
+
+---
+
+## 8. Cómo trabajar en este proyecto
+
+Convenciones de código:
+
+- Comentarios **en español**, explicando qué hace, para qué sirve y **por qué**,
+  pensados para releerlos en unos meses.
+- Nombres y sintaxis según el lenguaje.
+- Comentar cada sección a modo de ayuda memoria.
+
+Forma de trabajo esperada:
+
+- **No inventar datos.** Si falta un dato, marcarlo con `[COMPLETAR]` o
+  `[VERIFICAR]` en vez de rellenarlo con una plantilla o una suposición. Aplica
+  fuerte a los BPM y a los tonos ausentes.
+- **Auditar la salida completa antes de mostrarla**, contra el criterio que se
+  acordó. No hacer que el usuario encuentre el mismo tipo de error ya corregido.
+- **Lo que requiere criterio caso por caso no se convierte en un script de
+  reglas fijas.** Las 37 canciones pendientes se revisan una por una, aunque
+  sea más lento. Ya se intentó resolverlas por regla y por eso hay ~40 líneas
+  mal clasificadas dentro de las 96 "limpias".
+- **En tareas con varias decisiones, resolver de a una**: proponer opciones,
+  mostrar el caso real, esperar confirmación.
+- **Cuando haya que guiar una serie de pasos, dar UN paso por vez.** Se puede
+  dar un resumen breve de la secuencia completa al principio, pero después se
+  entrega un solo paso y se espera la confirmación antes de seguir al
+  siguiente. Si el usuario avisa que ya hizo algunos pasos, se saltean sin
+  repetirlos.
+- Respuestas sin relleno. Tablas cuando ordenan mejor los datos. Código
+  completo salvo que se pida una parte.

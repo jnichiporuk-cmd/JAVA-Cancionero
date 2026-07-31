@@ -1,0 +1,1342 @@
+<meta charset="utf-8">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0E1116">
+<title>Cancionero</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<!--
+  CANCIONERO — app de escenario
+  ------------------------------------------------------------------
+  Paleta y tipografía heredadas de la guía de formato del cancionero:
+  acordes en 00B0F0, rótulos en gris, letra en blanco. Fondo oscuro
+  porque se lee en el celular arriba del escenario, con luz baja.
+-->
+<style>
+/* ===================================================================
+   1. TOKENS
+   Un solo lugar para colores y medidas. El cian 00B0F0 es el mismo
+   hex que usan los acordes en el .docx: la app y el papel se ven
+   igual. El ámbar es sólo para "organización" (lista de la reunión),
+   nunca para música. Así el color dice qué tipo de cosa es.
+   =================================================================== */
+:root{
+  --fondo:#0E1116;
+  --superficie:#171C24;
+  --superficie-alta:#1F2632;
+  --borde:#2A3240;
+  --letra:#E8EDF2;
+  --acordes:#00B0F0;
+  --rotulo:#BFBFBF;
+  --tenue:#7C8794;
+  --lista:#F2A33C;
+  --peligro:#FF6B6B;
+
+  /* Condensada para la interfaz: entra más texto en pantallas angostas.
+     Intenta primero la fuente del cancionero, después alternativas. */
+  --ui:"Arial Nova Cond","Arial Narrow","Roboto Condensed","Helvetica Neue Condensed",system-ui,sans-serif;
+  /* Monoespaciada para el cuerpo de la canción: es lo único que
+     mantiene los acordes alineados sobre la sílaba correcta. */
+  --mono:ui-monospace,"SF Mono","Roboto Mono","DejaVu Sans Mono",Menlo,Consolas,monospace;
+}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:var(--fondo);color:var(--letra);
+  font-family:var(--ui);font-size:16px;line-height:1.35;
+  overscroll-behavior:none;
+}
+button{font-family:inherit;font-size:inherit;color:inherit;background:none;border:0;cursor:pointer}
+input{font-family:inherit;font-size:inherit}
+
+/* ===================================================================
+   2. ENCABEZADO Y ESTADO DE SINCRONIZACIÓN
+   El punto de la derecha es el único indicador de que la lista es
+   compartida: verde = al día, ámbar = escribiendo, rojo = sin guardar.
+   =================================================================== */
+.tope{
+  position:sticky;top:0;z-index:20;background:var(--fondo);
+  border-bottom:1px solid var(--borde);
+}
+.tope-fila{display:flex;align-items:center;gap:10px;padding:12px 14px 8px}
+.ver{
+  margin-left:6px;padding:1px 5px;border-radius:4px;
+  background:var(--superficie-alta);color:var(--tenue);
+  font-size:10px;letter-spacing:.06em;font-weight:700;
+}
+.marca{
+  font-size:13px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--tenue);flex:1;
+}
+.expandir{
+  flex:none;width:30px;height:30px;border-radius:7px;
+  border:1px solid var(--borde);color:var(--tenue);font-size:14px;
+  display:flex;align-items:center;justify-content:center;
+}
+.expandir.activo{color:var(--acordes);border-color:var(--acordes)}
+.sync{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--tenue)}
+.punto{width:8px;height:8px;border-radius:50%;background:var(--tenue);flex:none}
+.punto.ok{background:#3DD68C}
+.punto.escribiendo{background:var(--lista)}
+.punto.error{background:var(--peligro)}
+
+/* Pestañas: sólo dos, no hace falta más navegación */
+.pestanas{display:flex;gap:0;padding:0 14px}
+.pestana{
+  padding:9px 0;margin-right:22px;font-size:15px;font-weight:600;
+  color:var(--tenue);border-bottom:2px solid transparent;
+}
+.pestana.activa{color:var(--letra);border-bottom-color:var(--acordes)}
+.pestana .cuenta{
+  display:inline-block;min-width:19px;padding:0 5px;margin-left:5px;
+  font-size:12px;line-height:19px;text-align:center;
+  border-radius:10px;background:var(--lista);color:#12161C;font-weight:700;
+}
+
+/* Buscador */
+.buscador{padding:10px 14px 12px}
+.buscador input{
+  width:100%;padding:11px 13px;border-radius:9px;
+  background:var(--superficie);border:1px solid var(--borde);
+  color:var(--letra);outline:none;
+}
+.buscador input:focus{border-color:var(--acordes)}
+.buscador input::placeholder{color:var(--tenue)}
+
+/* ===================================================================
+   3. LISTA DE CANCIONES DEL CATÁLOGO
+   Cada fila: nombre + tono + bpm, y a la derecha el botón para
+   sumarla a la reunión. Tocar el nombre abre la canción.
+   =================================================================== */
+.contenido{padding:0 0 90px}
+.fila{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 14px;border-bottom:1px solid var(--borde);
+}
+.fila-txt{flex:1;min-width:0;text-align:left}
+.fila-nombre{
+  font-size:16px;font-weight:600;text-transform:uppercase;letter-spacing:.02em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.fila-meta{font-size:12px;color:var(--tenue);margin-top:2px}
+.fila-meta .tono{color:var(--acordes);font-weight:700}
+.sumar{
+  flex:none;width:34px;height:34px;border-radius:50%;
+  border:1px solid var(--borde);font-size:20px;line-height:1;color:var(--tenue);
+}
+.sumar.puesta{border-color:var(--lista);color:var(--lista)}
+
+/* ===================================================================
+   4. REUNIÓN (armador de lista)
+   Reordenar con flechas en vez de arrastrar: en el celular, arrastrar
+   dentro de una lista con scroll falla seguido. Las flechas no fallan.
+   =================================================================== */
+.orden{
+  flex:none;width:26px;text-align:center;
+  font-family:var(--mono);font-size:13px;font-weight:700;color:var(--lista);
+}
+.mover{display:flex;flex-direction:column;gap:2px;flex:none}
+.mover button{
+  width:30px;height:22px;border:1px solid var(--borde);border-radius:5px;
+  font-size:10px;color:var(--tenue);display:flex;align-items:center;justify-content:center;
+}
+.mover button:disabled{opacity:.25}
+.quitar{flex:none;width:30px;height:30px;color:var(--tenue);font-size:17px}
+
+.separador{
+  padding:9px 14px 5px;font-size:11px;font-weight:700;
+  letter-spacing:.2em;color:var(--tenue);
+  background:var(--fondo);border-bottom:1px solid var(--borde);
+  position:sticky;top:0;z-index:5;
+}
+.vacio{padding:44px 26px;text-align:center;color:var(--tenue)}
+.vacio strong{display:block;color:var(--letra);font-size:17px;margin-bottom:7px;font-weight:600}
+
+.pie-reunion{
+  position:fixed;bottom:0;left:0;right:0;z-index:15;
+  display:flex;gap:9px;padding:11px 14px 15px;
+  background:linear-gradient(to top,var(--fondo) 65%,transparent);
+}
+.btn{
+  flex:1;padding:13px;border-radius:9px;font-weight:700;font-size:15px;
+  text-align:center;border:1px solid var(--borde);color:var(--letra);
+}
+.btn-fuerte{background:var(--acordes);color:#08121A;border-color:var(--acordes)}
+.btn-suave{flex:none;padding:13px 15px;color:var(--tenue)}
+
+/* Aviso del catálogo de prueba. Se borra junto con los datos falsos. */
+.aviso{
+  margin:12px 14px;padding:10px 12px;border-radius:8px;
+  background:rgba(242,163,60,.1);border:1px solid rgba(242,163,60,.35);
+  color:var(--lista);font-size:13px;line-height:1.4;
+}
+
+/* ===================================================================
+   5. LECTOR DE CANCIÓN
+   Pantalla completa. En modo reunión aparece arriba el riel numerado
+   con las canciones de la lista, que es el mapa de por dónde vamos.
+   =================================================================== */
+.lector{
+  position:fixed;inset:0;z-index:40;background:var(--fondo);
+  display:none;flex-direction:column;
+}
+.lector.abierto{display:flex}
+
+.lector-tope{border-bottom:1px solid var(--borde);flex:none}
+.lector-barra{display:flex;align-items:center;gap:10px;padding:11px 12px}
+.cerrar{flex:none;width:32px;height:32px;font-size:20px;color:var(--tenue)}
+.lector-tit{flex:1;min-width:0}
+.lector-nombre{
+  font-size:17px;font-weight:700;text-transform:uppercase;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.lector-meta{font-size:12px;color:var(--tenue);margin-top:1px}
+.lector-meta b{color:var(--acordes)}
+
+/* Controles de tamaño y transporte */
+.ctrl{display:flex;gap:4px;flex:none}
+.ctrl button{
+  width:28px;height:31px;border:1px solid var(--borde);border-radius:7px;
+  font-size:13px;font-weight:700;color:var(--tenue);
+  display:flex;align-items:center;justify-content:center;
+}
+.ctrl button.on{color:var(--acordes);border-color:var(--acordes)}
+
+/* Riel de la reunión: sólo visible cuando entrás por "Empezar" */
+.riel{display:none;gap:6px;padding:0 12px 10px;overflow-x:auto;scrollbar-width:none}
+.riel::-webkit-scrollbar{display:none}
+.riel.visible{display:flex}
+.riel button{
+  flex:none;width:27px;height:27px;border-radius:50%;
+  border:1px solid var(--borde);font-family:var(--mono);font-size:12px;
+  color:var(--tenue);
+}
+.riel button.aqui{background:var(--lista);border-color:var(--lista);color:#12161C;font-weight:700}
+.riel button.pasada{opacity:.4}
+
+/* Cuerpo de la canción.
+   pre-wrap + monoespaciada = los acordes caen sobre la sílaba justa.
+   Si una línea es más ancha que la pantalla, se puede scrollear al
+   costado en vez de romper la alineación con un salto de línea. */
+.cuerpo{flex:1;overflow-y:auto;padding:16px 14px 120px}
+.bloque{font-family:var(--mono);white-space:pre;margin:0}
+.b-acordes{color:var(--acordes)}
+.b-letra{color:var(--letra)}
+.b-rotulo{
+  font-family:var(--ui);font-style:italic;color:var(--rotulo);
+  white-space:normal;margin:15px 0 4px;font-size:.95em;
+}
+.bloque:first-child.b-rotulo{margin-top:0}
+.b-vacio{height:.8em}
+.scrollx{overflow-x:auto;scrollbar-width:none}
+.scrollx::-webkit-scrollbar{display:none}
+
+/* Paso anterior / siguiente en modo reunión */
+.lector-pie{
+  position:absolute;bottom:0;left:0;right:0;
+  display:none;gap:9px;padding:11px 14px 16px;
+  background:linear-gradient(to top,var(--fondo) 65%,transparent);
+}
+.lector-pie.visible{display:flex}
+.lector-pie .btn:disabled{opacity:.3}
+
+/* ===================================================================
+   EDITOR Y EXPORTACIÓN
+   Reusan la caja del lector (.lector) para no duplicar la lógica de
+   pantalla completa; sólo cambia el contenido.
+   =================================================================== */
+.btn-guardar{
+  flex:none;padding:8px 14px;border-radius:8px;font-weight:700;font-size:14px;
+  background:var(--acordes);color:#08121A;
+}
+.btn-ancho{width:100%;padding:13px;margin-top:12px}
+.ed-cuerpo{flex:1;overflow-y:auto;padding:14px 14px 40px}
+.ed-campos label{display:block;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--tenue);margin-bottom:11px}
+.ed-campos input{
+  display:block;width:100%;margin-top:5px;padding:10px 12px;border-radius:8px;
+  background:var(--superficie);border:1px solid var(--borde);color:var(--letra);
+  font-size:16px;outline:none;
+}
+.ed-campos input:focus{border-color:var(--acordes)}
+.ed-fila2{display:flex;gap:10px}
+.ed-fila2 label{flex:1}
+.ed-ayuda{
+  padding:9px 11px;margin-bottom:10px;border-radius:8px;font-size:12.5px;
+  line-height:1.45;background:var(--superficie);color:var(--tenue);
+}
+.ed-ayuda b{color:var(--acordes);font-family:var(--mono)}
+#ed-cuerpo,#ex-texto{
+  width:100%;min-height:210px;padding:11px;border-radius:8px;
+  background:var(--superficie);border:1px solid var(--borde);color:var(--letra);
+  font-family:var(--mono);font-size:13px;line-height:1.5;
+  white-space:pre;overflow-wrap:normal;outline:none;resize:vertical;
+}
+#ed-cuerpo:focus{border-color:var(--acordes)}
+.ed-rotulo-previa{
+  margin:16px 0 7px;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--tenue);
+}
+.ed-previa{
+  padding:11px;border-radius:8px;border:1px dashed var(--borde);
+  font-size:14px;min-height:60px;
+}
+.btn-borrar{
+  display:block;width:100%;margin-top:22px;padding:12px;border-radius:8px;
+  border:1px solid var(--peligro);color:var(--peligro);font-size:14px;
+}
+
+/* Fila de acciones arriba de la lista de canciones */
+.acciones{display:flex;gap:8px;padding:0 14px 12px}
+.acciones button{
+  flex:1;padding:10px;border-radius:8px;border:1px solid var(--borde);
+  font-size:14px;font-weight:600;color:var(--letra);
+}
+.acciones .exportar{color:var(--lista);border-color:var(--lista)}
+
+/* Cartel de aviso momentáneo */
+.aviso-flotante{
+  position:fixed;left:50%;bottom:78px;transform:translate(-50%,14px);
+  z-index:60;padding:9px 15px;border-radius:20px;
+  background:var(--superficie-alta);border:1px solid var(--borde);
+  font-size:13px;opacity:0;pointer-events:none;transition:.22s;
+}
+.aviso-flotante.visible{opacity:1;transform:translate(-50%,0)}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+
+<!-- ===================================================================
+     ESTRUCTURA
+     =================================================================== -->
+<div class="tope">
+  <div class="tope-fila">
+    <div class="marca">Cancionero <span class="ver">__VERSION__</span></div>
+    <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
+    <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
+  </div>
+  <div class="pestanas">
+    <button class="pestana activa" id="tab-canciones">Canciones</button>
+    <button class="pestana" id="tab-reunion">Reunión<span class="cuenta" id="cuenta" style="display:none">0</span></button>
+  </div>
+  <div class="buscador" id="caja-buscador">
+    <input id="buscar" type="search" placeholder="Buscar por nombre o tono" autocomplete="off">
+  </div>
+</div>
+
+<div class="contenido" id="contenido"></div>
+<div class="pie-reunion" id="pie" style="display:none"></div>
+
+<!-- Lector -->
+<div class="lector" id="lector">
+  <div class="lector-tope">
+    <div class="lector-barra">
+      <button class="cerrar" id="cerrar">✕</button>
+      <div class="lector-tit">
+        <div class="lector-nombre" id="l-nombre"></div>
+        <div class="lector-meta" id="l-meta"></div>
+      </div>
+      <div class="ctrl">
+        <button id="menos-t" title="Bajar medio tono">♭</button>
+        <button id="mas-t" title="Subir medio tono">♯</button>
+        <button id="menos-a" title="Letra más chica">A−</button>
+        <button id="mas-a" title="Letra más grande">A+</button>
+        <button id="editar" title="Editar la canción">✎</button>
+      </div>
+    </div>
+    <div class="riel" id="riel"></div>
+  </div>
+  <div class="cuerpo" id="cuerpo"></div>
+  <div class="lector-pie" id="l-pie">
+    <button class="btn" id="anterior">← Anterior</button>
+    <button class="btn btn-fuerte" id="siguiente">Siguiente →</button>
+  </div>
+</div>
+
+<!-- Editor de canción -->
+<div class="lector" id="editor">
+  <div class="lector-tope">
+    <div class="lector-barra">
+      <button class="cerrar" id="ed-cancelar">✕</button>
+      <div class="lector-tit"><div class="lector-nombre" id="ed-titulo">Editar</div></div>
+      <button class="btn-guardar" id="ed-guardar">Guardar</button>
+    </div>
+  </div>
+  <div class="ed-cuerpo">
+    <div class="ed-campos">
+      <label>Nombre<input id="ed-nombre" type="text" autocomplete="off"></label>
+      <div class="ed-fila2">
+        <label>Tono<input id="ed-tono" type="text" placeholder="G, Bm…" autocomplete="off"></label>
+        <label>BPM<input id="ed-bpm" type="number" placeholder="—"></label>
+      </div>
+    </div>
+
+    <div class="ed-ayuda">
+      Una línea por renglón. Los acordes se reconocen solos.
+      Para forzar el tipo, empezá la línea con:
+      <b>:</b> rótulo · <b>&gt;</b> acordes · <b>.</b> letra
+    </div>
+
+    <textarea id="ed-cuerpo" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea>
+
+    <div class="ed-rotulo-previa">Vista previa</div>
+    <div class="ed-previa" id="ed-previa"></div>
+
+    <button class="btn-borrar" id="ed-borrar">Borrar esta canción del cancionero</button>
+  </div>
+</div>
+
+<!-- Exportar los cambios -->
+<div class="lector" id="exportar">
+  <div class="lector-tope">
+    <div class="lector-barra">
+      <button class="cerrar" id="ex-cerrar">✕</button>
+      <div class="lector-tit"><div class="lector-nombre">Exportar cambios</div>
+      <div class="lector-meta" id="ex-meta"></div></div>
+    </div>
+  </div>
+  <div class="ed-cuerpo">
+    <div class="ed-ayuda" id="ex-ayuda"></div>
+    <textarea id="ex-texto" spellcheck="false" readonly></textarea>
+    <button class="btn-guardar btn-ancho" id="ex-copiar">Copiar todo</button>
+  </div>
+</div>
+
+<div class="aviso-flotante" id="flotante"></div>
+
+
+<script type="application/json" id="datos-catalogo">__CATALOGO__</script>
+
+<script>
+/* ===================================================================
+   6. CATÁLOGO
+   Se inyecta desde el .docx en el paso de armado (build.py). No se
+   escribe a mano: cada vez que agregás canciones al cancionero, se
+   vuelve a generar.
+   Formato de cada canción:
+     id      → identificador estable (se usa en la lista compartida)
+     nombre  → nombre sin el tono ni el bpm
+     tono    → tono original, o null si el título no lo trae
+     bpm     → número, o null si no está
+     bloques → los párrafos de la canción, en orden, tal cual el .docx:
+                 r = rótulo de sección (gris cursiva)
+                 a = línea de acordes  (cian, se transporta)
+                 l = línea de letra    (blanco, no se toca)
+                 v = línea en blanco
+   =================================================================== */
+/* Capa base: las canciones que vienen del .docx. No se modifica nunca.
+   Encima se aplica la capa de cambios (ediciones, nuevas y borradas), que
+   vive en almacenamiento compartido. El catálogo efectivo es la suma de
+   las dos, y es lo que ve la app. */
+const CATALOGO_BASE = JSON.parse(document.getElementById("datos-catalogo").textContent);
+let CATALOGO = [];
+
+/* Índice por id: buscar una canción de la lista sin recorrer todo */
+let PORID = {};
+
+/* Rearma el catálogo efectivo. Se llama al arrancar y cada vez que cambia
+   la capa de cambios (propia o traída de otro celular). */
+function recalcular(){
+  const cam = est.cambios;
+  const borradas = new Set(cam.borradas || []);
+  CATALOGO = CATALOGO_BASE
+    .filter(c => !borradas.has(c.id))
+    .map(c => cam.editados && cam.editados[c.id] ? cam.editados[c.id] : c)
+    .concat((cam.nuevas || []).filter(c => !borradas.has(c.id)))
+    .sort((a, b) => a.nombre.localeCompare(b.nombre, "es", {sensitivity:"base"}));
+  PORID = {};
+  CATALOGO.forEach(c => PORID[c.id] = c);
+}
+
+/* Cuántas canciones tocó el grupo. Se muestra en el botón de exportar. */
+function contarCambios(){
+  const c = est.cambios;
+  return Object.keys(c.editados || {}).length + (c.nuevas || []).length + (c.borradas || []).length;
+}
+
+/* Id para una canción nueva: legible y estable, sin repetirse */
+function nuevoId(nombre, tono){
+  const base = nombre.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 44) || "cancion";
+  let cand = base + (tono ? "-" + tono.toLowerCase().replace("#", "s") : "");
+  let n = cand, i = 2;
+  const ocupados = new Set(CATALOGO_BASE.map(c => c.id).concat((est.cambios.nuevas || []).map(c => c.id)));
+  while (ocupados.has(n)) n = `${cand}-${i++}`;
+  return n;
+}
+
+
+/* ===================================================================
+   7. TRANSPORTE DE ACORDES
+   Sube o baja semitonos sólo en los bloques de acordes. Como en el
+   cancionero los acordes ya están en su propia línea con estilo
+   propio, sé con certeza que todo token de esas líneas es un acorde
+   o una barra de compás: no hay que adivinar nada.
+
+   Lo importante: al reescribir la línea se respetan las columnas
+   originales. Si "G" se convierte en "A#" (un carácter más), se come
+   un espacio de al lado en vez de empujar todo y desalinear la letra.
+   =================================================================== */
+const SOSTENIDOS = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+const BEMOLES    = ["C","Db","D","Eb","E","F","Gb","G","Ab","A","Bb","B"];
+/* Tonos que por convención se escriben con bemoles */
+const TONOS_BEMOL = new Set(["F","Bb","Eb","Ab","Db","Gb","Dm","Gm","Cm","Fm","Bbm","Ebm"]);
+
+/* Devuelve el índice 0-11 de una nota, o -1 si no es nota */
+function indiceNota(n){
+  let i = SOSTENIDOS.indexOf(n);
+  if (i < 0) i = BEMOLES.indexOf(n);
+  return i;
+}
+
+/* Mueve una sola nota (sin el resto del acorde) N semitonos */
+function moverNota(nota, semis, usarBemoles){
+  const i = indiceNota(nota);
+  if (i < 0) return nota;
+  const j = ((i + semis) % 12 + 12) % 12;
+  return usarBemoles ? BEMOLES[j] : SOSTENIDOS[j];
+}
+
+/* Mueve un acorde entero: raíz + sufijo + bajo opcional (D/F#) */
+function moverAcorde(ac, semis, usarBemoles){
+  return ac.split("/").map(parte => {
+    const m = parte.match(/^([A-G][#b]?)(.*)$/);
+    if (!m) return parte;
+    return moverNota(m[1], semis, usarBemoles) + m[2];
+  }).join("/");
+}
+
+/* Calcula el tono resultante, para mostrarlo y para decidir la
+   escritura con sostenidos o bemoles */
+function moverTono(tono, semis){
+  const m = String(tono).match(/^([A-G][#b]?)(.*)$/);
+  if (!m) return tono;
+  const menor = /^m/.test(m[2]);
+  const raiz = moverNota(m[1], semis, false);
+  /* Probamos la versión con bemoles: si ese tono se escribe así por
+     convención, la usamos */
+  const raizB = moverNota(m[1], semis, true);
+  const cand = raizB + (menor ? "m" : "");
+  return (TONOS_BEMOL.has(cand) ? raizB : raiz) + m[2];
+}
+
+/* Reescribe una línea de acordes completa manteniendo las columnas */
+function moverLinea(linea, semis, usarBemoles){
+  if (!semis) return linea;
+  let salida = "";
+  for (const m of linea.matchAll(/\S+/g)){
+    /* Rellenar con espacios hasta la columna original.
+       Si el token anterior creció y ya pasamos esa columna,
+       dejamos al menos un espacio para que no se peguen. */
+    if (salida.length < m.index) salida += " ".repeat(m.index - salida.length);
+    else if (salida.length > 0) salida += " ";
+    const tok = m[0];
+    salida += /^[A-G][#b]?/.test(tok) ? moverAcorde(tok, semis, usarBemoles) : tok;
+  }
+  return salida;
+}
+
+
+/* ===================================================================
+   8. ESTADO Y ALMACENAMIENTO
+   - lista  → COMPARTIDA (shared:true): la ve todo el grupo. Es el
+              único dato compartido; el catálogo viene en el archivo.
+   - ajustes→ LOCAL (shared:false): tamaño de letra y nombre del
+              dispositivo. Cada uno tiene los suyos.
+   No hay aviso automático de cambios: se consulta cada 4 segundos
+   ("polling"). Gana la última escritura, así que conviene que
+   arme la lista una sola persona.
+   =================================================================== */
+/* Dibuja los bloques de una canción. La usan el lector y la vista previa
+   del editor, así lo que ves mientras editás es idéntico a lo que se ve
+   después en el escenario. */
+function pintarBloques(destino, bloques, semis, conBemoles){
+  destino.innerHTML = "";
+  const envoltorio = document.createElement("div");
+  envoltorio.className = "scrollx";
+  bloques.forEach(b => {
+    const d = document.createElement("div");
+    if (b.t === "v"){ d.className = "bloque b-vacio"; }
+    else if (b.t === "r"){ d.className = "bloque b-rotulo"; d.textContent = b.v; }
+    else if (b.t === "a"){ d.className = "bloque b-acordes"; d.textContent = moverLinea(b.v, semis, conBemoles); }
+    else { d.className = "bloque b-letra"; d.textContent = b.v; }
+    envoltorio.appendChild(d);
+  });
+  destino.appendChild(envoltorio);
+}
+
+/* --- Detector de línea de acordes -------------------------------------
+   El mismo criterio con el que se importó el .docx: una línea es de
+   acordes si TODOS sus elementos son cifrados o barras de compás. Es
+   estricto a propósito, para que "Dios" no pase por acorde. */
+const RE_CIFRADO = /^[A-G](?:#|b)?(?:maj|Maj|M|min|m|sus|add|dim|aug|°|ø|\+|-|[0-9]|#|b|\(|\)|,)*$/;
+const RE_ADORNO = /^(\||\|\||\/\/|\/|-|–|x\d+|\(x\d+\))$/;
+
+function esCifrado(tok){
+  if (RE_ADORNO.test(tok)) return true;
+  const partes = tok.split("/");
+  return partes.every(p => p && RE_CIFRADO.test(p));
+}
+function esLineaDeAcordes(t){
+  const toks = t.split(/\s+/).filter(Boolean);
+  return toks.length > 0 && toks.every(esCifrado);
+}
+
+/* --- Bloques -> texto editable ----------------------------------------
+   Los rótulos llevan ":" adelante. Los acordes y la letra van tal cual
+   cuando el detector los reconoce solo; si no los reconocería bien, se
+   les pone ">" o "." para forzar el tipo. Así el texto se lee igual que
+   el cancionero y a la vez la ida y vuelta nunca pierde información. */
+function bloquesATexto(bloques){
+  return bloques.map(b => {
+    if (b.t === "v") return "";
+    if (b.t === "r") return ":" + b.v;
+    if (b.t === "a") return esLineaDeAcordes(b.v) ? b.v : ">" + b.v;
+    return esLineaDeAcordes(b.v) ? "." + b.v : b.v;
+  }).join("\n");
+}
+
+/* --- Texto editable -> bloques ---------------------------------------- */
+function textoABloques(txt){
+  const salida = [];
+  let vacioPendiente = false;
+  txt.replace(/\r/g, "").split("\n").forEach(linea => {
+    if (!linea.trim()){ vacioPendiente = true; return; }
+    if (vacioPendiente && salida.length) salida.push({t:"v"});
+    vacioPendiente = false;
+    const marca = linea[0];
+    /* Se saca sólo el carácter del marcador: el resto de los espacios se
+       conserva intacto, porque son los que alinean el acorde. */
+    if (marca === ":") salida.push({t:"r", v: linea.slice(1).trim()});
+    else if (marca === ">") salida.push({t:"a", v: linea.slice(1)});
+    else if (marca === ".") salida.push({t:"l", v: linea.slice(1).trim()});
+    else if (esLineaDeAcordes(linea)) salida.push({t:"a", v: linea});
+    else salida.push({t:"l", v: linea.trim()});
+  });
+  return salida;
+}
+
+/* ===================================================================
+   CONFIGURACIÓN DE FIREBASE
+   Pegá acá los datos que te da la consola de Firebase al crear la app web.
+   Mientras esto quede sin completar, la app funciona igual como cancionero,
+   pero sin compartir nada: la lista y las ediciones viven sólo en este
+   dispositivo y se pierden al recargar.
+
+   Si la consola del navegador se queja de la versión del SDK, cambiá
+   VERSION_SDK por la que indique Firebase. Es lo único que hay que tocar.
+   =================================================================== */
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyCDsFBJ2HRzt-m0U2dvI58ix-fa6dYZMMU",
+  authDomain: "cancionero-peniel.firebaseapp.com",
+  projectId: "cancionero-peniel",
+  storageBucket: "cancionero-peniel.firebasestorage.app",
+  messagingSenderId: "1058088412288",
+  appId: "1:1058088412288:web:d094ea329d74ca51c3f265",
+};
+const VERSION_SDK = "11.0.2";
+
+/* ===================================================================
+   8. ESTADO Y SINCRONIZACIÓN
+   Dos documentos en Firestore:
+
+     cancionero/reunion   -> la lista de la reunión (un solo documento)
+     canciones/{id}       -> una canción editada, agregada o borrada
+
+   Por qué una canción por documento y no todo junto en uno: si dos
+   personas editan canciones distintas al mismo tiempo, Firestore escribe
+   en documentos distintos y no hay conflicto posible. Con un documento
+   único, el último en guardar pisaba el trabajo del otro.
+
+   onSnapshot avisa en el momento en que algo cambia, así que no hace
+   falta preguntar cada tantos segundos como antes.
+   =================================================================== */
+let db = null;                 // conexión a Firestore, o null si no hay
+let fs = null;                 // funciones del SDK, cargadas al arrancar
+let HAY_NUBE = false;
+
+const est = {
+  pestana:"canciones",
+  filtro:"",
+  lista:{ ids:[], porQuien:"", cuando:0 },  // orden de la reunión
+  cambios:{ editados:{}, nuevas:[], borradas:[] }, // capa de ediciones
+  editando:null,       // id de la canción abierta en el editor (o "nueva")
+  cargando:true,
+  tamano:16,           // px del cuerpo de la canción
+  semis:0,             // transporte de la canción abierta
+  abierta:null,        // id de la canción en el lector
+  enReunion:false,     // true si entró por "Empezar reunión"
+  posicion:0           // índice dentro de la lista
+};
+
+/* --- Conexión ---------------------------------------------------------
+   Se carga el SDK con import() dentro de un try: si no hay internet, si
+   la versión no existe o si la configuración está vacía, la app sigue
+   andando como cancionero local en vez de quedarse en blanco. */
+async function conectar(){
+  if (!FIREBASE_CONFIG.projectId){
+    marcarSync("error", "sin configurar");
+    return false;
+  }
+  try{
+    const base = `https://www.gstatic.com/firebasejs/${VERSION_SDK}`;
+    const [apl, fst] = await Promise.all([
+      import(`${base}/firebase-app.js`),
+      import(`${base}/firebase-firestore.js`),
+    ]);
+    const app = apl.initializeApp(FIREBASE_CONFIG);
+
+    /* Caché en disco: si el wifi de la iglesia se cae en medio de la
+       reunión, la lista sigue estando. Si el navegador no lo soporta,
+       se usa la conexión normal sin caché. */
+    try{
+      db = fst.initializeFirestore(app, { localCache: fst.persistentLocalCache({}) });
+    }catch(e){
+      db = fst.getFirestore(app);
+    }
+    fs = fst;
+    HAY_NUBE = true;
+    return true;
+  }catch(e){
+    console.error("No se pudo conectar a Firestore:", e);
+    marcarSync("error", "sin conexión");
+    return false;
+  }
+}
+
+/* --- Escuchar cambios en vivo ---------------------------------------- */
+function escuchar(){
+  if (!HAY_NUBE) return;
+
+  /* La lista de la reunión */
+  fs.onSnapshot(fs.doc(db, "cancionero", "reunion"), snap => {
+    const d = snap.data();
+    if (d && Array.isArray(d.ids)){
+      est.lista = { ids:d.ids, porQuien:d.porQuien || "", cuando:d.cuando || 0 };
+      pintar();
+    }
+    /* fromCache indica que lo que estoy viendo salió de la caché y todavía
+       no lo confirmó el servidor: es la señal honesta de "estoy offline". */
+    marcarSync(snap.metadata.fromCache ? "escribiendo" : "ok",
+               snap.metadata.fromCache ? "sin conexión" : "al día");
+  }, e => {
+    console.error("Error escuchando la reunión:", e);
+    marcarSync("error", "error de permisos");
+  });
+
+  /* Las canciones editadas, agregadas y borradas */
+  fs.onSnapshot(fs.collection(db, "canciones"), snap => {
+    const cam = { editados:{}, nuevas:[], borradas:[] };
+    snap.forEach(doc => {
+      const d = doc.data();
+      if (d.borrada){ cam.borradas.push(doc.id); return; }
+      const cancion = { id:doc.id, nombre:d.nombre, tono:d.tono ?? null,
+                        bpm:d.bpm ?? null, bloques:d.bloques || [] };
+      if (d.nueva) cam.nuevas.push(cancion);
+      else cam.editados[doc.id] = cancion;
+    });
+    est.cambios = cam;
+    recalcular();
+    /* No redibujar el editor mientras alguien escribe en él */
+    if (!est.editando){
+      pintar();
+      if (est.abierta && PORID[est.abierta]) pintarLector();
+    }
+  }, e => {
+    console.error("Error escuchando las canciones:", e);
+    marcarSync("error", "error de permisos");
+  });
+}
+
+/* --- Guardar la lista de la reunión ---------------------------------- */
+async function guardarLista(){
+  if (!HAY_NUBE){ flotar("Sin conexión: la lista no se comparte"); return; }
+  marcarSync("escribiendo", "guardando");
+  try{
+    await fs.setDoc(fs.doc(db, "cancionero", "reunion"), {
+      ids: est.lista.ids,
+      porQuien: est.lista.porQuien || "",
+      cuando: Date.now(),
+    });
+    marcarSync("ok", "al día");
+  }catch(e){
+    console.error("No se pudo guardar la lista:", e);
+    marcarSync("error", "no se guardó");
+    flotar("No se pudo guardar la lista");
+  }
+}
+
+/* --- Guardar una canción (editada o nueva) --------------------------- */
+async function guardarCancion(cancion, esNueva){
+  if (!HAY_NUBE){ flotar("Sin conexión: el cambio no se comparte"); return; }
+  marcarSync("escribiendo", "guardando");
+  try{
+    await fs.setDoc(fs.doc(db, "canciones", cancion.id), {
+      nombre: cancion.nombre,
+      tono: cancion.tono,
+      bpm: cancion.bpm,
+      bloques: cancion.bloques,
+      nueva: !!esNueva,
+      borrada: false,
+      cuando: Date.now(),
+    });
+    marcarSync("ok", "al día");
+  }catch(e){
+    console.error("No se pudo guardar la canción:", e);
+    marcarSync("error", "no se guardó");
+    flotar("No se pudo guardar el cambio");
+  }
+}
+
+/* --- Marcar una canción como borrada --------------------------------
+   No se elimina el documento: se marca. Así los demás dispositivos se
+   enteran de que la canción ya no va; si se borrara el documento, no
+   habría nada que les avise. */
+async function marcarBorrada(id){
+  if (!HAY_NUBE){ flotar("Sin conexión: el borrado no se comparte"); return; }
+  try{
+    await fs.setDoc(fs.doc(db, "canciones", id), { borrada:true, cuando:Date.now() });
+    marcarSync("ok", "al día");
+  }catch(e){
+    console.error("No se pudo borrar:", e);
+    flotar("No se pudo borrar");
+  }
+}
+
+/* --- Ajustes del dispositivo ----------------------------------------
+   Van en el navegador, no en la nube: el tamaño de letra es de cada uno.
+   Envuelto en try porque en modo incógnito puede estar bloqueado. */
+function leerAjustes(){
+  try{
+    const a = JSON.parse(localStorage.getItem("cancionero:ajustes") || "{}");
+    if (a.tamano) est.tamano = a.tamano;
+  }catch(e){ /* sin ajustes guardados */ }
+}
+function guardarAjustes(){
+  try{
+    localStorage.setItem("cancionero:ajustes", JSON.stringify({tamano:est.tamano}));
+  }catch(e){ /* no se puede guardar, no es grave */ }
+}
+
+
+/* ===================================================================
+   9. AVISOS AL USUARIO
+   =================================================================== */
+const $ = id => document.getElementById(id);
+
+function marcarSync(clase, texto){
+  $("punto").className = "punto " + clase;
+  $("sync-txt").textContent = texto;
+}
+
+let temporizadorFlotante;
+function flotar(msg){
+  const f = $("flotante");
+  f.textContent = msg;
+  f.classList.add("visible");
+  clearTimeout(temporizadorFlotante);
+  temporizadorFlotante = setTimeout(()=>f.classList.remove("visible"), 2200);
+}
+
+
+/* ===================================================================
+   10. PINTAR LA PANTALLA
+   Una sola función de dibujo por pestaña. Se redibuja todo en vez de
+   parchar el DOM: son 130 filas, no hace falta nada más sofisticado.
+   =================================================================== */
+function pintar(){
+  /* contador de la pestaña Reunión */
+  const n = est.lista.ids.length;
+  const c = $("cuenta");
+  c.style.display = n ? "inline-block" : "none";
+  c.textContent = n;
+
+  $("tab-canciones").classList.toggle("activa", est.pestana === "canciones");
+  $("tab-reunion").classList.toggle("activa", est.pestana === "reunion");
+  $("caja-buscador").style.display = est.pestana === "canciones" ? "block" : "none";
+
+  if (est.pestana === "canciones") pintarCatalogo();
+  else pintarReunion();
+}
+
+/* --- Pestaña Canciones ---------------------------------------------- */
+function pintarCatalogo(){
+  const cont = $("contenido");
+  cont.innerHTML = "";
+  $("pie").style.display = "none";
+
+
+  /* Nueva canción y exportar. "Exportar" sólo aparece si hay algo que
+     exportar, así no ocupa lugar cuando no hace falta. */
+  const acc = document.createElement("div");
+  acc.className = "acciones";
+  const n = contarCambios();
+  acc.innerHTML = `<button id="btn-nueva">+ Nueva canción</button>`
+    + (n ? `<button class="exportar" id="btn-exportar">Exportar (${n})</button>` : "");
+  cont.appendChild(acc);
+  $("btn-nueva").onclick = () => abrirEditor("nueva");
+  if (n) $("btn-exportar").onclick = abrirExportar;
+
+  const q = est.filtro.trim().toLowerCase();
+  const encontradas = CATALOGO.filter(s =>
+    !q || s.nombre.toLowerCase().includes(q) || (s.tono || "").toLowerCase() === q
+  );
+
+  if (!encontradas.length){
+    cont.insertAdjacentHTML("beforeend",
+      `<div class="vacio"><strong>Sin resultados</strong>Probá con parte del nombre, o con el tono (G, Bm).</div>`);
+    return;
+  }
+
+  let inicialPrevia = null;
+  encontradas.forEach(s => {
+    const inicial = (s.nombre[0] || "?").toUpperCase();
+    if (inicial !== inicialPrevia){
+      const sep = document.createElement("div");
+      sep.className = "separador";
+      sep.textContent = inicial;
+      cont.appendChild(sep);
+      inicialPrevia = inicial;
+    }
+    const puesta = est.lista.ids.includes(s.id);
+    const fila = document.createElement("div");
+    fila.className = "fila";
+    fila.innerHTML = `
+      <button class="fila-txt">
+        <div class="fila-nombre">${escapar(s.nombre)}</div>
+        <div class="fila-meta">${metaDe(s)}</div>
+      </button>
+      <button class="sumar${puesta ? " puesta" : ""}">${puesta ? "✓" : "+"}</button>`;
+    fila.querySelector(".fila-txt").onclick = () => abrir(s.id, false);
+    fila.querySelector(".sumar").onclick = () => alternarEnLista(s.id);
+    cont.appendChild(fila);
+  });
+}
+
+/* --- Pestaña Reunión ------------------------------------------------ */
+function pintarReunion(){
+  const cont = $("contenido");
+  cont.innerHTML = "";
+  const pie = $("pie");
+
+  if (!est.lista.ids.length){
+    cont.innerHTML = `<div class="vacio"><strong>Todavía no hay lista</strong>
+      Andá a Canciones y tocá <b>+</b> en las que van este domingo.
+      Lo que armes acá lo ve todo el grupo.</div>`;
+    pie.style.display = "none";
+    return;
+  }
+
+  /* Quién la armó y hace cuánto: importa saber si estás viendo algo viejo */
+  if (est.lista.porQuien || est.lista.cuando){
+    const info = document.createElement("div");
+    info.className = "fila-meta";
+    info.style.padding = "12px 14px 4px";
+    info.textContent = "Última edición" +
+      (est.lista.porQuien ? " de " + est.lista.porQuien : "") +
+      (est.lista.cuando ? " · " + haceCuanto(est.lista.cuando) : "");
+    cont.appendChild(info);
+  }
+
+  est.lista.ids.forEach((id, i) => {
+    const s = PORID[id];
+    const fila = document.createElement("div");
+    fila.className = "fila";
+    if (!s){
+      /* Puede pasar si alguien armó la lista con un catálogo más nuevo */
+      fila.innerHTML = `<div class="orden">${i+1}</div>
+        <div class="fila-txt"><div class="fila-nombre" style="color:var(--tenue)">Canción no encontrada</div>
+        <div class="fila-meta">Actualizá el cancionero (${escapar(id)})</div></div>
+        <button class="quitar">✕</button>`;
+      fila.querySelector(".quitar").onclick = () => quitar(id);
+      cont.appendChild(fila);
+      return;
+    }
+    fila.innerHTML = `
+      <div class="orden">${i+1}</div>
+      <button class="fila-txt">
+        <div class="fila-nombre">${escapar(s.nombre)}</div>
+        <div class="fila-meta">${metaDe(s)}</div>
+      </button>
+      <div class="mover">
+        <button class="arriba" ${i === 0 ? "disabled" : ""}>▲</button>
+        <button class="abajo" ${i === est.lista.ids.length-1 ? "disabled" : ""}>▼</button>
+      </div>
+      <button class="quitar">✕</button>`;
+    fila.querySelector(".fila-txt").onclick = () => { est.posicion = i; abrir(id, true); };
+    fila.querySelector(".arriba").onclick = () => mover(i, -1);
+    fila.querySelector(".abajo").onclick  = () => mover(i, +1);
+    fila.querySelector(".quitar").onclick = () => quitar(id);
+    cont.appendChild(fila);
+  });
+
+  pie.style.display = "flex";
+  pie.innerHTML = `<button class="btn btn-fuerte" id="empezar">Empezar reunión</button>
+                   <button class="btn btn-suave" id="vaciar">Vaciar</button>`;
+  $("empezar").onclick = () => { est.posicion = 0; abrir(est.lista.ids[0], true); };
+  $("vaciar").onclick = vaciar;
+}
+
+/* Texto tipo "hace 5 min" */
+function haceCuanto(ms){
+  const s = Math.max(0, Math.round((Date.now() - ms)/1000));
+  if (s < 60) return "hace instantes";
+  const m = Math.round(s/60);
+  if (m < 60) return `hace ${m} min`;
+  const h = Math.round(m/60);
+  if (h < 24) return `hace ${h} h`;
+  return `hace ${Math.round(h/24)} días`;
+}
+
+/* Línea "tono · bpm" de cada fila. Si el título del cancionero no trae
+   tono, se dice así en vez de mostrar un dato inventado. */
+function metaDe(s){
+  const tono = s.tono
+    ? `<span class="tono">${escapar(s.tono)}</span>`
+    : `<span style="color:var(--tenue)">sin tono</span>`;
+  return tono + (s.bpm ? " · " + s.bpm + " bpm" : "");
+}
+
+/* Escapar texto antes de meterlo en innerHTML */
+function escapar(t){
+  return String(t).replace(/[&<>"]/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]));
+}
+
+
+/* ===================================================================
+   11. ACCIONES SOBRE LA LISTA
+   Cada una toca el estado, redibuja y recién después guarda: la
+   pantalla responde al toque sin esperar la red.
+   =================================================================== */
+function alternarEnLista(id){
+  const i = est.lista.ids.indexOf(id);
+  if (i >= 0){ est.lista.ids.splice(i,1); flotar("Sacada de la reunión"); }
+  else { est.lista.ids.push(id); flotar("Sumada a la reunión"); }
+  pintar(); guardarLista();
+}
+function quitar(id){
+  est.lista.ids = est.lista.ids.filter(x => x !== id);
+  pintar(); guardarLista();
+}
+function mover(i, delta){
+  const j = i + delta;
+  if (j < 0 || j >= est.lista.ids.length) return;
+  const a = est.lista.ids;
+  [a[i], a[j]] = [a[j], a[i]];
+  pintar(); guardarLista();
+}
+function vaciar(){
+  if (!confirm("¿Vaciar la lista de la reunión? Se borra también para el resto del grupo.")) return;
+  est.lista.ids = [];
+  pintar(); guardarLista();
+}
+
+
+/* ===================================================================
+   12. LECTOR
+   =================================================================== */
+function abrir(id, enReunion){
+  est.abierta = id;
+  est.enReunion = enReunion;
+  est.semis = 0;              // cada canción arranca en su tono original
+  $("lector").classList.add("abierto");
+  $("cuerpo").scrollTop = 0;
+  pintarLector();
+}
+function cerrar(){
+  $("lector").classList.remove("abierto");
+  est.abierta = null;
+}
+
+function pintarLector(){
+  const s = PORID[est.abierta];
+  if (!s) return cerrar();
+
+  /* Sin tono en el título no hay transporte posible: no se puede saber
+     desde dónde se mueve. Se apagan los botones en vez de adivinar. */
+  const puedeTransportar = !!s.tono;
+  const tonoActual = puedeTransportar ? moverTono(s.tono, est.semis) : null;
+
+  $("l-nombre").textContent = s.nombre;
+  $("l-meta").innerHTML = (puedeTransportar
+      ? `<b>${escapar(tonoActual)}</b>`
+        + (est.semis ? ` <span style="color:var(--tenue)">(original ${escapar(s.tono)}, ${est.semis > 0 ? "+" : ""}${est.semis})</span>` : "")
+      : `<span style="color:var(--tenue)">sin tono en el cancionero</span>`)
+    + (s.bpm ? ` · ${s.bpm} bpm` : "");
+
+  ["mas-t","menos-t"].forEach(k => {
+    $(k).disabled = !puedeTransportar;
+    $(k).style.opacity = puedeTransportar ? "" : ".25";
+    $(k).classList.toggle("on", puedeTransportar && est.semis !== 0);
+  });
+
+  /* Escritura con bemoles si el tono destino lo pide */
+  const conBemoles = puedeTransportar && TONOS_BEMOL.has(tonoActual);
+
+  /* Cuerpo: un div por bloque, respetando el orden del cancionero */
+  const cuerpo = $("cuerpo");
+  cuerpo.style.fontSize = est.tamano + "px";
+  pintarBloques(cuerpo, s.bloques, est.semis, conBemoles);
+
+  /* Riel y botones de paso: sólo en modo reunión */
+  const riel = $("riel"), pie = $("l-pie");
+  riel.classList.toggle("visible", est.enReunion);
+  pie.classList.toggle("visible", est.enReunion);
+  if (est.enReunion){
+    riel.innerHTML = "";
+    est.lista.ids.forEach((id, i) => {
+      const b = document.createElement("button");
+      b.textContent = i + 1;
+      b.className = i === est.posicion ? "aqui" : (i < est.posicion ? "pasada" : "");
+      b.onclick = () => { est.posicion = i; est.semis = 0; $("cuerpo").scrollTop = 0; est.abierta = id; pintarLector(); };
+      riel.appendChild(b);
+    });
+    $("anterior").disabled = est.posicion === 0;
+    $("siguiente").disabled = est.posicion >= est.lista.ids.length - 1;
+  }
+}
+
+function paso(delta){
+  const j = est.posicion + delta;
+  if (j < 0 || j >= est.lista.ids.length) return;
+  est.posicion = j;
+  est.abierta = est.lista.ids[j];
+  est.semis = 0;
+  $("cuerpo").scrollTop = 0;
+  pintarLector();
+}
+
+
+/* ===================================================================
+   12b. EDITOR DE CANCIONES
+   El cuerpo se edita como texto plano en una tipografía monoespaciada:
+   es la única forma de que quien edita vea y controle los espacios que
+   alinean el acorde sobre la sílaba. La vista previa de abajo usa la
+   misma función de dibujado que el lector, así no hay sorpresas.
+   =================================================================== */
+const RE_TONO_VALIDO = /^[A-G](#|b)?(m|maj|min)?[0-9]*$/;
+
+function abrirEditor(id){
+  est.editando = id;
+  const nueva = (id === "nueva");
+  const s = nueva ? null : PORID[id];
+  if (!nueva && !s) return;
+
+  $("ed-titulo").textContent = nueva ? "Nueva canción" : "Editar canción";
+  $("ed-nombre").value = nueva ? "" : s.nombre;
+  $("ed-tono").value   = nueva ? "" : (s.tono || "");
+  $("ed-bpm").value    = nueva ? "" : (s.bpm || "");
+  $("ed-cuerpo").value = nueva ? "" : bloquesATexto(s.bloques);
+  $("ed-borrar").style.display = nueva ? "none" : "block";
+
+  $("editor").classList.add("abierto");
+  refrescarPrevia();
+}
+
+function cerrarEditor(){
+  $("editor").classList.remove("abierto");
+  est.editando = null;
+}
+
+/* Vista previa en vivo: se redibuja en cada tecla. Son pocas líneas, no
+   hace falta esperar a que el usuario deje de escribir. */
+function refrescarPrevia(){
+  const bloques = textoABloques($("ed-cuerpo").value);
+  const tono = $("ed-tono").value.trim();
+  pintarBloques($("ed-previa"), bloques, 0, /^(F|Bb|Eb|Ab|Db|Gb)m?$/.test(tono));
+}
+
+async function guardarEditor(){
+  const nombre = $("ed-nombre").value.trim();
+  const tono = $("ed-tono").value.trim();
+  const bpmTxt = $("ed-bpm").value.trim();
+  const bloques = textoABloques($("ed-cuerpo").value);
+
+  /* Validaciones: se avisa y no se guarda, en vez de guardar algo a medias */
+  if (!nombre) return flotar("Falta el nombre de la canción");
+  if (tono && !RE_TONO_VALIDO.test(tono)) return flotar(`"${tono}" no parece un tono`);
+  if (!bloques.length) return flotar("La canción no tiene contenido");
+
+  const nueva = (est.editando === "nueva");
+  const id = nueva ? nuevoId(nombre, tono) : est.editando;
+  const cancion = {
+    id, nombre,
+    tono: tono || null,
+    bpm: bpmTxt ? parseInt(bpmTxt, 10) : null,
+    bloques,
+  };
+
+  est.cambios.editados = est.cambios.editados || {};
+  est.cambios.nuevas = est.cambios.nuevas || [];
+
+  const iNueva = est.cambios.nuevas.findIndex(c => c.id === id);
+  if (nueva || iNueva >= 0){
+    /* Canción agregada desde la app: vive en la lista de nuevas */
+    if (iNueva >= 0) est.cambios.nuevas[iNueva] = cancion;
+    else est.cambios.nuevas.push(cancion);
+  } else {
+    /* Canción que viene del .docx: se guarda la versión editada encima */
+    est.cambios.editados[id] = cancion;
+  }
+
+  recalcular();
+  cerrarEditor();
+  pintar();
+  if (est.abierta === id) pintarLector();
+  flotar(nueva ? "Canción agregada" : "Cambios guardados");
+  /* Se escribe sólo esta canción, en su propio documento */
+  await guardarCancion(cancion, nueva || iNueva >= 0);
+}
+
+async function borrarCancion(){
+  const id = est.editando;
+  const s = PORID[id];
+  if (!s) return;
+  if (!confirm(`¿Borrar "${s.nombre}" del cancionero? Se borra para todo el grupo.`)) return;
+
+  est.cambios.borradas = Array.from(new Set((est.cambios.borradas || []).concat([id])));
+  est.cambios.nuevas = (est.cambios.nuevas || []).filter(c => c.id !== id);
+  if (est.cambios.editados) delete est.cambios.editados[id];
+  est.lista.ids = est.lista.ids.filter(x => x !== id);
+
+  recalcular();
+  cerrarEditor();
+  cerrar();
+  pintar();
+  flotar("Canción borrada");
+  await marcarBorrada(id);
+  await guardarLista();   // por si estaba en la lista de la reunión
+}
+
+/* ===================================================================
+   12c. EXPORTAR
+   Saca solamente la capa de cambios, no el cancionero entero: es lo que
+   hace falta para volcarlo al .docx, y es lo bastante corto para pegarlo
+   en un mensaje.
+   =================================================================== */
+function abrirExportar(){
+  const c = est.cambios;
+  const nEd = Object.keys(c.editados || {}).length;
+  const nNu = (c.nuevas || []).length;
+  const nBo = (c.borradas || []).length;
+
+  const partes = [];
+  if (nEd) partes.push(`${nEd} editada${nEd > 1 ? "s" : ""}`);
+  if (nNu) partes.push(`${nNu} nueva${nNu > 1 ? "s" : ""}`);
+  if (nBo) partes.push(`${nBo} borrada${nBo > 1 ? "s" : ""}`);
+  $("ex-meta").textContent = partes.join(" · ");
+
+  $("ex-ayuda").innerHTML = "Copiá todo esto y pegámelo en el chat. Con eso "
+    + "actualizo el <b>.docx</b> del cancionero. No incluye las canciones "
+    + "que no tocaron: sólo lo que cambió.";
+
+  $("ex-texto").value = JSON.stringify({
+    origen: "cancionero __VERSION__",
+    exportado: new Date().toISOString(),
+    cambios: est.cambios,
+  }, null, 1);
+
+  $("exportar").classList.add("abierto");
+}
+
+async function copiarExportado(){
+  const t = $("ex-texto");
+  try{
+    await navigator.clipboard.writeText(t.value);
+    flotar("Copiado");
+  }catch(e){
+    /* Si el portapapeles está bloqueado, al menos queda seleccionado */
+    t.focus(); t.select();
+    flotar("Seleccionado: copialo a mano");
+  }
+}
+
+/* ===================================================================
+   13. CONEXIONES DE LA INTERFAZ
+   =================================================================== */
+$("tab-canciones").onclick = () => { est.pestana = "canciones"; pintar(); };
+$("tab-reunion").onclick   = () => { est.pestana = "reunion"; pintar(); };
+$("buscar").oninput = e => { est.filtro = e.target.value; pintarCatalogo(); };
+
+$("cerrar").onclick = cerrar;
+
+/* Editor */
+$("editar").onclick      = () => { if (est.abierta) abrirEditor(est.abierta); };
+$("ed-cancelar").onclick = cerrarEditor;
+$("ed-guardar").onclick  = guardarEditor;
+$("ed-borrar").onclick   = borrarCancion;
+$("ed-cuerpo").oninput   = refrescarPrevia;
+$("ed-tono").oninput     = refrescarPrevia;
+
+/* Exportación */
+$("ex-cerrar").onclick = () => $("exportar").classList.remove("abierto");
+$("ex-copiar").onclick = copiarExportado;
+$("anterior").onclick = () => paso(-1);
+$("siguiente").onclick = () => paso(+1);
+$("mas-t").onclick   = () => { if (!PORID[est.abierta] || !PORID[est.abierta].tono) return; est.semis = Math.min(11, est.semis + 1); pintarLector(); };
+$("menos-t").onclick = () => { if (!PORID[est.abierta] || !PORID[est.abierta].tono) return; est.semis = Math.max(-11, est.semis - 1); pintarLector(); };
+$("mas-a").onclick   = () => { est.tamano = Math.min(30, est.tamano + 1); pintarLector(); guardarAjustes(); };
+$("menos-a").onclick = () => { est.tamano = Math.max(11, est.tamano - 1); pintarLector(); guardarAjustes(); };
+
+/* --- Pantalla completa ---------------------------------------------------
+   Gana el alto que ocupan las barras del navegador o del visor. Puede no
+   estar permitida según desde dónde se abra la app, así que se avisa. */
+async function alternarPantallaCompleta(){
+  try{
+    if (!document.fullscreenElement) await document.documentElement.requestFullscreen();
+    else await document.exitFullscreen();
+  }catch(e){
+    flotar("Acá no se permite pantalla completa");
+  }
+}
+$("expandir").onclick = alternarPantallaCompleta;
+document.addEventListener("fullscreenchange", () => {
+  const activo = !!document.fullscreenElement;
+  $("expandir").classList.toggle("activo", activo);
+  $("expandir").textContent = activo ? "⛶" : "⛶";
+});
+
+/* Teclado: cómodo si alguien lo abre en la compu del ensayo */
+document.addEventListener("keydown", e => {
+  if (!$("lector").classList.contains("abierto")) return;
+  if (e.key === "Escape") cerrar();
+  if (est.enReunion && e.key === "ArrowRight") paso(+1);
+  if (est.enReunion && e.key === "ArrowLeft")  paso(-1);
+});
+
+/* Deslizar para pasar de canción en modo reunión */
+let xIni = null, yIni = null;
+$("cuerpo").addEventListener("touchstart", e => {
+  xIni = e.touches[0].clientX; yIni = e.touches[0].clientY;
+}, {passive:true});
+$("cuerpo").addEventListener("touchend", e => {
+  if (xIni === null || !est.enReunion) return;
+  const dx = e.changedTouches[0].clientX - xIni;
+  const dy = e.changedTouches[0].clientY - yIni;
+  /* Sólo si el gesto es claramente horizontal, para no pelear con el scroll */
+  if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) * 2) paso(dx < 0 ? +1 : -1);
+  xIni = yIni = null;
+}, {passive:true});
+
+
+/* ===================================================================
+   14. ARRANQUE
+   Se dibuja primero con el catálogo local, que es instantáneo y no depende
+   de la red. Después se conecta y se queda escuchando: cuando llegan la
+   lista y las ediciones, la pantalla se actualiza sola.
+   =================================================================== */
+async function arrancar(){
+  marcarSync("", "conectando");
+  leerAjustes();
+  recalcular();          // catálogo base, sin cambios todavía
+  pintar();              // se ve el cancionero al instante, sin esperar la red
+  if (await conectar()) escuchar();   // a partir de acá los cambios llegan solos
+}
+arrancar();
+
+/* Antes acá había un sondeo cada 4 segundos. Ya no hace falta: onSnapshot
+   avisa en el momento en que alguien cambia algo. */
+</script>
