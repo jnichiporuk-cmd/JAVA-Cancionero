@@ -47,14 +47,23 @@ cancionero original.
 ### Firestore
 
 ```
-cancionero/reunion    ->  { ids: [...], porQuien, cuando }
-canciones/{id}        ->  { nombre, tono, bpm, bloques, nueva, borrada, cuando }
+cancionero/activa      ->  { reunionActivaId }
+reuniones/{id}         ->  { nombre, ids: [...], porQuien, creada, actualizada }
+canciones/{id}         ->  { nombre, tono, bpm, bloques, nueva, borrada, cuando }
 ```
 
-**Una canción por documento, a propósito.** Si dos personas editan canciones
-distintas al mismo tiempo, escriben en documentos distintos y no pueden
-pisarse. La primera versión usaba un documento único con toda la capa de
-cambios y el último en guardar borraba el trabajo del otro.
+`cancionero/activa` es sólo un puntero: dice cuál `reuniones/{id}` es "la
+reunión de ahora", la que ve la pestaña Reunión y el modo reunión arriba del
+escenario. Cambiar de reunión activa (crear una nueva, o elegir una guardada
+desde la pestaña Guardadas) es mover ese puntero; la reunión anterior queda
+intacta en su propio documento, no se pisa ni se copia.
+
+**Una canción y una reunión por documento, a propósito.** Si dos personas
+editan canciones distintas —o reuniones distintas— al mismo tiempo, escriben
+en documentos distintos y no pueden pisarse. La primera versión usaba un
+documento único con toda la capa de cambios (y, después, un único documento
+para "la lista de la reunión") y el último en guardar borraba el trabajo del
+otro.
 
 Los borrados **marcan** `borrada: true`, no eliminan el documento: si se
 eliminara, los otros dispositivos no tendrían cómo enterarse.
@@ -190,6 +199,19 @@ python3 -m http.server 8000
   hubo error de sintaxis. Por eso la verificación 4.
 - **El detector de acordes tiene que partir los `/` antes de validar.** `D/F#`
   son dos notas; validando el token entero, la `F` del bajo parece basura.
+- **Editar `index.html` en vez de `plantilla.html`.** Pasó: la configuración de
+  Firebase se pegó en el archivo generado y el siguiente build la borró. El
+  síntoma es que la app dice "sin configurar" aunque uno juraría haberla
+  cargado. Comprobación rápida:
+  `Select-String -Path plantilla.html,index.html -Pattern 'projectId:'`
+- **Guardar el archivo antes de compilar.** VS Code marca con un punto ● en la
+  pestaña los archivos con cambios sin guardar. `build.py` lee el archivo del
+  disco, no lo que se ve en pantalla.
+- **Una colección nueva en Firestore no funciona hasta agregarla a las
+  reglas.** La última regla es `match /{document=**} { allow read, write: if
+  false; }`, que niega todo lo que no esté declarado antes. Si se agrega una
+  colección y se olvida la regla, la app va a decir "error de permisos" y
+  parecerá un error de código.
 - **Al transportar hay que conservar las columnas.** Si `G` pasa a `A#` y ocupa
   un carácter más, se come un espacio de al lado en vez de correr toda la línea
   y desalinear la letra.
@@ -238,15 +260,65 @@ el patrón de la línea de arriba donde la barra es claramente un tiempo. Suenan
 distinto. **Requiere escuchar la canción o mirar el original: no se decide por
 regla.**
 
-### Falta configurar
+### Ya está desplegado y funcionando
 
-`FIREBASE_CONFIG` en `plantilla.html` está vacío. Hasta completarlo, la app
-funciona como cancionero local y el indicador dice "sin configurar". Los pasos
-están en `README.md`.
+| | |
+|---|---|
+| Proyecto Firebase | `cancionero-peniel`, plan Spark (gratuito) |
+| Firestore | Edición Standard, `southamerica-east1` (São Paulo), base `(default)` |
+| Repositorio | `jnichiporuk-cmd/JAVA-Cancionero`, público |
+| Publicado en | `https://jnichiporuk-cmd.github.io/JAVA-Cancionero/` |
 
----
+`FIREBASE_CONFIG` en `plantilla.html` está completo. La escritura y la lectura
+en tiempo real quedaron verificadas entre `localhost` y GitHub Pages: una lista
+armada en uno aparece en el otro.
 
-## 8. Cómo trabajar en este proyecto
+**Falta probar con dos celulares a la vez**: uno suma una canción y el otro
+debería verla aparecer sola, sin recargar.
+
+## 8. Entorno de trabajo
+
+Windows con PowerShell, VS Code, Python 3.12, Node v24.
+
+- El comando es **`python`**, no `python3`. Si `python3` no se reconoce, ese es
+  el motivo.
+- La carpeta está en `OneDrive\Documentos\JAVA-Cancionero`. Funciona, pero
+  OneDrive a veces bloquea archivos mientras sincroniza y puede hacer fallar un
+  build o un commit con errores de "archivo en uso". Si aparecen, mover la
+  carpeta fuera de OneDrive.
+- La terminal de PowerShell muestra los acentos mal (`canciÃ³n`). Es solo la
+  consola: los archivos están bien.
+
+## 8b. Guardar reuniones — implementado
+
+Ya no hay una sola lista que se pisa: cada reunión (cada domingo, cada
+ensayo) es su propio documento en `reuniones/{id}`, y `cancionero/activa`
+es un puntero que dice cuál de todas es "la de ahora". Pestaña nueva,
+**Guardadas**, lista todas las reuniones y deja crear una nueva o elegir
+cuál es la activa (`usarReunion()`).
+
+No quedó un botón "Guardar": cada vez que se toca **+** en una canción ya
+se escribe directo en la reunión activa (`alternarEnLista()` → `guardarLista()`
+con `setDoc(..., {merge:true})`). Si todavía no hay ninguna reunión activa,
+el primer + crea una sola con la fecha de hoy como nombre
+(`generarIdReunion()` + `crearReunion()`) y la deja activa. Por eso el
+problema de "pisar una lista sin guardar" (uno de los puntos que se había
+identificado como difícil) directamente no existe en este modelo: cambiar
+de reunión activa es mover el puntero, nunca copiar ni sobrescribir, así
+que ninguna reunión vieja se pierde.
+
+El caso de una canción borrada dentro de una reunión guardada usa el mismo
+fallback que ya existía en `pintarReunion()` ("Canción no encontrada"), sin
+código nuevo para eso.
+
+**Pendiente real**: publicar las reglas de Firestore nuevas (ver
+`README.md`, sección 2) desde la consola de Firebase. Sin ese paso, crear o
+cambiar de reunión va a fallar con "error de permisos" aunque el código esté
+bien. Después de publicarlas, falta la prueba de siempre con dos celulares:
+uno toca + y el otro debería ver aparecer la canción sin recargar, y lo
+mismo al tocar "Usar esta" en Guardadas.
+
+## 9. Cómo trabajar en este proyecto
 
 Convenciones de código:
 

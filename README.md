@@ -61,11 +61,23 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // La lista de la reunión: un solo documento
-    match /cancionero/reunion {
+    // El puntero a cuál reunión está activa: un solo documento
+    match /cancionero/activa {
       allow read: if true;
-      allow write: if request.resource.data.ids is list
-                   && request.resource.data.ids.size() < 100;
+      allow write: if request.resource.data.keys().hasOnly(['reunionActivaId'])
+                   && request.resource.data.reunionActivaId is string;
+    }
+
+    // Cada reunión guardada (la de hoy y las anteriores): un documento por reunión
+    match /reuniones/{id} {
+      allow read: if true;
+      allow write: if request.resource.data.keys().hasOnly(
+                        ['nombre','ids','porQuien','creada','actualizada'])
+                   && request.resource.data.ids is list
+                   && request.resource.data.ids.size() < 100
+                   && (!('nombre' in request.resource.data)
+                       || request.resource.data.nombre.size() < 120);
+      allow delete: if false;   // no se borran documentos, se pueden vaciar
     }
 
     // Una canción por documento

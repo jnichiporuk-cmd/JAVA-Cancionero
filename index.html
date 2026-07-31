@@ -82,7 +82,7 @@ input{font-family:inherit;font-size:inherit}
 .punto.escribiendo{background:var(--lista)}
 .punto.error{background:var(--peligro)}
 
-/* Pestañas: sólo dos, no hace falta más navegación */
+/* Pestañas: Canciones, Reunión (la activa) y Guardadas (reuniones pasadas) */
 .pestanas{display:flex;gap:0;padding:0 14px}
 .pestana{
   padding:9px 0;margin-right:22px;font-size:15px;font-weight:600;
@@ -314,13 +314,14 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v13</span></div>
+    <div class="marca">Cancionero <span class="ver">v14</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
   </div>
   <div class="pestanas">
     <button class="pestana activa" id="tab-canciones">Canciones</button>
     <button class="pestana" id="tab-reunion">Reunión<span class="cuenta" id="cuenta" style="display:none">0</span></button>
+    <button class="pestana" id="tab-guardadas">Guardadas</button>
   </div>
   <div class="buscador" id="caja-buscador">
     <input id="buscar" type="search" placeholder="Buscar por nombre o tono" autocomplete="off">
@@ -641,15 +642,22 @@ const VERSION_SDK = "11.0.2";
 
 /* ===================================================================
    8. ESTADO Y SINCRONIZACIÓN
-   Dos documentos en Firestore:
+   Tres tipos de documento en Firestore:
 
-     cancionero/reunion   -> la lista de la reunión (un solo documento)
-     canciones/{id}       -> una canción editada, agregada o borrada
+     cancionero/activa    -> puntero: { reunionActivaId }. Dice cuál de
+                              las reuniones guardadas es "la de ahora",
+                              la que ve la pestaña Reunión y el modo
+                              reunión.
+     reuniones/{id}       -> una reunión guardada: { nombre, ids,
+                              porQuien, creada, actualizada }. Cada
+                              domingo (o ensayo) es un documento propio;
+                              no se pisan entre sí.
+     canciones/{id}       -> una canción editada, agregada o borrada.
 
-   Por qué una canción por documento y no todo junto en uno: si dos
-   personas editan canciones distintas al mismo tiempo, Firestore escribe
-   en documentos distintos y no hay conflicto posible. Con un documento
-   único, el último en guardar pisaba el trabajo del otro.
+   Por qué una canción y una reunión por documento, y no todo junto en
+   uno: si dos personas tocan cosas distintas al mismo tiempo, Firestore
+   escribe en documentos distintos y no hay conflicto posible. Con un
+   documento único, el último en guardar pisaba el trabajo del otro.
 
    onSnapshot avisa en el momento en que algo cambia, así que no hace
    falta preguntar cada tantos segundos como antes.
@@ -657,11 +665,15 @@ const VERSION_SDK = "11.0.2";
 let db = null;                 // conexión a Firestore, o null si no hay
 let fs = null;                 // funciones del SDK, cargadas al arrancar
 let HAY_NUBE = false;
+let cancelarEscuchaActiva = null;  // deja de escuchar la reunión activa anterior
 
 const est = {
   pestana:"canciones",
   filtro:"",
-  lista:{ ids:[], porQuien:"", cuando:0 },  // orden de la reunión
+  /* La reunión activa. id:null significa que todavía no se creó
+     ninguna: se crea sola la primera vez que alguien toca +. */
+  lista:{ id:null, ids:[], porQuien:"", cuando:0, nombre:"" },
+  guardadas:[],         // todas las reuniones guardadas, para la pestaña Guardadas
   cambios:{ editados:{}, nuevas:[], borradas:[] }, // capa de ediciones
   editando:null,       // id de la canción abierta en el editor (o "nueva")
   cargando:true,
@@ -711,19 +723,34 @@ async function conectar(){
 function escuchar(){
   if (!HAY_NUBE) return;
 
-  /* La lista de la reunión */
-  fs.onSnapshot(fs.doc(db, "cancionero", "reunion"), snap => {
+  /* El puntero a la reunión activa. Cuando cambia (alguien creó una
+     reunión nueva o tocó "Usar esta" en Guardadas) hay que dejar de
+     escuchar la reunión vieja y empezar a escuchar la nueva. */
+  fs.onSnapshot(fs.doc(db, "cancionero", "activa"), snap => {
     const d = snap.data();
-    if (d && Array.isArray(d.ids)){
-      est.lista = { ids:d.ids, porQuien:d.porQuien || "", cuando:d.cuando || 0 };
-      pintar();
-    }
-    /* fromCache indica que lo que estoy viendo salió de la caché y todavía
-       no lo confirmó el servidor: es la señal honesta de "estoy offline". */
-    marcarSync(snap.metadata.fromCache ? "escribiendo" : "ok",
-               snap.metadata.fromCache ? "sin conexión" : "al día");
+    const id = (d && d.reunionActivaId) || null;
+    if (id !== est.lista.id) escucharReunionActiva(id);
   }, e => {
-    console.error("Error escuchando la reunión:", e);
+    console.error("Error escuchando la reunión activa:", e);
+    marcarSync("error", "error de permisos");
+  });
+
+  /* Todas las reuniones guardadas, para poder listarlas en Guardadas */
+  fs.onSnapshot(fs.collection(db, "reuniones"), snap => {
+    const arr = [];
+    snap.forEach(doc => {
+      const d = doc.data();
+      arr.push({
+        id: doc.id, nombre: d.nombre || "", ids: d.ids || [],
+        porQuien: d.porQuien || "", creada: d.creada || 0,
+        actualizada: d.actualizada || d.creada || 0,
+      });
+    });
+    arr.sort((a, b) => b.creada - a.creada);
+    est.guardadas = arr;
+    if (est.pestana === "guardadas") pintar();
+  }, e => {
+    console.error("Error escuchando las reuniones guardadas:", e);
     marcarSync("error", "error de permisos");
   });
 
@@ -751,22 +778,120 @@ function escuchar(){
   });
 }
 
-/* --- Guardar la lista de la reunión ---------------------------------- */
+/* --- Escuchar el contenido de la reunión activa -----------------------
+   Se llama cada vez que cambia el puntero cancionero/activa. Si no hay
+   ninguna reunión activa todavía (id null, recién instalado o después de
+   borrar todo), se muestra la pestaña Reunión vacía: se crea sola en
+   cuanto alguien toca + por primera vez. */
+function escucharReunionActiva(id){
+  if (cancelarEscuchaActiva){ cancelarEscuchaActiva(); cancelarEscuchaActiva = null; }
+  if (!id){
+    est.lista = { id:null, ids:[], porQuien:"", cuando:0, nombre:"" };
+    pintar();
+    return;
+  }
+  cancelarEscuchaActiva = fs.onSnapshot(fs.doc(db, "reuniones", id), snap => {
+    const d = snap.data();
+    if (d){
+      est.lista = {
+        id, ids: d.ids || [], porQuien: d.porQuien || "",
+        cuando: d.actualizada || d.creada || 0, nombre: d.nombre || "",
+      };
+      pintar();
+    }
+    /* fromCache indica que lo que estoy viendo salió de la caché y todavía
+       no lo confirmó el servidor: es la señal honesta de "estoy offline". */
+    marcarSync(snap.metadata.fromCache ? "escribiendo" : "ok",
+               snap.metadata.fromCache ? "sin conexión" : "al día");
+  }, e => {
+    console.error("Error escuchando la reunión:", e);
+    marcarSync("error", "error de permisos");
+  });
+}
+
+/* Id nuevo para una reunión: si hay conexión, lo genera Firestore (así no
+   choca con el de otro dispositivo); si no, uno local alcanza porque
+   nadie más lo va a usar mientras no haya nube. */
+function generarIdReunion(){
+  return HAY_NUBE
+    ? fs.doc(fs.collection(db, "reuniones")).id
+    : "local-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+}
+
+/* Nombre por defecto de una reunión nueva: la fecha de hoy, editable
+   después. dd/mm/aaaa a mano, sin toLocaleDateString, para no depender de
+   qué configuración regional tenga el navegador (o Node, al probar). */
+function fechaHoyTexto(){
+  const d = new Date();
+  const pad = n => String(n).padStart(2, "0");
+  return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`;
+}
+
+/* --- Guardar la lista de la reunión activa ---------------------------
+   Sólo el orden de canciones (ids); el resto de la reunión no cambia acá.
+   merge:true porque puede llegar a escribir antes de que la creación
+   (crearReunion) haya terminado de confirmarse: sin merge pisaría el
+   documento entero con un objeto a medias. */
 async function guardarLista(){
+  if (!est.lista.id) return;  // no hay reunión activa todavía
   if (!HAY_NUBE){ flotar("Sin conexión: la lista no se comparte"); return; }
   marcarSync("escribiendo", "guardando");
   try{
-    await fs.setDoc(fs.doc(db, "cancionero", "reunion"), {
+    await fs.setDoc(fs.doc(db, "reuniones", est.lista.id), {
       ids: est.lista.ids,
-      porQuien: est.lista.porQuien || "",
-      cuando: Date.now(),
-    });
+      actualizada: Date.now(),
+    }, { merge: true });
     marcarSync("ok", "al día");
   }catch(e){
     console.error("No se pudo guardar la lista:", e);
     marcarSync("error", "no se guardó");
     flotar("No se pudo guardar la lista");
   }
+}
+
+/* --- Crear una reunión y hacerla la activa ----------------------------
+   Se usa tanto cuando se crea sola (primer + de la reunión de hoy) como
+   cuando se arma una a propósito desde Guardadas. */
+async function crearReunion(id, nombre, ids){
+  if (!HAY_NUBE){ flotar("Sin conexión: la reunión no se comparte"); return; }
+  marcarSync("escribiendo", "guardando");
+  try{
+    await fs.setDoc(fs.doc(db, "reuniones", id), {
+      nombre, ids, porQuien: "", creada: Date.now(), actualizada: Date.now(),
+    });
+    await fs.setDoc(fs.doc(db, "cancionero", "activa"), { reunionActivaId: id });
+    marcarSync("ok", "al día");
+  }catch(e){
+    console.error("No se pudo crear la reunión:", e);
+    marcarSync("error", "no se guardó");
+    flotar("No se pudo crear la reunión");
+  }
+}
+
+/* --- Cambiar cuál es la reunión activa --------------------------------
+   Se actualiza el estado local al toque, sin esperar la nube: se conoce
+   el contenido de sobra porque ya está en est.guardadas. */
+async function usarReunion(r){
+  est.lista = {
+    id: r.id, ids: r.ids.slice(), porQuien: r.porQuien || "",
+    cuando: r.actualizada || r.creada || 0, nombre: r.nombre || "",
+  };
+  pintar();
+  if (!HAY_NUBE){ flotar("Sin conexión: el cambio no se comparte"); return; }
+  try{
+    await fs.setDoc(fs.doc(db, "cancionero", "activa"), { reunionActivaId: r.id });
+  }catch(e){
+    console.error("No se pudo cambiar la reunión activa:", e);
+    flotar("No se pudo cambiar la reunión activa");
+  }
+}
+
+/* --- Crear una reunión vacía a propósito (botón de Guardadas) --------- */
+function nuevaReunion(nombre){
+  const id = generarIdReunion();
+  est.lista = { id, ids:[], porQuien:"", cuando:Date.now(), nombre };
+  pintar();
+  crearReunion(id, nombre, []);
 }
 
 /* --- Guardar una canción (editada o nueva) --------------------------- */
@@ -856,10 +981,12 @@ function pintar(){
 
   $("tab-canciones").classList.toggle("activa", est.pestana === "canciones");
   $("tab-reunion").classList.toggle("activa", est.pestana === "reunion");
+  $("tab-guardadas").classList.toggle("activa", est.pestana === "guardadas");
   $("caja-buscador").style.display = est.pestana === "canciones" ? "block" : "none";
 
   if (est.pestana === "canciones") pintarCatalogo();
-  else pintarReunion();
+  else if (est.pestana === "reunion") pintarReunion();
+  else pintarGuardadas();
 }
 
 /* --- Pestaña Canciones ---------------------------------------------- */
@@ -980,6 +1107,48 @@ function pintarReunion(){
   $("vaciar").onclick = vaciar;
 }
 
+/* --- Pestaña Guardadas -----------------------------------------------
+   Lista de reuniones pasadas (o armadas con anticipación). No se toca
+   nada de lo que ve el escenario: sólo permite crear una reunión nueva o
+   elegir cuál es la activa. */
+function pintarGuardadas(){
+  const cont = $("contenido");
+  cont.innerHTML = "";
+  $("pie").style.display = "none";
+
+  const acc = document.createElement("div");
+  acc.className = "acciones";
+  acc.innerHTML = `<button id="btn-nueva-reunion">+ Nueva reunión</button>`;
+  cont.appendChild(acc);
+  $("btn-nueva-reunion").onclick = () => {
+    const nombre = prompt("Nombre de la reunión", fechaHoyTexto());
+    if (nombre === null) return;  // canceló
+    nuevaReunion(nombre.trim() || fechaHoyTexto());
+  };
+
+  if (!est.guardadas.length){
+    cont.insertAdjacentHTML("beforeend", `<div class="vacio">
+      <strong>Todavía no hay reuniones guardadas</strong>
+      Se crean solas la primera vez que sumás una canción en Canciones,
+      o tocá arriba "+ Nueva reunión" para armar una con anticipación.</div>`);
+    return;
+  }
+
+  est.guardadas.forEach(r => {
+    const activa = r.id === est.lista.id;
+    const fila = document.createElement("div");
+    fila.className = "fila";
+    fila.innerHTML = `
+      <div class="fila-txt">
+        <div class="fila-nombre">${escapar(r.nombre || "Sin nombre")}${activa ? " · Activa" : ""}</div>
+        <div class="fila-meta">${r.ids.length} canción${r.ids.length === 1 ? "" : "es"} · ${haceCuanto(r.actualizada)}</div>
+      </div>
+      ${activa ? "" : `<button class="btn btn-suave usar">Usar esta</button>`}`;
+    if (!activa) fila.querySelector(".usar").onclick = () => usarReunion(r);
+    cont.appendChild(fila);
+  });
+}
+
 /* Texto tipo "hace 5 min" */
 function haceCuanto(ms){
   const s = Math.max(0, Math.round((Date.now() - ms)/1000));
@@ -1012,10 +1181,17 @@ function escapar(t){
    pantalla responde al toque sin esperar la red.
    =================================================================== */
 function alternarEnLista(id){
+  /* Si todavía no hay reunión activa (primer + de la reunión de hoy), se
+     crea sola con la fecha de hoy como nombre. */
+  const esNueva = !est.lista.id;
+  if (esNueva) est.lista = { id: generarIdReunion(), ids:[], porQuien:"", cuando:Date.now(), nombre: fechaHoyTexto() };
+
   const i = est.lista.ids.indexOf(id);
   if (i >= 0){ est.lista.ids.splice(i,1); flotar("Sacada de la reunión"); }
   else { est.lista.ids.push(id); flotar("Sumada a la reunión"); }
-  pintar(); guardarLista();
+  pintar();
+  if (esNueva) crearReunion(est.lista.id, est.lista.nombre, est.lista.ids);
+  else guardarLista();
 }
 function quitar(id){
   est.lista.ids = est.lista.ids.filter(x => x !== id);
@@ -1234,7 +1410,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v13",
+    origen: "cancionero v14",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
@@ -1257,8 +1433,9 @@ async function copiarExportado(){
 /* ===================================================================
    13. CONEXIONES DE LA INTERFAZ
    =================================================================== */
-$("tab-canciones").onclick = () => { est.pestana = "canciones"; pintar(); };
-$("tab-reunion").onclick   = () => { est.pestana = "reunion"; pintar(); };
+$("tab-canciones").onclick  = () => { est.pestana = "canciones"; pintar(); };
+$("tab-reunion").onclick    = () => { est.pestana = "reunion"; pintar(); };
+$("tab-guardadas").onclick  = () => { est.pestana = "guardadas"; pintar(); };
 $("buscar").oninput = e => { est.filtro = e.target.value; pintarCatalogo(); };
 
 $("cerrar").onclick = cerrar;
