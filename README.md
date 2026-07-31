@@ -61,22 +61,27 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // El puntero a cuál reunión está activa: un solo documento
+    // El puntero a cuál reunión está activa, y el orden manual de Guardadas
     match /cancionero/activa {
       allow read: if true;
-      allow write: if request.resource.data.keys().hasOnly(['reunionActivaId'])
-                   && request.resource.data.reunionActivaId is string;
+      allow write: if request.resource.data.keys().hasOnly(['reunionActivaId','ordenReuniones'])
+                   && (!('reunionActivaId' in request.resource.data)
+                       || request.resource.data.reunionActivaId is string)
+                   && (!('ordenReuniones' in request.resource.data)
+                       || request.resource.data.ordenReuniones is list);
     }
 
     // Cada reunión guardada (la de hoy y las anteriores): un documento por reunión
     match /reuniones/{id} {
       allow read: if true;
       allow write: if request.resource.data.keys().hasOnly(
-                        ['nombre','ids','semis','porQuien','creada','actualizada'])
+                        ['nombre','ids','semis','porQuien','creada','actualizada','fechaReunion'])
                    && request.resource.data.ids is list
                    && request.resource.data.ids.size() < 100
                    && (!('semis' in request.resource.data)
                        || request.resource.data.semis is map)
+                   && (!('fechaReunion' in request.resource.data)
+                       || request.resource.data.fechaReunion is number)
                    && (!('nombre' in request.resource.data)
                        || request.resource.data.nombre.size() < 120);
       allow delete: if false;   // no se borran documentos, se pueden vaciar

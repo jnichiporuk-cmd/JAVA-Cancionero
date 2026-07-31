@@ -137,6 +137,21 @@ input{font-family:inherit;font-size:inherit}
 }
 .sumar.puesta{border-color:var(--lista);color:var(--lista)}
 
+/* Fila de una reunión guardada: sólo el nombre (con un chip si es la
+   activa) e íconos chicos para renombrar y copiar. Sin botón "Usar
+   esta": tocar el nombre ya hace eso, y de paso lleva a Reunión. */
+.chip-activa{
+  display:inline-block;margin-left:7px;padding:1px 7px;border-radius:9px;
+  font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  background:rgba(0,176,240,.15);color:var(--acordes);border:1px solid var(--acordes);
+  vertical-align:middle;
+}
+.btn-icono{
+  flex:none;width:30px;height:30px;border-radius:7px;
+  border:1px solid var(--borde);font-size:14px;color:var(--tenue);
+  display:flex;align-items:center;justify-content:center;
+}
+
 /* ===================================================================
    4. REUNIÓN (armador de lista)
    Reordenar con flechas en vez de arrastrar: en el celular, arrastrar
@@ -271,6 +286,7 @@ input{font-family:inherit;font-size:inherit}
   font-size:16px;outline:none;
 }
 .ed-campos input:focus{border-color:var(--acordes)}
+#er-fecha,#er-hora{color-scheme:dark}
 .ed-fila2{display:flex;gap:10px}
 .ed-fila2 label{flex:1}
 .ed-transportar{
@@ -446,6 +462,26 @@ input{font-family:inherit;font-size:inherit}
     </div>
   </div>
   <div class="agregar-lista" id="ag-lista"></div>
+</div>
+
+<!-- Editar nombre y fecha/hora de una reunión guardada -->
+<div class="lector" id="er-editar">
+  <div class="lector-tope">
+    <div class="lector-barra">
+      <button class="cerrar" id="er-cancelar" title="Volver">←</button>
+      <div class="lector-tit"><div class="lector-nombre">Editar reunión</div></div>
+      <button class="btn-guardar" id="er-guardar">Guardar</button>
+    </div>
+  </div>
+  <div class="ed-cuerpo">
+    <div class="ed-campos">
+      <label>Nombre<input id="er-nombre" type="text" autocomplete="off"></label>
+      <div class="ed-fila2">
+        <label>Fecha<input id="er-fecha" type="date"></label>
+        <label>Hora<input id="er-hora" type="time"></label>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="aviso-flotante" id="flotante"></div>
@@ -717,10 +753,12 @@ const est = {
      ninguna: se crea sola la primera vez que alguien toca +. */
   lista:{ id:null, ids:[], porQuien:"", cuando:0, nombre:"", semis:{} },
   guardadas:[],         // todas las reuniones guardadas, para la pestaña Guardadas
+  ordenReuniones:[],    // orden manual de Guardadas, compartido (cancionero/activa)
   cambios:{ editados:{}, nuevas:[], borradas:[] }, // capa de ediciones
   editando:null,       // id de la canción abierta en el editor (o "nueva")
   cargando:true,
   orden:"nombre",      // orden del catálogo: nombre, tono o bpm
+  ordenGuardadas:"fecha",  // orden de la pestaña Guardadas: fecha, nombre, recientes o manual
   tamano:16,           // px del cuerpo de la canción
   semis:0,             // transporte de la canción abierta
   abierta:null,        // id de la canción en el lector
@@ -769,11 +807,15 @@ function escuchar(){
 
   /* El puntero a la reunión activa. Cuando cambia (alguien creó una
      reunión nueva o tocó "Usar esta" en Guardadas) hay que dejar de
-     escuchar la reunión vieja y empezar a escuchar la nueva. */
+     escuchar la reunión vieja y empezar a escuchar la nueva. También
+     vive acá el orden manual de Guardadas: es compartido, así que todo
+     el grupo ve las reuniones guardadas en el mismo orden. */
   fs.onSnapshot(fs.doc(db, "cancionero", "activa"), snap => {
     const d = snap.data();
     const id = (d && d.reunionActivaId) || null;
+    est.ordenReuniones = (d && d.ordenReuniones) || [];
     if (id !== est.lista.id) escucharReunionActiva(id);
+    else if (est.pestana === "guardadas") pintar();
   }, e => {
     console.error("Error escuchando la reunión activa:", e);
     marcarSync("error", "error de permisos");
@@ -788,6 +830,7 @@ function escuchar(){
         id: doc.id, nombre: d.nombre || "", ids: d.ids || [],
         porQuien: d.porQuien || "", creada: d.creada || 0,
         actualizada: d.actualizada || d.creada || 0, semis: d.semis || {},
+        fechaReunion: d.fechaReunion || d.creada || 0,
       });
     });
     arr.sort((a, b) => b.creada - a.creada);
@@ -830,7 +873,7 @@ function escuchar(){
 function escucharReunionActiva(id){
   if (cancelarEscuchaActiva){ cancelarEscuchaActiva(); cancelarEscuchaActiva = null; }
   if (!id){
-    est.lista = { id:null, ids:[], porQuien:"", cuando:0, nombre:"", semis:{} };
+    est.lista = { id:null, ids:[], porQuien:"", cuando:0, nombre:"", semis:{}, fechaReunion:0 };
     pintar();
     return;
   }
@@ -840,7 +883,7 @@ function escucharReunionActiva(id){
       est.lista = {
         id, ids: d.ids || [], porQuien: d.porQuien || "",
         cuando: d.actualizada || d.creada || 0, nombre: d.nombre || "",
-        semis: d.semis || {},
+        semis: d.semis || {}, fechaReunion: d.fechaReunion || d.creada || 0,
       };
       pintar();
     }
@@ -898,13 +941,18 @@ async function guardarLista(){
 
 /* --- Crear una reunión y hacerla la activa ----------------------------
    Se usa tanto cuando se crea sola (primer + de la reunión de hoy) como
-   cuando se arma una a propósito desde Guardadas. */
-async function crearReunion(id, nombre, ids, semis){
+   cuando se arma una a propósito desde Guardadas. fechaReunion es el día
+   en que se va a tocar (editable después, puede ser a futuro): por
+   defecto arranca en el momento de la creación, pero es un dato aparte
+   de "creada" (que sólo sirve para ordenar por "Recientes"). */
+async function crearReunion(id, nombre, ids, semis, fechaReunion){
   if (!HAY_NUBE){ flotar("Sin conexión: la reunión no se comparte"); return; }
   marcarSync("escribiendo", "guardando");
   try{
     await fs.setDoc(fs.doc(db, "reuniones", id), {
-      nombre, ids, semis: semis || {}, porQuien: "", creada: Date.now(), actualizada: Date.now(),
+      nombre, ids, semis: semis || {}, porQuien: "",
+      creada: Date.now(), actualizada: Date.now(),
+      fechaReunion: fechaReunion || Date.now(),
     });
     await fs.setDoc(fs.doc(db, "cancionero", "activa"), { reunionActivaId: id });
     marcarSync("ok", "al día");
@@ -922,7 +970,7 @@ async function usarReunion(r){
   est.lista = {
     id: r.id, ids: r.ids.slice(), porQuien: r.porQuien || "",
     cuando: r.actualizada || r.creada || 0, nombre: r.nombre || "",
-    semis: { ...(r.semis || {}) },
+    semis: { ...(r.semis || {}) }, fechaReunion: r.fechaReunion || r.creada || 0,
   };
   pintar();
   if (!HAY_NUBE){ flotar("Sin conexión: el cambio no se comparte"); return; }
@@ -937,9 +985,10 @@ async function usarReunion(r){
 /* --- Crear una reunión vacía a propósito (botón de Guardadas) --------- */
 function nuevaReunion(nombre){
   const id = generarIdReunion();
-  est.lista = { id, ids:[], porQuien:"", cuando:Date.now(), nombre, semis:{} };
+  const ahora = Date.now();
+  est.lista = { id, ids:[], porQuien:"", cuando:ahora, nombre, semis:{}, fechaReunion:ahora };
   pintar();
-  crearReunion(id, nombre, [], {});
+  crearReunion(id, nombre, [], {}, ahora);
 }
 
 /* --- Copiar una reunión guardada como punto de partida de otra --------
@@ -947,7 +996,8 @@ function nuevaReunion(nombre){
    sirve para repetir un enganchado que ya funcionó y sólo cambiar
    algunas canciones, en vez de rearmar la lista de cero. La reunión
    original queda intacta; la copia es un documento nuevo y pasa a ser
-   la activa. */
+   la activa. La fecha de la copia arranca en hoy, no en la de la
+   original: es una reunión distinta, se edita aparte si hace falta. */
 function copiarReunion(r){
   const nombre = prompt("Nombre de la copia", fechaHoyTexto());
   if (nombre === null) return;  // canceló
@@ -955,10 +1005,78 @@ function copiarReunion(r){
   const id = generarIdReunion();
   const ids = r.ids.slice();
   const semis = { ...(r.semis || {}) };
-  est.lista = { id, ids, porQuien:"", cuando:Date.now(), nombre:nombreFinal, semis };
+  const ahora = Date.now();
+  est.lista = { id, ids, porQuien:"", cuando:ahora, nombre:nombreFinal, semis, fechaReunion:ahora };
   pintar();
-  crearReunion(id, nombreFinal, ids, semis);
+  crearReunion(id, nombreFinal, ids, semis, ahora);
   flotar("Reunión copiada");
+}
+
+/* --- Editar nombre y fecha/hora de una reunión guardada ---------------
+   Un solo panel (el lápiz) para las dos cosas. Fecha y hora usan
+   <input type="date"> y <input type="time">: en el celular abren el
+   selector nativo (calendario y reloj), en vez de tener que escribir el
+   texto a mano. */
+let editandoReunion = null;
+
+function abrirEditarReunion(r){
+  editandoReunion = r;
+  const fecha = new Date(r.fechaReunion || r.creada || Date.now());
+  const pad = n => String(n).padStart(2, "0");
+  $("er-nombre").value = r.nombre || "";
+  $("er-fecha").value = `${fecha.getFullYear()}-${pad(fecha.getMonth()+1)}-${pad(fecha.getDate())}`;
+  $("er-hora").value = `${pad(fecha.getHours())}:${pad(fecha.getMinutes())}`;
+  $("er-editar").classList.add("abierto");
+}
+function cerrarEditarReunion(){
+  $("er-editar").classList.remove("abierto");
+  editandoReunion = null;
+}
+function guardarEditarReunion(){
+  const r = editandoReunion;
+  if (!r) return;
+  const nombre = $("er-nombre").value.trim();
+  if (!nombre) return flotar("Falta el nombre");
+
+  let fechaReunion = r.fechaReunion || r.creada || Date.now();
+  const fechaStr = $("er-fecha").value;   // aaaa-mm-dd
+  if (fechaStr){
+    const [anio, mes, dia] = fechaStr.split("-").map(Number);
+    const [h, mi] = ($("er-hora").value || "00:00").split(":").map(Number);
+    fechaReunion = new Date(anio, mes - 1, dia, h, mi).getTime();
+  }
+
+  cerrarEditarReunion();
+  guardarDatosReunion(r, nombre, fechaReunion);
+}
+async function guardarDatosReunion(r, nombre, fechaReunion){
+  /* Si es la reunión activa, se refleja al toque en est.lista sin
+     esperar la nube, igual que el resto de las acciones. */
+  if (r.id === est.lista.id){ est.lista.nombre = nombre; est.lista.fechaReunion = fechaReunion; }
+  const enGuardadas = est.guardadas.find(g => g.id === r.id);
+  if (enGuardadas){ enGuardadas.nombre = nombre; enGuardadas.fechaReunion = fechaReunion; }
+  pintar();
+  if (!HAY_NUBE){ flotar("Sin conexión: no se comparte"); return; }
+  try{
+    await fs.setDoc(fs.doc(db, "reuniones", r.id), { nombre, fechaReunion, actualizada: Date.now() }, { merge: true });
+  }catch(e){
+    console.error("No se pudo guardar los datos de la reunión:", e);
+    flotar("No se pudo guardar los cambios");
+  }
+}
+
+/* --- Orden manual de Guardadas -----------------------------------------
+   Compartido (vive en cancionero/activa): todo el grupo ve el mismo
+   orden. merge:true por la misma razón que en guardarLista(). */
+async function guardarOrdenReuniones(ids){
+  est.ordenReuniones = ids;
+  if (!HAY_NUBE){ flotar("Sin conexión: el orden no se comparte"); return; }
+  try{
+    await fs.setDoc(fs.doc(db, "cancionero", "activa"), { ordenReuniones: ids }, { merge: true });
+  }catch(e){
+    console.error("No se pudo guardar el orden de las reuniones:", e);
+    flotar("No se pudo guardar el orden");
+  }
 }
 
 /* --- Guardar una canción (editada o nueva) --------------------------- */
@@ -1006,11 +1124,14 @@ function leerAjustes(){
     const a = JSON.parse(localStorage.getItem("cancionero:ajustes") || "{}");
     if (a.tamano) est.tamano = a.tamano;
     if (a.orden) est.orden = a.orden;
+    if (a.ordenGuardadas) est.ordenGuardadas = a.ordenGuardadas;
   }catch(e){ /* sin ajustes guardados */ }
 }
 function guardarAjustes(){
   try{
-    localStorage.setItem("cancionero:ajustes", JSON.stringify({tamano:est.tamano, orden:est.orden}));
+    localStorage.setItem("cancionero:ajustes", JSON.stringify({
+      tamano:est.tamano, orden:est.orden, ordenGuardadas:est.ordenGuardadas,
+    }));
   }catch(e){ /* no se puede guardar, no es grave */ }
 }
 
@@ -1282,29 +1403,86 @@ function pintarGuardadas(){
     return;
   }
 
-  est.guardadas.forEach(r => {
+  const ordenFila = document.createElement("div");
+  ordenFila.className = "orden-fila";
+  ordenFila.innerHTML = `
+    <button class="orden-btn" data-orden="fecha">Fecha de reunión</button>
+    <button class="orden-btn" data-orden="nombre">Nombre</button>
+    <button class="orden-btn" data-orden="recientes">Recientes</button>
+    <button class="orden-btn" data-orden="manual">A mi gusto</button>`;
+  cont.appendChild(ordenFila);
+  ordenFila.querySelectorAll(".orden-btn").forEach(b => {
+    b.classList.toggle("activo", b.dataset.orden === est.ordenGuardadas);
+    b.onclick = () => { est.ordenGuardadas = b.dataset.orden; guardarAjustes(); pintarGuardadas(); };
+  });
+
+  /* est.guardadas ya viene de la nube ordenado por más reciente creada
+     primero (más nueva arriba). "Fecha de reunión" sigue el mismo
+     criterio pero por el día en que se toca, no por cuándo se creó el
+     documento: más nueva (o más a futuro) arriba, más vieja abajo.
+     "Nombre" reordena alfabético. "A mi gusto" sigue est.ordenReuniones
+     (compartido); lo que todavía no tiene lugar ahí —una reunión nueva,
+     por ejemplo— se agrega al final, en el orden en que ya venía. */
+  let lista;
+  if (est.ordenGuardadas === "nombre"){
+    lista = est.guardadas.slice().sort((a, b) => (a.nombre || "").localeCompare(b.nombre || "", "es", {sensitivity:"base"}));
+  } else if (est.ordenGuardadas === "fecha"){
+    lista = est.guardadas.slice().sort((a, b) => (b.fechaReunion || b.creada) - (a.fechaReunion || a.creada));
+  } else if (est.ordenGuardadas === "manual"){
+    const porId = new Map(est.guardadas.map(r => [r.id, r]));
+    const ordenadas = est.ordenReuniones.map(id => porId.get(id)).filter(Boolean);
+    const faltantes = est.guardadas.filter(r => !est.ordenReuniones.includes(r.id));
+    lista = ordenadas.concat(faltantes);
+  } else {
+    lista = est.guardadas;
+  }
+  const manual = est.ordenGuardadas === "manual";
+  const idsEnOrden = lista.map(r => r.id);
+
+  lista.forEach((r, i) => {
     const activa = r.id === est.lista.id;
     const fila = document.createElement("div");
     fila.className = "fila";
     fila.innerHTML = `
+      ${manual ? `<div class="orden">${i+1}</div>` : ""}
       <button class="fila-txt">
-        <div class="fila-nombre">${escapar(r.nombre || "Sin nombre")}${activa ? " · Activa" : ""}</div>
-        <div class="fila-meta">${r.ids.length} canción${r.ids.length === 1 ? "" : "es"} · ${haceCuanto(r.actualizada)}</div>
+        <div class="fila-nombre">${escapar(r.nombre || "Sin nombre")}${activa ? `<span class="chip-activa">Activa</span>` : ""}</div>
+        <div class="fila-meta">${fechaHoraTexto(r.fechaReunion || r.creada)} · ${r.ids.length} canción${r.ids.length === 1 ? "" : "es"}</div>
       </button>
-      ${activa ? "" : `<button class="btn btn-suave usar">Usar esta</button>`}
-      <button class="btn btn-suave copiar">Copiar</button>`;
-    /* Tocar el nombre lleva directo a la pestaña Reunión con esa reunión
-       ya activa: no hace falta pasar primero por "Usar esta" y después
-       cambiar de pestaña a mano. */
+      ${manual ? `<div class="mover">
+        <button class="arriba" ${i === 0 ? "disabled" : ""}>▲</button>
+        <button class="abajo" ${i === lista.length-1 ? "disabled" : ""}>▼</button>
+      </div>` : ""}
+      <button class="btn-icono editar" title="Cambiar nombre y fecha">✎</button>
+      <button class="btn-icono copiar" title="Copiar esta reunión">📋</button>`;
+    /* Tocar el nombre activa la reunión (si no lo era ya) y lleva directo
+       a la pestaña Reunión: hace de "Usar esta", sin ocupar un botón
+       aparte en cada fila. */
     fila.querySelector(".fila-txt").onclick = () => {
       if (!activa) usarReunion(r);
       est.pestana = "reunion";
       pintar();
     };
-    if (!activa) fila.querySelector(".usar").onclick = () => usarReunion(r);
+    fila.querySelector(".editar").onclick = () => abrirEditarReunion(r);
     fila.querySelector(".copiar").onclick = () => copiarReunion(r);
+    if (manual){
+      fila.querySelector(".arriba").onclick = () => moverReunionGuardada(idsEnOrden, i, -1);
+      fila.querySelector(".abajo").onclick  = () => moverReunionGuardada(idsEnOrden, i, +1);
+    }
     cont.appendChild(fila);
   });
+}
+
+/* Reordenar dentro de "A mi gusto": mismo patrón que mover() para las
+   canciones de una reunión, sobre la lista completa de ids visible en
+   ese momento. */
+function moverReunionGuardada(idsEnOrden, i, delta){
+  const j = i + delta;
+  if (j < 0 || j >= idsEnOrden.length) return;
+  const a = idsEnOrden.slice();
+  [a[i], a[j]] = [a[j], a[i]];
+  guardarOrdenReuniones(a);
+  pintarGuardadas();
 }
 
 /* Texto tipo "hace 5 min" */
@@ -1316,6 +1494,16 @@ function haceCuanto(ms){
   const h = Math.round(m/60);
   if (h < 24) return `hace ${h} h`;
   return `hace ${Math.round(h/24)} días`;
+}
+
+/* Fecha y hora en dd/mm/aa · hh:mm, a partir de un timestamp. Se usa
+   tanto para "fechaReunion" (el día en que se va a tocar, editable) como
+   para mostrarle al usuario el valor actual antes de cambiarlo. */
+function fechaHoraTexto(ms){
+  const d = new Date(ms);
+  const pad = n => String(n).padStart(2, "0");
+  const anio = String(d.getFullYear()).slice(-2);
+  return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${anio} · ${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
 /* Línea "tono · bpm" de cada fila. Si el título del cancionero no trae
@@ -1350,13 +1538,16 @@ function alternarEnLista(id){
   /* Si todavía no hay reunión activa (primer + de la reunión de hoy), se
      crea sola con la fecha de hoy como nombre. */
   const esNueva = !est.lista.id;
-  if (esNueva) est.lista = { id: generarIdReunion(), ids:[], porQuien:"", cuando:Date.now(), nombre: fechaHoyTexto(), semis:{} };
+  if (esNueva){
+    const ahora = Date.now();
+    est.lista = { id: generarIdReunion(), ids:[], porQuien:"", cuando:ahora, nombre: fechaHoyTexto(), semis:{}, fechaReunion:ahora };
+  }
 
   const i = est.lista.ids.indexOf(id);
   if (i >= 0){ est.lista.ids.splice(i,1); flotar("Sacada de la reunión"); }
   else { est.lista.ids.push(id); flotar("Sumada a la reunión"); }
   pintar();
-  if (esNueva) crearReunion(est.lista.id, est.lista.nombre, est.lista.ids, est.lista.semis);
+  if (esNueva) crearReunion(est.lista.id, est.lista.nombre, est.lista.ids, est.lista.semis, est.lista.fechaReunion);
   else guardarLista();
 }
 function quitar(id){
@@ -1681,6 +1872,10 @@ $("ex-copiar").onclick = copiarExportado;
 /* Panel "Agregar canciones" */
 $("ag-cerrar").onclick = cerrarAgregar;
 $("ag-buscar").oninput = e => { est.filtroAgregar = e.target.value; pintarAgregar(); };
+
+/* Panel "Editar reunión" (nombre y fecha/hora) */
+$("er-cancelar").onclick = cerrarEditarReunion;
+$("er-guardar").onclick = guardarEditarReunion;
 $("anterior").onclick = () => paso(-1);
 $("siguiente").onclick = () => paso(+1);
 $("mas-t").onclick   = () => { if (!PORID[est.abierta] || !PORID[est.abierta].tono) return; est.semis = Math.min(11, est.semis + 1); pintarLector(); guardarSemisSiCorresponde(); };
