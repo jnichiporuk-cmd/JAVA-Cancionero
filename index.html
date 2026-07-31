@@ -348,7 +348,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v31</span></div>
+    <div class="marca">Cancionero <span class="ver">v32</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
   </div>
@@ -472,7 +472,7 @@ input{font-family:inherit;font-size:inherit}
   <div class="lector-tope">
     <div class="lector-barra">
       <button class="cerrar" id="er-cancelar" title="Volver">←</button>
-      <div class="lector-tit"><div class="lector-nombre">Editar reunión</div></div>
+      <div class="lector-tit"><div class="lector-nombre" id="er-titulo">Editar reunión</div></div>
       <button class="btn-guardar" id="er-guardar">Guardar</button>
     </div>
   </div>
@@ -989,54 +989,63 @@ function nuevaReunion(nombre){
   crearReunion(id, nombre, [], {}, ahora);
 }
 
+/* --- Editar (nombre + fecha/hora) o copiar una reunión guardada -------
+   Un solo panel para las dos cosas, reutilizado también para copiar:
+   copiar es "crear una reunión nueva con las canciones y semis de otra,
+   pero preguntando nombre y fecha igual que al editar" en vez de un
+   prompt aparte. Fecha y hora usan <input type="date"> y
+   <input type="time">: en el celular abren el selector nativo
+   (calendario y reloj), en vez de tener que escribir el texto a mano.
+
+   editandoReunion: la reunión que se está por renombrar/refechar.
+   copiandoDesdeReunion: si el panel se abrió desde "Copiar", la reunión
+   de origen; sólo uno de los dos está activo a la vez. */
+let editandoReunion = null;
+let copiandoDesdeReunion = null;
+
+function abrirEditarReunion(r){
+  editandoReunion = r;
+  copiandoDesdeReunion = null;
+  $("er-titulo").textContent = "Editar reunión";
+  llenarCamposReunion(r.nombre || "", r.fechaReunion || r.creada || Date.now());
+  $("er-editar").classList.add("abierto");
+}
+
 /* --- Copiar una reunión guardada como punto de partida de otra --------
    Trae las canciones (y sus transportes guardados) tal cual estaban:
    sirve para repetir un enganchado que ya funcionó y sólo cambiar
    algunas canciones, en vez de rearmar la lista de cero. La reunión
    original queda intacta; la copia es un documento nuevo y pasa a ser
-   la activa. La fecha de la copia arranca en hoy, no en la de la
-   original: es una reunión distinta, se edita aparte si hace falta. */
-function copiarReunion(r){
-  const nombre = prompt("Nombre de la copia", fechaHoyTexto());
-  if (nombre === null) return;  // canceló
-  const nombreFinal = nombre.trim() || fechaHoyTexto();
-  const id = generarIdReunion();
-  const ids = r.ids.slice();
-  const semis = { ...(r.semis || {}) };
-  const ahora = Date.now();
-  est.lista = { id, ids, porQuien:"", cuando:ahora, nombre:nombreFinal, semis, fechaReunion:ahora };
-  pintar();
-  crearReunion(id, nombreFinal, ids, semis, ahora);
-  flotar("Reunión copiada");
-}
-
-/* --- Editar nombre y fecha/hora de una reunión guardada ---------------
-   Un solo panel (el lápiz) para las dos cosas. Fecha y hora usan
-   <input type="date"> y <input type="time">: en el celular abren el
-   selector nativo (calendario y reloj), en vez de tener que escribir el
-   texto a mano. */
-let editandoReunion = null;
-
-function abrirEditarReunion(r){
-  editandoReunion = r;
-  const fecha = new Date(r.fechaReunion || r.creada || Date.now());
-  const pad = n => String(n).padStart(2, "0");
-  $("er-nombre").value = r.nombre || "";
-  $("er-fecha").value = `${fecha.getFullYear()}-${pad(fecha.getMonth()+1)}-${pad(fecha.getDate())}`;
-  $("er-hora").value = `${pad(fecha.getHours())}:${pad(fecha.getMinutes())}`;
+   la activa. La fecha sugerida es la de hoy, no la de la original: es
+   una reunión distinta, se ajusta en el mismo panel antes de guardar. */
+function abrirCopiarReunion(r){
+  copiandoDesdeReunion = r;
+  editandoReunion = null;
+  $("er-titulo").textContent = "Copiar reunión";
+  llenarCamposReunion(r.nombre ? `${r.nombre} (copia)` : "", Date.now());
   $("er-editar").classList.add("abierto");
 }
+
+function llenarCamposReunion(nombre, ms){
+  const fecha = new Date(ms);
+  const pad = n => String(n).padStart(2, "0");
+  $("er-nombre").value = nombre;
+  $("er-fecha").value = `${fecha.getFullYear()}-${pad(fecha.getMonth()+1)}-${pad(fecha.getDate())}`;
+  $("er-hora").value = `${pad(fecha.getHours())}:${pad(fecha.getMinutes())}`;
+}
+
 function cerrarEditarReunion(){
   $("er-editar").classList.remove("abierto");
   editandoReunion = null;
+  copiandoDesdeReunion = null;
 }
+
 function guardarEditarReunion(){
-  const r = editandoReunion;
-  if (!r) return;
   const nombre = $("er-nombre").value.trim();
   if (!nombre) return flotar("Falta el nombre");
 
-  let fechaReunion = r.fechaReunion || r.creada || Date.now();
+  const origen = copiandoDesdeReunion || editandoReunion;
+  let fechaReunion = origen.fechaReunion || origen.creada || Date.now();
   const fechaStr = $("er-fecha").value;   // aaaa-mm-dd
   if (fechaStr){
     const [anio, mes, dia] = fechaStr.split("-").map(Number);
@@ -1044,6 +1053,20 @@ function guardarEditarReunion(){
     fechaReunion = new Date(anio, mes - 1, dia, h, mi).getTime();
   }
 
+  if (copiandoDesdeReunion){
+    const r = copiandoDesdeReunion;
+    const id = generarIdReunion();
+    const ids = r.ids.slice();
+    const semis = { ...(r.semis || {}) };
+    est.lista = { id, ids, porQuien:"", cuando:Date.now(), nombre, semis, fechaReunion };
+    cerrarEditarReunion();
+    pintar();
+    crearReunion(id, nombre, ids, semis, fechaReunion);
+    flotar("Reunión copiada");
+    return;
+  }
+
+  const r = editandoReunion;
   cerrarEditarReunion();
   guardarDatosReunion(r, nombre, fechaReunion);
 }
@@ -1419,7 +1442,7 @@ function pintarGuardadas(){
       pintar();
     };
     fila.querySelector(".editar").onclick = () => abrirEditarReunion(r);
-    fila.querySelector(".copiar").onclick = () => copiarReunion(r);
+    fila.querySelector(".copiar").onclick = () => abrirCopiarReunion(r);
     cont.appendChild(fila);
   });
 }
@@ -1761,7 +1784,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v31",
+    origen: "cancionero v32",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
