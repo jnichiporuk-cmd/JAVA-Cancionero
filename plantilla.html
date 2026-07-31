@@ -365,6 +365,9 @@ input{font-family:inherit;font-size:inherit}
     <button class="orden-btn" data-orden="tono">Tono</button>
     <button class="orden-btn" data-orden="bpm">BPM</button>
   </div>
+  <div class="buscador" id="caja-buscador-guardadas" style="display:none">
+    <input id="bg-buscar" type="search" placeholder="Buscar por nombre" autocomplete="off">
+  </div>
 </div>
 
 <div class="contenido" id="contenido"></div>
@@ -749,16 +752,15 @@ const est = {
   pestana:"canciones",
   filtro:"",
   filtroAgregar:"",    // buscador del panel rápido "Agregar canciones"
+  filtroGuardadas:"",  // buscador de la pestaña Guardadas, por nombre
   /* La reunión activa. id:null significa que todavía no se creó
      ninguna: se crea sola la primera vez que alguien toca +. */
   lista:{ id:null, ids:[], porQuien:"", cuando:0, nombre:"", semis:{} },
   guardadas:[],         // todas las reuniones guardadas, para la pestaña Guardadas
-  ordenReuniones:[],    // orden manual de Guardadas, compartido (cancionero/activa)
   cambios:{ editados:{}, nuevas:[], borradas:[] }, // capa de ediciones
   editando:null,       // id de la canción abierta en el editor (o "nueva")
   cargando:true,
   orden:"nombre",      // orden del catálogo: nombre, tono o bpm
-  ordenGuardadas:"fecha",  // orden de la pestaña Guardadas: fecha, nombre, recientes o manual
   tamano:16,           // px del cuerpo de la canción
   semis:0,             // transporte de la canción abierta
   abierta:null,        // id de la canción en el lector
@@ -807,15 +809,11 @@ function escuchar(){
 
   /* El puntero a la reunión activa. Cuando cambia (alguien creó una
      reunión nueva o tocó "Usar esta" en Guardadas) hay que dejar de
-     escuchar la reunión vieja y empezar a escuchar la nueva. También
-     vive acá el orden manual de Guardadas: es compartido, así que todo
-     el grupo ve las reuniones guardadas en el mismo orden. */
+     escuchar la reunión vieja y empezar a escuchar la nueva. */
   fs.onSnapshot(fs.doc(db, "cancionero", "activa"), snap => {
     const d = snap.data();
     const id = (d && d.reunionActivaId) || null;
-    est.ordenReuniones = (d && d.ordenReuniones) || [];
     if (id !== est.lista.id) escucharReunionActiva(id);
-    else if (est.pestana === "guardadas") pintar();
   }, e => {
     console.error("Error escuchando la reunión activa:", e);
     marcarSync("error", "error de permisos");
@@ -1065,20 +1063,6 @@ async function guardarDatosReunion(r, nombre, fechaReunion){
   }
 }
 
-/* --- Orden manual de Guardadas -----------------------------------------
-   Compartido (vive en cancionero/activa): todo el grupo ve el mismo
-   orden. merge:true por la misma razón que en guardarLista(). */
-async function guardarOrdenReuniones(ids){
-  est.ordenReuniones = ids;
-  if (!HAY_NUBE){ flotar("Sin conexión: el orden no se comparte"); return; }
-  try{
-    await fs.setDoc(fs.doc(db, "cancionero", "activa"), { ordenReuniones: ids }, { merge: true });
-  }catch(e){
-    console.error("No se pudo guardar el orden de las reuniones:", e);
-    flotar("No se pudo guardar el orden");
-  }
-}
-
 /* --- Guardar una canción (editada o nueva) --------------------------- */
 async function guardarCancion(cancion, esNueva){
   if (!HAY_NUBE){ flotar("Sin conexión: el cambio no se comparte"); return; }
@@ -1124,13 +1108,12 @@ function leerAjustes(){
     const a = JSON.parse(localStorage.getItem("cancionero:ajustes") || "{}");
     if (a.tamano) est.tamano = a.tamano;
     if (a.orden) est.orden = a.orden;
-    if (a.ordenGuardadas) est.ordenGuardadas = a.ordenGuardadas;
   }catch(e){ /* sin ajustes guardados */ }
 }
 function guardarAjustes(){
   try{
     localStorage.setItem("cancionero:ajustes", JSON.stringify({
-      tamano:est.tamano, orden:est.orden, ordenGuardadas:est.ordenGuardadas,
+      tamano:est.tamano, orden:est.orden,
     }));
   }catch(e){ /* no se puede guardar, no es grave */ }
 }
@@ -1173,6 +1156,7 @@ function pintar(){
   $("tab-guardadas").classList.toggle("activa", est.pestana === "guardadas");
   $("caja-buscador").style.display = est.pestana === "canciones" ? "block" : "none";
   $("caja-orden").style.display = est.pestana === "canciones" ? "flex" : "none";
+  $("caja-buscador-guardadas").style.display = est.pestana === "guardadas" ? "block" : "none";
 
   if (est.pestana === "canciones") pintarCatalogo();
   else if (est.pestana === "reunion") pintarReunion();
@@ -1376,10 +1360,11 @@ function pintarAgregar(){
 }
 
 /* --- Pestaña Guardadas -----------------------------------------------
-   Lista de reuniones pasadas (o armadas con anticipación). No se toca
-   nada de lo que ve el escenario: sólo permite crear una reunión nueva,
-   copiar una existente como punto de partida, o elegir cuál es la
-   activa. */
+   Lista de reuniones pasadas (o armadas con anticipación), siempre con
+   la más nueva (o más a futuro) primero, según la fecha de reunión: es
+   el único orden, sin opciones para cambiarlo. No se toca nada de lo
+   que ve el escenario: sólo permite crear una reunión nueva, copiar una
+   existente como punto de partida, o elegir cuál es la activa. */
 function pintarGuardadas(){
   const cont = $("contenido");
   cont.innerHTML = "";
@@ -1403,56 +1388,26 @@ function pintarGuardadas(){
     return;
   }
 
-  const ordenFila = document.createElement("div");
-  ordenFila.className = "orden-fila";
-  ordenFila.innerHTML = `
-    <button class="orden-btn" data-orden="fecha">Fecha de reunión</button>
-    <button class="orden-btn" data-orden="nombre">Nombre</button>
-    <button class="orden-btn" data-orden="recientes">Recientes</button>
-    <button class="orden-btn" data-orden="manual">A mi gusto</button>`;
-  cont.appendChild(ordenFila);
-  ordenFila.querySelectorAll(".orden-btn").forEach(b => {
-    b.classList.toggle("activo", b.dataset.orden === est.ordenGuardadas);
-    b.onclick = () => { est.ordenGuardadas = b.dataset.orden; guardarAjustes(); pintarGuardadas(); };
-  });
+  const q = est.filtroGuardadas.trim().toLowerCase();
+  const lista = est.guardadas
+    .filter(r => !q || (r.nombre || "").toLowerCase().includes(q))
+    .sort((a, b) => (b.fechaReunion || b.creada) - (a.fechaReunion || a.creada));
 
-  /* est.guardadas ya viene de la nube ordenado por más reciente creada
-     primero (más nueva arriba). "Fecha de reunión" sigue el mismo
-     criterio pero por el día en que se toca, no por cuándo se creó el
-     documento: más nueva (o más a futuro) arriba, más vieja abajo.
-     "Nombre" reordena alfabético. "A mi gusto" sigue est.ordenReuniones
-     (compartido); lo que todavía no tiene lugar ahí —una reunión nueva,
-     por ejemplo— se agrega al final, en el orden en que ya venía. */
-  let lista;
-  if (est.ordenGuardadas === "nombre"){
-    lista = est.guardadas.slice().sort((a, b) => (a.nombre || "").localeCompare(b.nombre || "", "es", {sensitivity:"base"}));
-  } else if (est.ordenGuardadas === "fecha"){
-    lista = est.guardadas.slice().sort((a, b) => (b.fechaReunion || b.creada) - (a.fechaReunion || a.creada));
-  } else if (est.ordenGuardadas === "manual"){
-    const porId = new Map(est.guardadas.map(r => [r.id, r]));
-    const ordenadas = est.ordenReuniones.map(id => porId.get(id)).filter(Boolean);
-    const faltantes = est.guardadas.filter(r => !est.ordenReuniones.includes(r.id));
-    lista = ordenadas.concat(faltantes);
-  } else {
-    lista = est.guardadas;
+  if (!lista.length){
+    cont.insertAdjacentHTML("beforeend",
+      `<div class="vacio"><strong>Sin resultados</strong>Probá con parte del nombre.</div>`);
+    return;
   }
-  const manual = est.ordenGuardadas === "manual";
-  const idsEnOrden = lista.map(r => r.id);
 
-  lista.forEach((r, i) => {
+  lista.forEach(r => {
     const activa = r.id === est.lista.id;
     const fila = document.createElement("div");
     fila.className = "fila";
     fila.innerHTML = `
-      ${manual ? `<div class="orden">${i+1}</div>` : ""}
       <button class="fila-txt">
         <div class="fila-nombre">${escapar(r.nombre || "Sin nombre")}${activa ? `<span class="chip-activa">Activa</span>` : ""}</div>
         <div class="fila-meta">${fechaHoraTexto(r.fechaReunion || r.creada)} · ${r.ids.length} canción${r.ids.length === 1 ? "" : "es"}</div>
       </button>
-      ${manual ? `<div class="mover">
-        <button class="arriba" ${i === 0 ? "disabled" : ""}>▲</button>
-        <button class="abajo" ${i === lista.length-1 ? "disabled" : ""}>▼</button>
-      </div>` : ""}
       <button class="btn-icono editar" title="Cambiar nombre y fecha">✎</button>
       <button class="btn-icono copiar" title="Copiar esta reunión">📋</button>`;
     /* Tocar el nombre activa la reunión (si no lo era ya) y lleva directo
@@ -1465,24 +1420,8 @@ function pintarGuardadas(){
     };
     fila.querySelector(".editar").onclick = () => abrirEditarReunion(r);
     fila.querySelector(".copiar").onclick = () => copiarReunion(r);
-    if (manual){
-      fila.querySelector(".arriba").onclick = () => moverReunionGuardada(idsEnOrden, i, -1);
-      fila.querySelector(".abajo").onclick  = () => moverReunionGuardada(idsEnOrden, i, +1);
-    }
     cont.appendChild(fila);
   });
-}
-
-/* Reordenar dentro de "A mi gusto": mismo patrón que mover() para las
-   canciones de una reunión, sobre la lista completa de ids visible en
-   ese momento. */
-function moverReunionGuardada(idsEnOrden, i, delta){
-  const j = i + delta;
-  if (j < 0 || j >= idsEnOrden.length) return;
-  const a = idsEnOrden.slice();
-  [a[i], a[j]] = [a[j], a[i]];
-  guardarOrdenReuniones(a);
-  pintarGuardadas();
 }
 
 /* Texto tipo "hace 5 min" */
@@ -1849,6 +1788,7 @@ $("tab-canciones").onclick  = () => { est.pestana = "canciones"; pintar(); };
 $("tab-reunion").onclick    = () => { est.pestana = "reunion"; pintar(); };
 $("tab-guardadas").onclick  = () => { est.pestana = "guardadas"; pintar(); };
 $("buscar").oninput = e => { est.filtro = e.target.value; pintarCatalogo(); };
+$("bg-buscar").oninput = e => { est.filtroGuardadas = e.target.value; pintarGuardadas(); };
 $("caja-orden").querySelectorAll(".orden-btn").forEach(b => {
   b.onclick = () => { est.orden = b.dataset.orden; guardarAjustes(); pintarCatalogo(); };
 });
