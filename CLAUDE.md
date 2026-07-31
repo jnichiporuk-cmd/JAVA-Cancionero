@@ -48,7 +48,7 @@ cancionero original.
 
 ```
 cancionero/activa      ->  { reunionActivaId }
-reuniones/{id}         ->  { nombre, ids: [...], porQuien, creada, actualizada }
+reuniones/{id}         ->  { nombre, ids: [...], semis: {...}, porQuien, creada, actualizada }
 canciones/{id}         ->  { nombre, tono, bpm, bloques, nueva, borrada, cuando }
 ```
 
@@ -138,8 +138,16 @@ ya se discutió:
   buscándolo.**
 - **No se agrega el artista al nombre**, salvo para distinguir dos canciones
   que se llaman igual.
-- **El transporte es por dispositivo y no se guarda**: cada vez que se abre una
-  canción arranca en su tono original. Fue una decisión explícita, no un olvido.
+- **El transporte fuera de una reunión es por dispositivo y no se guarda**:
+  mirar una canción desde Canciones arranca siempre en su tono original. Fue
+  una decisión explícita, no un olvido. **Dentro de una reunión** el
+  transporte sí se guarda, pero por reunión, no en la canción: cada
+  `reuniones/{id}` tiene su propio mapa `semis` (`{ [idCanción]: semitonos }`)
+  con los desvíos del tono original para esa reunión puntual, sin tocar
+  `canciones/{id}`. Al volver a abrir esa reunión, cada canción vuelve a
+  aparecer en el tono en que se dejó. Distinto de transportar desde el
+  editor (`transportarEditor()`), que reescribe el tono y los acordes de la
+  canción en sí: ese cambio es permanente y para todas las reuniones.
 - **El catálogo no se edita a mano.** Sale del `.docx` vía `extraer.py`. Editar
   `catalogo.json` directo se pierde en el próximo build.
 - **El nombre del archivo lleva número de versión y la versión se ve en el

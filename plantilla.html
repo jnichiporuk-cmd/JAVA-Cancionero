@@ -262,6 +262,7 @@ input{font-family:inherit;font-size:inherit}
 }
 .btn-ancho{width:100%;padding:13px;margin-top:12px}
 .ed-cuerpo{flex:1;overflow-y:auto;padding:14px 14px 40px}
+.agregar-lista{flex:1;overflow-y:auto;padding-bottom:40px}
 .ed-campos label{display:block;font-size:11px;letter-spacing:.14em;
   text-transform:uppercase;color:var(--tenue);margin-bottom:11px}
 .ed-campos input{
@@ -272,6 +273,14 @@ input{font-family:inherit;font-size:inherit}
 .ed-campos input:focus{border-color:var(--acordes)}
 .ed-fila2{display:flex;gap:10px}
 .ed-fila2 label{flex:1}
+.ed-transportar{
+  display:flex;align-items:center;gap:8px;margin:12px 0 16px;
+  font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--tenue);
+}
+.ed-transportar button{
+  width:30px;height:30px;border:1px solid var(--borde);border-radius:7px;
+  font-size:14px;color:var(--tenue);display:flex;align-items:center;justify-content:center;
+}
 .ed-ayuda{
   padding:9px 11px;margin-bottom:10px;border-radius:8px;font-size:12.5px;
   line-height:1.45;background:var(--superficie);color:var(--tenue);
@@ -349,7 +358,7 @@ input{font-family:inherit;font-size:inherit}
 <div class="lector" id="lector">
   <div class="lector-tope">
     <div class="lector-barra">
-      <button class="cerrar" id="cerrar">✕</button>
+      <button class="cerrar" id="cerrar" title="Volver">←</button>
       <div class="lector-tit">
         <div class="lector-nombre" id="l-nombre"></div>
         <div class="lector-meta" id="l-meta"></div>
@@ -375,7 +384,7 @@ input{font-family:inherit;font-size:inherit}
 <div class="lector" id="editor">
   <div class="lector-tope">
     <div class="lector-barra">
-      <button class="cerrar" id="ed-cancelar">✕</button>
+      <button class="cerrar" id="ed-cancelar" title="Volver sin guardar">←</button>
       <div class="lector-tit"><div class="lector-nombre" id="ed-titulo">Editar</div></div>
       <button class="btn-guardar" id="ed-guardar">Guardar</button>
     </div>
@@ -386,6 +395,11 @@ input{font-family:inherit;font-size:inherit}
       <div class="ed-fila2">
         <label>Tono<input id="ed-tono" type="text" placeholder="G, Bm…" autocomplete="off"></label>
         <label>BPM<input id="ed-bpm" type="number" placeholder="—"></label>
+      </div>
+      <div class="ed-transportar">
+        <span>Transportar el original</span>
+        <button id="ed-bemol" title="Bajar medio tono">♭</button>
+        <button id="ed-sostenido" title="Subir medio tono">♯</button>
       </div>
     </div>
 
@@ -408,7 +422,7 @@ input{font-family:inherit;font-size:inherit}
 <div class="lector" id="exportar">
   <div class="lector-tope">
     <div class="lector-barra">
-      <button class="cerrar" id="ex-cerrar">✕</button>
+      <button class="cerrar" id="ex-cerrar" title="Volver">←</button>
       <div class="lector-tit"><div class="lector-nombre">Exportar cambios</div>
       <div class="lector-meta" id="ex-meta"></div></div>
     </div>
@@ -418,6 +432,20 @@ input{font-family:inherit;font-size:inherit}
     <textarea id="ex-texto" spellcheck="false" readonly></textarea>
     <button class="btn-guardar btn-ancho" id="ex-copiar">Copiar todo</button>
   </div>
+</div>
+
+<!-- Agregar canciones a la reunión activa, sin salir de la pestaña Reunión -->
+<div class="lector" id="agregar">
+  <div class="lector-tope">
+    <div class="lector-barra">
+      <button class="cerrar" id="ag-cerrar" title="Volver">←</button>
+      <div class="lector-tit"><div class="lector-nombre">Agregar canciones</div></div>
+    </div>
+    <div class="buscador">
+      <input id="ag-buscar" type="search" placeholder="Buscar por nombre o tono" autocomplete="off">
+    </div>
+  </div>
+  <div class="agregar-lista" id="ag-lista"></div>
 </div>
 
 <div class="aviso-flotante" id="flotante"></div>
@@ -684,9 +712,10 @@ let cancelarEscuchaActiva = null;  // deja de escuchar la reunión activa anteri
 const est = {
   pestana:"canciones",
   filtro:"",
+  filtroAgregar:"",    // buscador del panel rápido "Agregar canciones"
   /* La reunión activa. id:null significa que todavía no se creó
      ninguna: se crea sola la primera vez que alguien toca +. */
-  lista:{ id:null, ids:[], porQuien:"", cuando:0, nombre:"" },
+  lista:{ id:null, ids:[], porQuien:"", cuando:0, nombre:"", semis:{} },
   guardadas:[],         // todas las reuniones guardadas, para la pestaña Guardadas
   cambios:{ editados:{}, nuevas:[], borradas:[] }, // capa de ediciones
   editando:null,       // id de la canción abierta en el editor (o "nueva")
@@ -758,7 +787,7 @@ function escuchar(){
       arr.push({
         id: doc.id, nombre: d.nombre || "", ids: d.ids || [],
         porQuien: d.porQuien || "", creada: d.creada || 0,
-        actualizada: d.actualizada || d.creada || 0,
+        actualizada: d.actualizada || d.creada || 0, semis: d.semis || {},
       });
     });
     arr.sort((a, b) => b.creada - a.creada);
@@ -801,7 +830,7 @@ function escuchar(){
 function escucharReunionActiva(id){
   if (cancelarEscuchaActiva){ cancelarEscuchaActiva(); cancelarEscuchaActiva = null; }
   if (!id){
-    est.lista = { id:null, ids:[], porQuien:"", cuando:0, nombre:"" };
+    est.lista = { id:null, ids:[], porQuien:"", cuando:0, nombre:"", semis:{} };
     pintar();
     return;
   }
@@ -811,6 +840,7 @@ function escucharReunionActiva(id){
       est.lista = {
         id, ids: d.ids || [], porQuien: d.porQuien || "",
         cuando: d.actualizada || d.creada || 0, nombre: d.nombre || "",
+        semis: d.semis || {},
       };
       pintar();
     }
@@ -843,10 +873,11 @@ function fechaHoyTexto(){
 }
 
 /* --- Guardar la lista de la reunión activa ---------------------------
-   Sólo el orden de canciones (ids); el resto de la reunión no cambia acá.
-   merge:true porque puede llegar a escribir antes de que la creación
-   (crearReunion) haya terminado de confirmarse: sin merge pisaría el
-   documento entero con un objeto a medias. */
+   El orden de canciones (ids) y el transporte por canción (semis): son
+   los dos datos que cambian sin pasar por el editor. merge:true porque
+   puede llegar a escribir antes de que la creación (crearReunion) haya
+   terminado de confirmarse: sin merge pisaría el documento entero con
+   un objeto a medias. */
 async function guardarLista(){
   if (!est.lista.id) return;  // no hay reunión activa todavía
   if (!HAY_NUBE){ flotar("Sin conexión: la lista no se comparte"); return; }
@@ -854,6 +885,7 @@ async function guardarLista(){
   try{
     await fs.setDoc(fs.doc(db, "reuniones", est.lista.id), {
       ids: est.lista.ids,
+      semis: est.lista.semis || {},
       actualizada: Date.now(),
     }, { merge: true });
     marcarSync("ok", "al día");
@@ -867,12 +899,12 @@ async function guardarLista(){
 /* --- Crear una reunión y hacerla la activa ----------------------------
    Se usa tanto cuando se crea sola (primer + de la reunión de hoy) como
    cuando se arma una a propósito desde Guardadas. */
-async function crearReunion(id, nombre, ids){
+async function crearReunion(id, nombre, ids, semis){
   if (!HAY_NUBE){ flotar("Sin conexión: la reunión no se comparte"); return; }
   marcarSync("escribiendo", "guardando");
   try{
     await fs.setDoc(fs.doc(db, "reuniones", id), {
-      nombre, ids, porQuien: "", creada: Date.now(), actualizada: Date.now(),
+      nombre, ids, semis: semis || {}, porQuien: "", creada: Date.now(), actualizada: Date.now(),
     });
     await fs.setDoc(fs.doc(db, "cancionero", "activa"), { reunionActivaId: id });
     marcarSync("ok", "al día");
@@ -890,6 +922,7 @@ async function usarReunion(r){
   est.lista = {
     id: r.id, ids: r.ids.slice(), porQuien: r.porQuien || "",
     cuando: r.actualizada || r.creada || 0, nombre: r.nombre || "",
+    semis: { ...(r.semis || {}) },
   };
   pintar();
   if (!HAY_NUBE){ flotar("Sin conexión: el cambio no se comparte"); return; }
@@ -904,9 +937,28 @@ async function usarReunion(r){
 /* --- Crear una reunión vacía a propósito (botón de Guardadas) --------- */
 function nuevaReunion(nombre){
   const id = generarIdReunion();
-  est.lista = { id, ids:[], porQuien:"", cuando:Date.now(), nombre };
+  est.lista = { id, ids:[], porQuien:"", cuando:Date.now(), nombre, semis:{} };
   pintar();
-  crearReunion(id, nombre, []);
+  crearReunion(id, nombre, [], {});
+}
+
+/* --- Copiar una reunión guardada como punto de partida de otra --------
+   Trae las canciones (y sus transportes guardados) tal cual estaban:
+   sirve para repetir un enganchado que ya funcionó y sólo cambiar
+   algunas canciones, en vez de rearmar la lista de cero. La reunión
+   original queda intacta; la copia es un documento nuevo y pasa a ser
+   la activa. */
+function copiarReunion(r){
+  const nombre = prompt("Nombre de la copia", fechaHoyTexto());
+  if (nombre === null) return;  // canceló
+  const nombreFinal = nombre.trim() || fechaHoyTexto();
+  const id = generarIdReunion();
+  const ids = r.ids.slice();
+  const semis = { ...(r.semis || {}) };
+  est.lista = { id, ids, porQuien:"", cuando:Date.now(), nombre:nombreFinal, semis };
+  pintar();
+  crearReunion(id, nombreFinal, ids, semis);
+  flotar("Reunión copiada");
 }
 
 /* --- Guardar una canción (editada o nueva) --------------------------- */
@@ -1096,9 +1148,11 @@ function pintarReunion(){
 
   if (!est.lista.ids.length){
     cont.innerHTML = `<div class="vacio"><strong>Todavía no hay lista</strong>
-      Andá a Canciones y tocá <b>+</b> en las que van este domingo.
+      Tocá "+ Agregar canciones" abajo para sumar las de este domingo.
       Lo que armes acá lo ve todo el grupo.</div>`;
-    pie.style.display = "none";
+    pie.style.display = "flex";
+    pie.innerHTML = `<button class="btn btn-fuerte" id="agregar-btn">+ Agregar canciones</button>`;
+    $("agregar-btn").onclick = abrirAgregar;
     return;
   }
 
@@ -1131,7 +1185,7 @@ function pintarReunion(){
       <div class="orden">${i+1}</div>
       <button class="fila-txt">
         <div class="fila-nombre">${escapar(s.nombre)}</div>
-        <div class="fila-meta">${metaDe(s)}</div>
+        <div class="fila-meta">${metaDe(s, semisGuardado(id))}</div>
       </button>
       <div class="mover">
         <button class="arriba" ${i === 0 ? "disabled" : ""}>▲</button>
@@ -1147,15 +1201,64 @@ function pintarReunion(){
 
   pie.style.display = "flex";
   pie.innerHTML = `<button class="btn btn-fuerte" id="empezar">Empezar reunión</button>
+                   <button class="btn btn-suave" id="agregar-btn">+ Agregar</button>
                    <button class="btn btn-suave" id="vaciar">Vaciar</button>`;
   $("empezar").onclick = () => { est.posicion = 0; abrir(est.lista.ids[0], true); };
+  $("agregar-btn").onclick = abrirAgregar;
   $("vaciar").onclick = vaciar;
+}
+
+/* --- Panel "Agregar canciones" ----------------------------------------
+   Mismo buscador y misma fila que la pestaña Canciones, pero en un panel
+   aparte para no perder de vista en qué reunión se está agregando: antes
+   había que ir y volver entre pestañas, y ese viaje es justo donde se
+   pierde la noción de a cuál reunión se estaba sumando. */
+function abrirAgregar(){
+  est.filtroAgregar = "";
+  $("ag-buscar").value = "";
+  pintarAgregar();
+  $("agregar").classList.add("abierto");
+}
+function cerrarAgregar(){
+  $("agregar").classList.remove("abierto");
+}
+function pintarAgregar(){
+  const cont = $("ag-lista");
+  cont.innerHTML = "";
+  const q = est.filtroAgregar.trim().toLowerCase();
+  const encontradas = CATALOGO.filter(s =>
+    !q || s.nombre.toLowerCase().includes(q) || (s.tono || "").toLowerCase() === q
+  );
+
+  if (!encontradas.length){
+    cont.innerHTML = `<div class="vacio"><strong>Sin resultados</strong>Probá con parte del nombre, o con el tono (G, Bm).</div>`;
+    return;
+  }
+
+  encontradas.forEach(s => {
+    const puesta = est.lista.ids.includes(s.id);
+    const fila = document.createElement("div");
+    fila.className = "fila";
+    fila.innerHTML = `
+      <button class="fila-txt">
+        <div class="fila-nombre">${escapar(s.nombre)}</div>
+        <div class="fila-meta">${metaDe(s)}</div>
+      </button>
+      <button class="sumar${puesta ? " puesta" : ""}">${puesta ? "✓" : "+"}</button>`;
+    /* Acá el toque suma o saca directo, sin abrir la canción: es un
+       panel para armar la lista rápido, no para leer letras. */
+    const alternar = () => { alternarEnLista(s.id); pintarAgregar(); };
+    fila.querySelector(".fila-txt").onclick = alternar;
+    fila.querySelector(".sumar").onclick = alternar;
+    cont.appendChild(fila);
+  });
 }
 
 /* --- Pestaña Guardadas -----------------------------------------------
    Lista de reuniones pasadas (o armadas con anticipación). No se toca
-   nada de lo que ve el escenario: sólo permite crear una reunión nueva o
-   elegir cuál es la activa. */
+   nada de lo que ve el escenario: sólo permite crear una reunión nueva,
+   copiar una existente como punto de partida, o elegir cuál es la
+   activa. */
 function pintarGuardadas(){
   const cont = $("contenido");
   cont.innerHTML = "";
@@ -1184,12 +1287,22 @@ function pintarGuardadas(){
     const fila = document.createElement("div");
     fila.className = "fila";
     fila.innerHTML = `
-      <div class="fila-txt">
+      <button class="fila-txt">
         <div class="fila-nombre">${escapar(r.nombre || "Sin nombre")}${activa ? " · Activa" : ""}</div>
         <div class="fila-meta">${r.ids.length} canción${r.ids.length === 1 ? "" : "es"} · ${haceCuanto(r.actualizada)}</div>
-      </div>
-      ${activa ? "" : `<button class="btn btn-suave usar">Usar esta</button>`}`;
+      </button>
+      ${activa ? "" : `<button class="btn btn-suave usar">Usar esta</button>`}
+      <button class="btn btn-suave copiar">Copiar</button>`;
+    /* Tocar el nombre lleva directo a la pestaña Reunión con esa reunión
+       ya activa: no hace falta pasar primero por "Usar esta" y después
+       cambiar de pestaña a mano. */
+    fila.querySelector(".fila-txt").onclick = () => {
+      if (!activa) usarReunion(r);
+      est.pestana = "reunion";
+      pintar();
+    };
     if (!activa) fila.querySelector(".usar").onclick = () => usarReunion(r);
+    fila.querySelector(".copiar").onclick = () => copiarReunion(r);
     cont.appendChild(fila);
   });
 }
@@ -1206,11 +1319,19 @@ function haceCuanto(ms){
 }
 
 /* Línea "tono · bpm" de cada fila. Si el título del cancionero no trae
-   tono, se dice así en vez de mostrar un dato inventado. */
-function metaDe(s){
-  const tono = s.tono
-    ? `<span class="tono">${escapar(s.tono)}</span>`
-    : `<span style="color:var(--tenue)">sin tono</span>`;
+   tono, se dice así en vez de mostrar un dato inventado. En la pestaña
+   Reunión se pasa el transporte guardado (semis) para esta reunión: así
+   el resumen muestra el tono real en el que se va a tocar, no el
+   original, sin tener que abrir cada canción para saberlo. */
+function metaDe(s, semis){
+  let tono;
+  if (s.tono){
+    const tonoMostrado = semis ? moverTono(s.tono, semis) : s.tono;
+    tono = `<span class="tono">${escapar(tonoMostrado)}</span>`
+      + (semis ? ` <span style="color:var(--tenue)">(original ${escapar(s.tono)})</span>` : "");
+  } else {
+    tono = `<span style="color:var(--tenue)">sin tono</span>`;
+  }
   return tono + (s.bpm ? " · " + s.bpm + " bpm" : "");
 }
 
@@ -1229,13 +1350,13 @@ function alternarEnLista(id){
   /* Si todavía no hay reunión activa (primer + de la reunión de hoy), se
      crea sola con la fecha de hoy como nombre. */
   const esNueva = !est.lista.id;
-  if (esNueva) est.lista = { id: generarIdReunion(), ids:[], porQuien:"", cuando:Date.now(), nombre: fechaHoyTexto() };
+  if (esNueva) est.lista = { id: generarIdReunion(), ids:[], porQuien:"", cuando:Date.now(), nombre: fechaHoyTexto(), semis:{} };
 
   const i = est.lista.ids.indexOf(id);
   if (i >= 0){ est.lista.ids.splice(i,1); flotar("Sacada de la reunión"); }
   else { est.lista.ids.push(id); flotar("Sumada a la reunión"); }
   pintar();
-  if (esNueva) crearReunion(est.lista.id, est.lista.nombre, est.lista.ids);
+  if (esNueva) crearReunion(est.lista.id, est.lista.nombre, est.lista.ids, est.lista.semis);
   else guardarLista();
 }
 function quitar(id){
@@ -1259,10 +1380,30 @@ function vaciar(){
 /* ===================================================================
    12. LECTOR
    =================================================================== */
+/* Transporte guardado para esta canción en la reunión activa, si lo hay.
+   No depende de si el lector está abierto: también lo usa el resumen de
+   la pestaña Reunión, para mostrar el tono real sin abrir cada canción. */
+function semisGuardado(id){
+  return (est.lista.semis && est.lista.semis[id]) || 0;
+}
+
+/* Se llama después de tocar ♭/♯ en el lector. Fuera de modo reunión no
+   hace nada: ahí el transporte sigue siendo de sesión, como siempre.
+   Si el transporte vuelve a 0 (mismo tono original), se saca la entrada
+   en vez de guardar un 0: así el mapa sólo tiene lo que de verdad
+   cambió, y no crece con cada canción que se abrió. */
+function guardarSemisSiCorresponde(){
+  if (!est.enReunion || !est.abierta || !est.lista.id) return;
+  est.lista.semis = est.lista.semis || {};
+  if (est.semis) est.lista.semis[est.abierta] = est.semis;
+  else delete est.lista.semis[est.abierta];
+  guardarLista();
+}
+
 function abrir(id, enReunion){
   est.abierta = id;
   est.enReunion = enReunion;
-  est.semis = 0;              // cada canción arranca en su tono original
+  est.semis = enReunion ? semisGuardado(id) : 0;
   $("lector").classList.add("abierto");
   $("cuerpo").scrollTop = 0;
   pintarLector();
@@ -1312,7 +1453,7 @@ function pintarLector(){
       const b = document.createElement("button");
       b.textContent = i + 1;
       b.className = i === est.posicion ? "aqui" : (i < est.posicion ? "pasada" : "");
-      b.onclick = () => { est.posicion = i; est.semis = 0; $("cuerpo").scrollTop = 0; est.abierta = id; pintarLector(); };
+      b.onclick = () => { est.posicion = i; est.abierta = id; est.semis = semisGuardado(id); $("cuerpo").scrollTop = 0; pintarLector(); };
       riel.appendChild(b);
     });
     $("anterior").disabled = est.posicion === 0;
@@ -1325,7 +1466,7 @@ function paso(delta){
   if (j < 0 || j >= est.lista.ids.length) return;
   est.posicion = j;
   est.abierta = est.lista.ids[j];
-  est.semis = 0;
+  est.semis = semisGuardado(est.abierta);
   $("cuerpo").scrollTop = 0;
   pintarLector();
 }
@@ -1355,6 +1496,7 @@ function abrirEditor(id){
 
   $("editor").classList.add("abierto");
   refrescarPrevia();
+  actualizarBotonesTransporteEditor();
 }
 
 function cerrarEditor(){
@@ -1368,6 +1510,40 @@ function refrescarPrevia(){
   const bloques = textoABloques($("ed-cuerpo").value);
   const tono = $("ed-tono").value.trim();
   pintarBloques($("ed-previa"), bloques, 0, /^(F|Bb|Eb|Ab|Db|Gb)m?$/.test(tono));
+}
+
+/* Sin un tono válido no se sabe desde dónde transportar (mismo motivo
+   que en el lector), así que los botones quedan apagados. */
+function actualizarBotonesTransporteEditor(){
+  const tono = $("ed-tono").value.trim();
+  const ok = !!tono && RE_TONO_VALIDO.test(tono);
+  ["ed-bemol","ed-sostenido"].forEach(k => {
+    $(k).disabled = !ok;
+    $(k).style.opacity = ok ? "" : ".25";
+  });
+}
+
+/* --- Transportar el original --------------------------------------------
+   A diferencia del transporte del lector (de sesión, o guardado por
+   reunión), esto reescribe de verdad los acordes y el tono: es la forma
+   de corregir el tono de una canción cuando se cargó mal, o de dejarla
+   permanentemente en otro tono. Reusa moverLinea/moverTono, los mismos
+   que usa el lector, así el resultado es idéntico al que ya se ve ahí. */
+function transportarEditor(delta){
+  const tonoActual = $("ed-tono").value.trim();
+  if (!tonoActual || !RE_TONO_VALIDO.test(tonoActual)){
+    flotar("Poné un tono válido antes de transportar");
+    return;
+  }
+  const nuevoTono = moverTono(tonoActual, delta);
+  const conBemoles = TONOS_BEMOL.has(nuevoTono);
+  const bloques = textoABloques($("ed-cuerpo").value);
+  bloques.forEach(b => { if (b.t === "a") b.v = moverLinea(b.v, delta, conBemoles); });
+
+  $("ed-tono").value = nuevoTono;
+  $("ed-cuerpo").value = bloquesATexto(bloques);
+  refrescarPrevia();
+  flotar(`Transportado a ${nuevoTono}`);
 }
 
 async function guardarEditor(){
@@ -1494,15 +1670,21 @@ $("ed-cancelar").onclick = cerrarEditor;
 $("ed-guardar").onclick  = guardarEditor;
 $("ed-borrar").onclick   = borrarCancion;
 $("ed-cuerpo").oninput   = refrescarPrevia;
-$("ed-tono").oninput     = refrescarPrevia;
+$("ed-tono").oninput     = () => { refrescarPrevia(); actualizarBotonesTransporteEditor(); };
+$("ed-bemol").onclick     = () => transportarEditor(-1);
+$("ed-sostenido").onclick = () => transportarEditor(+1);
 
 /* Exportación */
 $("ex-cerrar").onclick = () => $("exportar").classList.remove("abierto");
 $("ex-copiar").onclick = copiarExportado;
+
+/* Panel "Agregar canciones" */
+$("ag-cerrar").onclick = cerrarAgregar;
+$("ag-buscar").oninput = e => { est.filtroAgregar = e.target.value; pintarAgregar(); };
 $("anterior").onclick = () => paso(-1);
 $("siguiente").onclick = () => paso(+1);
-$("mas-t").onclick   = () => { if (!PORID[est.abierta] || !PORID[est.abierta].tono) return; est.semis = Math.min(11, est.semis + 1); pintarLector(); };
-$("menos-t").onclick = () => { if (!PORID[est.abierta] || !PORID[est.abierta].tono) return; est.semis = Math.max(-11, est.semis - 1); pintarLector(); };
+$("mas-t").onclick   = () => { if (!PORID[est.abierta] || !PORID[est.abierta].tono) return; est.semis = Math.min(11, est.semis + 1); pintarLector(); guardarSemisSiCorresponde(); };
+$("menos-t").onclick = () => { if (!PORID[est.abierta] || !PORID[est.abierta].tono) return; est.semis = Math.max(-11, est.semis - 1); pintarLector(); guardarSemisSiCorresponde(); };
 $("mas-a").onclick   = () => { est.tamano = Math.min(30, est.tamano + 1); pintarLector(); guardarAjustes(); };
 $("menos-a").onclick = () => { est.tamano = Math.max(11, est.tamano - 1); pintarLector(); guardarAjustes(); };
 

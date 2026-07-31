@@ -72,9 +72,11 @@ service cloud.firestore {
     match /reuniones/{id} {
       allow read: if true;
       allow write: if request.resource.data.keys().hasOnly(
-                        ['nombre','ids','porQuien','creada','actualizada'])
+                        ['nombre','ids','semis','porQuien','creada','actualizada'])
                    && request.resource.data.ids is list
                    && request.resource.data.ids.size() < 100
+                   && (!('semis' in request.resource.data)
+                       || request.resource.data.semis is map)
                    && (!('nombre' in request.resource.data)
                        || request.resource.data.nombre.size() < 120);
       allow delete: if false;   // no se borran documentos, se pueden vaciar
