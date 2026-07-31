@@ -166,9 +166,27 @@ for c in crudas:
     else:
         limpias.append(registro)
 
+# El id sale del nombre y el tono, así que cambiar cualquiera de los dos
+# (corregir un título, transportar el original) cambia el id. El usuario
+# nunca ve el id, pero las reuniones guardadas sí lo usan para saber qué
+# canción es: si cambia, esa canción aparece como "no encontrada" en
+# cualquier reunión que ya la tuviera. Acá se fuerza el id viejo a mano
+# para los casos donde ya pasó, en vez de rediseñar todo el esquema de
+# ids para que sean estables (ver CLAUDE.md, sección 4).
+IDS_FORZADOS = {
+    "en-la-cruz-d": "en-la-cruz-53-d",   # "En la cruz (53)" -> "En la cruz"
+    "tu-amor-d": "tu-amor-c",             # transportada de C a D
+}
+
 # Asignar id sólo a las que van a la app
 for r in limpias:
-    r["id"] = hacer_id(r["nombre"], r["tono"], usados)
+    id_natural = hacer_id(r["nombre"], r["tono"], usados)
+    id_forzado = IDS_FORZADOS.get(id_natural)
+    if id_forzado:
+        usados.add(id_forzado)
+        r["id"] = id_forzado
+    else:
+        r["id"] = id_natural
 
 # --- Informe ---------------------------------------------------------------
 print(f"canciones totales : {len(crudas)}")

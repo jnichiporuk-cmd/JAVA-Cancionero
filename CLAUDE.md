@@ -150,6 +150,15 @@ ya se discutió:
   canción en sí: ese cambio es permanente y para todas las reuniones.
 - **El catálogo no se edita a mano.** Sale del `.docx` vía `extraer.py`. Editar
   `catalogo.json` directo se pierde en el próximo build.
+- **El id de una canción se genera del nombre y el tono** (`hacer_id()` en
+  `extraer.py`), y no se guarda en ningún lado entre un build y el siguiente.
+  Corregir un título o transportar el original cambia el id, y eso rompe la
+  referencia en cualquier reunión guardada que ya tuviera esa canción (la
+  fila pasa a decir "Canción no encontrada"). Cuando eso importa —la canción
+  ya está en reuniones guardadas—, se fuerza el id viejo a mano en el
+  diccionario `IDS_FORZADOS` de `extraer.py`, en vez de rediseñar el esquema
+  de ids para que sean estables. Pasó primero con "En la cruz (53)" → "En la
+  cruz" y con "Tu amor" transportada de C a D.
 - **El nombre del archivo lleva número de versión y la versión se ve en el
   encabezado de la app.** Sin eso es imposible saber si un celular está
   abriendo un archivo viejo cacheado; ya pasó tres veces.
