@@ -105,6 +105,15 @@ input{font-family:inherit;font-size:inherit}
 .buscador input:focus{border-color:var(--acordes)}
 .buscador input::placeholder{color:var(--tenue)}
 
+/* Orden del catálogo: Nombre / Tono / BPM. Chips en vez de un <select>
+   para que cambiar de orden sea un solo toque, sin abrir nada. */
+.orden-fila{display:flex;gap:8px;padding:0 14px 10px}
+.orden-btn{
+  flex:1;padding:7px 0;border-radius:7px;border:1px solid var(--borde);
+  font-size:13px;font-weight:600;color:var(--tenue);text-align:center;
+}
+.orden-btn.activo{color:var(--acordes);border-color:var(--acordes)}
+
 /* ===================================================================
    3. LISTA DE CANCIONES DEL CATÁLOGO
    Cada fila: nombre + tono + bpm, y a la derecha el botón para
@@ -325,6 +334,11 @@ input{font-family:inherit;font-size:inherit}
   </div>
   <div class="buscador" id="caja-buscador">
     <input id="buscar" type="search" placeholder="Buscar por nombre o tono" autocomplete="off">
+  </div>
+  <div class="orden-fila" id="caja-orden">
+    <button class="orden-btn" data-orden="nombre">Nombre</button>
+    <button class="orden-btn" data-orden="tono">Tono</button>
+    <button class="orden-btn" data-orden="bpm">BPM</button>
   </div>
 </div>
 
@@ -677,6 +691,7 @@ const est = {
   cambios:{ editados:{}, nuevas:[], borradas:[] }, // capa de ediciones
   editando:null,       // id de la canción abierta en el editor (o "nueva")
   cargando:true,
+  orden:"nombre",      // orden del catálogo: nombre, tono o bpm
   tamano:16,           // px del cuerpo de la canción
   semis:0,             // transporte de la canción abierta
   abierta:null,        // id de la canción en el lector
@@ -938,11 +953,12 @@ function leerAjustes(){
   try{
     const a = JSON.parse(localStorage.getItem("cancionero:ajustes") || "{}");
     if (a.tamano) est.tamano = a.tamano;
+    if (a.orden) est.orden = a.orden;
   }catch(e){ /* sin ajustes guardados */ }
 }
 function guardarAjustes(){
   try{
-    localStorage.setItem("cancionero:ajustes", JSON.stringify({tamano:est.tamano}));
+    localStorage.setItem("cancionero:ajustes", JSON.stringify({tamano:est.tamano, orden:est.orden}));
   }catch(e){ /* no se puede guardar, no es grave */ }
 }
 
@@ -983,11 +999,30 @@ function pintar(){
   $("tab-reunion").classList.toggle("activa", est.pestana === "reunion");
   $("tab-guardadas").classList.toggle("activa", est.pestana === "guardadas");
   $("caja-buscador").style.display = est.pestana === "canciones" ? "block" : "none";
+  $("caja-orden").style.display = est.pestana === "canciones" ? "flex" : "none";
 
   if (est.pestana === "canciones") pintarCatalogo();
   else if (est.pestana === "reunion") pintarReunion();
   else pintarGuardadas();
 }
+
+/* --- Orden del catálogo -----------------------------------------------
+   Nombre siempre alfabético (ya viene así de recalcular()). Tono y BPM
+   dejan al final las canciones sin ese dato en vez de tirarlas al
+   principio con "null" primero, y a igualdad de tono/bpm desempatan por
+   nombre para que el orden no salte de una redibujada a otra. */
+function compararNombre(a, b){
+  return a.nombre.localeCompare(b.nombre, "es", {sensitivity:"base"});
+}
+function compararTono(a, b){
+  if (!a.tono || !b.tono) return (!a.tono) - (!b.tono) || compararNombre(a, b);
+  return a.tono.localeCompare(b.tono, "es", {sensitivity:"base"}) || compararNombre(a, b);
+}
+function compararBpm(a, b){
+  if (a.bpm == null || b.bpm == null) return (a.bpm == null) - (b.bpm == null) || compararNombre(a, b);
+  return (a.bpm - b.bpm) || compararNombre(a, b);
+}
+const COMPARADORES = { nombre: compararNombre, tono: compararTono, bpm: compararBpm };
 
 /* --- Pestaña Canciones ---------------------------------------------- */
 function pintarCatalogo(){
@@ -995,6 +1030,9 @@ function pintarCatalogo(){
   cont.innerHTML = "";
   $("pie").style.display = "none";
 
+  $("caja-orden").querySelectorAll(".orden-btn").forEach(b => {
+    b.classList.toggle("activo", b.dataset.orden === est.orden);
+  });
 
   /* Nueva canción y exportar. "Exportar" sólo aparece si hay algo que
      exportar, así no ocupa lugar cuando no hace falta. */
@@ -1010,7 +1048,7 @@ function pintarCatalogo(){
   const q = est.filtro.trim().toLowerCase();
   const encontradas = CATALOGO.filter(s =>
     !q || s.nombre.toLowerCase().includes(q) || (s.tono || "").toLowerCase() === q
-  );
+  ).sort(COMPARADORES[est.orden]);
 
   if (!encontradas.length){
     cont.insertAdjacentHTML("beforeend",
@@ -1018,15 +1056,22 @@ function pintarCatalogo(){
     return;
   }
 
-  let inicialPrevia = null;
+  /* Separador por letra si el orden es por nombre, por tono si es por
+     tono. Por BPM no separa: casi todas las canciones tienen un BPM
+     distinto, así que agrupar de a una no ayudaría a encontrar nada. */
+  let clavePrevia = null;
   encontradas.forEach(s => {
-    const inicial = (s.nombre[0] || "?").toUpperCase();
-    if (inicial !== inicialPrevia){
-      const sep = document.createElement("div");
-      sep.className = "separador";
-      sep.textContent = inicial;
-      cont.appendChild(sep);
-      inicialPrevia = inicial;
+    if (est.orden !== "bpm"){
+      const clave = est.orden === "tono"
+        ? (s.tono ? s.tono.toUpperCase() : "Sin tono")
+        : (s.nombre[0] || "?").toUpperCase();
+      if (clave !== clavePrevia){
+        const sep = document.createElement("div");
+        sep.className = "separador";
+        sep.textContent = clave;
+        cont.appendChild(sep);
+        clavePrevia = clave;
+      }
     }
     const puesta = est.lista.ids.includes(s.id);
     const fila = document.createElement("div");
@@ -1437,6 +1482,9 @@ $("tab-canciones").onclick  = () => { est.pestana = "canciones"; pintar(); };
 $("tab-reunion").onclick    = () => { est.pestana = "reunion"; pintar(); };
 $("tab-guardadas").onclick  = () => { est.pestana = "guardadas"; pintar(); };
 $("buscar").oninput = e => { est.filtro = e.target.value; pintarCatalogo(); };
+$("caja-orden").querySelectorAll(".orden-btn").forEach(b => {
+  b.onclick = () => { est.orden = b.dataset.orden; guardarAjustes(); pintarCatalogo(); };
+});
 
 $("cerrar").onclick = cerrar;
 
