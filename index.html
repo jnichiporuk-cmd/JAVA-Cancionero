@@ -264,13 +264,15 @@ input{font-family:inherit;font-size:inherit}
 /* Aviso de la próxima canción en modo reunión. Reemplaza los botones
    Anterior/Siguiente: para cambiar de canción se desliza para el
    costado (o se toca esta misma tarjeta), y acá se ve de antemano el
-   nombre, tono y bpm de la que sigue. */
+   nombre, tono y bpm de la que sigue. Sólo aparece al llegar al final
+   de la letra (o si la canción es corta y no hay ni que scrollear):
+   mientras se está leyendo, no tapa las últimas líneas. */
 .lector-pie{
   position:absolute;bottom:0;left:0;right:0;
   display:none;gap:9px;padding:11px 14px 16px;
   background:linear-gradient(to top,var(--fondo) 65%,transparent);
 }
-.lector-pie.visible{display:flex}
+.lector-pie.visible.cerca-fin{display:flex}
 .si-etiqueta{
   font-size:10px;letter-spacing:.14em;text-transform:uppercase;
   color:var(--tenue);margin-bottom:3px;
@@ -359,7 +361,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v39</span></div>
+    <div class="marca">Cancionero <span class="ver">v42</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
   </div>
@@ -398,6 +400,8 @@ input{font-family:inherit;font-size:inherit}
         <button id="mas-t" title="Subir medio tono">♯</button>
         <button id="menos-a" title="Letra más chica">A−</button>
         <button id="mas-a" title="Letra más grande">A+</button>
+        <button id="dir-toggle" title="Ser director: lo que veas se transmite a los que estén en Modo Online">D</button>
+        <button id="online-toggle" title="Modo Online: seguir lo que muestre el director">O</button>
         <button id="editar" title="Editar la canción">✎</button>
       </div>
     </div>
@@ -773,7 +777,9 @@ const est = {
   semis:0,             // transporte de la canción abierta
   abierta:null,        // id de la canción en el lector
   enReunion:false,     // true si entró por "Empezar reunión"
-  posicion:0           // índice dentro de la lista
+  posicion:0,          // índice dentro de la lista
+  esDirector:false,    // si está prendido, cada cambio se transmite
+  modoOnline:false,    // si está prendido, sigue lo que transmite el director
 };
 
 /* --- Conexión ---------------------------------------------------------
@@ -901,6 +907,72 @@ function escucharReunionActiva(id){
     console.error("Error escuchando la reunión:", e);
     marcarSync("error", "error de permisos");
   });
+}
+
+/* ===================================================================
+   MODO DIRECTOR / MODO ONLINE
+   No hay "un" director: cualquiera puede prender "Director" y, mientras
+   esté prendido, cada canción que abre o cada transporte que hace se
+   escribe en cancionero/directorEnVivo. Quien tenga "Modo Online"
+   prendido escucha ese documento y su lector salta solo a lo mismo. Si
+   dos personas son director a la vez, gana la última escritura: no hay
+   forma de "pelear" por el control, sólo de pisarse (aceptado a
+   propósito, es un grupo chico).
+   =================================================================== */
+let cancelarEscuchaDirector = null;
+
+function alternarDirector(){
+  est.esDirector = !est.esDirector;
+  pintar();
+  if (est.abierta) pintarLector();
+}
+
+function alternarModoOnline(){
+  est.modoOnline = !est.modoOnline;
+  if (est.modoOnline) escucharDirector();
+  else if (cancelarEscuchaDirector){ cancelarEscuchaDirector(); cancelarEscuchaDirector = null; }
+  pintar();
+  if (est.abierta) pintarLector();
+}
+
+function escucharDirector(){
+  if (!HAY_NUBE){ flotar("Sin conexión: no se puede seguir al director"); return; }
+  cancelarEscuchaDirector = fs.onSnapshot(fs.doc(db, "cancionero", "directorEnVivo"), snap => {
+    const d = snap.data();
+    if (d && d.cancionId) seguirAlDirector(d);
+  }, e => {
+    console.error("Error escuchando al director:", e);
+  });
+}
+
+/* Mueve el lector de este dispositivo a lo que transmitió el director.
+   Si este mismo dispositivo también es director, no se auto-sigue: ya
+   está mostrando lo que eligió, sería un salto contra sí mismo. */
+function seguirAlDirector(d){
+  if (!est.modoOnline || est.esDirector) return;
+  const cambioCancion = est.abierta !== d.cancionId;
+  est.enReunion = true;
+  est.abierta = d.cancionId;
+  est.semis = d.semis || 0;
+  const idx = est.lista.ids.indexOf(d.cancionId);
+  if (idx >= 0) est.posicion = idx;
+  $("lector").classList.add("abierto");
+  if (cambioCancion) $("cuerpo").scrollTop = 0;
+  pintarLector();
+}
+
+/* Se llama después de cada acción que cambia lo que se ve en modo
+   reunión (abrir canción, pasar, transportar). Sin conexión o fuera de
+   modo reunión, no hace nada. */
+async function transmitirEstado(){
+  if (!est.esDirector || !est.enReunion || !est.abierta || !HAY_NUBE) return;
+  try{
+    await fs.setDoc(fs.doc(db, "cancionero", "directorEnVivo"), {
+      cancionId: est.abierta, semis: est.semis, posicion: est.posicion, cuando: Date.now(),
+    });
+  }catch(e){
+    console.error("No se pudo transmitir:", e);
+  }
 }
 
 /* Id nuevo para una reunión: si hay conexión, lo genera Firestore (así no
@@ -1301,6 +1373,19 @@ function pintarReunion(){
     <div class="fila-meta">${fechaHoraTexto(est.lista.fechaReunion || est.lista.cuando || Date.now())}</div>`;
   cont.appendChild(info);
 
+  /* Director / Modo Online: mismos toggles que en el lector, para
+     poder prenderlos antes de abrir la primera canción. */
+  const online = document.createElement("div");
+  online.className = "orden-fila";
+  online.innerHTML = `
+    <button class="orden-btn" id="chip-director">Director</button>
+    <button class="orden-btn" id="chip-online">Modo Online</button>`;
+  cont.appendChild(online);
+  $("chip-director").classList.toggle("activo", est.esDirector);
+  $("chip-online").classList.toggle("activo", est.modoOnline);
+  $("chip-director").onclick = alternarDirector;
+  $("chip-online").onclick = alternarModoOnline;
+
   est.lista.ids.forEach((id, i) => {
     const s = PORID[id];
     const fila = document.createElement("div");
@@ -1556,12 +1641,16 @@ function guardarSemisSiCorresponde(){
 }
 
 function abrir(id, enReunion){
+  /* Quien sólo sigue al director (Modo Online sin ser director) no
+     navega por su cuenta: su lector lo maneja seguirAlDirector(). */
+  if (est.modoOnline && !est.esDirector && enReunion) return;
   est.abierta = id;
   est.enReunion = enReunion;
   est.semis = enReunion ? semisGuardado(id) : 0;
   $("lector").classList.add("abierto");
   $("cuerpo").scrollTop = 0;
   pintarLector();
+  transmitirEstado();
 }
 function cerrar(){
   $("lector").classList.remove("abierto");
@@ -1589,6 +1678,8 @@ function pintarLector(){
     $(k).style.opacity = puedeTransportar ? "" : ".25";
     $(k).classList.toggle("on", puedeTransportar && est.semis !== 0);
   });
+  $("dir-toggle").classList.toggle("on", est.esDirector);
+  $("online-toggle").classList.toggle("on", est.modoOnline);
 
   /* Escritura con bemoles si el tono destino lo pide */
   const conBemoles = puedeTransportar && TONOS_BEMOL.has(tonoActual);
@@ -1608,26 +1699,49 @@ function pintarLector(){
       const b = document.createElement("button");
       b.textContent = i + 1;
       b.className = i === est.posicion ? "aqui" : (i < est.posicion ? "pasada" : "");
-      b.onclick = () => { est.posicion = i; est.abierta = id; est.semis = semisGuardado(id); $("cuerpo").scrollTop = 0; pintarLector(); };
+      b.onclick = () => {
+        if (est.modoOnline && !est.esDirector) return;  // sigue al director, no navega solo
+        est.posicion = i; est.abierta = id; est.semis = semisGuardado(id);
+        $("cuerpo").scrollTop = 0; pintarLector(); transmitirEstado();
+      };
       riel.appendChild(b);
     });
 
-    const idSig = est.lista.ids[est.posicion + 1];
-    const sig = idSig ? PORID[idSig] : null;
-    if (sig){
-      pie.innerHTML = `<button class="btn siguiente-info">
-        <div class="si-etiqueta">Siguiente</div>
-        <div class="fila-nombre">${escapar(sig.nombre)}</div>
-        <div class="fila-meta">${metaDe(sig, semisGuardado(idSig))}</div>
-      </button>`;
-      pie.querySelector(".siguiente-info").onclick = () => paso(+1);
+    if (est.modoOnline && !est.esDirector){
+      /* Acá no se navega: es sólo un aviso de que se está siguiendo al
+         director, para que no parezca que el "Siguiente" no responde. */
+      pie.innerHTML = `<div class="si-fin">Modo Online: siguiendo al director</div>`;
     } else {
-      pie.innerHTML = `<div class="si-fin">Última canción de la reunión</div>`;
+      const idSig = est.lista.ids[est.posicion + 1];
+      const sig = idSig ? PORID[idSig] : null;
+      if (sig){
+        pie.innerHTML = `<button class="btn siguiente-info">
+          <div class="si-etiqueta">Siguiente</div>
+          <div class="fila-nombre">${escapar(sig.nombre)}</div>
+          <div class="fila-meta">${metaDe(sig, semisGuardado(idSig))}</div>
+        </button>`;
+        pie.querySelector(".siguiente-info").onclick = () => paso(+1);
+      } else {
+        pie.innerHTML = `<div class="si-fin">Última canción de la reunión</div>`;
+      }
     }
+    actualizarPieCercaFin();
   }
 }
 
+/* Decide si mostrar la tarjeta "Siguiente": sólo cuando se llegó al
+   final del scroll, o cuando la canción es tan corta que ni entra
+   scroll (si no, nunca se podría llegar a ver). */
+function actualizarPieCercaFin(){
+  if (!est.enReunion) return;
+  const cuerpo = $("cuerpo");
+  const noScrollea = cuerpo.scrollHeight <= cuerpo.clientHeight + 4;
+  const cercaFin = noScrollea || (cuerpo.scrollTop + cuerpo.clientHeight >= cuerpo.scrollHeight - 24);
+  $("l-pie").classList.toggle("cerca-fin", cercaFin);
+}
+
 function paso(delta){
+  if (est.modoOnline && !est.esDirector) return;  // sigue al director, no navega solo
   const j = est.posicion + delta;
   if (j < 0 || j >= est.lista.ids.length) return;
   est.posicion = j;
@@ -1635,6 +1749,7 @@ function paso(delta){
   est.semis = semisGuardado(est.abierta);
   $("cuerpo").scrollTop = 0;
   pintarLector();
+  transmitirEstado();
 }
 
 
@@ -1797,7 +1912,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v39",
+    origen: "cancionero v42",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
@@ -1852,10 +1967,20 @@ $("ag-buscar").oninput = e => { est.filtroAgregar = e.target.value; pintarAgrega
 /* Panel "Editar reunión" (nombre y fecha/hora) */
 $("er-cancelar").onclick = cerrarEditarReunion;
 $("er-guardar").onclick = guardarEditarReunion;
-$("mas-t").onclick   = () => { if (!PORID[est.abierta] || !PORID[est.abierta].tono) return; est.semis = Math.min(11, est.semis + 1); pintarLector(); guardarSemisSiCorresponde(); };
-$("menos-t").onclick = () => { if (!PORID[est.abierta] || !PORID[est.abierta].tono) return; est.semis = Math.max(-11, est.semis - 1); pintarLector(); guardarSemisSiCorresponde(); };
+$("mas-t").onclick   = () => {
+  if (est.modoOnline && !est.esDirector) return;  // el tono también lo maneja el director
+  if (!PORID[est.abierta] || !PORID[est.abierta].tono) return;
+  est.semis = Math.min(11, est.semis + 1); pintarLector(); guardarSemisSiCorresponde(); transmitirEstado();
+};
+$("menos-t").onclick = () => {
+  if (est.modoOnline && !est.esDirector) return;
+  if (!PORID[est.abierta] || !PORID[est.abierta].tono) return;
+  est.semis = Math.max(-11, est.semis - 1); pintarLector(); guardarSemisSiCorresponde(); transmitirEstado();
+};
 $("mas-a").onclick   = () => { est.tamano = Math.min(30, est.tamano + 1); pintarLector(); guardarAjustes(); };
 $("menos-a").onclick = () => { est.tamano = Math.max(11, est.tamano - 1); pintarLector(); guardarAjustes(); };
+$("dir-toggle").onclick = alternarDirector;
+$("online-toggle").onclick = alternarModoOnline;
 
 /* --- Pantalla completa ---------------------------------------------------
    Gana el alto que ocupan las barras del navegador o del visor. Puede no
@@ -1882,6 +2007,9 @@ document.addEventListener("keydown", e => {
   if (est.enReunion && e.key === "ArrowRight") paso(+1);
   if (est.enReunion && e.key === "ArrowLeft")  paso(-1);
 });
+
+/* Mostrar la tarjeta "Siguiente" recién al llegar al final del scroll */
+$("cuerpo").addEventListener("scroll", actualizarPieCercaFin, {passive:true});
 
 /* Deslizar para pasar de canción en modo reunión */
 let xIni = null, yIni = null;

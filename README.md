@@ -71,6 +71,16 @@ service cloud.firestore {
                        || request.resource.data.ordenReuniones is list);
     }
 
+    // Lo que transmite quien tenga prendido "Director": un solo documento,
+    // lo pisa el último que transmite
+    match /cancionero/directorEnVivo {
+      allow read: if true;
+      allow write: if request.resource.data.keys().hasOnly(['cancionId','semis','posicion','cuando'])
+                   && request.resource.data.cancionId is string
+                   && request.resource.data.semis is number
+                   && request.resource.data.posicion is number;
+    }
+
     // Cada reunión guardada (la de hoy y las anteriores): un documento por reunión
     match /reuniones/{id} {
       allow read: if true;

@@ -335,7 +335,37 @@ bien. Después de publicarlas, falta la prueba de siempre con dos celulares:
 uno toca + y el otro debería ver aparecer la canción sin recargar, y lo
 mismo al tocar "Usar esta" en Guardadas.
 
+## 8c. Modo Director / Modo Online
+
+Cualquiera puede prender **Director** (chip en la pestaña Reunión, o botón
+`D` en el lector): mientras está prendido, cada canción que abre y cada
+transporte que hace se escribe en `cancionero/directorEnVivo`
+(`transmitirEstado()`). Quien tenga **Modo Online** prendido (`O` en el
+lector, o chip en Reunión) escucha ese documento y su lector salta solo a
+lo mismo (`seguirAlDirector()`), tono incluido.
+
+No hay "un" director: no se pelea el control, cualquiera que lo prenda
+transmite, y gana la última escritura si dos lo tienen prendido a la vez.
+Fue una decisión explícita — el grupo es chico y se asume que se
+coordinan solos, no hace falta resolver conflictos en el código.
+
+Mientras se sigue al director (Modo Online prendido y no se es director),
+la navegación manual queda bloqueada: `paso()`, los botones del riel,
+deslizar para los costados y ♭/♯ no hacen nada (se chequea
+`est.modoOnline && !est.esDirector` en cada uno). La tarjeta "Siguiente"
+del pie se reemplaza por un aviso de que se está siguiendo, para que no
+parezca que dejó de responder.
+
 ## 9. Cómo trabajar en este proyecto
+
+**Al arrancar cualquier conversación en esta carpeta**, revisar hace cuánto
+fue el último cambio en `catalogo.json` o en el `.docx`
+(`git log -1 --format="%ai" -- catalogo.json Cancionero_2026-06.docx`). Si
+pasó una semana o más, avisarle al usuario que puede haber cambios en
+Firestore (ediciones desde la app) sin graduar al `.docx` todavía, y
+preguntar si quiere revisarlos ahora. No hace falta hacer nada más que
+avisar: la graduación en sí sigue siendo con revisión antes de publicar,
+como se hizo con las primeras 5 canciones.
 
 Convenciones de código:
 
