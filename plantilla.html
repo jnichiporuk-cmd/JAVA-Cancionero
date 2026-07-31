@@ -245,7 +245,11 @@ input{font-family:inherit;font-size:inherit}
    Si una línea es más ancha que la pantalla, se puede scrollear al
    costado en vez de romper la alineación con un salto de línea. */
 .cuerpo{flex:1;overflow-y:auto;padding:16px 14px 120px}
-.bloque{font-family:var(--mono);white-space:pre;margin:0}
+/* letter-spacing negativo angosta el texto sin tocar la fuente. Se
+   aplica igual en acordes y letra (los dos heredan de .bloque), así que
+   la alineación entre columnas no se rompe: cada carácter, incluidos los
+   espacios, se angosta lo mismo en las dos líneas. */
+.bloque{font-family:var(--mono);white-space:pre;margin:0;letter-spacing:-.05em}
 .b-acordes{color:var(--acordes)}
 .b-letra{color:var(--letra)}
 .b-rotulo{
@@ -257,14 +261,21 @@ input{font-family:inherit;font-size:inherit}
 .scrollx{overflow-x:auto;scrollbar-width:none}
 .scrollx::-webkit-scrollbar{display:none}
 
-/* Paso anterior / siguiente en modo reunión */
+/* Aviso de la próxima canción en modo reunión. Reemplaza los botones
+   Anterior/Siguiente: para cambiar de canción se desliza para el
+   costado (o se toca esta misma tarjeta), y acá se ve de antemano el
+   nombre, tono y bpm de la que sigue. */
 .lector-pie{
   position:absolute;bottom:0;left:0;right:0;
   display:none;gap:9px;padding:11px 14px 16px;
   background:linear-gradient(to top,var(--fondo) 65%,transparent);
 }
 .lector-pie.visible{display:flex}
-.lector-pie .btn:disabled{opacity:.3}
+.si-etiqueta{
+  font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--tenue);margin-bottom:3px;
+}
+.si-fin{flex:1;padding:13px;text-align:center;color:var(--tenue);font-size:14px}
 
 /* ===================================================================
    EDITOR Y EXPORTACIÓN
@@ -393,10 +404,7 @@ input{font-family:inherit;font-size:inherit}
     <div class="riel" id="riel"></div>
   </div>
   <div class="cuerpo" id="cuerpo"></div>
-  <div class="lector-pie" id="l-pie">
-    <button class="btn" id="anterior">← Anterior</button>
-    <button class="btn btn-fuerte" id="siguiente">Siguiente →</button>
-  </div>
+  <div class="lector-pie" id="l-pie"></div>
 </div>
 
 <!-- Editor de canción -->
@@ -1284,16 +1292,14 @@ function pintarReunion(){
     return;
   }
 
-  /* Quién la armó y hace cuánto: importa saber si estás viendo algo viejo */
-  if (est.lista.porQuien || est.lista.cuando){
-    const info = document.createElement("div");
-    info.className = "fila-meta";
-    info.style.padding = "12px 14px 4px";
-    info.textContent = "Última edición" +
-      (est.lista.porQuien ? " de " + est.lista.porQuien : "") +
-      (est.lista.cuando ? " · " + haceCuanto(est.lista.cuando) : "");
-    cont.appendChild(info);
-  }
+  /* Nombre y fecha/hora de la reunión activa: para saber de un vistazo
+     cuál es y para cuándo es, sin tener que ir a Guardadas a revisar. */
+  const info = document.createElement("div");
+  info.style.padding = "12px 14px 6px";
+  info.innerHTML = `
+    <div class="fila-nombre">${escapar(est.lista.nombre || "Sin nombre")}</div>
+    <div class="fila-meta">${fechaHoraTexto(est.lista.fechaReunion || est.lista.cuando || Date.now())}</div>`;
+  cont.appendChild(info);
 
   est.lista.ids.forEach((id, i) => {
     const s = PORID[id];
@@ -1447,17 +1453,6 @@ function pintarGuardadas(){
   });
 }
 
-/* Texto tipo "hace 5 min" */
-function haceCuanto(ms){
-  const s = Math.max(0, Math.round((Date.now() - ms)/1000));
-  if (s < 60) return "hace instantes";
-  const m = Math.round(s/60);
-  if (m < 60) return `hace ${m} min`;
-  const h = Math.round(m/60);
-  if (h < 24) return `hace ${h} h`;
-  return `hace ${Math.round(h/24)} días`;
-}
-
 /* Nombres de día abreviados, domingo primero (así coincide con
    Date.getDay()). A mano, sin toLocaleDateString, por la misma razón
    que fechaHoyTexto(): no depender de la configuración regional. */
@@ -1603,7 +1598,7 @@ function pintarLector(){
   cuerpo.style.fontSize = est.tamano + "px";
   pintarBloques(cuerpo, s.bloques, est.semis, conBemoles);
 
-  /* Riel y botones de paso: sólo en modo reunión */
+  /* Riel y aviso de la próxima canción: sólo en modo reunión */
   const riel = $("riel"), pie = $("l-pie");
   riel.classList.toggle("visible", est.enReunion);
   pie.classList.toggle("visible", est.enReunion);
@@ -1616,8 +1611,19 @@ function pintarLector(){
       b.onclick = () => { est.posicion = i; est.abierta = id; est.semis = semisGuardado(id); $("cuerpo").scrollTop = 0; pintarLector(); };
       riel.appendChild(b);
     });
-    $("anterior").disabled = est.posicion === 0;
-    $("siguiente").disabled = est.posicion >= est.lista.ids.length - 1;
+
+    const idSig = est.lista.ids[est.posicion + 1];
+    const sig = idSig ? PORID[idSig] : null;
+    if (sig){
+      pie.innerHTML = `<button class="btn siguiente-info">
+        <div class="si-etiqueta">Siguiente</div>
+        <div class="fila-nombre">${escapar(sig.nombre)}</div>
+        <div class="fila-meta">${metaDe(sig, semisGuardado(idSig))}</div>
+      </button>`;
+      pie.querySelector(".siguiente-info").onclick = () => paso(+1);
+    } else {
+      pie.innerHTML = `<div class="si-fin">Última canción de la reunión</div>`;
+    }
   }
 }
 
@@ -1846,8 +1852,6 @@ $("ag-buscar").oninput = e => { est.filtroAgregar = e.target.value; pintarAgrega
 /* Panel "Editar reunión" (nombre y fecha/hora) */
 $("er-cancelar").onclick = cerrarEditarReunion;
 $("er-guardar").onclick = guardarEditarReunion;
-$("anterior").onclick = () => paso(-1);
-$("siguiente").onclick = () => paso(+1);
 $("mas-t").onclick   = () => { if (!PORID[est.abierta] || !PORID[est.abierta].tono) return; est.semis = Math.min(11, est.semis + 1); pintarLector(); guardarSemisSiCorresponde(); };
 $("menos-t").onclick = () => { if (!PORID[est.abierta] || !PORID[est.abierta].tono) return; est.semis = Math.max(-11, est.semis - 1); pintarLector(); guardarSemisSiCorresponde(); };
 $("mas-a").onclick   = () => { est.tamano = Math.min(30, est.tamano + 1); pintarLector(); guardarAjustes(); };
