@@ -391,18 +391,32 @@ haber director mientras alguien mira la vista en vivo, se cierra sola
 (`cerrarVistaOnline()`, distinta de `cerrarLector()`: no manda a ningún
 lado, sólo vuelve al aviso de vacío en la misma pestaña).
 
-En sólo lectura se ve todo (acordes, letra, riel con la posición) pero no
-se puede tocar nada: transportar, el riel, deslizar, Anterior/Siguiente y
-editar quedan apagados o escondidos. El bloqueo es `est.soloLectura &&
-!est.esDirector` (`bloqueado` en `pintarLector()`, mismo chequeo al
-principio de `paso()`), no sólo `soloLectura`: si quien mira la vista en
-vivo también es director, no se le apaga nada — sigue con control
-completo, transmite lo que haga igual que si hubiera entrado por el
-Evento. El bloqueo es sólo para quien mira sin ser director. Fuera de esa
-vista (cualquier otra pestaña, o una canción abierta por cuenta propia
-con `abrir()`, que también apaga `soloLectura`), la app queda
-completamente libre, sea o no
-director quien la esté usando.
+**El bloqueo de sólo lectura no es sólo para la vista en vivo: es para
+cualquier canción vista dentro de un evento.** Abrir una canción desde el
+Evento y abrirla desde Online comparten el mismo `est.enReunion = true`,
+así que el bloqueo es `est.enReunion && !est.esDirector` (`bloqueado` en
+`pintarLector()`, mismo chequeo al principio de `paso()`) — no
+`est.soloLectura`. Sin ser director, dentro de un evento se ve todo
+(acordes, letra, riel con la posición) pero no se puede tocar nada:
+transportar, el riel, deslizar, Anterior/Siguiente y editar quedan
+apagados o escondidos. `guardarSemisSiCorresponde()` repite el mismo
+chequeo (`if (!est.esDirector) return`) como segunda barrera, no sólo
+apagar el botón. Si quien mira también es director, no se le apaga nada
+— sigue con control completo, mire lo que mire. Fuera de un evento
+(pestaña Canciones, `abrir(id, false)`, que también apaga `enReunion` y
+`soloLectura`) la app queda completamente libre, sea o no director quien
+la esté usando: ahí el transporte es de sesión, por dispositivo, y no se
+comparte con nadie.
+
+Motivo: antes sólo se bloqueaba mirando la transmisión en vivo: cualquiera
+podía abrir una canción del Evento y transportarla, y como
+`guardarLista()` manda el mapa `semis` completo (no sólo lo que cambió),
+dos celulares transportando canciones distintas —o el mismo, en momentos
+distintos— podían pisarse entre sí sin que nadie tocara la misma canción
+a propósito. Pasó en la práctica: "Glorioso día" quedó pisada en Eb
+cuando el original es D. Limitar el transporte al director no elimina el
+riesgo del todo (dos directores a la vez todavía podrían pisarse), pero
+reduce drástico cuántos dispositivos escriben esos campos a la vez.
 
 ## 9. Cómo trabajar en este proyecto
 

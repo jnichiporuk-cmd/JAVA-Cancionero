@@ -1918,11 +1918,14 @@ function semisGuardado(id){
 
 /* Se llama después de tocar ♭/♯ en el lector. Fuera de modo reunión no
    hace nada: ahí el transporte sigue siendo de sesión, como siempre.
-   Si el transporte vuelve a 0 (mismo tono original), se saca la entrada
-   en vez de guardar un 0: así el mapa sólo tiene lo que de verdad
-   cambió, y no crece con cada canción que se abrió. */
+   Sin ser director tampoco hace nada: los botones ya quedan apagados
+   para ese caso (pintarLector), esto es la segunda barrera por si algo
+   los llama igual. Si el transporte vuelve a 0 (mismo tono original),
+   se saca la entrada en vez de guardar un 0: así el mapa sólo tiene lo
+   que de verdad cambió, y no crece con cada canción que se abrió. */
 function guardarSemisSiCorresponde(){
   if (!est.enReunion || !est.abierta || !est.lista.id) return;
+  if (!est.esDirector) return;
   est.lista.semis = est.lista.semis || {};
   if (est.semis) est.lista.semis[est.abierta] = est.semis;
   else delete est.lista.semis[est.abierta];
@@ -1974,12 +1977,14 @@ function pintarLector(){
       : `<span style="color:var(--tenue)">sin tono en el cancionero</span>`)
     + (s.bpm ? ` · ${s.bpm} bpm` : "");
 
-  /* Modo sólo lectura (viendo la transmisión desde Online): sin
-     transportar, sin editar, sin tocar el riel. Pero si esta misma
-     persona también es director, no se le apaga nada: sigue teniendo
-     control completo, esté mirando lo que esté mirando. Los bloqueos
-     son sólo para quien mira sin ser director. */
-  const bloqueado = est.soloLectura && !est.esDirector;
+  /* Dentro de un evento (lo abrió del Evento o está viendo la
+     transmisión de Online), sólo el director puede transportar, editar
+     o navegar: el resto ve la canción tal como está guardada, o sigue
+     el evento desde Online. Si esta misma persona también es director,
+     no se le apaga nada, mire lo que mire. Fuera de un evento (una
+     canción abierta suelta desde Canciones) no hay bloqueo: ahí el
+     transporte es de sesión, por dispositivo, y no se comparte. */
+  const bloqueado = est.enReunion && !est.esDirector;
   ["mas-t","menos-t"].forEach(k => {
     $(k).disabled = !puedeTransportar || bloqueado;
     $(k).style.opacity = (puedeTransportar && !bloqueado) ? "" : ".25";
@@ -2064,7 +2069,7 @@ function actualizarPieCercaFin(){
 }
 
 function paso(delta){
-  if (est.soloLectura && !est.esDirector) return;  // sin ser director, no navega desde la vista en vivo
+  if (est.enReunion && !est.esDirector) return;  // sin ser director, no se navega dentro de un evento
   const j = est.posicion + delta;
   if (j < 0 || j >= est.lista.ids.length) return;
   est.posicion = j;
