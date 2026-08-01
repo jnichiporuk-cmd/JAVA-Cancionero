@@ -397,7 +397,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v84</span></div>
+    <div class="marca">Cancionero <span class="ver">v85</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
   </div>
@@ -2111,13 +2111,15 @@ function pintarLector(){
 /* Al scrollear el cuerpo hacia abajo, la cabecera se va achicando en dos
    pasos para dejar más lugar a la letra: primero se esconde el nombre,
    después los botones, y queda sólo el riel con el número de canción.
-   Umbrales bajos (16 / 70 px) porque en el celular, con el dedo en la
-   pantalla, no hace falta scrollear mucho para que estorbe el nombre. */
+   Umbrales altos a propósito: con 16/70px (la primera versión) cualquier
+   toque para acomodar la pantalla ya escondía el nombre, y con el envión
+   del dedo se perdía de vista la primera parte de la letra apenas se
+   empezaba a leer. Tiene que ser un scroll de verdad, no un roce. */
 function actualizarColapsoTope(){
   const tope = $("lector-tope");
   const y = $("cuerpo").scrollTop;
-  tope.classList.toggle("oculta-nombre", y > 16);
-  tope.classList.toggle("oculta-botones", y > 70);
+  tope.classList.toggle("oculta-nombre", y > 130);
+  tope.classList.toggle("oculta-botones", y > 260);
 }
 
 /* Decide si mostrar la tarjeta "Siguiente": sólo cuando se llegó al
@@ -2302,7 +2304,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v84",
+    origen: "cancionero v85",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
