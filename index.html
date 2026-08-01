@@ -402,7 +402,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v86</span></div>
+    <div class="marca">Cancionero <span class="ver">v87</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
   </div>
@@ -2113,22 +2113,20 @@ function pintarLector(){
   actualizarColapsoTope();
 }
 
-/* Al scrollear el cuerpo hacia abajo, la cabecera se va achicando en dos
-   pasos para dejar más lugar a la letra: primero se esconde el nombre
-   (rápido, umbral bajo) y recién bastante después los botones (umbral
-   alto), para que no se sientan como un solo golpe. La letra y los
-   acordes en sí no tienen ningún umbral propio: sólo "se ocultan" en el
-   sentido de que son lo que sigue subiendo con el scroll normal una vez
-   que el nombre y los botones ya terminaron de achicarse — mientras
-   siguen achicándose, overflow-anchor (ver .cuerpo en el CSS) evita que
-   el navegador mueva el scroll solo para compensar el cambio de altura
-   de la cabecera, que es lo que hacía "saltar" la letra de más con un
-   scroll chiquito. */
+/* Al scrollear el cuerpo hacia abajo, la cabecera se achica junto con
+   el mismo scroll chiquito (20px: alcanza con empezar a leer) para
+   dejar lugar a la letra cuanto antes: nombre y botones desaparecen
+   los dos al toque, no en dos tiempos. La letra y los acordes en sí no
+   tienen ningún umbral propio: recién ahí quedan libres para ocupar
+   todo el alto y seguir el scroll normal. overflow-anchor (ver .cuerpo
+   en el CSS) evita que el navegador mueva el scroll solo para compensar
+   el cambio de altura de la cabecera, que hacía "saltar" la letra de
+   más con un scroll chiquito. */
 function actualizarColapsoTope(){
   const tope = $("lector-tope");
   const y = $("cuerpo").scrollTop;
   tope.classList.toggle("oculta-nombre", y > 20);
-  tope.classList.toggle("oculta-botones", y > 160);
+  tope.classList.toggle("oculta-botones", y > 20);
 }
 
 /* Decide si mostrar la tarjeta "Siguiente": sólo cuando se llegó al
@@ -2313,7 +2311,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v86",
+    origen: "cancionero v87",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
