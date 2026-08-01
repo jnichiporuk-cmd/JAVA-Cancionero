@@ -154,20 +154,16 @@ input{font-family:inherit;font-size:inherit}
 
 /* ===================================================================
    4. REUNIÓN (armador de lista)
-   Reordenar con flechas en vez de arrastrar: en el celular, arrastrar
-   dentro de una lista con scroll falla seguido. Las flechas no fallan.
+   Reordenar es "modo Reordenar" + arrastrar la fila entera, no flechas:
+   por eso el gesto sólo se habilita ahí (fuera de ese modo, tocar la
+   fila abre la canción, como siempre) y no compite con el scroll.
    =================================================================== */
 .orden{
   flex:none;width:26px;text-align:center;
   font-family:var(--mono);font-size:13px;font-weight:700;color:var(--lista);
 }
-.mover{display:flex;flex-direction:column;gap:2px;flex:none;touch-action:none}
-.mover button{
-  width:30px;height:22px;border:1px solid var(--borde);border-radius:5px;
-  font-size:10px;color:var(--tenue);display:flex;align-items:center;justify-content:center;
-}
-.mover button:disabled{opacity:.25}
 .quitar{flex:none;width:30px;height:30px;color:var(--tenue);font-size:17px}
+.fila.reordenando{touch-action:none}
 .fila.arrastrando{position:relative;z-index:5;background:var(--superficie-alta);box-shadow:0 4px 14px rgba(0,0,0,.45)}
 
 .separador{
@@ -192,6 +188,7 @@ input{font-family:inherit;font-size:inherit}
 .btn-suave{flex:none;padding:13px 15px;color:var(--tenue)}
 .btn-vivo{border-color:#3DD68C;color:#3DD68C}
 .btn:disabled{opacity:.5;cursor:default}
+.btn.on{color:var(--acordes);border-color:var(--acordes)}
 
 /* Aviso del catálogo de prueba. Se borra junto con los datos falsos. */
 .aviso{
@@ -376,7 +373,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v73</span></div>
+    <div class="marca">Cancionero <span class="ver">v75</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
   </div>
@@ -797,6 +794,7 @@ const est = {
   posicion:0,          // índice dentro de la lista
   esDirector:false,    // si está prendido, cada cambio se transmite
   soloLectura:false,   // true mientras se ve la transmisión del director: no se puede tocar nada
+  reordenando:false,   // true: la pestaña Evento entra en modo arrastrar para reordenar
 };
 
 /* --- Conexión ---------------------------------------------------------
@@ -1535,27 +1533,23 @@ function pintarReunion(){
       cont.appendChild(fila);
       return;
     }
+    fila.classList.toggle("reordenando", est.reordenando);
     fila.innerHTML = `
       <div class="orden">${i+1}</div>
       <button class="fila-txt">
         <div class="fila-nombre">${escapar(s.nombre)}</div>
         <div class="fila-meta">${metaDe(s, semisGuardado(id))}</div>
       </button>
-      <div class="mover">
-        <button class="arriba" ${i === 0 ? "disabled" : ""}>▲</button>
-        <button class="abajo" ${i === est.lista.ids.length-1 ? "disabled" : ""}>▼</button>
-      </div>
       <button class="quitar">✕</button>`;
-    fila.querySelector(".fila-txt").onclick = () => { est.posicion = i; abrir(id, true); };
-    fila.querySelector(".arriba").onclick = () => mover(i, -1);
-    fila.querySelector(".abajo").onclick  = () => mover(i, +1);
     fila.querySelector(".quitar").onclick = () => quitar(id);
-    /* Arrastrar arranca sólo tocando la manija (▲▼), no toda la fila:
-       así no compite con el scroll de la lista. Un toque corto ahí
-       sigue moviendo un solo lugar, como siempre. */
-    const manija = fila.querySelector(".mover");
-    manija.addEventListener("touchstart", e => iniciarArrastre(e, i, fila), {passive:true});
-    manija.addEventListener("mousedown", e => iniciarArrastre(e, i, fila));
+    if (est.reordenando){
+      /* En este modo toda la fila es la manija: no tiene sentido que
+         tocarla abra la canción, así que ese click no se conecta. */
+      fila.addEventListener("touchstart", e => iniciarArrastre(e, i, fila), {passive:true});
+      fila.addEventListener("mousedown", e => iniciarArrastre(e, i, fila));
+    } else {
+      fila.querySelector(".fila-txt").onclick = () => { est.posicion = i; abrir(id, true); };
+    }
     cont.appendChild(fila);
   });
 
@@ -1575,11 +1569,11 @@ function pintarReunion(){
       : `<button class="btn" id="primer-btn" disabled>Offline</button>`;
   pie.innerHTML = primerBoton
     + `<button class="btn" id="agregar-btn">+ Agregar</button>
-       <button class="btn" id="vaciar">Vaciar</button>`;
+       <button class="btn${est.reordenando ? " on" : ""}" id="reordenar-btn">Reordenar</button>`;
   if (hayTransmision) $("primer-btn").onclick = () => { est.pestana = "online"; pintar(); };
   else if (est.esDirector) $("primer-btn").onclick = transmitirDesdeElPrincipio;
   $("agregar-btn").onclick = abrirAgregar;
-  $("vaciar").onclick = vaciar;
+  $("reordenar-btn").onclick = () => { est.reordenando = !est.reordenando; pintarReunion(); };
 }
 
 /* --- Panel "Agregar canciones" ----------------------------------------
@@ -1800,20 +1794,14 @@ function quitar(id){
   est.lista.ids = est.lista.ids.filter(x => x !== id);
   pintar(); guardarLista();
 }
-function mover(i, delta){
-  const j = i + delta;
-  if (j < 0 || j >= est.lista.ids.length) return;
-  const a = est.lista.ids;
-  [a[i], a[j]] = [a[j], a[i]];
-  pintar(); guardarLista();
-}
 
 /* ===================================================================
-   Arrastrar para reordenar el Evento. El gesto arranca sólo en la
-   manija (.mover), nunca en el resto de la fila: ahí sigue andando el
-   scroll normal de la lista. Se redibuja toda la pestaña en cada cruce
-   de fila (no hay tantas canciones como para que pese) en vez de mover
-   nodos del DOM a mano, mismo criterio que el resto de la app.
+   Arrastrar para reordenar el Evento. El gesto sólo se conecta a la
+   fila cuando está prendido "Reordenar" (chip del pie); fuera de ese
+   modo tocar la fila abre la canción, como siempre. Se redibuja toda la
+   pestaña en cada cruce de fila (no hay tantas canciones como para que
+   pese) en vez de mover nodos del DOM a mano, mismo criterio que el
+   resto de la app.
    =================================================================== */
 let arrastre = null;  // { i, filaEl, startY, moviendo }
 
@@ -2195,7 +2183,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v73",
+    origen: "cancionero v75",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);

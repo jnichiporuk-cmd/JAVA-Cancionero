@@ -91,7 +91,7 @@ try {
       get est(){ return est },
       get PORID(){ return PORID },
       pintarCatalogo, pintarReunion, abrir, pintarLector, abrirEditor,
-      refrescarPrevia, abrirExportar, alternarEnLista, mover,
+      refrescarPrevia, abrirExportar, alternarEnLista,
       bloquesATexto, textoABloques, guardarEditor,
     };
   `);
@@ -127,7 +127,13 @@ setImmediate(() => {
   paso("abrir el editor de canción nueva", () => __app.abrirEditor("nueva"));
   paso("vista previa del editor", () => __app.refrescarPrevia());
   paso("pantalla de exportar", () => __app.abrirExportar());
-  paso("mover una canción en la lista", () => { __app.est.pestana="reunion"; __app.est.lista.ids=[__app.CATALOGO[0].id, __app.CATALOGO[1].id]; __app.mover(0, 1); });
+  paso("reordenar el evento (modo Reordenar)", () => {
+    __app.est.pestana = "reunion";
+    __app.est.lista.ids = [__app.CATALOGO[0].id, __app.CATALOGO[1].id];
+    __app.est.reordenando = true;
+    __app.pintarReunion();
+    __app.est.reordenando = false;
+  });
 
   paso("guardar una edición sin nube configurada", () => {
     __app.abrirEditor(__app.CATALOGO[0].id);
