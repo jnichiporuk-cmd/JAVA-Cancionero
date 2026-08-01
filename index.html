@@ -374,7 +374,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v81</span></div>
+    <div class="marca">Cancionero <span class="ver">v82</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
   </div>
@@ -1920,16 +1920,39 @@ function semisGuardado(id){
    hace nada: ahí el transporte sigue siendo de sesión, como siempre.
    Sin ser director tampoco hace nada: los botones ya quedan apagados
    para ese caso (pintarLector), esto es la segunda barrera por si algo
-   los llama igual. Si el transporte vuelve a 0 (mismo tono original),
-   se saca la entrada en vez de guardar un 0: así el mapa sólo tiene lo
-   que de verdad cambió, y no crece con cada canción que se abrió. */
-function guardarSemisSiCorresponde(){
+   los llama igual.
+
+   A diferencia de guardarLista() (que manda ids y semis completos),
+   esto escribe sólo el campo semis.<id> de esta canción, con notación
+   de punto. Puede haber más de un director a la vez (sección "MODO
+   DIRECTOR" más abajo), y cada uno tiene en memoria su propia copia de
+   est.lista.semis: si dos transportan canciones distintas casi al mismo
+   tiempo y cada uno mandara el mapa entero, el segundo en escribir pisa
+   el cambio del primero sin que nadie haya tocado la misma canción.
+   Pasó en la práctica más de una vez (ver CLAUDE.md, sección 8c).
+   Escribiendo sólo esta clave, dos transportes a canciones distintas —o
+   a la misma, en momentos distintos— ya no se pueden pisar entre sí. Si
+   el transporte vuelve a 0 (mismo tono original), se borra el campo en
+   vez de guardar un 0: así el mapa sólo tiene lo que de verdad cambió. */
+async function guardarSemisSiCorresponde(){
   if (!est.enReunion || !est.abierta || !est.lista.id) return;
   if (!est.esDirector) return;
   est.lista.semis = est.lista.semis || {};
   if (est.semis) est.lista.semis[est.abierta] = est.semis;
   else delete est.lista.semis[est.abierta];
-  guardarLista();
+  if (!HAY_NUBE) return;
+  marcarSync("escribiendo", "guardando");
+  try{
+    await fs.updateDoc(fs.doc(db, "reuniones", est.lista.id), {
+      [`semis.${est.abierta}`]: est.semis || fs.deleteField(),
+      actualizada: Date.now(),
+    });
+    marcarSync("ok", "al día");
+  }catch(e){
+    console.error("No se pudo guardar el transporte:", e);
+    marcarSync("error", "no se guardó");
+    flotar("No se pudo guardar el transporte");
+  }
 }
 
 function abrir(id, enReunion){
@@ -2239,7 +2262,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v81",
+    origen: "cancionero v82",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);

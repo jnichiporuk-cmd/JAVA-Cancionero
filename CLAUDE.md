@@ -409,14 +409,26 @@ la esté usando: ahí el transporte es de sesión, por dispositivo, y no se
 comparte con nadie.
 
 Motivo: antes sólo se bloqueaba mirando la transmisión en vivo: cualquiera
-podía abrir una canción del Evento y transportarla, y como
-`guardarLista()` manda el mapa `semis` completo (no sólo lo que cambió),
-dos celulares transportando canciones distintas —o el mismo, en momentos
-distintos— podían pisarse entre sí sin que nadie tocara la misma canción
-a propósito. Pasó en la práctica: "Glorioso día" quedó pisada en Eb
-cuando el original es D. Limitar el transporte al director no elimina el
-riesgo del todo (dos directores a la vez todavía podrían pisarse), pero
-reduce drástico cuántos dispositivos escriben esos campos a la vez.
+podía abrir una canción del Evento y transportarla, y como `guardarLista()`
+manda el mapa `semis` completo (no sólo lo que cambió), dos celulares
+transportando canciones distintas —o el mismo, en momentos distintos—
+podían pisarse entre sí sin que nadie tocara la misma canción a propósito.
+Pasó en la práctica: "Glorioso día" quedó pisada en Eb cuando el original
+es D. Limitar el transporte al director bajó cuántos dispositivos escriben
+esos campos, pero **no alcanzó**: el diseño permite varios directores a la
+vez a propósito (no hay "un" director, ver más abajo), así que el mismo
+choque siguió pasando entre dos directores. Se repitió en la práctica una
+segunda vez con la misma canción, ya con el bloqueo puesto.
+
+La solución de fondo fue otra: `guardarSemisSiCorresponde()` ya no pasa
+por `guardarLista()` para el transporte. Escribe directo con
+`updateDoc(ref, { [\`semis.${id}\`]: semis || deleteField() })`, notación
+de punto que sólo toca esa clave del mapa en el servidor, sin mandar
+`ids` ni el resto de `semis`. Dos directores transportando canciones
+distintas —o la misma, en momentos distintos— ya no se pisan, porque cada
+transporte es su propia escritura puntual, no una foto completa del
+documento. El mismo riesgo sigue latente en `guardarLista()` para `ids`
+(agregar, sacar, reordenar canciones): ese camino no se tocó todavía.
 
 ## 9. Cómo trabajar en este proyecto
 
