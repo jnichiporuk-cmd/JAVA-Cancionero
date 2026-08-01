@@ -161,13 +161,14 @@ input{font-family:inherit;font-size:inherit}
   flex:none;width:26px;text-align:center;
   font-family:var(--mono);font-size:13px;font-weight:700;color:var(--lista);
 }
-.mover{display:flex;flex-direction:column;gap:2px;flex:none}
+.mover{display:flex;flex-direction:column;gap:2px;flex:none;touch-action:none}
 .mover button{
   width:30px;height:22px;border:1px solid var(--borde);border-radius:5px;
   font-size:10px;color:var(--tenue);display:flex;align-items:center;justify-content:center;
 }
 .mover button:disabled{opacity:.25}
 .quitar{flex:none;width:30px;height:30px;color:var(--tenue);font-size:17px}
+.fila.arrastrando{position:relative;z-index:5;background:var(--superficie-alta);box-shadow:0 4px 14px rgba(0,0,0,.45)}
 
 .separador{
   padding:9px 14px 5px;font-size:11px;font-weight:700;
@@ -189,6 +190,8 @@ input{font-family:inherit;font-size:inherit}
 }
 .btn-fuerte{background:var(--acordes);color:#08121A;border-color:var(--acordes)}
 .btn-suave{flex:none;padding:13px 15px;color:var(--tenue)}
+.btn-vivo{border-color:#3DD68C;color:#3DD68C}
+.btn:disabled{opacity:.5;cursor:default}
 
 /* Aviso del catálogo de prueba. Se borra junto con los datos falsos. */
 .aviso{
@@ -220,13 +223,24 @@ input{font-family:inherit;font-size:inherit}
 .lector-meta b{color:var(--acordes)}
 
 /* Controles de tamaño y transporte */
-.ctrl{display:flex;gap:4px;flex:none}
+.ctrl{display:flex;align-items:center;gap:4px;flex:none}
 .ctrl button{
   width:28px;height:31px;border:1px solid var(--borde);border-radius:7px;
   font-size:13px;font-weight:700;color:var(--tenue);
   display:flex;align-items:center;justify-content:center;
 }
 .ctrl button.on{color:var(--acordes);border-color:var(--acordes)}
+
+/* Botón/indicador "O": para el director, transmite esta canción a
+   propósito (apagado = no es la que está en vivo; verde = sí lo es).
+   Para quien sólo sigue, es un indicador fijo en verde. Mismo formato
+   que los botones de .ctrl (D, ♭, ♯...). */
+.online-badge{
+  width:28px;height:31px;border:1px solid var(--borde);border-radius:7px;
+  font-size:13px;font-weight:700;color:var(--tenue);
+  display:flex;align-items:center;justify-content:center;flex:none;
+}
+.online-badge.en-vivo{border-color:#3DD68C;color:#3DD68C}
 
 /* Riel de la reunión: sólo visible cuando entrás por "Empezar" */
 .riel{display:none;gap:6px;padding:0 12px 10px;overflow-x:auto;scrollbar-width:none}
@@ -273,6 +287,7 @@ input{font-family:inherit;font-size:inherit}
   background:linear-gradient(to top,var(--fondo) 65%,transparent);
 }
 .lector-pie.visible.cerca-fin{display:flex}
+.siguiente-info:disabled{opacity:.6;cursor:default}
 .si-etiqueta{
   font-size:10px;letter-spacing:.14em;text-transform:uppercase;
   color:var(--tenue);margin-bottom:3px;
@@ -367,8 +382,9 @@ input{font-family:inherit;font-size:inherit}
   </div>
   <div class="pestanas">
     <button class="pestana activa" id="tab-canciones">Canciones</button>
-    <button class="pestana" id="tab-reunion">Reunión<span class="cuenta" id="cuenta" style="display:none">0</span></button>
-    <button class="pestana" id="tab-guardadas">Guardadas</button>
+    <button class="pestana" id="tab-guardadas">Historial</button>
+    <button class="pestana" id="tab-reunion">Evento<span class="cuenta" id="cuenta" style="display:none">0</span></button>
+    <button class="pestana" id="tab-online">Online</button>
   </div>
   <div class="buscador" id="caja-buscador">
     <input id="buscar" type="search" placeholder="Buscar por nombre o tono" autocomplete="off">
@@ -396,12 +412,13 @@ input{font-family:inherit;font-size:inherit}
         <div class="lector-meta" id="l-meta"></div>
       </div>
       <div class="ctrl">
+        <button class="online-badge" id="online-badge" title="Transmitir esta canción" style="display:none">O</button>
         <button id="menos-t" title="Bajar medio tono">♭</button>
         <button id="mas-t" title="Subir medio tono">♯</button>
         <button id="menos-a" title="Letra más chica">A−</button>
         <button id="mas-a" title="Letra más grande">A+</button>
-        <button id="dir-toggle" title="Ser director: lo que veas se transmite a los que estén en Modo Online">D</button>
-        <button id="online-toggle" title="Modo Online: seguir lo que muestre el director">O</button>
+        <button id="dir-toggle" title="Ser director: lo que veas se transmite a la pestaña Online">D</button>
+        <button id="vaciar-transmision" title="Vaciar la transmisión (por si quedó una canción vieja pegada)">⟲</button>
         <button id="editar" title="Editar la canción">✎</button>
       </div>
     </div>
@@ -484,7 +501,7 @@ input{font-family:inherit;font-size:inherit}
   <div class="lector-tope">
     <div class="lector-barra">
       <button class="cerrar" id="er-cancelar" title="Volver">←</button>
-      <div class="lector-tit"><div class="lector-nombre" id="er-titulo">Editar reunión</div></div>
+      <div class="lector-tit"><div class="lector-nombre" id="er-titulo">Editar evento</div></div>
       <button class="btn-guardar" id="er-guardar">Guardar</button>
     </div>
   </div>
@@ -779,7 +796,7 @@ const est = {
   enReunion:false,     // true si entró por "Empezar reunión"
   posicion:0,          // índice dentro de la lista
   esDirector:false,    // si está prendido, cada cambio se transmite
-  modoOnline:false,    // si está prendido, sigue lo que transmite el director
+  soloLectura:false,   // true mientras se ve la transmisión del director: no se puede tocar nada
 };
 
 /* --- Conexión ---------------------------------------------------------
@@ -820,6 +837,10 @@ async function conectar(){
 /* --- Escuchar cambios en vivo ---------------------------------------- */
 function escuchar(){
   if (!HAY_NUBE) return;
+
+  /* Lo que transmita quien sea director, siempre escuchado (no hace
+     falta "activar" nada para que la pestaña Online funcione). */
+  escucharDirector();
 
   /* El puntero a la reunión activa. Cuando cambia (alguien creó una
      reunión nueva o tocó "Usar esta" en Guardadas) hay que dejar de
@@ -910,52 +931,156 @@ function escucharReunionActiva(id){
 }
 
 /* ===================================================================
-   MODO DIRECTOR / MODO ONLINE
+   MODO DIRECTOR / PESTAÑA ONLINE
    No hay "un" director: cualquiera puede prender "Director" y, mientras
    esté prendido, cada canción que abre o cada transporte que hace se
-   escribe en cancionero/directorEnVivo. Quien tenga "Modo Online"
-   prendido escucha ese documento y su lector salta solo a lo mismo. Si
-   dos personas son director a la vez, gana la última escritura: no hay
-   forma de "pelear" por el control, sólo de pisarse (aceptado a
-   propósito, es un grupo chico).
-   =================================================================== */
-let cancelarEscuchaDirector = null;
+   escribe en cancionero/directorEnVivo. Si dos personas son director a
+   la vez, gana la última escritura: no hay forma de "pelear" por el
+   control, sólo de pisarse (aceptado a propósito, es un grupo chico).
 
-function alternarDirector(){
+   directorEnVivo.directores cuenta cuántos dispositivos tienen el chip
+   Director prendido en este momento (+1 al prender, -1 al apagar, con
+   increment() para que sea seguro aunque escriban varios a la vez).
+   Online se considera vacío apenas ese número llega a 0, aunque haya
+   quedado una canción vieja en cancionId: así apagar Director vacía la
+   pantalla de todos, no deja pegada la última canción para siempre.
+   Límite conocido: si alguien cierra la app sin apagar el chip (en vez
+   de apagarlo a propósito), ese +1 nunca baja solo; se corrige a mano
+   desde la consola de Firebase, igual que otros documentos huérfanos de
+   este proyecto (ver sección 8b).
+
+   No hace falta "activar" nada para ver la transmisión: la pestaña
+   Online siempre escucha ese documento (escucharDirector() arranca con
+   el resto de los listeners). Entrar a Online muestra la vista en vivo
+   si hay algo, o "vacío" si no. El resto de la app (Canciones,
+   Historial, Evento, o una canción abierta por cuenta propia) sigue
+   navegándose libre, sin que el director interrumpa nada fuera de esa
+   pestaña. */
+let ultimoBroadcastDirector = null;  // lo último que transmitió el director, o null si no hay nadie dirigiendo
+
+async function alternarDirector(){
   est.esDirector = !est.esDirector;
   pintar();
   if (est.abierta) pintarLector();
+  if (!HAY_NUBE) return;
+  const ref = fs.doc(db, "cancionero", "directorEnVivo");
+  try{
+    if (est.esDirector){
+      await fs.setDoc(ref, { directores: fs.increment(1) }, { merge: true });
+    } else {
+      /* Al apagar, si éste era el último director, se reinicia el
+         documento entero (no un merge): si sólo se restara el contador,
+         el cancionId de la transmisión anterior quedaría pegado ahí, y
+         resucitaría como "hay transmisión" la próxima vez que alguien
+         prenda Director. Transacción para que sea seguro aunque dos
+         personas apaguen el chip al mismo tiempo. */
+      await fs.runTransaction(db, async tx => {
+        const snap = await tx.get(ref);
+        const actual = (snap.data() && snap.data().directores) || 0;
+        const nuevo = actual - 1;
+        if (nuevo <= 0) tx.set(ref, { directores: 0 });
+        else tx.set(ref, { directores: nuevo }, { merge: true });
+      });
+    }
+  }catch(e){
+    console.error("No se pudo actualizar directores activos:", e);
+  }
 }
 
-function alternarModoOnline(){
-  est.modoOnline = !est.modoOnline;
-  if (est.modoOnline) escucharDirector();
-  else if (cancelarEscuchaDirector){ cancelarEscuchaDirector(); cancelarEscuchaDirector = null; }
-  pintar();
-  if (est.abierta) pintarLector();
-}
+let directoresActivos = 0;  // cuántos dispositivos tienen el chip Director prendido ahora
 
 function escucharDirector(){
-  if (!HAY_NUBE){ flotar("Sin conexión: no se puede seguir al director"); return; }
-  cancelarEscuchaDirector = fs.onSnapshot(fs.doc(db, "cancionero", "directorEnVivo"), snap => {
+  if (!HAY_NUBE) return;
+  fs.onSnapshot(fs.doc(db, "cancionero", "directorEnVivo"), snap => {
     const d = snap.data();
-    if (d && d.cancionId) seguirAlDirector(d);
+    const nuevo = (d && d.directores) || 0;
+    if (nuevo !== directoresActivos){
+      directoresActivos = nuevo;
+      if (est.pestana === "reunion") pintar();  // refresca el número en el chip Director
+    }
+    const hayDirector = directoresActivos > 0;
+    if (!hayDirector){
+      ultimoBroadcastDirector = null;
+      if (est.soloLectura) cerrarVistaOnline();
+      else if (est.pestana === "online") pintarOnline();
+      return;
+    }
+    if (!d.cancionId) return;
+    ultimoBroadcastDirector = d;
+    if (est.soloLectura) mostrarVistaOnline(d);        // ya la está mirando: se actualiza sola
+    else if (est.pestana === "online") pintarOnline(); // está en la pestaña: la abre
+    else{
+      /* Estos dos no se pisan: la pestaña Evento (de fondo) y el lector
+         (una tapa arriba) pueden estar los dos activos a la vez. */
+      if (est.pestana === "reunion") pintar();  // aparece/desaparece "Ver Online" en el pie
+      if (est.abierta) pintarLector();          // refresca el botón O si hay una canción abierta
+    }
   }, e => {
     console.error("Error escuchando al director:", e);
   });
 }
 
-/* Mueve el lector de este dispositivo a lo que transmitió el director.
-   Si este mismo dispositivo también es director, no se auto-sigue: ya
-   está mostrando lo que eligió, sería un salto contra sí mismo. */
-function seguirAlDirector(d){
-  if (!est.modoOnline || est.esDirector) return;
-  const cambioCancion = est.abierta !== d.cancionId;
+/* Cierra la vista en vivo porque dejó de haber director (no porque el
+   usuario haya tocado la flecha): se queda en la pestaña Online, ahora
+   sí mostrando el aviso de vacío. */
+function cerrarVistaOnline(){
+  $("lector").classList.remove("abierto");
+  est.abierta = null;
+  est.soloLectura = false;
+  if (est.pestana === "online") pintarOnline();
+}
+
+/* Botón de emergencia: reinicia directorEnVivo entero (sin merge), para
+   cuando alguien se fue sin apagar Director y quedó una canción vieja
+   pegada para todo el grupo. Cualquiera puede tocarlo, no sólo un
+   director, porque cualquiera puede notar el problema. */
+async function vaciarTransmision(){
+  if (!confirm("¿Vaciar la transmisión para todos? Usalo sólo si quedó una canción vieja pegada.")) return;
+  if (!HAY_NUBE){ flotar("Sin conexión"); return; }
+  try{
+    await fs.setDoc(fs.doc(db, "cancionero", "directorEnVivo"), { directores: 0 });
+    flotar("Transmisión vaciada");
+  }catch(e){
+    console.error("No se pudo vaciar la transmisión:", e);
+    flotar("No se pudo vaciar la transmisión");
+  }
+}
+
+/* Abre el lector en modo sólo lectura con lo que transmitió el
+   director: sin transportar, sin tocar el riel, sin deslizar para
+   cambiar de canción. Los cambios los hace el director, acá sólo se
+   mira. Se llama al entrar a la vista en vivo desde Online, y de nuevo
+   cada vez que el director transmite algo nuevo mientras se la sigue
+   mirando. */
+/* Botón "Transmitir" del pie del Evento: arranca la transmisión con la
+   primera canción de la lista de una, en vez de sólo abrirla y esperar
+   a que el director toque el botón O. Entra como la vista en vivo
+   (soloLectura) para que se vea igual que Online, pero sin apagarle
+   ningún control: sigue siendo director, sigue con todo disponible. */
+function transmitirDesdeElPrincipio(){
+  if (!est.lista.ids.length) return;
+  const id = est.lista.ids[0];
+  est.posicion = 0;
+  est.abierta = id;
   est.enReunion = true;
+  est.soloLectura = true;
+  est.semis = semisGuardado(id);
+  $("lector").classList.add("abierto");
+  $("cuerpo").scrollTop = 0;
+  pintarLector();
+  transmitirEstado();
+}
+
+function mostrarVistaOnline(d){
+  const s = PORID[d.cancionId];
+  if (!s) return;
+  const cambioCancion = est.abierta !== d.cancionId;
   est.abierta = d.cancionId;
+  est.enReunion = true;
+  est.soloLectura = true;
   est.semis = d.semis || 0;
   const idx = est.lista.ids.indexOf(d.cancionId);
-  if (idx >= 0) est.posicion = idx;
+  est.posicion = idx >= 0 ? idx : 0;
   $("lector").classList.add("abierto");
   if (cambioCancion) $("cuerpo").scrollTop = 0;
   pintarLector();
@@ -969,10 +1094,19 @@ async function transmitirEstado(){
   try{
     await fs.setDoc(fs.doc(db, "cancionero", "directorEnVivo"), {
       cancionId: est.abierta, semis: est.semis, posicion: est.posicion, cuando: Date.now(),
-    });
+    }, { merge: true });
   }catch(e){
     console.error("No se pudo transmitir:", e);
   }
+}
+
+/* Si la canción que se está viendo ya es la que está en vivo, un
+   transporte se manda solo (es "corregir el tono en el momento", no
+   "empezar a transmitir algo nuevo"). Si es una canción distinta a la
+   transmitida, transportarla es sólo mirar: no dispara nada, para no
+   arrancar una transmisión por accidente al tocar ♭/♯. */
+function retransmitirSiYaEstaEnVivo(){
+  if (ultimoBroadcastDirector && ultimoBroadcastDirector.cancionId === est.abierta) transmitirEstado();
 }
 
 /* Id nuevo para una reunión: si hay conexión, lo genera Firestore (así no
@@ -1024,7 +1158,7 @@ async function guardarLista(){
    defecto arranca en el momento de la creación, pero es un dato aparte
    de "creada" (que sólo sirve para ordenar por "Recientes"). */
 async function crearReunion(id, nombre, ids, semis, fechaReunion){
-  if (!HAY_NUBE){ flotar("Sin conexión: la reunión no se comparte"); return; }
+  if (!HAY_NUBE){ flotar("Sin conexión: el evento no se comparte"); return; }
   marcarSync("escribiendo", "guardando");
   try{
     await fs.setDoc(fs.doc(db, "reuniones", id), {
@@ -1037,7 +1171,7 @@ async function crearReunion(id, nombre, ids, semis, fechaReunion){
   }catch(e){
     console.error("No se pudo crear la reunión:", e);
     marcarSync("error", "no se guardó");
-    flotar("No se pudo crear la reunión");
+    flotar("No se pudo crear el evento");
   }
 }
 
@@ -1056,7 +1190,7 @@ async function usarReunion(r){
     await fs.setDoc(fs.doc(db, "cancionero", "activa"), { reunionActivaId: r.id });
   }catch(e){
     console.error("No se pudo cambiar la reunión activa:", e);
-    flotar("No se pudo cambiar la reunión activa");
+    flotar("No se pudo cambiar el evento activo");
   }
 }
 
@@ -1086,7 +1220,7 @@ let copiandoDesdeReunion = null;
 function abrirEditarReunion(r){
   editandoReunion = r;
   copiandoDesdeReunion = null;
-  $("er-titulo").textContent = "Editar reunión";
+  $("er-titulo").textContent = "Editar evento";
   llenarCamposReunion(r.nombre || "", r.fechaReunion || r.creada || Date.now());
   $("er-editar").classList.add("abierto");
 }
@@ -1101,7 +1235,7 @@ function abrirEditarReunion(r){
 function abrirCopiarReunion(r){
   copiandoDesdeReunion = r;
   editandoReunion = null;
-  $("er-titulo").textContent = "Copiar reunión";
+  $("er-titulo").textContent = "Copiar evento";
   llenarCamposReunion(r.nombre ? `${r.nombre} (copia)` : "", Date.now());
   $("er-editar").classList.add("abierto");
 }
@@ -1142,7 +1276,7 @@ function guardarEditarReunion(){
     cerrarEditarReunion();
     pintar();
     crearReunion(id, nombre, ids, semis, fechaReunion);
-    flotar("Reunión copiada");
+    flotar("Evento copiado");
     return;
   }
 
@@ -1257,13 +1391,15 @@ function pintar(){
   $("tab-canciones").classList.toggle("activa", est.pestana === "canciones");
   $("tab-reunion").classList.toggle("activa", est.pestana === "reunion");
   $("tab-guardadas").classList.toggle("activa", est.pestana === "guardadas");
+  $("tab-online").classList.toggle("activa", est.pestana === "online");
   $("caja-buscador").style.display = est.pestana === "canciones" ? "block" : "none";
   $("caja-orden").style.display = est.pestana === "canciones" ? "flex" : "none";
   $("caja-buscador-guardadas").style.display = est.pestana === "guardadas" ? "block" : "none";
 
   if (est.pestana === "canciones") pintarCatalogo();
+  else if (est.pestana === "guardadas") pintarGuardadas();
   else if (est.pestana === "reunion") pintarReunion();
-  else pintarGuardadas();
+  else pintarOnline();
 }
 
 /* --- Orden del catálogo -----------------------------------------------
@@ -1359,8 +1495,11 @@ function pintarReunion(){
       Tocá "+ Agregar canciones" abajo para sumar las de este domingo.
       Lo que armes acá lo ve todo el grupo.</div>`;
     pie.style.display = "flex";
-    pie.innerHTML = `<button class="btn btn-fuerte" id="agregar-btn">+ Agregar canciones</button>`;
+    const hayTransmisionVacia = directoresActivos > 0 && !!ultimoBroadcastDirector;
+    pie.innerHTML = `<button class="btn btn-fuerte" id="agregar-btn">+ Agregar canciones</button>`
+      + (hayTransmisionVacia ? `<button class="btn btn-vivo" id="ver-vivo-evento">Online</button>` : "");
     $("agregar-btn").onclick = abrirAgregar;
+    if (hayTransmisionVacia) $("ver-vivo-evento").onclick = () => { est.pestana = "online"; pintar(); };
     return;
   }
 
@@ -1373,18 +1512,14 @@ function pintarReunion(){
     <div class="fila-meta">${fechaHoraTexto(est.lista.fechaReunion || est.lista.cuando || Date.now())}</div>`;
   cont.appendChild(info);
 
-  /* Director / Modo Online: mismos toggles que en el lector, para
-     poder prenderlos antes de abrir la primera canción. */
+  /* Ser director se decide acá, manejando el evento. Modo Online (ver lo
+     que transmite el director) vive en su propia pestaña, no acá. */
   const online = document.createElement("div");
   online.className = "orden-fila";
-  online.innerHTML = `
-    <button class="orden-btn" id="chip-director">Director</button>
-    <button class="orden-btn" id="chip-online">Modo Online</button>`;
+  online.innerHTML = `<button class="orden-btn" id="chip-director">Director${directoresActivos > 0 ? ` (${directoresActivos})` : ""}</button>`;
   cont.appendChild(online);
   $("chip-director").classList.toggle("activo", est.esDirector);
-  $("chip-online").classList.toggle("activo", est.modoOnline);
   $("chip-director").onclick = alternarDirector;
-  $("chip-online").onclick = alternarModoOnline;
 
   est.lista.ids.forEach((id, i) => {
     const s = PORID[id];
@@ -1415,14 +1550,34 @@ function pintarReunion(){
     fila.querySelector(".arriba").onclick = () => mover(i, -1);
     fila.querySelector(".abajo").onclick  = () => mover(i, +1);
     fila.querySelector(".quitar").onclick = () => quitar(id);
+    /* Arrastrar arranca sólo tocando la manija (▲▼), no toda la fila:
+       así no compite con el scroll de la lista. Un toque corto ahí
+       sigue moviendo un solo lugar, como siempre. */
+    const manija = fila.querySelector(".mover");
+    manija.addEventListener("touchstart", e => iniciarArrastre(e, i, fila), {passive:true});
+    manija.addEventListener("mousedown", e => iniciarArrastre(e, i, fila));
     cont.appendChild(fila);
   });
 
   pie.style.display = "flex";
-  pie.innerHTML = `<button class="btn btn-fuerte" id="empezar">Empezar reunión</button>
-                   <button class="btn btn-suave" id="agregar-btn">+ Agregar</button>
-                   <button class="btn btn-suave" id="vaciar">Vaciar</button>`;
-  $("empezar").onclick = () => { est.posicion = 0; abrir(est.lista.ids[0], true); };
+  /* El primer botón tiene tres estados, todos del mismo tamaño que los
+     otros dos (nada de un botón grande y dos chicos): si hay una
+     transmisión activa, "Online" para cualquiera (lleva a verla). Si no
+     hay ninguna y se es director, "Transmitir" (lleva a la primera
+     canción, desde ahí se transmite con el botón O). Si no hay
+     transmisión y no se es director, "Offline": no hay nada para
+     empezar, apagado. */
+  const hayTransmision = directoresActivos > 0 && !!ultimoBroadcastDirector;
+  const primerBoton = hayTransmision
+    ? `<button class="btn btn-vivo" id="primer-btn">Online</button>`
+    : est.esDirector
+      ? `<button class="btn btn-fuerte" id="primer-btn">Transmitir</button>`
+      : `<button class="btn" id="primer-btn" disabled>Offline</button>`;
+  pie.innerHTML = primerBoton
+    + `<button class="btn" id="agregar-btn">+ Agregar</button>
+       <button class="btn" id="vaciar">Vaciar</button>`;
+  if (hayTransmision) $("primer-btn").onclick = () => { est.pestana = "online"; pintar(); };
+  else if (est.esDirector) $("primer-btn").onclick = transmitirDesdeElPrincipio;
   $("agregar-btn").onclick = abrirAgregar;
   $("vaciar").onclick = vaciar;
 }
@@ -1486,19 +1641,19 @@ function pintarGuardadas(){
 
   const acc = document.createElement("div");
   acc.className = "acciones";
-  acc.innerHTML = `<button id="btn-nueva-reunion">+ Nueva reunión</button>`;
+  acc.innerHTML = `<button id="btn-nueva-reunion">+ Nuevo evento</button>`;
   cont.appendChild(acc);
   $("btn-nueva-reunion").onclick = () => {
-    const nombre = prompt("Nombre de la reunión", fechaHoyTexto());
+    const nombre = prompt("Nombre del evento", fechaHoyTexto());
     if (nombre === null) return;  // canceló
     nuevaReunion(nombre.trim() || fechaHoyTexto());
   };
 
   if (!est.guardadas.length){
     cont.insertAdjacentHTML("beforeend", `<div class="vacio">
-      <strong>Todavía no hay reuniones guardadas</strong>
-      Se crean solas la primera vez que sumás una canción en Canciones,
-      o tocá arriba "+ Nueva reunión" para armar una con anticipación.</div>`);
+      <strong>Todavía no hay eventos en el historial</strong>
+      Se crean solos la primera vez que sumás una canción en Canciones,
+      o tocá arriba "+ Nuevo evento" para armar uno con anticipación.</div>`);
     return;
   }
 
@@ -1523,7 +1678,7 @@ function pintarGuardadas(){
         <div class="fila-meta">${fechaHoraTexto(r.fechaReunion || r.creada)} · ${r.ids.length} canción${r.ids.length === 1 ? "" : "es"}</div>
       </button>
       <button class="btn-icono editar" title="Cambiar nombre y fecha">✎</button>
-      <button class="btn-icono copiar" title="Copiar esta reunión">📋</button>`;
+      <button class="btn-icono copiar" title="Copiar este evento">📋</button>`;
     /* Tocar el nombre activa la reunión (si no lo era ya) y lleva directo
        a la pestaña Reunión: hace de "Usar esta", sin ocupar un botón
        aparte en cada fila. */
@@ -1536,6 +1691,48 @@ function pintarGuardadas(){
     fila.querySelector(".copiar").onclick = () => abrirCopiarReunion(r);
     cont.appendChild(fila);
   });
+}
+
+/* --- Pestaña Online -----------------------------------------------------
+   Sin pasos intermedios: si hay algo transmitido, entrar acá ya muestra
+   la vista en vivo de sólo lectura (mostrarVistaOnline()); si no hay
+   nada, se queda en un aviso simple. Salir es la flecha de siempre. */
+/* Fondo de la pestaña Online: refleja el estado real (vacío, o "hay
+   transmisión" con un botón para volver a verla), pero nunca abre nada
+   sola. Se usa después de que alguien cierra la vista en vivo a
+   propósito, para no forzarle a volver a entrar pero tampoco mentirle
+   diciendo "vacío" si en realidad sigue habiendo transmisión. */
+function fondoOnline(){
+  $("pie").style.display = "none";
+  const d = ultimoBroadcastDirector;
+  const s = d ? PORID[d.cancionId] : null;
+
+  if (!s){
+    $("contenido").innerHTML = `<div class="vacio">
+      <strong>Online vacío</strong>
+      Todavía nadie que sea director eligió una canción del Evento.
+      Cuando lo haga, aparece acá sola.</div>`;
+    return;
+  }
+
+  $("contenido").innerHTML = `<div class="vacio">
+    <strong>Hay una transmisión en vivo</strong>
+    "${escapar(s.nombre)}"</div>`;
+  const acc = document.createElement("div");
+  acc.className = "acciones";
+  acc.innerHTML = `<button id="btn-ver-vivo">Ver transmisión en vivo</button>`;
+  $("contenido").appendChild(acc);
+  $("btn-ver-vivo").onclick = () => mostrarVistaOnline(d);
+}
+
+/* Punto de entrada de la pestaña: dibuja el fondo y, si hay algo
+   transmitido, la abre directo (para eso está la pestaña Online, no
+   hace falta ningún botón de "activar"). */
+function pintarOnline(){
+  fondoOnline();
+  const d = ultimoBroadcastDirector;
+  const s = d ? PORID[d.cancionId] : null;
+  if (s) mostrarVistaOnline(d);
 }
 
 /* Nombres de día abreviados, domingo primero (así coincide con
@@ -1593,8 +1790,8 @@ function alternarEnLista(id){
   }
 
   const i = est.lista.ids.indexOf(id);
-  if (i >= 0){ est.lista.ids.splice(i,1); flotar("Sacada de la reunión"); }
-  else { est.lista.ids.push(id); flotar("Sumada a la reunión"); }
+  if (i >= 0){ est.lista.ids.splice(i,1); flotar("Sacada del evento"); }
+  else { est.lista.ids.push(id); flotar("Sumada al evento"); }
   pintar();
   if (esNueva) crearReunion(est.lista.id, est.lista.nombre, est.lista.ids, est.lista.semis, est.lista.fechaReunion);
   else guardarLista();
@@ -1610,8 +1807,61 @@ function mover(i, delta){
   [a[i], a[j]] = [a[j], a[i]];
   pintar(); guardarLista();
 }
+
+/* ===================================================================
+   Arrastrar para reordenar el Evento. El gesto arranca sólo en la
+   manija (.mover), nunca en el resto de la fila: ahí sigue andando el
+   scroll normal de la lista. Se redibuja toda la pestaña en cada cruce
+   de fila (no hay tantas canciones como para que pese) en vez de mover
+   nodos del DOM a mano, mismo criterio que el resto de la app.
+   =================================================================== */
+let arrastre = null;  // { i, filaEl, startY, moviendo }
+
+function iniciarArrastre(e, i, filaEl){
+  const y = e.touches ? e.touches[0].clientY : e.clientY;
+  arrastre = { i, filaEl, startY: y, moviendo: false };
+}
+
+function moverArrastre(e){
+  if (!arrastre) return;
+  const y = e.touches ? e.touches[0].clientY : e.clientY;
+  const dy = y - arrastre.startY;
+
+  if (!arrastre.moviendo){
+    if (Math.abs(dy) < 8) return;  // todavía puede ser sólo un toque a ▲/▼
+    arrastre.moviendo = true;
+    arrastre.filaEl.classList.add("arrastrando");
+  }
+  if (e.cancelable) e.preventDefault();  // ya es arrastre: no scrollea la página
+  arrastre.filaEl.style.transform = `translateY(${dy}px)`;
+
+  const filas = $("contenido").querySelectorAll(".fila");
+  const alto = arrastre.filaEl.offsetHeight || 1;
+  const objetivo = Math.max(0, Math.min(filas.length - 1, arrastre.i + Math.round(dy / alto)));
+  if (objetivo !== arrastre.i){
+    const a = est.lista.ids;
+    const [id] = a.splice(arrastre.i, 1);
+    a.splice(objetivo, 0, id);
+    arrastre.i = objetivo;
+    arrastre.startY = y;
+    pintarReunion();
+    arrastre.filaEl = $("contenido").querySelectorAll(".fila")[objetivo];
+    arrastre.filaEl.classList.add("arrastrando");
+  }
+}
+
+function soltarArrastre(){
+  if (!arrastre) return;
+  const huboArrastre = arrastre.moviendo;
+  if (arrastre.filaEl){
+    arrastre.filaEl.classList.remove("arrastrando");
+    arrastre.filaEl.style.transform = "";
+  }
+  arrastre = null;
+  if (huboArrastre) guardarLista();
+}
 function vaciar(){
-  if (!confirm("¿Vaciar la lista de la reunión? Se borra también para el resto del grupo.")) return;
+  if (!confirm("¿Vaciar la lista del evento? Se borra también para el resto del grupo.")) return;
   est.lista.ids = [];
   pintar(); guardarLista();
 }
@@ -1641,20 +1891,32 @@ function guardarSemisSiCorresponde(){
 }
 
 function abrir(id, enReunion){
-  /* Quien sólo sigue al director (Modo Online sin ser director) no
-     navega por su cuenta: su lector lo maneja seguirAlDirector(). */
-  if (est.modoOnline && !est.esDirector && enReunion) return;
   est.abierta = id;
   est.enReunion = enReunion;
+  est.soloLectura = false;  // abrir algo por cuenta propia siempre sale del modo sólo lectura
   est.semis = enReunion ? semisGuardado(id) : 0;
   $("lector").classList.add("abierto");
   $("cuerpo").scrollTop = 0;
   pintarLector();
-  transmitirEstado();
+  /* No se transmite sola: el director mira canciones libremente y
+     transmite a propósito con el botón O. */
 }
 function cerrar(){
   $("lector").classList.remove("abierto");
   est.abierta = null;
+  est.soloLectura = false;
+}
+
+/* Lo que efectivamente toca el botón ← del lector: además de cerrar, si
+   se estaba mirando la vista en vivo manda al listado del Evento (sea o
+   no director), en vez de dejar a alguien parado en la pestaña Online,
+   que ahí no tiene nada más para hacer. */
+function cerrarLector(){
+  const veniaDeSoloLectura = est.soloLectura;
+  cerrar();
+  if (!veniaDeSoloLectura) return;
+  est.pestana = "reunion";
+  pintar();
 }
 
 function pintarLector(){
@@ -1673,13 +1935,37 @@ function pintarLector(){
       : `<span style="color:var(--tenue)">sin tono en el cancionero</span>`)
     + (s.bpm ? ` · ${s.bpm} bpm` : "");
 
+  /* Modo sólo lectura (viendo la transmisión desde Online): sin
+     transportar, sin editar, sin tocar el riel. Pero si esta misma
+     persona también es director, no se le apaga nada: sigue teniendo
+     control completo, esté mirando lo que esté mirando. Los bloqueos
+     son sólo para quien mira sin ser director. */
+  const bloqueado = est.soloLectura && !est.esDirector;
   ["mas-t","menos-t"].forEach(k => {
-    $(k).disabled = !puedeTransportar;
-    $(k).style.opacity = puedeTransportar ? "" : ".25";
+    $(k).disabled = !puedeTransportar || bloqueado;
+    $(k).style.opacity = (puedeTransportar && !bloqueado) ? "" : ".25";
     $(k).classList.toggle("on", puedeTransportar && est.semis !== 0);
   });
+  $("dir-toggle").style.display = bloqueado ? "none" : "";
   $("dir-toggle").classList.toggle("on", est.esDirector);
-  $("online-toggle").classList.toggle("on", est.modoOnline);
+  $("editar").style.display = bloqueado ? "none" : "";
+  /* Visible para cualquiera en la vista en vivo, sea o no director: es
+     un botón de emergencia por si alguien se fue sin apagar Director y
+     quedó una canción vieja pegada para todos. */
+  $("vaciar-transmision").style.display = est.soloLectura ? "" : "none";
+
+  /* Botón O: visible para el director en cualquier canción del evento
+     (para poder transmitirla a propósito) y para cualquiera que esté en
+     la vista en vivo (ahí, sólo como indicador). Verde cuando la
+     canción que se ve es justo la que está en vivo. */
+  const enVivo = !!(ultimoBroadcastDirector && ultimoBroadcastDirector.cancionId === est.abierta);
+  const mostrarOnline = (est.esDirector && est.enReunion) || est.soloLectura;
+  $("online-badge").style.display = mostrarOnline ? "" : "none";
+  $("online-badge").classList.toggle("en-vivo", enVivo);
+  $("online-badge").disabled = !est.esDirector;
+  $("online-badge").title = est.esDirector
+    ? (enVivo ? "Se está transmitiendo esta canción" : "Transmitir esta canción")
+    : "Vista Online: la ven todos los que estén siguiendo";
 
   /* Escritura con bemoles si el tono destino lo pide */
   const conBemoles = puedeTransportar && TONOS_BEMOL.has(tonoActual);
@@ -1689,41 +1975,39 @@ function pintarLector(){
   cuerpo.style.fontSize = est.tamano + "px";
   pintarBloques(cuerpo, s.bloques, est.semis, conBemoles);
 
-  /* Riel y aviso de la próxima canción: sólo en modo reunión */
+  /* Riel: sólo en modo reunión. Bloqueado, se ve la posición pero no se
+     puede tocar. */
   const riel = $("riel"), pie = $("l-pie");
   riel.classList.toggle("visible", est.enReunion);
-  pie.classList.toggle("visible", est.enReunion);
   if (est.enReunion){
     riel.innerHTML = "";
     est.lista.ids.forEach((id, i) => {
       const b = document.createElement("button");
       b.textContent = i + 1;
       b.className = i === est.posicion ? "aqui" : (i < est.posicion ? "pasada" : "");
-      b.onclick = () => {
-        if (est.modoOnline && !est.esDirector) return;  // sigue al director, no navega solo
+      if (!bloqueado) b.onclick = () => {
         est.posicion = i; est.abierta = id; est.semis = semisGuardado(id);
-        $("cuerpo").scrollTop = 0; pintarLector(); transmitirEstado();
+        $("cuerpo").scrollTop = 0; pintarLector();
       };
       riel.appendChild(b);
     });
+  }
 
-    if (est.modoOnline && !est.esDirector){
-      /* Acá no se navega: es sólo un aviso de que se está siguiendo al
-         director, para que no parezca que el "Siguiente" no responde. */
-      pie.innerHTML = `<div class="si-fin">Modo Online: siguiendo al director</div>`;
+  /* Tarjeta "Siguiente": bloqueado la deja ver (para saber qué sigue)
+     pero sin poder tocarla, ni el riel cambia sola de canción. */
+  pie.classList.toggle("visible", est.enReunion);
+  if (est.enReunion){
+    const idSig = est.lista.ids[est.posicion + 1];
+    const sig = idSig ? PORID[idSig] : null;
+    if (sig){
+      pie.innerHTML = `<button class="btn siguiente-info"${bloqueado ? " disabled" : ""}>
+        <div class="si-etiqueta">Siguiente</div>
+        <div class="fila-nombre">${escapar(sig.nombre)}</div>
+        <div class="fila-meta">${metaDe(sig, semisGuardado(idSig))}</div>
+      </button>`;
+      if (!bloqueado) pie.querySelector(".siguiente-info").onclick = () => paso(+1);
     } else {
-      const idSig = est.lista.ids[est.posicion + 1];
-      const sig = idSig ? PORID[idSig] : null;
-      if (sig){
-        pie.innerHTML = `<button class="btn siguiente-info">
-          <div class="si-etiqueta">Siguiente</div>
-          <div class="fila-nombre">${escapar(sig.nombre)}</div>
-          <div class="fila-meta">${metaDe(sig, semisGuardado(idSig))}</div>
-        </button>`;
-        pie.querySelector(".siguiente-info").onclick = () => paso(+1);
-      } else {
-        pie.innerHTML = `<div class="si-fin">Última canción de la reunión</div>`;
-      }
+      pie.innerHTML = `<div class="si-fin">Última canción del evento</div>`;
     }
     actualizarPieCercaFin();
   }
@@ -1741,7 +2025,7 @@ function actualizarPieCercaFin(){
 }
 
 function paso(delta){
-  if (est.modoOnline && !est.esDirector) return;  // sigue al director, no navega solo
+  if (est.soloLectura && !est.esDirector) return;  // sin ser director, no navega desde la vista en vivo
   const j = est.posicion + delta;
   if (j < 0 || j >= est.lista.ids.length) return;
   est.posicion = j;
@@ -1749,7 +2033,6 @@ function paso(delta){
   est.semis = semisGuardado(est.abierta);
   $("cuerpo").scrollTop = 0;
   pintarLector();
-  transmitirEstado();
 }
 
 
@@ -1938,13 +2221,14 @@ async function copiarExportado(){
 $("tab-canciones").onclick  = () => { est.pestana = "canciones"; pintar(); };
 $("tab-reunion").onclick    = () => { est.pestana = "reunion"; pintar(); };
 $("tab-guardadas").onclick  = () => { est.pestana = "guardadas"; pintar(); };
+$("tab-online").onclick     = () => { est.pestana = "online"; pintar(); };
 $("buscar").oninput = e => { est.filtro = e.target.value; pintarCatalogo(); };
 $("bg-buscar").oninput = e => { est.filtroGuardadas = e.target.value; pintarGuardadas(); };
 $("caja-orden").querySelectorAll(".orden-btn").forEach(b => {
   b.onclick = () => { est.orden = b.dataset.orden; guardarAjustes(); pintarCatalogo(); };
 });
 
-$("cerrar").onclick = cerrar;
+$("cerrar").onclick = cerrarLector;
 
 /* Editor */
 $("editar").onclick      = () => { if (est.abierta) abrirEditor(est.abierta); };
@@ -1968,19 +2252,18 @@ $("ag-buscar").oninput = e => { est.filtroAgregar = e.target.value; pintarAgrega
 $("er-cancelar").onclick = cerrarEditarReunion;
 $("er-guardar").onclick = guardarEditarReunion;
 $("mas-t").onclick   = () => {
-  if (est.modoOnline && !est.esDirector) return;  // el tono también lo maneja el director
   if (!PORID[est.abierta] || !PORID[est.abierta].tono) return;
-  est.semis = Math.min(11, est.semis + 1); pintarLector(); guardarSemisSiCorresponde(); transmitirEstado();
+  est.semis = Math.min(11, est.semis + 1); pintarLector(); guardarSemisSiCorresponde(); retransmitirSiYaEstaEnVivo();
 };
 $("menos-t").onclick = () => {
-  if (est.modoOnline && !est.esDirector) return;
   if (!PORID[est.abierta] || !PORID[est.abierta].tono) return;
-  est.semis = Math.max(-11, est.semis - 1); pintarLector(); guardarSemisSiCorresponde(); transmitirEstado();
+  est.semis = Math.max(-11, est.semis - 1); pintarLector(); guardarSemisSiCorresponde(); retransmitirSiYaEstaEnVivo();
 };
 $("mas-a").onclick   = () => { est.tamano = Math.min(30, est.tamano + 1); pintarLector(); guardarAjustes(); };
 $("menos-a").onclick = () => { est.tamano = Math.max(11, est.tamano - 1); pintarLector(); guardarAjustes(); };
 $("dir-toggle").onclick = alternarDirector;
-$("online-toggle").onclick = alternarModoOnline;
+$("vaciar-transmision").onclick = vaciarTransmision;
+$("online-badge").onclick = () => { if (est.esDirector) transmitirEstado(); };
 
 /* --- Pantalla completa ---------------------------------------------------
    Gana el alto que ocupan las barras del navegador o del visor. Puede no
@@ -2003,7 +2286,7 @@ document.addEventListener("fullscreenchange", () => {
 /* Teclado: cómodo si alguien lo abre en la compu del ensayo */
 document.addEventListener("keydown", e => {
   if (!$("lector").classList.contains("abierto")) return;
-  if (e.key === "Escape") cerrar();
+  if (e.key === "Escape") cerrarLector();
   if (est.enReunion && e.key === "ArrowRight") paso(+1);
   if (est.enReunion && e.key === "ArrowLeft")  paso(-1);
 });
@@ -2024,6 +2307,16 @@ $("cuerpo").addEventListener("touchend", e => {
   if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) * 2) paso(dx < 0 ? +1 : -1);
   xIni = yIni = null;
 }, {passive:true});
+
+/* Arrastrar filas del Evento (ver iniciarArrastre/moverArrastre): estos
+   se escuchan una sola vez, en el documento, porque el dedo se puede ir
+   de la manija mientras arrastra. touchmove no puede ser pasivo: hay
+   que poder frenar el scroll de la página una vez que el arrastre ya
+   arrancó. */
+document.addEventListener("touchmove", moverArrastre, {passive:false});
+document.addEventListener("touchend", soltarArrastre);
+document.addEventListener("mousemove", moverArrastre);
+document.addEventListener("mouseup", soltarArrastre);
 
 
 /* ===================================================================

@@ -335,26 +335,65 @@ bien. Después de publicarlas, falta la prueba de siempre con dos celulares:
 uno toca + y el otro debería ver aparecer la canción sin recargar, y lo
 mismo al tocar "Usar esta" en Guardadas.
 
-## 8c. Modo Director / Modo Online
+## 8c. Modo Director / pestaña Online
 
-Cualquiera puede prender **Director** (chip en la pestaña Reunión, o botón
-`D` en el lector): mientras está prendido, cada canción que abre y cada
-transporte que hace se escribe en `cancionero/directorEnVivo`
-(`transmitirEstado()`). Quien tenga **Modo Online** prendido (`O` en el
-lector, o chip en Reunión) escucha ese documento y su lector salta solo a
-lo mismo (`seguirAlDirector()`), tono incluido.
+Cualquiera puede prender **Director** (chip en la pestaña Evento, o botón
+`D` en el lector). Ojo: prender Director **no transmite nada solo**. Un
+director necesita poder mirar canciones del Evento sin que cada una se
+vuelva lo que está en vivo — si no, no hay forma de revisar la letra de
+la próxima antes de tocarla. Lo que transmite es el botón **O**
+(`online-badge`, al lado de `D` en el `.ctrl`), que aparece en cualquier
+canción mientras se es director: apagado si esa canción no es la que
+está en vivo, verde si sí lo es. Tocarlo llama a `transmitirEstado()` a
+propósito. Abrir otra canción, deslizar o usar el riel sólo cambian la
+vista local, sin tocar `cancionero/directorEnVivo` — para eso está el
+botón. La única transmisión que sale sola es un transporte (♭/♯)
+**cuando la canción que se está viendo ya es la que está en vivo**
+(`retransmitirSiYaEstaEnVivo()`): ahí sí tiene sentido que se actualice
+al toque, es corregir el tono en el momento, no arrancar algo nuevo.
 
 No hay "un" director: no se pelea el control, cualquiera que lo prenda
 transmite, y gana la última escritura si dos lo tienen prendido a la vez.
 Fue una decisión explícita — el grupo es chico y se asume que se
 coordinan solos, no hace falta resolver conflictos en el código.
 
-Mientras se sigue al director (Modo Online prendido y no se es director),
-la navegación manual queda bloqueada: `paso()`, los botones del riel,
-deslizar para los costados y ♭/♯ no hacen nada (se chequea
-`est.modoOnline && !est.esDirector` en cada uno). La tarjeta "Siguiente"
-del pie se reemplaza por un aviso de que se está siguiendo, para que no
-parezca que dejó de responder.
+**`directorEnVivo.directores` cuenta cuántos dispositivos tienen el chip
+prendido** (`+1`/`-1` con `increment()` al prender/apagar, en
+`alternarDirector()`). Online se considera vacío en cuanto ese número
+llega a 0, aunque el documento todavía tenga un `cancionId` viejo
+colgado — así apagar Director vacía la pantalla de todos en vez de dejar
+pegada la última canción para siempre. **Límite conocido:** si alguien
+cierra la app sin apagar el chip a propósito, ese `+1` no baja solo; se
+corrige a mano desde la consola de Firebase (mismo tipo de arreglo que
+otros documentos huérfanos de este proyecto, ver sección 8b).
+
+**La pestaña Online no tiene un botón de "activar".** `escucharDirector()`
+arranca solo junto con el resto de los listeners (`escuchar()`). Entrar a
+la pestaña Online (`pintarOnline()`) alcanza: si hay alguien dirigiendo,
+abre directo el `.lector` de siempre con `est.soloLectura = true`
+(`mostrarVistaOnline()`); si no, se queda en un aviso de vacío (o "hay
+una transmisión en vivo, tocá para verla" si `fondoOnline()` encuentra
+algo pero todavía no se abrió — pasa apenas al entrar, se tapa enseguida
+por el `.lector`, casi no se llega a ver). La flecha de volver
+(`cerrarLector()`) cierra la vista y siempre manda al listado de
+canciones del Evento, sea o no director quien la estaba mirando — ahí
+nunca se queda nadie parado en Online sin nada para hacer. Si deja de
+haber director mientras alguien mira la vista en vivo, se cierra sola
+(`cerrarVistaOnline()`, distinta de `cerrarLector()`: no manda a ningún
+lado, sólo vuelve al aviso de vacío en la misma pestaña).
+
+En sólo lectura se ve todo (acordes, letra, riel con la posición) pero no
+se puede tocar nada: transportar, el riel, deslizar, Anterior/Siguiente y
+editar quedan apagados o escondidos. El bloqueo es `est.soloLectura &&
+!est.esDirector` (`bloqueado` en `pintarLector()`, mismo chequeo al
+principio de `paso()`), no sólo `soloLectura`: si quien mira la vista en
+vivo también es director, no se le apaga nada — sigue con control
+completo, transmite lo que haga igual que si hubiera entrado por el
+Evento. El bloqueo es sólo para quien mira sin ser director. Fuera de esa
+vista (cualquier otra pestaña, o una canción abierta por cuenta propia
+con `abrir()`, que también apaga `soloLectura`), la app queda
+completamente libre, sea o no
+director quien la esté usando.
 
 ## 9. Cómo trabajar en este proyecto
 

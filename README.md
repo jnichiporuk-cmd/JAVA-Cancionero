@@ -72,13 +72,15 @@ service cloud.firestore {
     }
 
     // Lo que transmite quien tenga prendido "Director": un solo documento,
-    // lo pisa el último que transmite
+    // lo pisa el último que transmite. "directores" es un contador (+1/-1
+    // al prender/apagar el chip) para saber si hay alguien dirigiendo.
     match /cancionero/directorEnVivo {
       allow read: if true;
-      allow write: if request.resource.data.keys().hasOnly(['cancionId','semis','posicion','cuando'])
-                   && request.resource.data.cancionId is string
-                   && request.resource.data.semis is number
-                   && request.resource.data.posicion is number;
+      allow write: if request.resource.data.keys().hasOnly(['cancionId','semis','posicion','cuando','directores'])
+                   && (!('cancionId' in request.resource.data) || request.resource.data.cancionId is string)
+                   && (!('semis' in request.resource.data) || request.resource.data.semis is number)
+                   && (!('posicion' in request.resource.data) || request.resource.data.posicion is number)
+                   && (!('directores' in request.resource.data) || request.resource.data.directores is number);
     }
 
     // Cada reunión guardada (la de hoy y las anteriores): un documento por reunión
