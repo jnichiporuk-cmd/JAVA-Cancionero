@@ -215,7 +215,12 @@ input{font-family:inherit;font-size:inherit}
    se achica esta fila entera a 0 (ver lector-tope.oculta-nombre), no
    sólo el texto: si sólo achicara el texto, quedaría el padding de la
    fila como un renglón vacío. La flecha ← vive aparte, en fila-baja
-   (más abajo), así nunca desaparece. */
+   (más abajo), así nunca desaparece.
+   La transición (.18s) es a propósito lenta: mientras dura,
+   actualizarColapsoTope() congela el scroll del cuerpo, así que lo
+   único que se mueve en ese momento es este achique — el riel y la
+   letra suben juntos, como un bloque, arrastrados por el lugar que
+   libera la cabecera, sin que la letra encima se scrollee todavía. */
 .lector-barra{
   display:flex;align-items:center;gap:10px;
   overflow:hidden;max-height:56px;opacity:1;padding:11px 12px 0;
@@ -232,8 +237,8 @@ input{font-family:inherit;font-size:inherit}
 .lector-meta b{color:var(--acordes)}
 
 /* Fila de controles (tamaño y transporte), debajo del nombre. También se
-   achica a 0 al seguir scrolleando, para que al final sólo quede
-   fila-baja: la flecha y el riel, un solo renglón. */
+   achica a 0 al mismo tiempo que el nombre (ver actualizarColapsoTope),
+   para que al final sólo quede fila-baja: la flecha y el riel. */
 .ctrl-fila{
   overflow:hidden;max-height:41px;opacity:1;padding:0 12px 10px;
   transition:max-height .18s ease,opacity .12s ease,padding .18s ease;
@@ -1098,6 +1103,7 @@ function transmitirDesdeElPrincipio(){
   est.semis = semisGuardado(id);
   $("lector").classList.add("abierto");
   $("cuerpo").scrollTop = 0;
+  reiniciarColapsoTope();
   pintarLector();
   transmitirEstado();
 }
@@ -1113,7 +1119,7 @@ function mostrarVistaOnline(d){
   const idx = est.lista.ids.indexOf(d.cancionId);
   est.posicion = idx >= 0 ? idx : 0;
   $("lector").classList.add("abierto");
-  if (cambioCancion) $("cuerpo").scrollTop = 0;
+  if (cambioCancion){ $("cuerpo").scrollTop = 0; reiniciarColapsoTope(); }
   pintarLector();
 }
 
@@ -1994,6 +2000,7 @@ function abrir(id, enReunion){
   est.semis = enReunion ? semisGuardado(id) : 0;
   $("lector").classList.add("abierto");
   $("cuerpo").scrollTop = 0;
+  reiniciarColapsoTope();
   pintarLector();
   /* No se transmite sola: el director mira canciones libremente y
      transmite a propósito con el botón O. */
@@ -2086,7 +2093,7 @@ function pintarLector(){
       b.className = i === est.posicion ? "aqui" : (i < est.posicion ? "pasada" : "");
       if (!bloqueado) b.onclick = () => {
         est.posicion = i; est.abierta = id; est.semis = semisGuardado(id);
-        $("cuerpo").scrollTop = 0; pintarLector();
+        $("cuerpo").scrollTop = 0; reiniciarColapsoTope(); pintarLector();
       };
       riel.appendChild(b);
     });
@@ -2113,20 +2120,25 @@ function pintarLector(){
   actualizarColapsoTope();
 }
 
-/* Al scrollear el cuerpo hacia abajo, la cabecera se achica junto con
-   el mismo scroll chiquito (20px: alcanza con empezar a leer) para
-   dejar lugar a la letra cuanto antes: nombre y botones desaparecen
-   los dos al toque, no en dos tiempos. La letra y los acordes en sí no
-   tienen ningún umbral propio: recién ahí quedan libres para ocupar
-   todo el alto y seguir el scroll normal. overflow-anchor (ver .cuerpo
-   en el CSS) evita que el navegador mueva el scroll solo para compensar
-   el cambio de altura de la cabecera, que hacía "saltar" la letra de
-   más con un scroll chiquito. */
+/* Apenas se empieza a scrollear, nombre y botones se achican (con su
+   animación de .18s); al volver hasta arriba del todo, reaparecen.
+   Sin freno de scroll a propósito: se probó congelar el cuerpo
+   mientras dura esa animación para que la letra no se moviera ni un
+   poco mientras tanto, pero eso pelea contra el rebote elástico nativo
+   del celular al llegar al borde y se sentía trabado. Con esto, el
+   scroll es 100% nativo del navegador — puede que la letra se corra
+   un poco mientras la cabecera se achica, pero nunca se traba. */
 function actualizarColapsoTope(){
   const tope = $("lector-tope");
   const y = $("cuerpo").scrollTop;
-  tope.classList.toggle("oculta-nombre", y > 20);
-  tope.classList.toggle("oculta-botones", y > 20);
+  tope.classList.toggle("oculta-nombre", y > 0);
+  tope.classList.toggle("oculta-botones", y > 0);
+}
+
+/* Vuelve a mostrar nombre y botones: se llama al abrir/cambiar de
+   canción, para no arrancar con la cabecera ya achicada de la anterior. */
+function reiniciarColapsoTope(){
+  $("lector-tope").classList.remove("oculta-nombre", "oculta-botones");
 }
 
 /* Decide si mostrar la tarjeta "Siguiente": sólo cuando se llegó al
@@ -2148,6 +2160,7 @@ function paso(delta){
   est.abierta = est.lista.ids[j];
   est.semis = semisGuardado(est.abierta);
   $("cuerpo").scrollTop = 0;
+  reiniciarColapsoTope();
   pintarLector();
 }
 
