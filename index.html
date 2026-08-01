@@ -373,7 +373,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v75</span></div>
+    <div class="marca">Cancionero <span class="ver">v76</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
   </div>
@@ -1528,21 +1528,23 @@ function pintarReunion(){
       fila.innerHTML = `<div class="orden">${i+1}</div>
         <div class="fila-txt"><div class="fila-nombre" style="color:var(--tenue)">Canción no encontrada</div>
         <div class="fila-meta">Actualizá el cancionero (${escapar(id)})</div></div>
-        <button class="quitar">✕</button>`;
-      fila.querySelector(".quitar").onclick = () => quitar(id);
+        ${est.esDirector ? `<button class="quitar">✕</button>` : ""}`;
+      if (est.esDirector) fila.querySelector(".quitar").onclick = () => quitar(id);
       cont.appendChild(fila);
       return;
     }
-    fila.classList.toggle("reordenando", est.reordenando);
+    /* Borrar y reordenar quedan sólo para el director: el resto puede
+       mirar el Evento, pero no tocar el orden ni sacar canciones. */
+    fila.classList.toggle("reordenando", est.reordenando && est.esDirector);
     fila.innerHTML = `
       <div class="orden">${i+1}</div>
       <button class="fila-txt">
         <div class="fila-nombre">${escapar(s.nombre)}</div>
         <div class="fila-meta">${metaDe(s, semisGuardado(id))}</div>
       </button>
-      <button class="quitar">✕</button>`;
-    fila.querySelector(".quitar").onclick = () => quitar(id);
-    if (est.reordenando){
+      ${est.esDirector ? `<button class="quitar">✕</button>` : ""}`;
+    if (est.esDirector) fila.querySelector(".quitar").onclick = () => quitar(id);
+    if (est.reordenando && est.esDirector){
       /* En este modo toda la fila es la manija: no tiene sentido que
          tocarla abra la canción, así que ese click no se conecta. */
       fila.addEventListener("touchstart", e => iniciarArrastre(e, i, fila), {passive:true});
@@ -1569,11 +1571,11 @@ function pintarReunion(){
       : `<button class="btn" id="primer-btn" disabled>Offline</button>`;
   pie.innerHTML = primerBoton
     + `<button class="btn" id="agregar-btn">+ Agregar</button>
-       <button class="btn${est.reordenando ? " on" : ""}" id="reordenar-btn">Reordenar</button>`;
+       <button class="btn${est.reordenando ? " on" : ""}" id="reordenar-btn"${est.esDirector ? "" : " disabled"}>Reordenar</button>`;
   if (hayTransmision) $("primer-btn").onclick = () => { est.pestana = "online"; pintar(); };
   else if (est.esDirector) $("primer-btn").onclick = transmitirDesdeElPrincipio;
   $("agregar-btn").onclick = abrirAgregar;
-  $("reordenar-btn").onclick = () => { est.reordenando = !est.reordenando; pintarReunion(); };
+  if (est.esDirector) $("reordenar-btn").onclick = () => { est.reordenando = !est.reordenando; pintarReunion(); };
 }
 
 /* --- Panel "Agregar canciones" ----------------------------------------
@@ -1798,55 +1800,80 @@ function quitar(id){
 /* ===================================================================
    Arrastrar para reordenar el Evento. El gesto sólo se conecta a la
    fila cuando está prendido "Reordenar" (chip del pie); fuera de ese
-   modo tocar la fila abre la canción, como siempre. Se redibuja toda la
-   pestaña en cada cruce de fila (no hay tantas canciones como para que
-   pese) en vez de mover nodos del DOM a mano, mismo criterio que el
-   resto de la app.
-   =================================================================== */
-let arrastre = null;  // { i, filaEl, startY, moviendo }
+   modo tocar la fila abre la canción, como siempre.
+
+   Mientras se arrastra, la fila tocada NUNCA se destruye ni se vuelve a
+   crear: se mueve de verdad en el DOM (insertBefore contra la fila
+   vecina, un paso a la vez) y sólo se actualiza el numerito de orden de
+   cada una. Se probó primero rehaciendo toda la lista con pintarReunion()
+   en cada cruce de fila, pero varios navegadores cortan el gesto de
+   arrastre (touchcancel) en cuanto el elemento que se está tocando
+   desaparece del DOM, así que sólo llegaba a moverse un lugar por toque.
+   Recién al soltar se llama a pintarReunion(), para que cada fila quede
+   con los índices bien religados a su posición final. */
+let arrastre = null;  // { i, filaEl, startY, moviendo, alto }
 
 function iniciarArrastre(e, i, filaEl){
   const y = e.touches ? e.touches[0].clientY : e.clientY;
-  arrastre = { i, filaEl, startY: y, moviendo: false };
+  arrastre = { i, filaEl, startY: y, moviendo: false, alto: filaEl.offsetHeight || 60 };
+}
+
+function actualizarNumerosOrden(){
+  $("contenido").querySelectorAll(".fila .orden").forEach((el, idx) => { el.textContent = idx + 1; });
 }
 
 function moverArrastre(e){
   if (!arrastre) return;
   const y = e.touches ? e.touches[0].clientY : e.clientY;
-  const dy = y - arrastre.startY;
+  let dy = y - arrastre.startY;
 
   if (!arrastre.moviendo){
-    if (Math.abs(dy) < 8) return;  // todavía puede ser sólo un toque a ▲/▼
+    if (Math.abs(dy) < 8) return;  // todavía puede ser sólo un toque
     arrastre.moviendo = true;
     arrastre.filaEl.classList.add("arrastrando");
   }
   if (e.cancelable) e.preventDefault();  // ya es arrastre: no scrollea la página
-  arrastre.filaEl.style.transform = `translateY(${dy}px)`;
 
-  const filas = $("contenido").querySelectorAll(".fila");
-  const alto = arrastre.filaEl.offsetHeight || 1;
-  const objetivo = Math.max(0, Math.min(filas.length - 1, arrastre.i + Math.round(dy / alto)));
-  if (objetivo !== arrastre.i){
+  const cont = $("contenido");
+  const alto = arrastre.alto;
+
+  /* Un paso por vez, cruzando la mitad de la fila vecina: es el mismo
+     umbral "a medio camino" que usan la mayoría de las listas
+     reordenables. Un while (no un if) para no perder pasos si el dedo
+     se mueve rápido y salta más de una fila entre dos eventos. */
+  while (dy > alto / 2 && arrastre.i < est.lista.ids.length - 1){
+    const vecino = cont.querySelectorAll(".fila")[arrastre.i + 1];
+    if (!vecino) break;
+    cont.insertBefore(vecino, arrastre.filaEl);
     const a = est.lista.ids;
-    const [id] = a.splice(arrastre.i, 1);
-    a.splice(objetivo, 0, id);
-    arrastre.i = objetivo;
-    arrastre.startY = y;
-    pintarReunion();
-    arrastre.filaEl = $("contenido").querySelectorAll(".fila")[objetivo];
-    arrastre.filaEl.classList.add("arrastrando");
+    [a[arrastre.i], a[arrastre.i + 1]] = [a[arrastre.i + 1], a[arrastre.i]];
+    arrastre.i++;
+    arrastre.startY += alto;
+    dy -= alto;
   }
+  while (dy < -alto / 2 && arrastre.i > 0){
+    const vecino = cont.querySelectorAll(".fila")[arrastre.i - 1];
+    if (!vecino) break;
+    cont.insertBefore(arrastre.filaEl, vecino);
+    const a = est.lista.ids;
+    [a[arrastre.i], a[arrastre.i - 1]] = [a[arrastre.i - 1], a[arrastre.i]];
+    arrastre.i--;
+    arrastre.startY -= alto;
+    dy += alto;
+  }
+
+  arrastre.filaEl.style.transform = `translateY(${dy}px)`;
+  actualizarNumerosOrden();
 }
 
 function soltarArrastre(){
   if (!arrastre) return;
   const huboArrastre = arrastre.moviendo;
-  if (arrastre.filaEl){
-    arrastre.filaEl.classList.remove("arrastrando");
-    arrastre.filaEl.style.transform = "";
-  }
   arrastre = null;
-  if (huboArrastre) guardarLista();
+  if (huboArrastre){
+    guardarLista();
+    pintarReunion();  // religar los índices de cada fila a su posición final
+  }
 }
 function vaciar(){
   if (!confirm("¿Vaciar la lista del evento? Se borra también para el resto del grupo.")) return;
@@ -2183,7 +2210,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v75",
+    origen: "cancionero v76",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
