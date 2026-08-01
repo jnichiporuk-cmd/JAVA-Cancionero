@@ -96,7 +96,7 @@ service cloud.firestore {
                        || request.resource.data.fechaReunion is number)
                    && (!('nombre' in request.resource.data)
                        || request.resource.data.nombre.size() < 120);
-      allow delete: if false;   // no se borran documentos, se pueden vaciar
+      allow delete: if true;   // borrar un evento del historial (el activo, la app no lo permite)
     }
 
     // Una canción por documento

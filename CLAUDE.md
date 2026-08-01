@@ -65,8 +65,17 @@ documento único con toda la capa de cambios (y, después, un único documento
 para "la lista de la reunión") y el último en guardar borraba el trabajo del
 otro.
 
-Los borrados **marcan** `borrada: true`, no eliminan el documento: si se
-eliminara, los otros dispositivos no tendrían cómo enterarse.
+Los borrados de **canciones marcan** `borrada: true`, no eliminan el
+documento: si se eliminara, los otros dispositivos no tendrían cómo
+enterarse (cada canción se escucha por su propio documento, no hay
+ningún listener sobre toda la colección que note que faltó uno).
+
+**Los eventos del historial sí se borran de verdad** (`borrarReunion()`,
+sólo el director, nunca el evento activo). Es la excepción a la regla de
+arriba, y es segura por lo mismo: a diferencia de `canciones/{id}`, acá
+sí hay un `onSnapshot` sobre toda la colección `reuniones` (para listar
+el historial), así que un borrado real también se nota al instante en
+los demás dispositivos.
 
 `onSnapshot` avisa al instante. **No hay sondeo periódico**; si aparece un
 `setInterval` consultando datos, es un retroceso.

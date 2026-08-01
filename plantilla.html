@@ -151,6 +151,7 @@ input{font-family:inherit;font-size:inherit}
   border:1px solid var(--borde);font-size:14px;color:var(--tenue);
   display:flex;align-items:center;justify-content:center;
 }
+.btn-icono:disabled{opacity:.3;cursor:default}
 
 /* ===================================================================
    4. REUNIÓN (armador de lista)
@@ -1467,17 +1468,16 @@ function pintarCatalogo(){
         clavePrevia = clave;
       }
     }
-    const puesta = est.lista.ids.includes(s.id);
+    /* Sin botón de sumar acá: agregar a un evento sólo se hace desde
+       adentro de un evento (panel "+ Agregar"). Acá sólo se mira. */
     const fila = document.createElement("div");
     fila.className = "fila";
     fila.innerHTML = `
       <button class="fila-txt">
         <div class="fila-nombre">${escapar(s.nombre)}</div>
         <div class="fila-meta">${metaDe(s)}</div>
-      </button>
-      <button class="sumar${puesta ? " puesta" : ""}">${puesta ? "✓" : "+"}</button>`;
+      </button>`;
     fila.querySelector(".fila-txt").onclick = () => abrir(s.id, false);
-    fila.querySelector(".sumar").onclick = () => alternarEnLista(s.id);
     cont.appendChild(fila);
   });
 }
@@ -1490,13 +1490,15 @@ function pintarReunion(){
 
   if (!est.lista.ids.length){
     cont.innerHTML = `<div class="vacio"><strong>Todavía no hay lista</strong>
-      Tocá "+ Agregar canciones" abajo para sumar las de este domingo.
+      ${est.esDirector
+        ? `Tocá "+ Agregar canciones" abajo para sumar las de este domingo.`
+        : `Todavía no la armó el director.`}
       Lo que armes acá lo ve todo el grupo.</div>`;
     pie.style.display = "flex";
     const hayTransmisionVacia = directoresActivos > 0 && !!ultimoBroadcastDirector;
-    pie.innerHTML = `<button class="btn btn-fuerte" id="agregar-btn">+ Agregar canciones</button>`
+    pie.innerHTML = `<button class="btn btn-fuerte" id="agregar-btn"${est.esDirector ? "" : " disabled"}>+ Agregar canciones</button>`
       + (hayTransmisionVacia ? `<button class="btn btn-vivo" id="ver-vivo-evento">Online</button>` : "");
-    $("agregar-btn").onclick = abrirAgregar;
+    if (est.esDirector) $("agregar-btn").onclick = abrirAgregar;
     if (hayTransmisionVacia) $("ver-vivo-evento").onclick = () => { est.pestana = "online"; pintar(); };
     return;
   }
@@ -1570,11 +1572,11 @@ function pintarReunion(){
       ? `<button class="btn btn-fuerte" id="primer-btn">Transmitir</button>`
       : `<button class="btn" id="primer-btn" disabled>Offline</button>`;
   pie.innerHTML = primerBoton
-    + `<button class="btn" id="agregar-btn">+ Agregar</button>
+    + `<button class="btn" id="agregar-btn"${est.esDirector ? "" : " disabled"}>+ Agregar</button>
        <button class="btn${est.reordenando ? " on" : ""}" id="reordenar-btn"${est.esDirector ? "" : " disabled"}>Reordenar</button>`;
   if (hayTransmision) $("primer-btn").onclick = () => { est.pestana = "online"; pintar(); };
   else if (est.esDirector) $("primer-btn").onclick = transmitirDesdeElPrincipio;
-  $("agregar-btn").onclick = abrirAgregar;
+  if (est.esDirector) $("agregar-btn").onclick = abrirAgregar;
   if (est.esDirector) $("reordenar-btn").onclick = () => { est.reordenando = !est.reordenando; pintarReunion(); };
 }
 
@@ -1674,7 +1676,8 @@ function pintarGuardadas(){
         <div class="fila-meta">${fechaHoraTexto(r.fechaReunion || r.creada)} · ${r.ids.length} canción${r.ids.length === 1 ? "" : "es"}</div>
       </button>
       <button class="btn-icono editar" title="Cambiar nombre y fecha">✎</button>
-      <button class="btn-icono copiar" title="Copiar este evento">📋</button>`;
+      <button class="btn-icono copiar" title="Copiar este evento">📋</button>
+      ${est.esDirector ? `<button class="btn-icono borrar" title="${activa ? "No se puede borrar el evento activo" : "Borrar este evento"}"${activa ? " disabled" : ""}>✕</button>` : ""}`;
     /* Tocar el nombre activa la reunión (si no lo era ya) y lleva directo
        a la pestaña Reunión: hace de "Usar esta", sin ocupar un botón
        aparte en cada fila. */
@@ -1685,8 +1688,27 @@ function pintarGuardadas(){
     };
     fila.querySelector(".editar").onclick = () => abrirEditarReunion(r);
     fila.querySelector(".copiar").onclick = () => abrirCopiarReunion(r);
+    if (est.esDirector && !activa) fila.querySelector(".borrar").onclick = () => borrarReunion(r);
     cont.appendChild(fila);
   });
+}
+
+/* Sólo el director puede borrar eventos del historial, y no se puede
+   borrar el activo (rompería el puntero cancionero/activa). El borrado
+   es de verdad (no "marcar borrada" como las canciones): a diferencia
+   de canciones/{id}, acá se escucha toda la colección con un solo
+   listener, así que un borrado real también se nota en el momento en
+   los demás dispositivos. */
+async function borrarReunion(r){
+  if (!confirm(`¿Borrar el evento "${r.nombre || "Sin nombre"}" del historial? No se puede deshacer.`)) return;
+  if (!HAY_NUBE){ flotar("Sin conexión: no se puede borrar"); return; }
+  try{
+    await fs.deleteDoc(fs.doc(db, "reuniones", r.id));
+    flotar("Evento borrado");
+  }catch(e){
+    console.error("No se pudo borrar el evento:", e);
+    flotar("No se pudo borrar el evento");
+  }
 }
 
 /* --- Pestaña Online -----------------------------------------------------
@@ -1793,6 +1815,8 @@ function alternarEnLista(id){
   else guardarLista();
 }
 function quitar(id){
+  const s = PORID[id];
+  if (!confirm(`¿Sacar "${s ? s.nombre : id}" de este evento?`)) return;
   est.lista.ids = est.lista.ids.filter(x => x !== id);
   pintar(); guardarLista();
 }
