@@ -209,23 +209,32 @@ input{font-family:inherit;font-size:inherit}
 }
 .lector.abierto{display:flex}
 
-/* Al primer gesto hacia abajo, TODA la cabecera desaparece junta
-   (nombre, botones, flecha y riel), con esta animación. Ese mismo
-   gesto queda bloqueado con preventDefault (ver tocarCuerpoMueve en el
-   JS) para que no alcance a mover la letra: recién el siguiente gesto
-   scrollea de verdad. max-height (no display:none) para que el achique
-   se vea como un movimiento, no un salto — acá no rebota como en los
-   intentos anteriores porque el scroll real nunca llega a arrancar
-   durante este gesto (bloqueado antes de que el navegador lo procese),
-   en vez de dejarlo arrancar y tratar de deshacerlo después. */
+/* La flecha, el riel y los botones se esconden juntos, animado, al
+   scrollear; reaparecen al volver arriba del todo. El título de la
+   canción NO está acá — vive dentro de .cuerpo, como la primera línea
+   del contenido que scrollea (ver pintarLector). Esa es la diferencia
+   con los intentos anteriores (que sí rebotaban/saltaban): antes la
+   letra arrancaba pegada a la cabecera, así que achicarla mientras se
+   scrollea competía en el mismo instante por el mismo píxel de
+   pantalla. Ahora el título hace de colchón entre la cabecera y la
+   letra real: aunque el achique y el scroll coincidan un instante, lo
+   que se mueve de más es el título, no los acordes. */
 .lector-tope{
   border-bottom:1px solid var(--borde);flex:none;
-  overflow:hidden;max-height:160px;
+  overflow:hidden;max-height:120px;
   transition:max-height .2s ease;
 }
 .lector-tope.oculta{max-height:0;border-bottom-width:0}
-.lector-barra{display:flex;align-items:center;gap:10px;padding:11px 12px 0}
+
+/* Flecha de volver + riel con el número de canción, arriba del todo. */
+.fila-baja{display:flex;align-items:center;gap:8px;padding:11px 12px 10px}
 .cerrar{flex:none;width:32px;height:32px;font-size:20px;color:var(--tenue)}
+
+/* .lector-barra/.lector-tit/.lector-nombre: la cabecera "arrow + título
+   en la misma fila" que siguen usando Exportar, Agregar y Editar
+   evento (los paneles que no tienen este problema de espacio, porque
+   no tienen una fila de botones de transporte al lado). */
+.lector-barra{display:flex;align-items:center;gap:10px;padding:11px 12px}
 .lector-tit{flex:1;min-width:0}
 .lector-nombre{
   font-size:17px;font-weight:700;text-transform:uppercase;
@@ -234,7 +243,14 @@ input{font-family:inherit;font-size:inherit}
 .lector-meta{font-size:12px;color:var(--tenue);margin-top:1px}
 .lector-meta b{color:var(--acordes)}
 
-/* Fila de controles (tamaño y transporte), debajo del nombre. */
+/* Título de la canción, dentro de .cuerpo: mismo texto/colores que
+   .lector-nombre/.lector-meta de arriba, pero sin el flex:1 ni el
+   truncado con "…" — acá no comparte fila con nada, así que puede
+   ocupar el ancho completo y pasar a la línea siguiente si hace falta. */
+.titulo-cancion{padding:2px 14px 14px}
+.titulo-cancion .lector-nombre{white-space:normal;overflow:visible;text-overflow:clip}
+
+/* Fila de controles (tamaño y transporte), debajo del riel. */
 .ctrl-fila{padding:0 12px 10px}
 .ctrl{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
 .ctrl button{
@@ -254,11 +270,6 @@ input{font-family:inherit;font-size:inherit}
   display:flex;align-items:center;justify-content:center;flex:none;
 }
 .online-badge.en-vivo{border-color:#3DD68C;color:#3DD68C}
-
-/* Última fila de la cabecera: la flecha de volver y, en modo reunión, el
-   riel con el número de canción. Se esconde junto con el resto (ver
-   lector-tope.oculta); para volver hay que scrollear hasta arriba. */
-.fila-baja{display:flex;align-items:center;gap:8px;padding:0 12px 10px}
 
 /* Riel de la reunión: sólo visible cuando entrás por "Empezar" */
 .riel{display:none;flex:1;min-width:0;gap:6px;overflow-x:auto;scrollbar-width:none}
@@ -399,7 +410,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v92</span></div>
+    <div class="marca">Cancionero <span class="ver">v95</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
   </div>
@@ -428,11 +439,9 @@ input{font-family:inherit;font-size:inherit}
 <!-- Lector -->
 <div class="lector" id="lector">
   <div class="lector-tope" id="lector-tope">
-    <div class="lector-barra">
-      <div class="lector-tit">
-        <div class="lector-nombre" id="l-nombre"></div>
-        <div class="lector-meta" id="l-meta"></div>
-      </div>
+    <div class="fila-baja">
+      <button class="cerrar" id="cerrar" title="Volver">←</button>
+      <div class="riel" id="riel"></div>
     </div>
     <div class="ctrl-fila">
       <div class="ctrl">
@@ -445,10 +454,6 @@ input{font-family:inherit;font-size:inherit}
         <button id="vaciar-transmision" title="Vaciar la transmisión (por si quedó una canción vieja pegada)">⟲</button>
         <button id="editar" title="Editar la canción">✎</button>
       </div>
-    </div>
-    <div class="fila-baja">
-      <button class="cerrar" id="cerrar" title="Volver">←</button>
-      <div class="riel" id="riel"></div>
     </div>
   </div>
   <div class="cuerpo" id="cuerpo"></div>
@@ -2024,8 +2029,11 @@ function pintarLector(){
   const puedeTransportar = !!s.tono;
   const tonoActual = puedeTransportar ? moverTono(s.tono, est.semis) : null;
 
-  $("l-nombre").textContent = s.nombre;
-  $("l-meta").innerHTML = (puedeTransportar
+  /* El título ya no es una barra fija: ahora es la primera línea del
+     cuerpo (ver más abajo, después de pintarBloques), así que scrollea
+     junto con la letra en vez de competir con la cabecera por lugar. La
+     cabecera fija queda sólo con la flecha, el riel y los botones. */
+  const metaTexto = (puedeTransportar
       ? `<b>${escapar(tonoActual)}</b>`
         + (est.semis ? ` <span style="color:var(--tenue)">(original ${escapar(s.tono)}, ${est.semis > 0 ? "+" : ""}${est.semis})</span>` : "")
       : `<span style="color:var(--tenue)">sin tono en el cancionero</span>`)
@@ -2068,10 +2076,17 @@ function pintarLector(){
   /* Escritura con bemoles si el tono destino lo pide */
   const conBemoles = puedeTransportar && TONOS_BEMOL.has(tonoActual);
 
-  /* Cuerpo: un div por bloque, respetando el orden del cancionero */
+  /* Cuerpo: título primero (pintarBloques vacía el cuerpo, por eso el
+     título se inserta después, no antes), y un div por bloque
+     respetando el orden del cancionero. */
   const cuerpo = $("cuerpo");
   cuerpo.style.fontSize = est.tamano + "px";
   pintarBloques(cuerpo, s.bloques, est.semis, conBemoles);
+  cuerpo.insertAdjacentHTML("afterbegin",
+    `<div class="titulo-cancion">
+       <div class="lector-nombre">${escapar(s.nombre)}</div>
+       <div class="lector-meta">${metaTexto}</div>
+     </div>`);
 
   /* Riel: sólo en modo reunión. Bloqueado, se ve la posición pero no se
      puede tocar. */
@@ -2109,22 +2124,25 @@ function pintarLector(){
     }
     actualizarPieCercaFin();
   }
-  actualizarColapsoTope();
 }
 
-/* Al volver a scrollear hasta arriba del todo, la cabecera reaparece
-   sola (no hace falta bloquear este sentido: mostrarla de vuelta no le
-   quita al usuario nada que ya hubiera scrolleado). Esconderla es lo
-   que se maneja aparte, por gesto — ver tocarCuerpoInicio/Mueve/Fin,
-   más abajo. */
-function actualizarColapsoTope(){
-  if ($("cuerpo").scrollTop <= 0) $("lector-tope").classList.remove("oculta");
-}
-
-/* Vuelve a mostrar la cabecera: se llama al abrir/cambiar de canción,
-   para no arrancar con la cabecera ya escondida de la anterior. */
+/* Muestra la cabecera de vuelta: se llama junto con cada scrollTop=0
+   que abre/cambia de canción (no dentro de pintarLector() en general,
+   que también se llama por cosas como transportar o cambiar tamaño de
+   letra — ahí no hay que reaparecer la cabecera de golpe). */
 function reiniciarColapsoTope(){
   $("lector-tope").classList.remove("oculta");
+}
+
+/* Al scrollear, esconde la cabecera entera (flecha, riel y botones)
+   con su animación; al volver arriba del todo, la muestra de nuevo.
+   Sin freeze ni preventDefault a propósito: se probaron esas variantes
+   y terminaban peleando contra el scroll nativo del teléfono. Acá el
+   scroll queda 100% nativo — puede que el título (no la letra, ver
+   comentario en el CSS) se corra un poco de más mientras la cabecera
+   se achica, pero nunca se traba. */
+function actualizarColapsoTope(){
+  $("lector-tope").classList.toggle("oculta", $("cuerpo").scrollTop > 0);
 }
 
 /* Decide si mostrar la tarjeta "Siguiente": sólo cuando se llegó al
@@ -2310,7 +2328,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v92",
+    origen: "cancionero v95",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
@@ -2422,41 +2440,6 @@ $("cuerpo").addEventListener("touchend", e => {
   /* Sólo si el gesto es claramente horizontal, para no pelear con el scroll */
   if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) * 2) paso(dx < 0 ? +1 : -1);
   xIni = yIni = null;
-}, {passive:true});
-
-/* Primer gesto hacia abajo (con la cabecera visible y arriba del
-   todo): en vez de scrollear, esconde la cabecera y frena ahí ese
-   mismo gesto con preventDefault, para que la letra no se mueva nada
-   en el proceso. Recién el siguiente gesto queda libre para scrollear
-   de verdad. No se engancha si el gesto es más horizontal que vertical
-   (esas son para deslizar de canción, arriba) ni si hace falta mover
-   menos de 8px: evita confundir un roce chiquito con la intención de
-   scrollear. */
-let tocInicioY = null, tocInicioX = null, tocBloqueando = false;
-$("cuerpo").addEventListener("touchstart", e => {
-  const tope = $("lector-tope");
-  if (tope.classList.contains("oculta") || $("cuerpo").scrollTop > 0){
-    tocInicioY = null;   // no hay nada para esconder: gesto libre, scroll normal
-    return;
-  }
-  tocInicioY = e.touches[0].clientY;
-  tocInicioX = e.touches[0].clientX;
-  tocBloqueando = false;
-}, {passive:true});
-$("cuerpo").addEventListener("touchmove", e => {
-  if (tocInicioY === null) return;
-  if (!tocBloqueando){
-    const dx = e.touches[0].clientX - tocInicioX;
-    const dy = tocInicioY - e.touches[0].clientY;   // positivo = dedo sube = scroll hacia abajo
-    if (dy < 8 || Math.abs(dx) > dy) return;         // todavía no está claro, o es horizontal
-    tocBloqueando = true;
-    $("lector-tope").classList.add("oculta");
-  }
-  e.preventDefault();
-}, {passive:false});
-$("cuerpo").addEventListener("touchend", () => {
-  tocInicioY = null;
-  tocBloqueando = false;
 }, {passive:true});
 
 /* Arrastrar filas del Evento (ver iniciarArrastre/moverArrastre): estos
