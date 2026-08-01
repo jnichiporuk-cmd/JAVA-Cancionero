@@ -210,7 +210,18 @@ input{font-family:inherit;font-size:inherit}
 .lector.abierto{display:flex}
 
 .lector-tope{border-bottom:1px solid var(--borde);flex:none}
-.lector-barra{display:flex;align-items:center;gap:10px;padding:11px 12px}
+/* Nombre en su propia fila, sin pelear por ancho con los botones (antes
+   compartían fila y el nombre quedaba truncado). Al scrollear el cuerpo
+   se achica esta fila entera a 0 (ver lector-tope.oculta-nombre), no
+   sólo el texto: si sólo achicara el texto, quedaría el padding de la
+   fila como un renglón vacío. La flecha ← vive aparte, en fila-baja
+   (más abajo), así nunca desaparece. */
+.lector-barra{
+  display:flex;align-items:center;gap:10px;
+  overflow:hidden;max-height:56px;opacity:1;padding:11px 12px 0;
+  transition:max-height .18s ease,opacity .12s ease,padding .18s ease;
+}
+#lector-tope.oculta-nombre .lector-barra{max-height:0;opacity:0;padding-top:0;padding-bottom:0}
 .cerrar{flex:none;width:32px;height:32px;font-size:20px;color:var(--tenue)}
 .lector-tit{flex:1;min-width:0}
 .lector-nombre{
@@ -220,8 +231,15 @@ input{font-family:inherit;font-size:inherit}
 .lector-meta{font-size:12px;color:var(--tenue);margin-top:1px}
 .lector-meta b{color:var(--acordes)}
 
-/* Controles de tamaño y transporte */
-.ctrl{display:flex;align-items:center;gap:4px;flex:none}
+/* Fila de controles (tamaño y transporte), debajo del nombre. También se
+   achica a 0 al seguir scrolleando, para que al final sólo quede
+   fila-baja: la flecha y el riel, un solo renglón. */
+.ctrl-fila{
+  overflow:hidden;max-height:41px;opacity:1;padding:0 12px 10px;
+  transition:max-height .18s ease,opacity .12s ease,padding .18s ease;
+}
+#lector-tope.oculta-botones .ctrl-fila{max-height:0;opacity:0;padding-top:0;padding-bottom:0}
+.ctrl{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
 .ctrl button{
   width:28px;height:31px;border:1px solid var(--borde);border-radius:7px;
   font-size:13px;font-weight:700;color:var(--tenue);
@@ -240,8 +258,13 @@ input{font-family:inherit;font-size:inherit}
 }
 .online-badge.en-vivo{border-color:#3DD68C;color:#3DD68C}
 
+/* Última fila de la cabecera: la flecha de volver y, en modo reunión, el
+   riel con el número de canción. Es la única que nunca se esconde al
+   scrollear, así siempre queda un camino para salir del lector. */
+.fila-baja{display:flex;align-items:center;gap:8px;padding:0 12px 10px}
+
 /* Riel de la reunión: sólo visible cuando entrás por "Empezar" */
-.riel{display:none;gap:6px;padding:0 12px 10px;overflow-x:auto;scrollbar-width:none}
+.riel{display:none;flex:1;min-width:0;gap:6px;overflow-x:auto;scrollbar-width:none}
 .riel::-webkit-scrollbar{display:none}
 .riel.visible{display:flex}
 .riel button{
@@ -402,13 +425,14 @@ input{font-family:inherit;font-size:inherit}
 
 <!-- Lector -->
 <div class="lector" id="lector">
-  <div class="lector-tope">
+  <div class="lector-tope" id="lector-tope">
     <div class="lector-barra">
-      <button class="cerrar" id="cerrar" title="Volver">←</button>
       <div class="lector-tit">
         <div class="lector-nombre" id="l-nombre"></div>
         <div class="lector-meta" id="l-meta"></div>
       </div>
+    </div>
+    <div class="ctrl-fila">
       <div class="ctrl">
         <button class="online-badge" id="online-badge" title="Transmitir esta canción" style="display:none">O</button>
         <button id="menos-t" title="Bajar medio tono">♭</button>
@@ -420,7 +444,10 @@ input{font-family:inherit;font-size:inherit}
         <button id="editar" title="Editar la canción">✎</button>
       </div>
     </div>
-    <div class="riel" id="riel"></div>
+    <div class="fila-baja">
+      <button class="cerrar" id="cerrar" title="Volver">←</button>
+      <div class="riel" id="riel"></div>
+    </div>
   </div>
   <div class="cuerpo" id="cuerpo"></div>
   <div class="lector-pie" id="l-pie"></div>
@@ -2078,6 +2105,19 @@ function pintarLector(){
     }
     actualizarPieCercaFin();
   }
+  actualizarColapsoTope();
+}
+
+/* Al scrollear el cuerpo hacia abajo, la cabecera se va achicando en dos
+   pasos para dejar más lugar a la letra: primero se esconde el nombre,
+   después los botones, y queda sólo el riel con el número de canción.
+   Umbrales bajos (16 / 70 px) porque en el celular, con el dedo en la
+   pantalla, no hace falta scrollear mucho para que estorbe el nombre. */
+function actualizarColapsoTope(){
+  const tope = $("lector-tope");
+  const y = $("cuerpo").scrollTop;
+  tope.classList.toggle("oculta-nombre", y > 16);
+  tope.classList.toggle("oculta-botones", y > 70);
 }
 
 /* Decide si mostrar la tarjeta "Siguiente": sólo cuando se llegó al
@@ -2360,6 +2400,7 @@ document.addEventListener("keydown", e => {
 
 /* Mostrar la tarjeta "Siguiente" recién al llegar al final del scroll */
 $("cuerpo").addEventListener("scroll", actualizarPieCercaFin, {passive:true});
+$("cuerpo").addEventListener("scroll", actualizarColapsoTope, {passive:true});
 
 /* Deslizar para pasar de canción en modo reunión */
 let xIni = null, yIni = null;
