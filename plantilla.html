@@ -278,8 +278,13 @@ input{font-family:inherit;font-size:inherit}
 /* Cuerpo de la canción.
    pre-wrap + monoespaciada = los acordes caen sobre la sílaba justa.
    Si una línea es más ancha que la pantalla, se puede scrollear al
-   costado en vez de romper la alineación con un salto de línea. */
-.cuerpo{flex:1;overflow-y:auto;padding:16px 14px 120px}
+   costado en vez de romper la alineación con un salto de línea.
+   overflow-anchor:none apaga el ajuste automático de scroll que hacen
+   los navegadores cuando algo arriba del contenido cambia de tamaño
+   (acá, la cabecera achicándose): sin esto, un scroll chiquito del dedo
+   se sumaba al que el navegador agregaba solo para "compensar" la
+   cabecera, y la letra saltaba mucho más de lo que se había scrolleado. */
+.cuerpo{flex:1;overflow-y:auto;overflow-anchor:none;padding:16px 14px 120px}
 /* letter-spacing negativo angosta el texto sin tocar la fuente. Se
    aplica igual en acordes y letra (los dos heredan de .bloque), así que
    la alineación entre columnas no se rompe: cada carácter, incluidos los
@@ -2109,17 +2114,21 @@ function pintarLector(){
 }
 
 /* Al scrollear el cuerpo hacia abajo, la cabecera se va achicando en dos
-   pasos para dejar más lugar a la letra: primero se esconde el nombre,
-   después los botones, y queda sólo el riel con el número de canción.
-   Umbrales altos a propósito: con 16/70px (la primera versión) cualquier
-   toque para acomodar la pantalla ya escondía el nombre, y con el envión
-   del dedo se perdía de vista la primera parte de la letra apenas se
-   empezaba a leer. Tiene que ser un scroll de verdad, no un roce. */
+   pasos para dejar más lugar a la letra: primero se esconde el nombre
+   (rápido, umbral bajo) y recién bastante después los botones (umbral
+   alto), para que no se sientan como un solo golpe. La letra y los
+   acordes en sí no tienen ningún umbral propio: sólo "se ocultan" en el
+   sentido de que son lo que sigue subiendo con el scroll normal una vez
+   que el nombre y los botones ya terminaron de achicarse — mientras
+   siguen achicándose, overflow-anchor (ver .cuerpo en el CSS) evita que
+   el navegador mueva el scroll solo para compensar el cambio de altura
+   de la cabecera, que es lo que hacía "saltar" la letra de más con un
+   scroll chiquito. */
 function actualizarColapsoTope(){
   const tope = $("lector-tope");
   const y = $("cuerpo").scrollTop;
-  tope.classList.toggle("oculta-nombre", y > 130);
-  tope.classList.toggle("oculta-botones", y > 260);
+  tope.classList.toggle("oculta-nombre", y > 20);
+  tope.classList.toggle("oculta-botones", y > 160);
 }
 
 /* Decide si mostrar la tarjeta "Siguiente": sólo cuando se llegó al
