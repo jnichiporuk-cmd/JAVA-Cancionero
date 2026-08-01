@@ -209,14 +209,21 @@ input{font-family:inherit;font-size:inherit}
 }
 .lector.abierto{display:flex}
 
-/* Al scrollear, TODA la cabecera desaparece junta (nombre, botones,
-   flecha y riel): display:none de un golpe, sin animación, para que
-   sea instantáneo y no pelee con el scroll nativo del teléfono (ya se
-   probaron variantes con transición/freeze que rebotaban o rompían el
-   layout — ver actualizarColapsoTope() en el JS). Al volver a
-   scrollear hasta arriba del todo, reaparece completa. */
-.lector-tope{border-bottom:1px solid var(--borde);flex:none}
-.lector-tope.oculta{display:none}
+/* Al primer gesto hacia abajo, TODA la cabecera desaparece junta
+   (nombre, botones, flecha y riel), con esta animación. Ese mismo
+   gesto queda bloqueado con preventDefault (ver tocarCuerpoMueve en el
+   JS) para que no alcance a mover la letra: recién el siguiente gesto
+   scrollea de verdad. max-height (no display:none) para que el achique
+   se vea como un movimiento, no un salto — acá no rebota como en los
+   intentos anteriores porque el scroll real nunca llega a arrancar
+   durante este gesto (bloqueado antes de que el navegador lo procese),
+   en vez de dejarlo arrancar y tratar de deshacerlo después. */
+.lector-tope{
+  border-bottom:1px solid var(--borde);flex:none;
+  overflow:hidden;max-height:160px;
+  transition:max-height .2s ease;
+}
+.lector-tope.oculta{max-height:0;border-bottom-width:0}
 .lector-barra{display:flex;align-items:center;gap:10px;padding:11px 12px 0}
 .cerrar{flex:none;width:32px;height:32px;font-size:20px;color:var(--tenue)}
 .lector-tit{flex:1;min-width:0}
@@ -392,7 +399,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v91</span></div>
+    <div class="marca">Cancionero <span class="ver">v92</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
   </div>
@@ -2105,14 +2112,13 @@ function pintarLector(){
   actualizarColapsoTope();
 }
 
-/* Apenas se empieza a scrollear, toda la cabecera desaparece junta
-   (display:none, instantáneo); al volver hasta arriba del todo,
-   reaparece. Sin animación ni freno de scroll a propósito: se probaron
-   variantes con transición y con freeze del scroll, y ambas terminaban
-   peleando contra el scroll nativo del teléfono (saltos, rebotes). Un
-   cambio instantáneo de display no tiene nada con qué pelear. */
+/* Al volver a scrollear hasta arriba del todo, la cabecera reaparece
+   sola (no hace falta bloquear este sentido: mostrarla de vuelta no le
+   quita al usuario nada que ya hubiera scrolleado). Esconderla es lo
+   que se maneja aparte, por gesto — ver tocarCuerpoInicio/Mueve/Fin,
+   más abajo. */
 function actualizarColapsoTope(){
-  $("lector-tope").classList.toggle("oculta", $("cuerpo").scrollTop > 0);
+  if ($("cuerpo").scrollTop <= 0) $("lector-tope").classList.remove("oculta");
 }
 
 /* Vuelve a mostrar la cabecera: se llama al abrir/cambiar de canción,
@@ -2304,7 +2310,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v91",
+    origen: "cancionero v92",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
@@ -2416,6 +2422,41 @@ $("cuerpo").addEventListener("touchend", e => {
   /* Sólo si el gesto es claramente horizontal, para no pelear con el scroll */
   if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) * 2) paso(dx < 0 ? +1 : -1);
   xIni = yIni = null;
+}, {passive:true});
+
+/* Primer gesto hacia abajo (con la cabecera visible y arriba del
+   todo): en vez de scrollear, esconde la cabecera y frena ahí ese
+   mismo gesto con preventDefault, para que la letra no se mueva nada
+   en el proceso. Recién el siguiente gesto queda libre para scrollear
+   de verdad. No se engancha si el gesto es más horizontal que vertical
+   (esas son para deslizar de canción, arriba) ni si hace falta mover
+   menos de 8px: evita confundir un roce chiquito con la intención de
+   scrollear. */
+let tocInicioY = null, tocInicioX = null, tocBloqueando = false;
+$("cuerpo").addEventListener("touchstart", e => {
+  const tope = $("lector-tope");
+  if (tope.classList.contains("oculta") || $("cuerpo").scrollTop > 0){
+    tocInicioY = null;   // no hay nada para esconder: gesto libre, scroll normal
+    return;
+  }
+  tocInicioY = e.touches[0].clientY;
+  tocInicioX = e.touches[0].clientX;
+  tocBloqueando = false;
+}, {passive:true});
+$("cuerpo").addEventListener("touchmove", e => {
+  if (tocInicioY === null) return;
+  if (!tocBloqueando){
+    const dx = e.touches[0].clientX - tocInicioX;
+    const dy = tocInicioY - e.touches[0].clientY;   // positivo = dedo sube = scroll hacia abajo
+    if (dy < 8 || Math.abs(dx) > dy) return;         // todavía no está claro, o es horizontal
+    tocBloqueando = true;
+    $("lector-tope").classList.add("oculta");
+  }
+  e.preventDefault();
+}, {passive:false});
+$("cuerpo").addEventListener("touchend", () => {
+  tocInicioY = null;
+  tocBloqueando = false;
 }, {passive:true});
 
 /* Arrastrar filas del Evento (ver iniciarArrastre/moverArrastre): estos
