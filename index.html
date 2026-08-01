@@ -209,24 +209,15 @@ input{font-family:inherit;font-size:inherit}
 }
 .lector.abierto{display:flex}
 
+/* Al scrollear, TODA la cabecera desaparece junta (nombre, botones,
+   flecha y riel): display:none de un golpe, sin animación, para que
+   sea instantáneo y no pelee con el scroll nativo del teléfono (ya se
+   probaron variantes con transición/freeze que rebotaban o rompían el
+   layout — ver actualizarColapsoTope() en el JS). Al volver a
+   scrollear hasta arriba del todo, reaparece completa. */
 .lector-tope{border-bottom:1px solid var(--borde);flex:none}
-/* Nombre en su propia fila, sin pelear por ancho con los botones (antes
-   compartían fila y el nombre quedaba truncado). Al scrollear el cuerpo
-   se achica esta fila entera a 0 (ver lector-tope.oculta-nombre), no
-   sólo el texto: si sólo achicara el texto, quedaría el padding de la
-   fila como un renglón vacío. La flecha ← vive aparte, en fila-baja
-   (más abajo), así nunca desaparece.
-   La transición (.18s) es a propósito lenta: mientras dura,
-   actualizarColapsoTope() congela el scroll del cuerpo, así que lo
-   único que se mueve en ese momento es este achique — el riel y la
-   letra suben juntos, como un bloque, arrastrados por el lugar que
-   libera la cabecera, sin que la letra encima se scrollee todavía. */
-.lector-barra{
-  display:flex;align-items:center;gap:10px;
-  overflow:hidden;max-height:56px;opacity:1;padding:11px 12px 0;
-  transition:max-height .18s ease,opacity .12s ease,padding .18s ease;
-}
-#lector-tope.oculta-nombre .lector-barra{max-height:0;opacity:0;padding-top:0;padding-bottom:0}
+.lector-tope.oculta{display:none}
+.lector-barra{display:flex;align-items:center;gap:10px;padding:11px 12px 0}
 .cerrar{flex:none;width:32px;height:32px;font-size:20px;color:var(--tenue)}
 .lector-tit{flex:1;min-width:0}
 .lector-nombre{
@@ -236,14 +227,8 @@ input{font-family:inherit;font-size:inherit}
 .lector-meta{font-size:12px;color:var(--tenue);margin-top:1px}
 .lector-meta b{color:var(--acordes)}
 
-/* Fila de controles (tamaño y transporte), debajo del nombre. También se
-   achica a 0 al mismo tiempo que el nombre (ver actualizarColapsoTope),
-   para que al final sólo quede fila-baja: la flecha y el riel. */
-.ctrl-fila{
-  overflow:hidden;max-height:41px;opacity:1;padding:0 12px 10px;
-  transition:max-height .18s ease,opacity .12s ease,padding .18s ease;
-}
-#lector-tope.oculta-botones .ctrl-fila{max-height:0;opacity:0;padding-top:0;padding-bottom:0}
+/* Fila de controles (tamaño y transporte), debajo del nombre. */
+.ctrl-fila{padding:0 12px 10px}
 .ctrl{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
 .ctrl button{
   width:28px;height:31px;border:1px solid var(--borde);border-radius:7px;
@@ -264,8 +249,8 @@ input{font-family:inherit;font-size:inherit}
 .online-badge.en-vivo{border-color:#3DD68C;color:#3DD68C}
 
 /* Última fila de la cabecera: la flecha de volver y, en modo reunión, el
-   riel con el número de canción. Es la única que nunca se esconde al
-   scrollear, así siempre queda un camino para salir del lector. */
+   riel con el número de canción. Se esconde junto con el resto (ver
+   lector-tope.oculta); para volver hay que scrollear hasta arriba. */
 .fila-baja{display:flex;align-items:center;gap:8px;padding:0 12px 10px}
 
 /* Riel de la reunión: sólo visible cuando entrás por "Empezar" */
@@ -407,7 +392,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v90</span></div>
+    <div class="marca">Cancionero <span class="ver">v91</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
   </div>
@@ -2120,25 +2105,20 @@ function pintarLector(){
   actualizarColapsoTope();
 }
 
-/* Apenas se empieza a scrollear, nombre y botones se achican (con su
-   animación de .18s); al volver hasta arriba del todo, reaparecen.
-   Sin freno de scroll a propósito: se probó congelar el cuerpo
-   mientras dura esa animación para que la letra no se moviera ni un
-   poco mientras tanto, pero eso pelea contra el rebote elástico nativo
-   del celular al llegar al borde y se sentía trabado. Con esto, el
-   scroll es 100% nativo del navegador — puede que la letra se corra
-   un poco mientras la cabecera se achica, pero nunca se traba. */
+/* Apenas se empieza a scrollear, toda la cabecera desaparece junta
+   (display:none, instantáneo); al volver hasta arriba del todo,
+   reaparece. Sin animación ni freno de scroll a propósito: se probaron
+   variantes con transición y con freeze del scroll, y ambas terminaban
+   peleando contra el scroll nativo del teléfono (saltos, rebotes). Un
+   cambio instantáneo de display no tiene nada con qué pelear. */
 function actualizarColapsoTope(){
-  const tope = $("lector-tope");
-  const y = $("cuerpo").scrollTop;
-  tope.classList.toggle("oculta-nombre", y > 0);
-  tope.classList.toggle("oculta-botones", y > 0);
+  $("lector-tope").classList.toggle("oculta", $("cuerpo").scrollTop > 0);
 }
 
-/* Vuelve a mostrar nombre y botones: se llama al abrir/cambiar de
-   canción, para no arrancar con la cabecera ya achicada de la anterior. */
+/* Vuelve a mostrar la cabecera: se llama al abrir/cambiar de canción,
+   para no arrancar con la cabecera ya escondida de la anterior. */
 function reiniciarColapsoTope(){
-  $("lector-tope").classList.remove("oculta-nombre", "oculta-botones");
+  $("lector-tope").classList.remove("oculta");
 }
 
 /* Decide si mostrar la tarjeta "Siguiente": sólo cuando se llegó al
@@ -2324,7 +2304,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v90",
+    origen: "cancionero v91",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
