@@ -422,7 +422,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v169</span></div>
+    <div class="marca">Cancionero <span class="ver">v170</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -1110,21 +1110,26 @@ async function transmitirEstado(){
   /* Toggle global: si hay transmisión activa, desactiva para todos.
      Si no hay, activa la transmisión de esta canción. */
   const hayTransmision = !!est.lista.enVivo;
+  console.log("transmitirEstado:", { hayTransmision, enVivoActual: est.lista.enVivo });
   if (hayTransmision){
     /* Desactivar: limpiar enVivo */
+    console.log("Desactivando transmisión...");
     est.lista.enVivo = null;
     pintarLector();
     try{
-      await fs.updateDoc(fs.doc(db, "reuniones", est.lista.id), {
+      console.log("Escribiendo enVivo: null a Firestore...");
+      const resultado = await fs.updateDoc(fs.doc(db, "reuniones", est.lista.id), {
         enVivo: null,
       });
+      console.log("Desactivación exitosa, resultado:", resultado);
     }catch(e){
-      console.error("No se pudo desactivar la transmisión:", e);
+      console.error("Error al desactivar:", e.message);
       est.lista.enVivo = { cancionId: est.abierta, semis: est.semis, posicion: est.posicion, cuando: Date.now() };
       pintarLector();
     }
   } else {
     /* No hay transmisión: activar */
+    console.log("Activando transmisión...");
     await activarTransmision();
   }
 }
@@ -2522,7 +2527,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v169",
+    origen: "cancionero v170",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
