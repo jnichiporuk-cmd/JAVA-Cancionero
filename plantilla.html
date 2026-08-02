@@ -70,10 +70,11 @@ input{font-family:inherit;font-size:inherit}
   font-size:13px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
   color:var(--tenue);flex:1;
 }
-.expandir{
+.expandir, .rol-btn, .rol-btn-lector{
   flex:none;width:30px;height:30px;border-radius:7px;
   border:1px solid var(--borde);color:var(--tenue);font-size:14px;
-  display:flex;align-items:center;justify-content:center;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  background:transparent;padding:0;
 }
 .expandir.activo{color:var(--acordes);border-color:var(--acordes)}
 .sync{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--tenue)}
@@ -234,10 +235,6 @@ input{font-family:inherit;font-size:inherit}
   font-size:13px;font-weight:700;color:var(--tenue);display:flex;align-items:center;justify-content:center;
 }
 .fila-baja .expandir{margin-left:auto}
-.fila-baja .expandir, .fila-baja .rol-btn-lector{
-  padding:6px 10px;font-size:12px;border:1px solid var(--borde);border-radius:4px;
-  color:var(--tenue);background:transparent;
-}
 
 /* .lector-barra/.lector-tit/.lector-nombre: la cabecera "arrow + título
    en la misma fila" que siguen usando Exportar, Agregar y Editar
@@ -423,7 +420,7 @@ input{font-family:inherit;font-size:inherit}
     <div class="marca">Cancionero <span class="ver">__VERSION__</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
-    <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none;padding:6px 10px;font-size:12px;border:1px solid var(--borde);border-radius:4px;color:var(--tenue);background:transparent;cursor:pointer">Músico</button>
+    <button class="rol-btn" id="rol-btn" title="Cambiar rol">Músico</button>
   </div>
   <div class="pestanas">
     <button class="pestana activa" id="tab-canciones">Canciones</button>
@@ -464,7 +461,7 @@ input{font-family:inherit;font-size:inherit}
       <button id="vaciar-transmision" title="Vaciar la transmisión (por si quedó una canción vieja pegada)">⟲</button>
       <button id="editar" title="Editar la canción">✎</button>
       <button class="expandir" id="expandir-lector" title="Pantalla completa" style="flex:none">⛶</button>
-      <button class="rol-btn-lector" id="rol-btn-lector" title="Cambiar rol" style="flex:none;padding:6px 10px;font-size:12px;border:1px solid var(--borde);border-radius:4px;color:var(--tenue);background:transparent;cursor:pointer">Músico</button>
+      <button class="rol-btn-lector" id="rol-btn-lector" title="Cambiar rol">Músico</button>
     </div>
     <div class="ctrl-fila">
       <div class="riel" id="riel"></div>
