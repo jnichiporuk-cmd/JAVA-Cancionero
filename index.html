@@ -411,7 +411,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v118</span></div>
+    <div class="marca">Cancionero <span class="ver">v119</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none;padding:6px 10px;font-size:12px;border:1px solid var(--borde);border-radius:4px;color:var(--tenue);background:transparent;cursor:pointer">Músico</button>
@@ -438,8 +438,8 @@ input{font-family:inherit;font-size:inherit}
 <div class="lector" id="bienvenida">
   <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:20px;padding:20px">
     <div style="font-size:24px;font-weight:bold;text-align:center">¿Quién eres hoy?</div>
-    <button class="btn-guardar btn-ancho" id="rol-director" style="width:auto;min-width:200px">Soy director</button>
     <button class="btn-guardar btn-ancho" id="rol-musico" style="width:auto;min-width:200px">Soy músico</button>
+    <button class="btn-guardar btn-ancho" id="rol-director" style="width:auto;min-width:200px">Soy director</button>
   </div>
 </div>
 
@@ -1097,6 +1097,16 @@ function mostrarVistaOnline(d){
    modo reunión, no hace nada. */
 async function transmitirEstado(){
   if (!est.esDirector || !est.enReunion || !est.abierta || !est.lista.id || !HAY_NUBE) return;
+  /* Actualización optimista: pone verde el botón O al instante, sin esperar
+     a que vuelva el snapshot de Firestore. La escritura a Firestore sigue
+     igual y actualizará a los demás dispositivos. */
+  est.lista.enVivo = {
+    cancionId: est.abierta,
+    semis: est.semis,
+    posicion: est.posicion,
+    cuando: Date.now(),
+  };
+  pintarLector();
   try{
     await fs.updateDoc(fs.doc(db, "reuniones", est.lista.id), {
       "enVivo.cancionId": est.abierta,
@@ -2469,7 +2479,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v118",
+    origen: "cancionero v119",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
