@@ -949,8 +949,15 @@ function escucharReunionActiva(id){
         id, ids: d.ids || [], porQuien: d.porQuien || "",
         cuando: d.actualizada || d.creada || 0, nombre: d.nombre || "",
         semis: d.semis || {}, fechaReunion: d.fechaReunion || d.creada || 0,
+        enVivo: d.enVivo || null,
+        directoresLatido: d.directoresLatido || {},
       };
       pintar();
+      /* Si cambió la transmisión en vivo, actualiza la pestaña Online
+         si estamos mirándola o en vista de sólo lectura. */
+      if (est.pestana === "online" || est.soloLectura){
+        manejarCambioEnVivo();
+      }
     }
     /* fromCache indica que lo que estoy viendo salió de la caché y todavía
        no lo confirmó el servidor: es la señal honesta de "estoy offline". */
@@ -1067,10 +1074,13 @@ function cerrarVistaOnline(){
    pegada para todo el grupo. Cualquiera puede tocarlo, no sólo un
    director, porque cualquiera puede notar el problema. */
 async function vaciarTransmision(){
-  if (!confirm("¿Vaciar la transmisión para todos? Usalo sólo si quedó una canción vieja pegada.")) return;
-  if (!HAY_NUBE){ flotar("Sin conexión"); return; }
+  if (!confirm("¿Vaciar la transmisión de este evento? Usalo sólo si quedó una canción vieja pegada.")) return;
+  if (!est.lista.id || !HAY_NUBE){ flotar("Sin conexión"); return; }
   try{
-    await fs.setDoc(fs.doc(db, "cancionero", "directorEnVivo"), { directores: 0 });
+    await fs.updateDoc(fs.doc(db, "reuniones", est.lista.id), {
+      directoresLatido: {},
+      enVivo: null,
+    });
     flotar("Transmisión vaciada");
   }catch(e){
     console.error("No se pudo vaciar la transmisión:", e);
@@ -1123,11 +1133,14 @@ function mostrarVistaOnline(d){
    reunión (abrir canción, pasar, transportar). Sin conexión o fuera de
    modo reunión, no hace nada. */
 async function transmitirEstado(){
-  if (!est.esDirector || !est.enReunion || !est.abierta || !HAY_NUBE) return;
+  if (!est.esDirector || !est.enReunion || !est.abierta || !est.lista.id || !HAY_NUBE) return;
   try{
-    await fs.setDoc(fs.doc(db, "cancionero", "directorEnVivo"), {
-      cancionId: est.abierta, semis: est.semis, posicion: est.posicion, cuando: Date.now(),
-    }, { merge: true });
+    await fs.updateDoc(fs.doc(db, "reuniones", est.lista.id), {
+      "enVivo.cancionId": est.abierta,
+      "enVivo.semis": est.semis,
+      "enVivo.posicion": est.posicion,
+      "enVivo.cuando": Date.now(),
+    });
   }catch(e){
     console.error("No se pudo transmitir:", e);
   }
@@ -1515,6 +1528,25 @@ function detenerLatido(){
 function hayDirectorActivo(lista){
   const latidos = Object.values(lista.directoresLatido || {});
   return latidos.some(t => Date.now() - t < 90000);
+}
+
+/* Maneja cambios en la transmisión en vivo del evento actual.
+   Decide si abrir/cerrar la vista sólo lectura basado en si hay
+   transmisión activa. */
+function manejarCambioEnVivo(){
+  if (!hayDirectorActivo(est.lista)){
+    /* No hay transmisión activa: cerrar la vista si estamos en ella */
+    if (est.soloLectura){
+      cerrarVistaOnline();
+    }
+    return;
+  }
+  /* Hay transmisión activa. Si estamos en pestaña Online en modo sólo
+     lectura, o si justo se abrió la transmisión del evento que estamos
+     mirando, mostrar la vista. */
+  if (est.lista.enVivo && (est.pestana === "online" || est.soloLectura)){
+    mostrarVistaOnline(est.lista.enVivo);
+  }
 }
 
 
@@ -2656,7 +2688,22 @@ async function continuarArranque(){
   if (eventoId) est.lista.id = eventoId;  // placeholder, se reemplaza al escuchar
 
   pintar();              // se ve el cancionero al instante, sin esperar la red
-  if (await conectar()) escuchar();   // a partir de acá los cambios llegan solos
+  if (await conectar()) {
+    escuchar();   // a partir de acá los cambios llegan solos
+
+    /* Revisar vigencia de latidos cada ~15s. Firestore sólo notifica
+       cambios cuando alguien escribe; si un director desaparece, su
+       latido no se actualiza más, así que revisamos qué tan viejo es. */
+    setInterval(() => {
+      if ((est.pestana === "online" || est.soloLectura) && est.lista.directoresLatido){
+        if (!hayDirectorActivo(est.lista)){
+          /* Transmisión expiró, refresca la UI */
+          pintar();
+          if (est.soloLectura) cerrarVistaOnline();
+        }
+      }
+    }, 15000);
+  }
 }
 
 arrancar();
