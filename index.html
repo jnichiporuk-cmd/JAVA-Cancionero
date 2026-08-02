@@ -422,7 +422,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v171</span></div>
+    <div class="marca">Cancionero <span class="ver">v172</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -1119,9 +1119,9 @@ async function transmitirEstado(){
     est.lista.enVivo = null;
     pintarLector();
     try{
-      console.log("Escribiendo enVivo: null a Firestore...");
+      console.log("Escribiendo deleteField para enVivo a Firestore...");
       const resultado = await fs.updateDoc(fs.doc(db, "reuniones", est.lista.id), {
-        enVivo: null,
+        enVivo: fs.deleteField(),
       });
       console.log("Desactivación exitosa, resultado:", resultado);
     }catch(e){
@@ -2529,7 +2529,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v171",
+    origen: "cancionero v172",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);

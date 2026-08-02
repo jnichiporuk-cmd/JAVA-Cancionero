@@ -1119,9 +1119,9 @@ async function transmitirEstado(){
     est.lista.enVivo = null;
     pintarLector();
     try{
-      console.log("Escribiendo enVivo: null a Firestore...");
+      console.log("Escribiendo deleteField para enVivo a Firestore...");
       const resultado = await fs.updateDoc(fs.doc(db, "reuniones", est.lista.id), {
-        enVivo: null,
+        enVivo: fs.deleteField(),
       });
       console.log("Desactivación exitosa, resultado:", resultado);
     }catch(e){
