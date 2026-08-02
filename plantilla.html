@@ -1051,8 +1051,10 @@ async function vaciarTransmision(){
    (soloLectura) para que se vea igual que Online, pero sin apagarle
    ningún control: sigue siendo director, sigue con todo disponible. */
 function transmitirDesdeElPrincipio(){
-  if (!est.lista.ids.length) return;
+  console.log("transmitirDesdeElPrincipio() ejecutada");
+  if (!est.lista.ids.length){ console.log("lista vacía"); return; }
   const id = est.lista.ids[0];
+  console.log("abriendo canción:", id);
   est.posicion = 0;
   est.abierta = id;
   est.enReunion = true;
@@ -1063,6 +1065,7 @@ function transmitirDesdeElPrincipio(){
   reiniciarColapsoTope();
   pintarLector();
   transmitirEstado();
+  console.log("transmitirDesdeElPrincipio() completada");
 }
 
 function mostrarVistaOnline(d){
