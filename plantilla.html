@@ -437,6 +437,15 @@ input{font-family:inherit;font-size:inherit}
 <div class="pie-reunion" id="pie" style="display:none"></div>
 
 <!-- Lector -->
+<!-- Pantalla de elección de rol (director / músico) -->
+<div class="lector" id="bienvenida">
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:20px;padding:20px">
+    <div style="font-size:24px;font-weight:bold;text-align:center">¿Quién eres hoy?</div>
+    <button class="btn-guardar btn-ancho" id="rol-director" style="width:auto;min-width:200px">Soy director</button>
+    <button class="btn-guardar btn-ancho" id="rol-musico" style="width:auto;min-width:200px">Soy músico</button>
+  </div>
+</div>
+
 <div class="lector" id="lector">
   <div class="lector-tope" id="lector-tope">
     <div class="fila-baja">
@@ -871,21 +880,10 @@ async function conectar(){
 function escuchar(){
   if (!HAY_NUBE) return;
 
-  /* Lo que transmita quien sea director, siempre escuchado (no hace
-     falta "activar" nada para que la pestaña Online funcione). */
-  escucharDirector();
-
-  /* El puntero a la reunión activa. Cuando cambia (alguien creó una
-     reunión nueva o tocó "Usar esta" en Guardadas) hay que dejar de
-     escuchar la reunión vieja y empezar a escuchar la nueva. */
-  fs.onSnapshot(fs.doc(db, "cancionero", "activa"), snap => {
-    const d = snap.data();
-    const id = (d && d.reunionActivaId) || null;
-    if (id !== est.lista.id) escucharReunionActiva(id);
-  }, e => {
-    console.error("Error escuchando la reunión activa:", e);
-    marcarSync("error", "error de permisos");
-  });
+  /* Lee el evento elegido localmente en este dispositivo y lo escucha.
+     (Ya no depende de cancionero/activa — cada dispositivo elige el suyo.) */
+  const eventoId = leerEventoLocal();
+  escucharReunionActiva(eventoId);
 
   /* Todas las reuniones guardadas, para poder listarlas en Guardadas */
   fs.onSnapshot(fs.collection(db, "reuniones"), snap => {
@@ -1387,6 +1385,136 @@ function guardarAjustes(){
       tamano:est.tamano, orden:est.orden,
     }));
   }catch(e){ /* no se puede guardar, no es grave */ }
+}
+
+/* Rol (director o músico) del dispositivo, persistente entre recargas */
+function leerRol(){
+  try{
+    const rol = localStorage.getItem("cancionero:rol");
+    if (rol === "director") est.esDirector = true;
+    else if (rol === "musico") est.esDirector = false;
+    return rol;
+  }catch(e){ /* sin rol guardado */ return null; }
+}
+
+function guardarRol(esDirector){
+  try{
+    localStorage.setItem("cancionero:rol", esDirector ? "director" : "musico");
+  }catch(e){ /* no se puede guardar, no es grave */ }
+}
+
+/* Identificador único del dispositivo, persistente entre sesiones */
+function obtenerDispositivoId(){
+  try{
+    let id = localStorage.getItem("cancionero:dispositivoId");
+    if (!id){
+      id = crypto.randomUUID();
+      localStorage.setItem("cancionero:dispositivoId", id);
+    }
+    return id;
+  }catch(e){ /* sin UUID o sin crypto, no es grave */ return Math.random().toString(36).substr(2, 9); }
+}
+
+/* Evento elegido en este dispositivo, persistente entre recargas */
+function leerEventoLocal(){
+  try{
+    return localStorage.getItem("cancionero:eventoId");
+  }catch(e){ return null; }
+}
+
+function guardarEventoLocal(id){
+  try{
+    if (id) localStorage.setItem("cancionero:eventoId", id);
+    else localStorage.removeItem("cancionero:eventoId");
+  }catch(e){ /* no es grave */ }
+}
+
+/* Cambia el evento que este dispositivo está mirando. Guarda en
+   localStorage, cancela el listener anterior, y arranca el listener del
+   nuevo evento. Si es director y está transmitiendo en el evento actual,
+   pide confirmación antes de irse. */
+async function fijarEventoLocal(idNuevo){
+  /* Si está transmitiendo la canción actual del evento actual, avisa */
+  if (est.esDirector && est.enReunion && est.abierta && est.lista.enVivo &&
+      est.lista.enVivo.cancionId === est.abierta){
+    if (!confirm("Estás transmitiendo esta canción en el evento actual. ¿Salir igual? Vas a dejar de transmitir.")){
+      return;
+    }
+  }
+
+  const idViejo = est.lista.id;
+
+  /* Detiene el latido del evento viejo, si era director */
+  if (est.esDirector && idViejo) detenerLatido();
+
+  /* Guarda el nuevo evento en localStorage y escucha su contenido */
+  guardarEventoLocal(idNuevo);
+  if (idNuevo) {
+    await escucharReunionActiva(idNuevo);
+    /* Inicia latido del evento nuevo, si es director */
+    if (est.esDirector) iniciarLatido(idNuevo);
+  } else {
+    /* Evento null = no hay ninguno elegido */
+    est.lista = { id:null, ids:[], porQuien:"", cuando:0, nombre:"", semis:{}, fechaReunion:0 };
+    if (cancelarEscuchaActiva) cancelarEscuchaActiva();
+  }
+
+  pintar();
+}
+
+/* Latido periódico de presencia para directores activos en cada evento.
+   Así, si se desconecta abruptamente, su entrada en directoresLatido
+   envejece y se autocorrige en ~90s sin que nadie tenga que limpiar
+   contadores manualmente. */
+let latidoInterval = null;
+
+function iniciarLatido(eventoId){
+  if (!HAY_NUBE || latidoInterval) return;  // ya está corriendo, o sin cloud
+  const dispositivoId = obtenerDispositivoId();
+  const escribirLatido = async () => {
+    try{
+      const refEvento = fs.doc(db, "reuniones", eventoId);
+      await fs.updateDoc(refEvento, {
+        [`directoresLatido.${dispositivoId}`]: Date.now(),
+      });
+    }catch(e){ /* mejor esfuerzo */ }
+  };
+  escribirLatido();  // escribir ahora mismo
+  latidoInterval = setInterval(() => {
+    if (!est.esDirector || est.lista.id !== eventoId){
+      /* El rol cambió o se fue de este evento sin llamar a detenerLatido;
+         limpia el intervalo acá */
+      clearInterval(latidoInterval);
+      latidoInterval = null;
+    } else {
+      escribirLatido();
+    }
+  }, 20000);  // cada 20s
+}
+
+function detenerLatido(){
+  if (latidoInterval){
+    clearInterval(latidoInterval);
+    latidoInterval = null;
+  }
+  /* Mejor esfuerzo: borrar la entrada propia de directoresLatido */
+  if (est.lista.id && HAY_NUBE){
+    try{
+      const dispositivoId = obtenerDispositivoId();
+      const refEvento = fs.doc(db, "reuniones", est.lista.id);
+      fs.updateDoc(refEvento, {
+        [`directoresLatido.${dispositivoId}`]: fs.deleteField(),
+      });
+    }catch(e){ /* mejor esfuerzo */ }
+  }
+}
+
+/* Chequea si hay al menos un director vigente en el evento de est.lista.
+   Una entrada se considera vigente si su marca de tiempo es más reciente
+   que hace 90s. */
+function hayDirectorActivo(lista){
+  const latidos = Object.values(lista.directoresLatido || {});
+  return latidos.some(t => Date.now() - t < 90000);
 }
 
 
@@ -2460,12 +2588,53 @@ document.addEventListener("mouseup", soltarArrastre);
    lista y las ediciones, la pantalla se actualiza sola.
    =================================================================== */
 async function arrancar(){
-  marcarSync("", "conectando");
+  /* Genera el ID del dispositivo si aún no existe */
+  obtenerDispositivoId();
+
+  /* Lee ajustes de UI (tamaño de letra, orden del catálogo) */
   leerAjustes();
+
+  /* Lee el rol (director o músico). Si no existe, intenta mostrar la
+     pantalla de bienvenida bloqueante. De todos modos, continúa — la
+     pantalla se mostrará, pero el arranque sigue en paralelo (sobre todo
+     para las pruebas en Node). */
+  const sinRol = !leerRol();
+  if (sinRol){
+    // Asigna handlers para que se pueda elegir, pero continúa
+    try{ mostrarPantallaRol(); }catch(e){}
+    // Si no se elige nada (ej. en Node), asume músico
+    est.esDirector = false;
+  }
+
+  continuarArranque();
+}
+
+function mostrarPantallaRol(){
+  $("bienvenida").classList.add("abierto");
+  $("rol-director").onclick = () => fijarRol(true);
+  $("rol-musico").onclick = () => fijarRol(false);
+}
+
+function fijarRol(esDirector){
+  est.esDirector = esDirector;
+  guardarRol(esDirector);
+  $("bienvenida").classList.remove("abierto");
+  continuarArranque();
+}
+
+async function continuarArranque(){
+  marcarSync("", "conectando");
   recalcular();          // catálogo base, sin cambios todavía
+
+  /* Lee el evento local elegido (si lo hay) y lo setea en est.lista
+     sin listener aún — eso arranca después de conectar (en escuchar()) */
+  const eventoId = leerEventoLocal();
+  if (eventoId) est.lista.id = eventoId;  // placeholder, se reemplaza al escuchar
+
   pintar();              // se ve el cancionero al instante, sin esperar la red
   if (await conectar()) escuchar();   // a partir de acá los cambios llegan solos
 }
+
 arrancar();
 
 /* Antes acá había un sondeo cada 4 segundos. Ya no hace falta: onSnapshot

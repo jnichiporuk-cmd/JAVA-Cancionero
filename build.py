@@ -46,12 +46,14 @@ if "CATALOGO_ES_DEMO" in html or "demo-1" in html:
     fallos.append("quedaron restos del catálogo de prueba")
 if html.count("<script") != html.count("</script>"):
     fallos.append("tags <script> desbalanceados")
-# localStorage es correcto para los ajustes de cada dispositivo (tamaño de
-# letra). Lo que NO debe pasar es que los datos compartidos —la lista de la
-# reunión y las ediciones— terminen ahí, porque entonces cada uno vería los
-# suyos y nadie se enteraría. Se controla que sólo se use con esa clave.
+# localStorage es correcto para datos locales de cada dispositivo: ajustes,
+# rol elegido, id del dispositivo, evento elegido. Lo que NO debe pasar es
+# que los datos compartidos —la lista de la reunión, ediciones, transmisión—
+# terminen ahí, porque entonces cada uno vería los suyos y nadie se enteraría.
+# Se controla que sólo se use con esas claves específicas.
 usos = re.findall(r'localStorage\.\w+\(\s*"([^"]*)"', html)
-ajenos = [u for u in usos if not u.startswith("cancionero:ajustes")]
+locales = {"cancionero:ajustes", "cancionero:rol", "cancionero:dispositivoId", "cancionero:eventoId"}
+ajenos = [u for u in usos if u not in locales]
 if ajenos:
     fallos.append(f"localStorage usado para datos que deberían ser compartidos: {ajenos}")
 if "sessionStorage" in html:
