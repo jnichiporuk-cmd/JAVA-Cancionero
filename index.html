@@ -82,10 +82,8 @@ input{font-family:inherit;font-size:inherit}
   cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0 8px;
 }
 #ag-nueva{
-  flex:none;height:30px;border:1px solid var(--borde);border-radius:7px;
-  color:var(--tenue);font-size:13px;font-weight:700;background:transparent;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;
-  padding:0 6px;white-space:nowrap;
+  flex:none;padding:13px 15px;border-radius:9px;font-weight:700;font-size:15px;
+  border:1px solid var(--borde);color:var(--letra);cursor:pointer;white-space:nowrap;
 }
 .sync{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--tenue);height:30px}
 .punto{width:8px;height:8px;border-radius:50%;background:var(--tenue);flex:none}
@@ -428,7 +426,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v176</span></div>
+    <div class="marca">Cancionero <span class="ver">v177</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -2529,7 +2527,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v176",
+    origen: "cancionero v177",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
