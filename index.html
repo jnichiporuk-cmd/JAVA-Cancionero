@@ -410,9 +410,10 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v100</span></div>
+    <div class="marca">Cancionero <span class="ver">v103</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
+    <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none;padding:6px 10px;font-size:12px;border:1px solid var(--borde);border-radius:4px;color:var(--tenue);background:transparent;cursor:pointer">Músico</button>
   </div>
   <div class="pestanas">
     <button class="pestana activa" id="tab-canciones">Canciones</button>
@@ -1166,6 +1167,7 @@ function fechaHoyTexto(){
    terminado de confirmarse: sin merge pisaría el documento entero con
    un objeto a medias. */
 async function guardarLista(){
+  if (!est.esDirector) return;  // solo directores editan listas
   if (!est.lista.id) return;  // no hay reunión activa todavía
   if (!HAY_NUBE){ flotar("Sin conexión: la lista no se comparte"); return; }
   marcarSync("escribiendo", "guardando");
@@ -1542,6 +1544,9 @@ function flotar(msg){
    parchar el DOM: son 130 filas, no hace falta nada más sofisticado.
    =================================================================== */
 function pintar(){
+  /* actualizar indicador de rol en la barra */
+  $("rol-btn").textContent = est.esDirector ? "Director" : "Músico";
+
   /* contador de la pestaña Reunión */
   const n = est.lista.ids.length;
   const c = $("cuenta");
@@ -1800,13 +1805,15 @@ function pintarGuardadas(){
 
   const acc = document.createElement("div");
   acc.className = "acciones";
-  acc.innerHTML = `<button id="btn-nueva-reunion">+ Nuevo evento</button>`;
-  cont.appendChild(acc);
-  $("btn-nueva-reunion").onclick = () => {
-    const nombre = prompt("Nombre del evento", fechaHoyTexto());
-    if (nombre === null) return;  // canceló
-    nuevaReunion(nombre.trim() || fechaHoyTexto());
-  };
+  if (est.esDirector){
+    acc.innerHTML = `<button id="btn-nueva-reunion">+ Nuevo evento</button>`;
+    cont.appendChild(acc);
+    $("btn-nueva-reunion").onclick = () => {
+      const nombre = prompt("Nombre del evento", fechaHoyTexto());
+      if (nombre === null) return;  // canceló
+      nuevaReunion(nombre.trim() || fechaHoyTexto());
+    };
+  }
 
   if (!est.guardadas.length){
     cont.insertAdjacentHTML("beforeend", `<div class="vacio">
@@ -1836,9 +1843,9 @@ function pintarGuardadas(){
         <div class="fila-nombre">${escapar(r.nombre || "Sin nombre")}${activa ? `<span class="chip-activa">Activa</span>` : ""}</div>
         <div class="fila-meta">${fechaHoraTexto(r.fechaReunion || r.creada)} · ${r.ids.length} canción${r.ids.length === 1 ? "" : "es"}</div>
       </button>
-      <button class="btn-icono editar" title="Cambiar nombre y fecha">✎</button>
+      ${est.esDirector ? `<button class="btn-icono editar" title="Cambiar nombre y fecha">✎</button>
       <button class="btn-icono copiar" title="Copiar este evento">📋</button>
-      ${est.esDirector ? `<button class="btn-icono borrar" title="${activa ? "No se puede borrar el evento activo" : "Borrar este evento"}"${activa ? " disabled" : ""}>✕</button>` : ""}`;
+      <button class="btn-icono borrar" title="${activa ? "No se puede borrar el evento activo" : "Borrar este evento"}"${activa ? " disabled" : ""}>✕</button>` : ""}`;
     /* Tocar el nombre activa la reunión (si no lo era ya) y lleva directo
        a la pestaña Reunión: hace de "Usar esta", sin ocupar un botón
        aparte en cada fila. */
@@ -1847,9 +1854,14 @@ function pintarGuardadas(){
       est.pestana = "reunion";
       pintar();
     };
-    fila.querySelector(".editar").onclick = () => abrirEditarReunion(r);
-    fila.querySelector(".copiar").onclick = () => abrirCopiarReunion(r);
-    if (est.esDirector && !activa) fila.querySelector(".borrar").onclick = () => borrarReunion(r);
+    if (est.esDirector){
+      const editar = fila.querySelector(".editar");
+      const copiar = fila.querySelector(".copiar");
+      const borrar = fila.querySelector(".borrar");
+      if (editar) editar.onclick = () => abrirEditarReunion(r);
+      if (copiar) copiar.onclick = () => abrirCopiarReunion(r);
+      if (borrar && !activa) borrar.onclick = () => borrarReunion(r);
+    }
     cont.appendChild(fila);
   });
 }
@@ -1861,6 +1873,7 @@ function pintarGuardadas(){
    listener, así que un borrado real también se nota en el momento en
    los demás dispositivos. */
 async function borrarReunion(r){
+  if (!est.esDirector) return flotar("Solo directores pueden borrar eventos");
   if (!confirm(`¿Borrar el evento "${r.nombre || "Sin nombre"}" del historial? No se puede deshacer.`)) return;
   if (!HAY_NUBE){ flotar("Sin conexión: no se puede borrar"); return; }
   try{
@@ -1959,21 +1972,28 @@ function escapar(t){
    Cada una toca el estado, redibuja y recién después guarda: la
    pantalla responde al toque sin esperar la red.
    =================================================================== */
-function alternarEnLista(id){
+async function alternarEnLista(id){
+  if (!est.esDirector) return flotar("Solo directores pueden modificar eventos");
   /* Si todavía no hay reunión activa (primer + de la reunión de hoy), se
      crea sola con la fecha de hoy como nombre. */
   const esNueva = !est.lista.id;
   if (esNueva){
     const ahora = Date.now();
-    est.lista = { id: generarIdReunion(), ids:[], porQuien:"", cuando:ahora, nombre: fechaHoyTexto(), semis:{}, fechaReunion:ahora };
+    est.lista = { id: generarIdReunion(), ids:[], porQuien:"", cuando:ahora, nombre: fechaHoyTexto(), semis:{}, fechaReunion:ahora, directoresLatido:{} };
   }
 
   const i = est.lista.ids.indexOf(id);
   if (i >= 0){ est.lista.ids.splice(i,1); flotar("Sacada del evento"); }
   else { est.lista.ids.push(id); flotar("Sumada al evento"); }
   pintar();
-  if (esNueva) crearReunion(est.lista.id, est.lista.nombre, est.lista.ids, est.lista.semis, est.lista.fechaReunion);
-  else guardarLista();
+  if (esNueva){
+    await crearReunion(est.lista.id, est.lista.nombre, est.lista.ids, est.lista.semis, est.lista.fechaReunion);
+    /* Fija el evento nuevo como el actual y empieza latido */
+    guardarEventoLocal(est.lista.id);
+    if (est.esDirector) iniciarLatido(est.lista.id);
+  } else {
+    guardarLista();
+  }
 }
 function quitar(id){
   const s = PORID[id];
@@ -2061,7 +2081,8 @@ function soltarArrastre(){
   }
 }
 function vaciar(){
-  if (!confirm("¿Vaciar la lista del evento? Se borra también para el resto del grupo.")) return;
+  if (!est.esDirector) return flotar("Solo directores pueden vaciar eventos");
+  if (!confirm("¿Vaciar la lista de este evento? Cualquiera que lo tenga elegido lo va a ver vacío.")) return;
   est.lista.ids = [];
   pintar(); guardarLista();
 }
@@ -2370,6 +2391,7 @@ function transportarEditor(delta){
 }
 
 async function guardarEditor(){
+  if (!est.esDirector) return flotar("Solo directores pueden editar canciones");
   const nombre = $("ed-nombre").value.trim();
   const tono = $("ed-tono").value.trim();
   const bpmTxt = $("ed-bpm").value.trim();
@@ -2412,6 +2434,7 @@ async function guardarEditor(){
 }
 
 async function borrarCancion(){
+  if (!est.esDirector) return flotar("Solo directores pueden borrar canciones");
   const id = est.editando;
   const s = PORID[id];
   if (!s) return;
@@ -2454,7 +2477,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v100",
+    origen: "cancionero v103",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
@@ -2541,6 +2564,9 @@ document.addEventListener("fullscreenchange", () => {
   $("expandir").classList.toggle("activo", activo);
   $("expandir").textContent = activo ? "⛶" : "⛶";
 });
+
+/* Cambiar rol desde el indicador en la barra */
+$("rol-btn").onclick = mostrarPantallaRol;
 
 /* Teclado: cómodo si alguien lo abre en la compu del ensayo */
 document.addEventListener("keydown", e => {
