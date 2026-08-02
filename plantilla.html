@@ -996,7 +996,6 @@ function escucharReunionActiva(id){
    Historial, Evento, o una canción abierta por cuenta propia) sigue
    navegándose libre, sin que el director interrumpa nada fuera de esa
    pestaña. */
-let ultimoBroadcastDirector = null;  // lo último que transmitió el director, o null si no hay nadie dirigiendo
 
 async function alternarDirector(){
   est.esDirector = !est.esDirector;
@@ -1025,39 +1024,6 @@ async function alternarDirector(){
   }catch(e){
     console.error("No se pudo actualizar directores activos:", e);
   }
-}
-
-let directoresActivos = 0;  // cuántos dispositivos tienen el chip Director prendido ahora
-
-function escucharDirector(){
-  if (!HAY_NUBE) return;
-  fs.onSnapshot(fs.doc(db, "cancionero", "directorEnVivo"), snap => {
-    const d = snap.data();
-    const nuevo = (d && d.directores) || 0;
-    if (nuevo !== directoresActivos){
-      directoresActivos = nuevo;
-      if (est.pestana === "reunion") pintar();  // refresca el número en el chip Director
-    }
-    const hayDirector = directoresActivos > 0;
-    if (!hayDirector){
-      ultimoBroadcastDirector = null;
-      if (est.soloLectura) cerrarVistaOnline();
-      else if (est.pestana === "online") pintarOnline();
-      return;
-    }
-    if (!d.cancionId) return;
-    ultimoBroadcastDirector = d;
-    if (est.soloLectura) mostrarVistaOnline(d);        // ya la está mirando: se actualiza sola
-    else if (est.pestana === "online") pintarOnline(); // está en la pestaña: la abre
-    else{
-      /* Estos dos no se pisan: la pestaña Evento (de fondo) y el lector
-         (una tapa arriba) pueden estar los dos activos a la vez. */
-      if (est.pestana === "reunion") pintar();  // aparece/desaparece "Ver Online" en el pie
-      if (est.abierta) pintarLector();          // refresca el botón O si hay una canción abierta
-    }
-  }, e => {
-    console.error("Error escuchando al director:", e);
-  });
 }
 
 /* Cierra la vista en vivo porque dejó de haber director (no porque el
@@ -1153,7 +1119,7 @@ async function transmitirEstado(){
    transmitida, transportarla es sólo mirar: no dispara nada, para no
    arrancar una transmisión por accidente al tocar ♭/♯. */
 function retransmitirSiYaEstaEnVivo(){
-  if (ultimoBroadcastDirector && ultimoBroadcastDirector.cancionId === est.abierta) transmitirEstado();
+  if (est.lista.enVivo && est.lista.enVivo.cancionId === est.abierta) transmitirEstado();
 }
 
 /* Id nuevo para una reunión: si hay conexión, lo genera Firestore (así no
@@ -1694,7 +1660,7 @@ function pintarReunion(){
         : `Todavía no la armó el director.`}
       Lo que armes acá lo ve todo el grupo.</div>`;
     pie.style.display = "flex";
-    const hayTransmisionVacia = directoresActivos > 0 && !!ultimoBroadcastDirector;
+    const hayTransmisionVacia = hayDirectorActivo(est.lista) && !!est.lista.enVivo;
     pie.innerHTML = `<button class="btn btn-fuerte" id="agregar-btn"${est.esDirector ? "" : " disabled"}>+ Agregar canciones</button>`
       + (hayTransmisionVacia ? `<button class="btn btn-vivo" id="ver-vivo-evento">Online</button>` : "");
     if (est.esDirector) $("agregar-btn").onclick = abrirAgregar;
@@ -1710,15 +1676,6 @@ function pintarReunion(){
     <div class="fila-nombre">${escapar(est.lista.nombre || "Sin nombre")}</div>
     <div class="fila-meta">${fechaHoraTexto(est.lista.fechaReunion || est.lista.cuando || Date.now())}</div>`;
   cont.appendChild(info);
-
-  /* Ser director se decide acá, manejando el evento. Modo Online (ver lo
-     que transmite el director) vive en su propia pestaña, no acá. */
-  const online = document.createElement("div");
-  online.className = "orden-fila";
-  online.innerHTML = `<button class="orden-btn" id="chip-director">Director${directoresActivos > 0 ? ` (${directoresActivos})` : ""}</button>`;
-  cont.appendChild(online);
-  $("chip-director").classList.toggle("activo", est.esDirector);
-  $("chip-director").onclick = alternarDirector;
 
   est.lista.ids.forEach((id, i) => {
     const s = PORID[id];
@@ -1764,19 +1721,23 @@ function pintarReunion(){
      canción, desde ahí se transmite con el botón O). Si no hay
      transmisión y no se es director, "Offline": no hay nada para
      empezar, apagado. */
-  const hayTransmision = directoresActivos > 0 && !!ultimoBroadcastDirector;
+  const hayTransmision = hayDirectorActivo(est.lista) && !!est.lista.enVivo;
   const primerBoton = hayTransmision
     ? `<button class="btn btn-vivo" id="primer-btn">Online</button>`
     : est.esDirector
       ? `<button class="btn btn-fuerte" id="primer-btn">Transmitir</button>`
       : `<button class="btn" id="primer-btn" disabled>Offline</button>`;
-  pie.innerHTML = primerBoton
-    + `<button class="btn" id="agregar-btn"${est.esDirector ? "" : " disabled"}>+ Agregar</button>
-       <button class="btn${est.reordenando ? " on" : ""}" id="reordenar-btn"${est.esDirector ? "" : " disabled"}>Reordenar</button>`;
+  const botonesDirector = est.esDirector
+    ? `<button class="btn" id="agregar-btn">+ Agregar</button>
+       <button class="btn${est.reordenando ? " on" : ""}" id="reordenar-btn">Reordenar</button>`
+    : "";
+  pie.innerHTML = primerBoton + botonesDirector;
   if (hayTransmision) $("primer-btn").onclick = () => { est.pestana = "online"; pintar(); };
   else if (est.esDirector) $("primer-btn").onclick = transmitirDesdeElPrincipio;
-  if (est.esDirector) $("agregar-btn").onclick = abrirAgregar;
-  if (est.esDirector) $("reordenar-btn").onclick = () => { est.reordenando = !est.reordenando; pintarReunion(); };
+  if (est.esDirector){
+    if ($("agregar-btn")) $("agregar-btn").onclick = abrirAgregar;
+    if ($("reordenar-btn")) $("reordenar-btn").onclick = () => { est.reordenando = !est.reordenando; pintarReunion(); };
+  }
 }
 
 /* --- Panel "Agregar canciones" ----------------------------------------
@@ -1929,7 +1890,7 @@ async function borrarReunion(r){
    diciendo "vacío" si en realidad sigue habiendo transmisión. */
 function fondoOnline(){
   $("pie").style.display = "none";
-  const d = ultimoBroadcastDirector;
+  const d = est.lista.enVivo;
   const s = d ? PORID[d.cancionId] : null;
 
   if (!s){
@@ -1955,7 +1916,7 @@ function fondoOnline(){
    hace falta ningún botón de "activar"). */
 function pintarOnline(){
   fondoOnline();
-  const d = ultimoBroadcastDirector;
+  const d = est.lista.enVivo;
   const s = d ? PORID[d.cancionId] : null;
   if (s) mostrarVistaOnline(d);
 }
@@ -2244,7 +2205,7 @@ function pintarLector(){
      (para poder transmitirla a propósito) y para cualquiera que esté en
      la vista en vivo (ahí, sólo como indicador). Verde cuando la
      canción que se ve es justo la que está en vivo. */
-  const enVivo = !!(ultimoBroadcastDirector && ultimoBroadcastDirector.cancionId === est.abierta);
+  const enVivo = !!(est.lista.enVivo && est.lista.enVivo.cancionId === est.abierta);
   const mostrarOnline = (est.esDirector && est.enReunion) || est.soloLectura;
   $("online-badge").style.display = mostrarOnline ? "" : "none";
   $("online-badge").classList.toggle("en-vivo", enVivo);
