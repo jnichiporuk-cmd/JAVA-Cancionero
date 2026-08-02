@@ -422,12 +422,10 @@ input{font-family:inherit;font-size:inherit}
     <button class="pestana" id="tab-online">Online</button>
   </div>
   <div class="buscador" id="caja-buscador">
-    <input id="buscar" type="search" placeholder="Buscar por nombre, tono o letra" autocomplete="off">
+    <input id="buscar" type="search" placeholder="Buscar..." autocomplete="off">
   </div>
-  <div class="orden-fila" id="caja-orden">
-    <button class="orden-btn" data-orden="nombre">Nombre</button>
-    <button class="orden-btn" data-orden="tono">Tono</button>
-    <button class="orden-btn" data-orden="bpm">BPM</button>
+  <div class="orden-fila" id="caja-orden" style="justify-content: center; color: var(--tenue); font-size: 0.9em;">
+    Busca por título, letra, tono o BPM
   </div>
   <div class="buscador" id="caja-buscador-guardadas" style="display:none">
     <input id="bg-buscar" type="search" placeholder="Buscar por nombre" autocomplete="off">
@@ -1590,10 +1588,6 @@ function pintarCatalogo(){
   cont.innerHTML = "";
   $("pie").style.display = "none";
 
-  $("caja-orden").querySelectorAll(".orden-btn").forEach(b => {
-    b.classList.toggle("activo", b.dataset.orden === est.orden);
-  });
-
   /* Nueva canción y exportar. "Exportar" sólo aparece si hay algo que
      exportar, así no ocupa lugar cuando no hace falta. */
   const acc = document.createElement("div");
@@ -2507,10 +2501,6 @@ $("tab-guardadas").onclick  = () => { est.pestana = "guardadas"; pintar(); };
 $("tab-online").onclick     = () => { est.pestana = "online"; pintar(); };
 $("buscar").oninput = e => { est.filtro = e.target.value; pintarCatalogo(); };
 $("bg-buscar").oninput = e => { est.filtroGuardadas = e.target.value; pintarGuardadas(); };
-$("caja-orden").querySelectorAll(".orden-btn").forEach(b => {
-  b.onclick = () => { est.orden = b.dataset.orden; guardarAjustes(); pintarCatalogo(); };
-});
-
 $("cerrar").onclick = cerrarLector;
 $("expandir-lector").onclick = alternarPantallaCompleta;
 
