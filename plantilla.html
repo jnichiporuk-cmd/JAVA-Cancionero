@@ -243,9 +243,8 @@ input{font-family:inherit;font-size:inherit}
   margin-left:auto;display:flex;align-items:center;justify-content:center;
 }
 .fila-baja .rol-btn-lector{
-  display:flex;align-items:center;justify-content:center;height:30px;
-  cursor:pointer;padding:0 8px;font-size:13px;font-weight:700;color:var(--tenue);
-  background:transparent;border:none;
+  flex:none;width:30px;height:30px;border:1px solid var(--borde);border-radius:7px;
+  font-size:13px;font-weight:700;color:var(--tenue);display:flex;align-items:center;justify-content:center;
 }
 
 /* .lector-barra/.lector-tit/.lector-nombre: la cabecera "arrow + título
@@ -958,7 +957,6 @@ function escucharReunionActiva(id){
   }
   cancelarEscuchaActiva = fs.onSnapshot(fs.doc(db, "reuniones", id), snap => {
     const d = snap.data();
-    console.log("snapshot reunión:", id, "enVivo:", d?.enVivo);
     if (d){
       est.lista = {
         id, ids: d.ids || [], porQuien: d.porQuien || "",
@@ -967,14 +965,10 @@ function escucharReunionActiva(id){
         enVivo: d.enVivo || null,
         directoresLatido: d.directoresLatido || {},
       };
-      console.log("est.lista.enVivo actualizado:", est.lista.enVivo);
       pintar();
       /* Si estamos viendo una canción, refrescar el lector para que se
          actualice el botón O (indicador de transmisión) */
-      if (est.abierta){
-        console.log("refrescando lector, est.abierta:", est.abierta);
-        pintarLector();
-      }
+      if (est.abierta) pintarLector();
       /* Si cambió la transmisión en vivo, actualiza la pestaña Online
          si estamos mirándola o en vista de sólo lectura. */
       if (est.pestana === "online" || est.soloLectura){
@@ -1059,10 +1053,8 @@ async function vaciarTransmision(){
    (soloLectura) para que se vea igual que Online, pero sin apagarle
    ningún control: sigue siendo director, sigue con todo disponible. */
 function transmitirDesdeElPrincipio(){
-  console.log("transmitirDesdeElPrincipio() ejecutada");
-  if (!est.lista.ids.length){ console.log("lista vacía"); return; }
+  if (!est.lista.ids.length) return;
   const id = est.lista.ids[0];
-  console.log("abriendo canción:", id);
   est.posicion = 0;
   est.abierta = id;
   est.enReunion = true;
@@ -1074,7 +1066,6 @@ function transmitirDesdeElPrincipio(){
   reiniciarColapsoTope();
   pintarLector();
   transmitirEstado();
-  console.log("transmitirDesdeElPrincipio() completada");
 }
 
 function mostrarVistaOnline(d){
@@ -2211,11 +2202,9 @@ function pintarLector(){
      la vista en vivo (ahí, sólo como indicador). Verde cuando la
      canción que se ve es justo la que está en vivo. */
   const enVivo = !!(est.lista.enVivo && est.lista.enVivo.cancionId === est.abierta);
-  console.log("pintarLector: enVivo=", enVivo, "est.lista.enVivo=", est.lista.enVivo, "est.abierta=", est.abierta);
   const mostrarOnline = (est.esDirector && est.enReunion) || est.soloLectura;
   $("online-badge").style.display = mostrarOnline ? "" : "none";
   $("online-badge").classList.toggle("en-vivo", enVivo);
-  console.log("online-badge clases:", $("online-badge").className);
   $("online-badge").disabled = !est.esDirector;
   $("online-badge").title = est.esDirector
     ? (enVivo ? "Se está transmitiendo esta canción" : "Transmitir esta canción")
