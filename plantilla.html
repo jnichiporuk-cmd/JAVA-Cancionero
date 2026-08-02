@@ -448,6 +448,7 @@ input{font-family:inherit;font-size:inherit}
     <div class="fila-baja">
       <button class="cerrar" id="cerrar" title="Volver">←</button>
       <div class="riel" id="riel"></div>
+      <button class="rol-btn-lector" id="rol-btn-lector" title="Cambiar rol" style="flex:none;padding:6px 10px;font-size:12px;border:1px solid var(--borde);border-radius:4px;color:var(--tenue);background:transparent;cursor:pointer">Músico</button>
       <button class="expandir" id="expandir-lector" title="Pantalla completa" style="flex:none">⛶</button>
     </div>
     <div class="ctrl-fila">
@@ -1550,7 +1551,9 @@ function flotar(msg){
    =================================================================== */
 function pintar(){
   /* actualizar indicador de rol en la barra */
-  $("rol-btn").textContent = est.esDirector ? "Director" : "Músico";
+  const rolTexto = est.esDirector ? "Director" : "Músico";
+  $("rol-btn").textContent = rolTexto;
+  if ($("rol-btn-lector")) $("rol-btn-lector").textContent = rolTexto;
 
   /* contador de la pestaña Reunión */
   const n = est.lista.ids.length;
@@ -2566,6 +2569,7 @@ document.addEventListener("fullscreenchange", () => {
 
 /* Cambiar rol desde el indicador en la barra */
 $("rol-btn").onclick = mostrarPantallaRol;
+$("rol-btn-lector").onclick = mostrarPantallaRol;
 
 /* Teclado: cómodo si alguien lo abre en la compu del ensayo */
 document.addEventListener("keydown", e => {
