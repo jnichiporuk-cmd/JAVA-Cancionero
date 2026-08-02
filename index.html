@@ -218,6 +218,7 @@ input{font-family:inherit;font-size:inherit}
 }
 .lector.abierto{display:flex}
 #bienvenida.abierto{z-index:50}
+#editor.abierto{z-index:60}
 
 /* La flecha, el riel y los botones se esconden juntos, animado, al
    scrollear; reaparecen al volver arriba del todo. El título de la
@@ -434,7 +435,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v184</span></div>
+    <div class="marca">Cancionero <span class="ver">v186</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -2560,7 +2561,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v184",
+    origen: "cancionero v186",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
