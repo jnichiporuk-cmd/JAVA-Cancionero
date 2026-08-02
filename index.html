@@ -288,7 +288,7 @@ input{font-family:inherit;font-size:inherit}
   font-size:13px;font-weight:700;color:var(--tenue);
   display:flex;align-items:center;justify-content:center;flex:none;
 }
-.online-badge.en-vivo{border-color:#3DD68C;color:#3DD68C}
+.online-badge.en-vivo{border-color:#3DD68C!important;color:#3DD68C!important}
 
 /* Riel de la reunión: sólo visible cuando entrás por "Empezar" */
 .riel{display:none;flex:1;min-width:0;gap:6px;overflow-x:auto;scrollbar-width:none}
@@ -429,7 +429,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v150</span></div>
+    <div class="marca">Cancionero <span class="ver">v151</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -2489,7 +2489,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v150",
+    origen: "cancionero v151",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
