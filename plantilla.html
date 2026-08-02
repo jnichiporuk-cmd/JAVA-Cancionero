@@ -76,7 +76,7 @@ input{font-family:inherit;font-size:inherit}
   display:flex;align-items:center;justify-content:center;cursor:pointer;
 }
 .expandir.activo{color:var(--acordes);border-color:var(--acordes)}
-.rol-btn, .rol-btn-lector{
+.rol-btn{
   flex:none;height:30px;border:1px solid var(--borde);border-radius:7px;
   color:var(--tenue);font-size:13px;font-weight:700;background:transparent;
   cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0 8px;
@@ -235,7 +235,7 @@ input{font-family:inherit;font-size:inherit}
 /* Flecha de volver + riel con el número de canción, arriba del todo. */
 .fila-baja{display:flex;align-items:center;gap:8px;padding:11px 12px 10px}
 .cerrar{flex:none;width:32px;height:30px;font-size:20px;color:var(--tenue);display:flex;align-items:center;justify-content:center}
-.fila-baja button:not(.cerrar):not(.expandir):not(.rol-btn-lector){
+.fila-baja button:not(.cerrar):not(.expandir):not(.rol-btn){
   width:30px;height:30px;border:1px solid var(--borde);border-radius:7px;
   font-size:13px;font-weight:700;color:var(--tenue);display:flex;align-items:center;justify-content:center;
 }
@@ -469,7 +469,7 @@ input{font-family:inherit;font-size:inherit}
       <button id="editar" title="Editar la canción">✎</button>
       <div style="flex:1"></div>
       <button class="expandir" id="expandir-lector" title="Pantalla completa" style="flex:none">⛶</button>
-      <button class="rol-btn-lector" id="rol-btn-lector" title="Cambiar rol" style="flex:none">Músico</button>
+      <button class="rol-btn" id="rol-btn-lector" title="Cambiar rol" style="flex:none">Músico</button>
     </div>
     <div class="ctrl-fila">
       <div class="riel" id="riel"></div>
