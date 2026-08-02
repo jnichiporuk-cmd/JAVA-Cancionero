@@ -426,7 +426,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v138</span></div>
+    <div class="marca">Cancionero <span class="ver">v139</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -2464,7 +2464,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v138",
+    origen: "cancionero v139",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
@@ -2631,7 +2631,13 @@ function fijarRol(esDirector){
   if (esCelular()){
     try{ document.documentElement.requestFullscreen(); }catch(e){}
   }
-  continuarArranque();
+  /* Si estamos en el primer arranque, continuar con la inicialización.
+     Si ya estamos en sesión (hay una canción abierta), solo refrescar la UI. */
+  if (est.abierta){
+    pintarLector();  // solo refrescar la vista actual
+  } else {
+    continuarArranque();  // primer arranque
+  }
 }
 
 function esCelular(){

@@ -2631,7 +2631,13 @@ function fijarRol(esDirector){
   if (esCelular()){
     try{ document.documentElement.requestFullscreen(); }catch(e){}
   }
-  continuarArranque();
+  /* Si estamos en el primer arranque, continuar con la inicialización.
+     Si ya estamos en sesión (hay una canción abierta), solo refrescar la UI. */
+  if (est.abierta){
+    pintarLector();  // solo refrescar la vista actual
+  } else {
+    continuarArranque();  // primer arranque
+  }
 }
 
 function esCelular(){
