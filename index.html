@@ -410,7 +410,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v99</span></div>
+    <div class="marca">Cancionero <span class="ver">v100</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
   </div>
@@ -1190,15 +1190,15 @@ async function guardarLista(){
    defecto arranca en el momento de la creación, pero es un dato aparte
    de "creada" (que sólo sirve para ordenar por "Recientes"). */
 async function crearReunion(id, nombre, ids, semis, fechaReunion){
+  if (!est.esDirector) return;  // sólo directores crean eventos
   if (!HAY_NUBE){ flotar("Sin conexión: el evento no se comparte"); return; }
   marcarSync("escribiendo", "guardando");
   try{
     await fs.setDoc(fs.doc(db, "reuniones", id), {
-      nombre, ids, semis: semis || {}, porQuien: "",
+      nombre, ids, semis: semis || {}, porQuien: "", directoresLatido:{},
       creada: Date.now(), actualizada: Date.now(),
       fechaReunion: fechaReunion || Date.now(),
     });
-    await fs.setDoc(fs.doc(db, "cancionero", "activa"), { reunionActivaId: id });
     marcarSync("ok", "al día");
   }catch(e){
     console.error("No se pudo crear la reunión:", e);
@@ -1207,32 +1207,26 @@ async function crearReunion(id, nombre, ids, semis, fechaReunion){
   }
 }
 
-/* --- Cambiar cuál es la reunión activa --------------------------------
-   Se actualiza el estado local al toque, sin esperar la nube: se conoce
-   el contenido de sobra porque ya está en est.guardadas. */
+/* --- Cambiar cuál es el evento que este dispositivo está mirando -------
+   Se actualiza el estado local al toque, sin tocar la nube (es una
+   elección local de qué evento ver). Llamada por usarReunion desde
+   Guardadas. */
 async function usarReunion(r){
-  est.lista = {
-    id: r.id, ids: r.ids.slice(), porQuien: r.porQuien || "",
-    cuando: r.actualizada || r.creada || 0, nombre: r.nombre || "",
-    semis: { ...(r.semis || {}) }, fechaReunion: r.fechaReunion || r.creada || 0,
-  };
-  pintar();
-  if (!HAY_NUBE){ flotar("Sin conexión: el cambio no se comparte"); return; }
-  try{
-    await fs.setDoc(fs.doc(db, "cancionero", "activa"), { reunionActivaId: r.id });
-  }catch(e){
-    console.error("No se pudo cambiar la reunión activa:", e);
-    flotar("No se pudo cambiar el evento activo");
-  }
+  /* Llama a fijarEventoLocal, que maneja el aviso si estás transmitiendo */
+  await fijarEventoLocal(r.id);
 }
 
 /* --- Crear una reunión vacía a propósito (botón de Guardadas) --------- */
-function nuevaReunion(nombre){
+async function nuevaReunion(nombre){
+  if (!est.esDirector) return;
   const id = generarIdReunion();
   const ahora = Date.now();
-  est.lista = { id, ids:[], porQuien:"", cuando:ahora, nombre, semis:{}, fechaReunion:ahora };
+  est.lista = { id, ids:[], porQuien:"", cuando:ahora, nombre, semis:{}, fechaReunion:ahora, directoresLatido:{} };
   pintar();
-  crearReunion(id, nombre, [], {}, ahora);
+  await crearReunion(id, nombre, [], {}, ahora);
+  /* Fija este evento como el actual de este dispositivo */
+  guardarEventoLocal(id);
+  if (est.esDirector) iniciarLatido(id);
 }
 
 /* --- Editar (nombre + fecha/hora) o copiar una reunión guardada -------
@@ -1286,7 +1280,7 @@ function cerrarEditarReunion(){
   copiandoDesdeReunion = null;
 }
 
-function guardarEditarReunion(){
+async function guardarEditarReunion(){
   const nombre = $("er-nombre").value.trim();
   if (!nombre) return flotar("Falta el nombre");
 
@@ -1300,14 +1294,18 @@ function guardarEditarReunion(){
   }
 
   if (copiandoDesdeReunion){
+    if (!est.esDirector) return flotar("Sólo directores pueden copiar eventos");
     const r = copiandoDesdeReunion;
     const id = generarIdReunion();
     const ids = r.ids.slice();
     const semis = { ...(r.semis || {}) };
-    est.lista = { id, ids, porQuien:"", cuando:Date.now(), nombre, semis, fechaReunion };
+    est.lista = { id, ids, porQuien:"", cuando:Date.now(), nombre, semis, fechaReunion, directoresLatido:{} };
     cerrarEditarReunion();
     pintar();
-    crearReunion(id, nombre, ids, semis, fechaReunion);
+    await crearReunion(id, nombre, ids, semis, fechaReunion);
+    /* Fija este nuevo evento como el actual de este dispositivo */
+    guardarEventoLocal(id);
+    if (est.esDirector) iniciarLatido(id);
     flotar("Evento copiado");
     return;
   }
@@ -2456,7 +2454,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v99",
+    origen: "cancionero v100",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
