@@ -424,7 +424,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v154</span></div>
+    <div class="marca">Cancionero <span class="ver">v155</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -1028,7 +1028,7 @@ async function vaciarTransmision(){
   try{
     await fs.updateDoc(fs.doc(db, "reuniones", est.lista.id), {
       directoresLatido: {},
-      enVivo: null,
+      enVivo: fs.deleteField(),
     });
     flotar("Transmisión vaciada");
   }catch(e){
@@ -2474,7 +2474,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v154",
+    origen: "cancionero v155",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);

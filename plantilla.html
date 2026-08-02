@@ -1028,7 +1028,7 @@ async function vaciarTransmision(){
   try{
     await fs.updateDoc(fs.doc(db, "reuniones", est.lista.id), {
       directoresLatido: {},
-      enVivo: null,
+      enVivo: fs.deleteField(),
     });
     flotar("Transmisión vaciada");
   }catch(e){
