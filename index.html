@@ -421,7 +421,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v131</span></div>
+    <div class="marca">Cancionero <span class="ver">v132</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -464,6 +464,7 @@ input{font-family:inherit;font-size:inherit}
       <button id="mas-a" title="Letra más grande">A+</button>
       <button id="vaciar-transmision" title="Vaciar la transmisión (por si quedó una canción vieja pegada)">⟲</button>
       <button id="editar" title="Editar la canción">✎</button>
+      <div style="flex:1"></div>
       <button class="expandir" id="expandir-lector" title="Pantalla completa" style="flex:none">⛶</button>
       <button class="rol-btn-lector" id="rol-btn-lector" title="Cambiar rol" style="flex:none">Músico</button>
     </div>
@@ -2458,7 +2459,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v131",
+    origen: "cancionero v132",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
