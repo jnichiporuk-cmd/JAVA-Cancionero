@@ -1082,6 +1082,30 @@ function mostrarVistaOnline(d){
 /* Se llama después de cada acción que cambia lo que se ve en modo
    reunión (abrir canción, pasar, transportar). Sin conexión o fuera de
    modo reunión, no hace nada. */
+async function activarTransmision(){
+  if (!est.esDirector || !est.enReunion || !est.abierta || !est.lista.id || !HAY_NUBE) return;
+  /* Activa la transmisión de la canción actual. Se usa cuando cambias de
+     canción mientras transmites (desde paso()) y desde transmitirEstado()
+     cuando se toca el botón y no está transmitiendo. */
+  est.lista.enVivo = {
+    cancionId: est.abierta,
+    semis: est.semis,
+    posicion: est.posicion,
+    cuando: Date.now(),
+  };
+  pintarLector();
+  try{
+    await fs.updateDoc(fs.doc(db, "reuniones", est.lista.id), {
+      "enVivo.cancionId": est.abierta,
+      "enVivo.semis": est.semis,
+      "enVivo.posicion": est.posicion,
+      "enVivo.cuando": Date.now(),
+    });
+  }catch(e){
+    console.error("No se pudo transmitir:", e);
+  }
+}
+
 async function transmitirEstado(){
   if (!est.esDirector || !est.enReunion || !est.abierta || !est.lista.id || !HAY_NUBE) return;
   /* Toggle: si ya se está transmitiendo esta canción, desactiva.
@@ -1100,24 +1124,8 @@ async function transmitirEstado(){
       console.error("No se pudo vaciar la transmisión:", e);
     }
   } else {
-    /* Activar: transmitir esta canción */
-    est.lista.enVivo = {
-      cancionId: est.abierta,
-      semis: est.semis,
-      posicion: est.posicion,
-      cuando: Date.now(),
-    };
-    pintarLector();
-    try{
-      await fs.updateDoc(fs.doc(db, "reuniones", est.lista.id), {
-        "enVivo.cancionId": est.abierta,
-        "enVivo.semis": est.semis,
-        "enVivo.posicion": est.posicion,
-        "enVivo.cuando": Date.now(),
-      });
-    }catch(e){
-      console.error("No se pudo transmitir:", e);
-    }
+    /* No está transmitiendo esta canción: activar */
+    await activarTransmision();
   }
 }
 
@@ -2325,20 +2333,10 @@ function paso(delta){
   est.posicion = j;
   est.abierta = est.lista.ids[j];
   est.semis = semisGuardado(est.abierta);
-  /* Si estaba transmitiendo, actualizar enVivo antes de pintar para que
-     el botón muestre "Online" correctamente. */
-  if (estabaTransmitiendo && est.esDirector){
-    est.lista.enVivo = {
-      cancionId: est.abierta,
-      semis: est.semis,
-      posicion: est.posicion,
-      cuando: Date.now(),
-    };
-  }
   $("cuerpo").scrollTop = 0;
   reiniciarColapsoTope();
   pintarLector();
-  if (estabaTransmitiendo && est.esDirector) transmitirEstado();
+  if (estabaTransmitiendo && est.esDirector) activarTransmision();
 }
 
 
