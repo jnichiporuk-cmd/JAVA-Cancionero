@@ -337,12 +337,20 @@ input{font-family:inherit;font-size:inherit}
   background:linear-gradient(to top,var(--fondo) 65%,transparent);
 }
 .lector-pie.visible.cerca-fin{display:flex}
+.siguiente-info{text-align:right}
 .siguiente-info:disabled{opacity:.6;cursor:default}
 .si-etiqueta{
   font-size:10px;letter-spacing:.14em;text-transform:uppercase;
   color:var(--tenue);margin-bottom:3px;
 }
 .si-fin{flex:1;padding:13px;text-align:center;color:var(--tenue);font-size:14px}
+.si-fin-derecha{flex:1;text-align:right;color:var(--tenue);font-size:14px}
+.btn-agregar-pie{
+  flex:none;padding:8px 12px;border-radius:8px;font-weight:700;font-size:14px;
+  background:#0066FF;color:#fff;border:none;
+}
+.btn-agregar-pie:disabled{opacity:.6;cursor:default}
+.btn-agregar-pie:hover:not(:disabled){background:#0055DD}
 
 /* ===================================================================
    EDITOR Y EXPORTACIÓN
@@ -435,7 +443,7 @@ input{font-family:inherit;font-size:inherit}
     <button class="pestana activa" id="tab-canciones">Canciones</button>
     <button class="pestana" id="tab-guardadas">Historial</button>
     <button class="pestana" id="tab-reunion">Evento<span class="cuenta" id="cuenta" style="display:none">0</span></button>
-    <button class="pestana" id="tab-online">Online</button>
+    <button class="pestana" id="tab-online">Transmisión</button>
   </div>
   <div class="buscador" id="caja-buscador">
     <input id="buscar" type="search" placeholder="Buscar por título, letra, tono o BPM" autocomplete="off">
@@ -544,7 +552,7 @@ input{font-family:inherit;font-size:inherit}
       <button id="ag-nueva" class="btn" title="Crear nueva canción">Nueva</button>
     </div>
     <div class="buscador">
-      <input id="ag-buscar" type="search" placeholder="Buscar por nombre o tono" autocomplete="off">
+      <input id="ag-buscar" type="search" placeholder="Buscar por título, letra, tono o BPM" autocomplete="off">
     </div>
   </div>
   <div class="agregar-lista" id="ag-lista"></div>
@@ -1261,6 +1269,14 @@ function abrirEditarReunion(r){
    original queda intacta; la copia es un documento nuevo y pasa a ser
    la activa. La fecha sugerida es la de hoy, no la de la original: es
    una reunión distinta, se ajusta en el mismo panel antes de guardar. */
+function abrirNuevaReunion(){
+  editandoReunion = null;
+  copiandoDesdeReunion = null;
+  $("er-titulo").textContent = "Nuevo evento";
+  llenarCamposReunion(fechaHoyTexto(), Date.now());
+  $("er-editar").classList.add("abierto");
+}
+
 function abrirCopiarReunion(r){
   copiandoDesdeReunion = r;
   editandoReunion = null;
@@ -1287,8 +1303,7 @@ async function guardarEditarReunion(){
   const nombre = $("er-nombre").value.trim();
   if (!nombre) return flotar("Falta el nombre");
 
-  const origen = copiandoDesdeReunion || editandoReunion;
-  let fechaReunion = origen.fechaReunion || origen.creada || Date.now();
+  let fechaReunion = Date.now();
   const fechaStr = $("er-fecha").value;   // aaaa-mm-dd
   if (fechaStr){
     const [anio, mes, dia] = fechaStr.split("-").map(Number);
@@ -1310,6 +1325,21 @@ async function guardarEditarReunion(){
     guardarEventoLocal(id);
     if (est.esDirector) iniciarLatido(id);
     flotar("Evento copiado");
+    return;
+  }
+
+  if (!editandoReunion){
+    /* Crear un evento nuevo vacío */
+    if (!est.esDirector) return flotar("Sólo directores pueden crear eventos");
+    const id = generarIdReunion();
+    est.lista = { id, ids:[], porQuien:"", cuando:Date.now(), nombre, semis:{}, fechaReunion, directoresLatido:{} };
+    cerrarEditarReunion();
+    pintar();
+    await crearReunion(id, nombre, [], {}, fechaReunion);
+    /* Fija este nuevo evento como el actual de este dispositivo */
+    guardarEventoLocal(id);
+    if (est.esDirector) iniciarLatido(id);
+    flotar("Evento creado");
     return;
   }
 
@@ -1824,11 +1854,7 @@ function pintarGuardadas(){
   if (est.esDirector){
     acc.innerHTML = `<button id="btn-nueva-reunion">+ Nuevo evento</button>`;
     cont.appendChild(acc);
-    $("btn-nueva-reunion").onclick = () => {
-      const nombre = prompt("Nombre del evento", fechaHoyTexto());
-      if (nombre === null) return;  // canceló
-      nuevaReunion(nombre.trim() || fechaHoyTexto());
-    };
+    $("btn-nueva-reunion").onclick = abrirNuevaReunion;
   }
 
   if (!est.guardadas.length){
@@ -2280,30 +2306,37 @@ function pintarLector(){
     });
   }
 
-  /* Tarjeta "Siguiente": bloqueado la deja ver (para saber qué sigue)
-     pero sin poder tocarla, ni el riel cambia sola de canción. */
+  /* Pie con botón "+ Agregar" (izquierda) e info de siguiente (derecha).
+     Si no hay siguiente, muestra "Última canción del evento". */
   pie.classList.toggle("visible", est.enReunion);
   if (est.enReunion){
     const idSig = est.lista.ids[est.posicion + 1];
     const sig = idSig ? PORID[idSig] : null;
+
+    // Botón "+ Agregar"
+    const btnAgregar = `<button class="btn-agregar-pie"${bloqueado ? " disabled" : ""}>+ Agregar</button>`;
+
+    // Info de siguiente o última canción
+    let infoSiguiente = "";
     if (sig){
-      pie.innerHTML = `<button class="btn siguiente-info"${bloqueado ? " disabled" : ""}>
+      infoSiguiente = `<button class="siguiente-info"${bloqueado ? " disabled" : ""}>
         <div class="si-etiqueta">Siguiente</div>
         <div class="fila-nombre">${escapar(sig.nombre)}</div>
         <div class="fila-meta">${metaDe(sig, semisGuardado(idSig))}</div>
       </button>`;
-      if (!bloqueado) pie.querySelector(".siguiente-info").onclick = () => paso(+1);
     } else {
-      if (bloqueado){
-        pie.innerHTML = `<div class="si-fin">Última canción del evento</div>`;
-      } else {
-        pie.innerHTML = `<div style="display:flex;flex-direction:column;gap:10px;width:100%;box-sizing:border-box">
-          <div class="si-fin">Última canción del evento</div>
-          <button class="btn-guardar" style="flex:1;width:100%;box-sizing:border-box">+ Agregar canción</button>
-        </div>`;
-        pie.querySelector(".btn-guardar").onclick = abrirAgregar;
-      }
+      infoSiguiente = `<div class="si-fin-derecha">Última canción del evento</div>`;
     }
+
+    pie.innerHTML = `<div style="display:flex;gap:12px;align-items:center;width:100%">${btnAgregar}<div style="flex:1;text-align:right">${infoSiguiente}</div></div>`;
+
+    // Event listeners
+    const btnAdd = pie.querySelector(".btn-agregar-pie");
+    if (btnAdd && !bloqueado) btnAdd.onclick = abrirAgregar;
+
+    const btnSig = pie.querySelector(".siguiente-info");
+    if (btnSig && !bloqueado) btnSig.onclick = () => paso(+1);
+
     actualizarPieCercaFin();
   }
 }
