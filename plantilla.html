@@ -957,7 +957,7 @@ function escucharReunionActiva(id){
         id, ids: d.ids || [], porQuien: d.porQuien || "",
         cuando: d.actualizada || d.creada || 0, nombre: d.nombre || "",
         semis: d.semis || {}, fechaReunion: d.fechaReunion || d.creada || 0,
-        enVivo: d.enVivo ?? est.lista?.enVivo ?? null,
+        enVivo: ('enVivo' in d) ? d.enVivo : null,
         directoresLatido: d.directoresLatido || {},
       };
       console.log("est.lista.enVivo actualizado:", est.lista.enVivo);
