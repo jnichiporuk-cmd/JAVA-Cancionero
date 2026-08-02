@@ -70,13 +70,17 @@ input{font-family:inherit;font-size:inherit}
   font-size:13px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
   color:var(--tenue);flex:1;
 }
-.expandir, .rol-btn, .rol-btn-lector{
+.expandir{
   flex:none;width:30px;height:30px;border-radius:7px;
   border:1px solid var(--borde);color:var(--tenue);font-size:14px;
   display:flex;align-items:center;justify-content:center;cursor:pointer;
-  background:transparent;padding:0;
 }
 .expandir.activo{color:var(--acordes);border-color:var(--acordes)}
+.rol-btn, .rol-btn-lector{
+  flex:none;padding:6px 10px;border-radius:7px;
+  border:1px solid var(--borde);color:var(--tenue);font-size:12px;
+  background:transparent;cursor:pointer;
+}
 .sync{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--tenue)}
 .punto{width:8px;height:8px;border-radius:50%;background:var(--tenue);flex:none}
 .punto.ok{background:#3DD68C}
@@ -417,10 +421,10 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v129</span></div>
+    <div class="marca">Cancionero <span class="ver">v130</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
-    <button class="rol-btn" id="rol-btn" title="Cambiar rol">Músico</button>
+    <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
   </div>
   <div class="pestanas">
     <button class="pestana activa" id="tab-canciones">Canciones</button>
@@ -461,7 +465,7 @@ input{font-family:inherit;font-size:inherit}
       <button id="vaciar-transmision" title="Vaciar la transmisión (por si quedó una canción vieja pegada)">⟲</button>
       <button id="editar" title="Editar la canción">✎</button>
       <button class="expandir" id="expandir-lector" title="Pantalla completa" style="flex:none">⛶</button>
-      <button class="rol-btn-lector" id="rol-btn-lector" title="Cambiar rol">Músico</button>
+      <button class="rol-btn-lector" id="rol-btn-lector" title="Cambiar rol" style="flex:none">Músico</button>
     </div>
     <div class="ctrl-fila">
       <div class="riel" id="riel"></div>
@@ -2454,7 +2458,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v129",
+    origen: "cancionero v130",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
