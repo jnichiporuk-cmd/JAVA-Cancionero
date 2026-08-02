@@ -967,6 +967,9 @@ function escucharReunionActiva(id){
         directoresLatido: d.directoresLatido || {},
       };
       pintar();
+      /* Si estamos viendo una canción, refrescar el lector para que se
+         actualice el botón O (indicador de transmisión) */
+      if (est.abierta) pintarLector();
       /* Si cambió la transmisión en vivo, actualiza la pestaña Online
          si estamos mirándola o en vista de sólo lectura. */
       if (est.pestana === "online" || est.soloLectura){
