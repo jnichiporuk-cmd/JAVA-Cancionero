@@ -2310,6 +2310,16 @@ function paso(delta){
   est.posicion = j;
   est.abierta = est.lista.ids[j];
   est.semis = semisGuardado(est.abierta);
+  /* Si estaba transmitiendo, actualizar enVivo antes de pintar para que
+     el botón muestre "Online" correctamente. */
+  if (estabaTransmitiendo && est.esDirector){
+    est.lista.enVivo = {
+      cancionId: est.abierta,
+      semis: est.semis,
+      posicion: est.posicion,
+      cuando: Date.now(),
+    };
+  }
   $("cuerpo").scrollTop = 0;
   reiniciarColapsoTope();
   pintarLector();
