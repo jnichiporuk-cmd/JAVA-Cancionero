@@ -410,7 +410,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v113</span></div>
+    <div class="marca">Cancionero <span class="ver">v115</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none;padding:6px 10px;font-size:12px;border:1px solid var(--borde);border-radius:4px;color:var(--tenue);background:transparent;cursor:pointer">Músico</button>
@@ -422,10 +422,7 @@ input{font-family:inherit;font-size:inherit}
     <button class="pestana" id="tab-online">Online</button>
   </div>
   <div class="buscador" id="caja-buscador">
-    <input id="buscar" type="search" placeholder="Buscar..." autocomplete="off">
-  </div>
-  <div class="orden-fila" id="caja-orden" style="justify-content: center; color: var(--tenue); font-size: 0.9em;">
-    Busca por título, letra, tono o BPM
+    <input id="buscar" type="search" placeholder="Título, letra, tono o BPM" autocomplete="off">
   </div>
   <div class="buscador" id="caja-buscador-guardadas" style="display:none">
     <input id="bg-buscar" type="search" placeholder="Buscar por nombre" autocomplete="off">
@@ -1555,7 +1552,6 @@ function pintar(){
   $("tab-guardadas").classList.toggle("activa", est.pestana === "guardadas");
   $("tab-online").classList.toggle("activa", est.pestana === "online");
   $("caja-buscador").style.display = est.pestana === "canciones" ? "block" : "none";
-  $("caja-orden").style.display = est.pestana === "canciones" ? "flex" : "none";
   $("caja-buscador-guardadas").style.display = est.pestana === "guardadas" ? "block" : "none";
 
   if (est.pestana === "canciones") pintarCatalogo();
@@ -2472,7 +2468,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v113",
+    origen: "cancionero v115",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
