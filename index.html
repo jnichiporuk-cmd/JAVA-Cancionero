@@ -429,7 +429,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v149</span></div>
+    <div class="marca">Cancionero <span class="ver">v150</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -2211,9 +2211,11 @@ function pintarLector(){
      la vista en vivo (ahí, sólo como indicador). Verde cuando la
      canción que se ve es justo la que está en vivo. */
   const enVivo = !!(est.lista.enVivo && est.lista.enVivo.cancionId === est.abierta);
+  console.log("pintarLector: enVivo=", enVivo, "est.lista.enVivo=", est.lista.enVivo, "est.abierta=", est.abierta);
   const mostrarOnline = (est.esDirector && est.enReunion) || est.soloLectura;
   $("online-badge").style.display = mostrarOnline ? "" : "none";
   $("online-badge").classList.toggle("en-vivo", enVivo);
+  console.log("online-badge clases:", $("online-badge").className);
   $("online-badge").disabled = !est.esDirector;
   $("online-badge").title = est.esDirector
     ? (enVivo ? "Se está transmitiendo esta canción" : "Transmitir esta canción")
@@ -2487,7 +2489,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v149",
+    origen: "cancionero v150",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
