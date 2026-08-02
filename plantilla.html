@@ -447,21 +447,19 @@ input{font-family:inherit;font-size:inherit}
   <div class="lector-tope" id="lector-tope">
     <div class="fila-baja">
       <button class="cerrar" id="cerrar" title="Volver">←</button>
-      <div class="riel" id="riel"></div>
+      <button class="online-badge" id="online-badge" title="Transmitir esta canción" style="display:none">O</button>
+      <button id="menos-t" title="Bajar medio tono">♭</button>
+      <button id="mas-t" title="Subir medio tono">♯</button>
+      <button id="menos-a" title="Letra más chica">A−</button>
+      <button id="mas-a" title="Letra más grande">A+</button>
+      <button id="dir-toggle" title="Ser director: lo que veas se transmite a la pestaña Online">D</button>
+      <button id="vaciar-transmision" title="Vaciar la transmisión (por si quedó una canción vieja pegada)">⟲</button>
+      <button id="editar" title="Editar la canción">✎</button>
       <button class="expandir" id="expandir-lector" title="Pantalla completa" style="flex:none">⛶</button>
       <button class="rol-btn-lector" id="rol-btn-lector" title="Cambiar rol" style="flex:none;padding:6px 10px;font-size:12px;border:1px solid var(--borde);border-radius:4px;color:var(--tenue);background:transparent;cursor:pointer">Músico</button>
     </div>
     <div class="ctrl-fila">
-      <div class="ctrl">
-        <button class="online-badge" id="online-badge" title="Transmitir esta canción" style="display:none">O</button>
-        <button id="menos-t" title="Bajar medio tono">♭</button>
-        <button id="mas-t" title="Subir medio tono">♯</button>
-        <button id="menos-a" title="Letra más chica">A−</button>
-        <button id="mas-a" title="Letra más grande">A+</button>
-        <button id="dir-toggle" title="Ser director: lo que veas se transmite a la pestaña Online">D</button>
-        <button id="vaciar-transmision" title="Vaciar la transmisión (por si quedó una canción vieja pegada)">⟲</button>
-        <button id="editar" title="Editar la canción">✎</button>
-      </div>
+      <div class="riel" id="riel"></div>
     </div>
   </div>
   <div class="cuerpo" id="cuerpo"></div>
