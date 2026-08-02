@@ -1112,15 +1112,20 @@ async function transmitirEstado(){
   const estaTransmitiendo = est.lista.enVivo?.cancionId === est.abierta;
   if (estaTransmitiendo){
     /* Desactivar: limpiar enVivo y directoresLatido */
+    console.log("Desactivando transmisión...");
     est.lista.enVivo = null;
     pintarLector();
     try{
+      console.log("Escribiendo a Firestore para desactivar...", { reunionId: est.lista.id });
       await fs.updateDoc(fs.doc(db, "reuniones", est.lista.id), {
         directoresLatido: {},
         enVivo: fs.deleteField(),
       });
+      console.log("Transmisión desactivada exitosamente en Firestore");
     }catch(e){
-      console.error("No se pudo vaciar la transmisión:", e);
+      console.error("No se pudo vaciar la transmisión:", e.message);
+      est.lista.enVivo = { cancionId: est.abierta, semis: est.semis, posicion: est.posicion, cuando: Date.now() };
+      pintarLector();
     }
   } else {
     /* No está transmitiendo esta canción: activar */
