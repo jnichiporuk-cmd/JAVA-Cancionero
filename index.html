@@ -410,7 +410,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v111</span></div>
+    <div class="marca">Cancionero <span class="ver">v112</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none;padding:6px 10px;font-size:12px;border:1px solid var(--borde);border-radius:4px;color:var(--tenue);background:transparent;cursor:pointer">Músico</button>
@@ -422,7 +422,7 @@ input{font-family:inherit;font-size:inherit}
     <button class="pestana" id="tab-online">Online</button>
   </div>
   <div class="buscador" id="caja-buscador">
-    <input id="buscar" type="search" placeholder="Buscar por nombre o tono" autocomplete="off">
+    <input id="buscar" type="search" placeholder="Buscar por nombre, tono o letra" autocomplete="off">
   </div>
   <div class="orden-fila" id="caja-orden">
     <button class="orden-btn" data-orden="nombre">Nombre</button>
@@ -1606,13 +1606,17 @@ function pintarCatalogo(){
   if (n) $("btn-exportar").onclick = abrirExportar;
 
   const q = est.filtro.trim().toLowerCase();
-  const encontradas = CATALOGO.filter(s =>
-    !q || s.nombre.toLowerCase().includes(q) || (s.tono || "").toLowerCase() === q
-  ).sort(COMPARADORES[est.orden]);
+  const encontradas = CATALOGO.filter(s => {
+    if (!q) return true;
+    if (s.nombre.toLowerCase().includes(q)) return true;
+    if ((s.tono || "").toLowerCase() === q) return true;
+    /* Buscar en la letra: cualquier bloque de tipo "l" que contenga el término */
+    return s.bloques.some(b => b.t === "l" && b.v.toLowerCase().includes(q));
+  }).sort(COMPARADORES[est.orden]);
 
   if (!encontradas.length){
     cont.insertAdjacentHTML("beforeend",
-      `<div class="vacio"><strong>Sin resultados</strong>Probá con parte del nombre, o con el tono (G, Bm).</div>`);
+      `<div class="vacio"><strong>Sin resultados</strong>Probá con parte del nombre, tono (G, Bm) o letra.</div>`);
     return;
   }
 
@@ -2474,7 +2478,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v111",
+    origen: "cancionero v112",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
