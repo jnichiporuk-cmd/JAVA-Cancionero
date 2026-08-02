@@ -422,7 +422,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v168</span></div>
+    <div class="marca">Cancionero <span class="ver">v169</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -1107,33 +1107,24 @@ async function activarTransmision(){
 
 async function transmitirEstado(){
   if (!est.esDirector || !est.enReunion || !est.abierta || !est.lista.id || !HAY_NUBE) return;
-  /* Toggle: si ya se está transmitiendo esta canción, desactiva.
-     Si no, activa la transmisión de esta canción. */
-  const estaTransmitiendo = est.lista.enVivo?.cancionId === est.abierta;
-  if (estaTransmitiendo){
-    /* Desactivar: limpiar enVivo y directoresLatido */
-    console.log("Desactivando transmisión...", { HAY_NUBE, reunionId: est.lista.id });
+  /* Toggle global: si hay transmisión activa, desactiva para todos.
+     Si no hay, activa la transmisión de esta canción. */
+  const hayTransmision = !!est.lista.enVivo;
+  if (hayTransmision){
+    /* Desactivar: limpiar enVivo */
     est.lista.enVivo = null;
     pintarLector();
-    if (!HAY_NUBE){
-      console.warn("No hay conexión a Firestore, no se puede desactivar en la nube");
-      return;
-    }
     try{
-      console.log("Escribiendo a Firestore para desactivar...", { reunionId: est.lista.id });
-      const ref = fs.doc(db, "reuniones", est.lista.id);
-      console.log("Referencia creada:", ref.path);
-      await fs.updateDoc(ref, {
+      await fs.updateDoc(fs.doc(db, "reuniones", est.lista.id), {
         enVivo: null,
       });
-      console.log("Transmisión desactivada exitosamente en Firestore");
     }catch(e){
-      console.error("No se pudo vaciar la transmisión:", e);
+      console.error("No se pudo desactivar la transmisión:", e);
       est.lista.enVivo = { cancionId: est.abierta, semis: est.semis, posicion: est.posicion, cuando: Date.now() };
       pintarLector();
     }
   } else {
-    /* No está transmitiendo esta canción: activar */
+    /* No hay transmisión: activar */
     await activarTransmision();
   }
 }
@@ -2531,7 +2522,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v168",
+    origen: "cancionero v169",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
