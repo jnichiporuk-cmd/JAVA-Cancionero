@@ -2254,9 +2254,9 @@ function pintarLector(){
       if (bloqueado){
         pie.innerHTML = `<div class="si-fin">Última canción del evento</div>`;
       } else {
-        pie.innerHTML = `<div style="display:flex;align-items:center;gap:15px;padding:15px;flex-wrap:wrap">
-          <div class="si-fin" style="flex:1;min-width:200px">Última canción del evento</div>
-          <button class="btn-guardar" style="flex:none">+ Agregar canción</button>
+        pie.innerHTML = `<div style="display:flex;flex-direction:column;gap:10px;padding:15px">
+          <div class="si-fin">Última canción del evento</div>
+          <button class="btn-guardar" style="width:100%">+ Agregar canción</button>
         </div>`;
         pie.querySelector(".btn-guardar").onclick = abrirAgregar;
       }
