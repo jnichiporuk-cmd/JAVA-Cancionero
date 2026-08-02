@@ -60,7 +60,7 @@ input{font-family:inherit;font-size:inherit}
   position:sticky;top:0;z-index:20;background:var(--fondo);
   border-bottom:1px solid var(--borde);
 }
-.tope-fila{display:flex;align-items:center;gap:10px;padding:12px 14px 8px}
+.tope-fila{display:flex;align-items:center;gap:8px;padding:11px 12px 10px}
 .ver{
   margin-left:6px;padding:1px 5px;border-radius:4px;
   background:var(--superficie-alta);color:var(--tenue);
@@ -421,7 +421,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v130</span></div>
+    <div class="marca">Cancionero <span class="ver">v131</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -2458,7 +2458,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v130",
+    origen: "cancionero v131",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
