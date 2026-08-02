@@ -958,6 +958,7 @@ function escucharReunionActiva(id){
   }
   cancelarEscuchaActiva = fs.onSnapshot(fs.doc(db, "reuniones", id), snap => {
     const d = snap.data();
+    console.log("snapshot reunión:", id, "enVivo:", d?.enVivo);
     if (d){
       est.lista = {
         id, ids: d.ids || [], porQuien: d.porQuien || "",
@@ -966,10 +967,14 @@ function escucharReunionActiva(id){
         enVivo: d.enVivo || null,
         directoresLatido: d.directoresLatido || {},
       };
+      console.log("est.lista.enVivo actualizado:", est.lista.enVivo);
       pintar();
       /* Si estamos viendo una canción, refrescar el lector para que se
          actualice el botón O (indicador de transmisión) */
-      if (est.abierta) pintarLector();
+      if (est.abierta){
+        console.log("refrescando lector, est.abierta:", est.abierta);
+        pintarLector();
+      }
       /* Si cambió la transmisión en vivo, actualiza la pestaña Online
          si estamos mirándola o en vista de sólo lectura. */
       if (est.pestana === "online" || est.soloLectura){
