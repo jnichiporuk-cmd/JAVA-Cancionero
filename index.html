@@ -232,15 +232,14 @@ input{font-family:inherit;font-size:inherit}
 }
 .lector-tope.oculta{max-height:0;border-bottom-width:0}
 
-/* Flecha de volver + riel con el número de canción, arriba del todo. */
+/* Controles de transporte y tamaño (la fila sin la flecha). */
 .fila-baja{display:flex;align-items:center;gap:8px;padding:11px 12px 10px}
-.cerrar{flex:none;width:32px;height:30px;font-size:20px;color:var(--tenue);display:flex;align-items:center;justify-content:center}
-.fila-baja button:not(.cerrar):not(.expandir):not(.rol-btn){
+.fila-baja button:not(.expandir):not(.rol-btn):not(.online-badge){
   width:30px;height:30px;border:1px solid var(--borde);border-radius:7px;
   font-size:13px;font-weight:700;color:var(--tenue);display:flex;align-items:center;justify-content:center;
 }
-.fila-baja .expandir{
-  margin-left:auto;display:flex;align-items:center;justify-content:center;
+.fila-baja #en-vivo-badge{
+  margin-left:auto;
 }
 
 /* .lector-barra/.lector-tit/.lector-nombre: la cabecera "arrow + título
@@ -265,7 +264,7 @@ input{font-family:inherit;font-size:inherit}
 .titulo-cancion .lector-meta{font-size:0.9em;color:var(--tenue)}
 
 /* Fila de controles (tamaño y transporte), debajo del riel. */
-.ctrl-fila{padding:0 12px 10px}
+.ctrl-fila{padding:0 12px 10px;display:flex;align-items:center;gap:8px}
 .ctrl{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
 .ctrl button{
   width:28px;height:31px;border:1px solid var(--borde);border-radius:7px;
@@ -274,14 +273,13 @@ input{font-family:inherit;font-size:inherit}
 }
 .ctrl button.on{color:var(--acordes);border-color:var(--acordes)}
 
-/* Botón/indicador "O": para el director, transmite esta canción a
-   propósito (apagado = no es la que está en vivo; verde = sí lo es).
-   Para quien sólo sigue, es un indicador fijo en verde. Mismo formato
-   que los botones de .ctrl (D, ♭, ♯...). */
+/* Botón/indicador de transmisión: para el director, transmite esta canción a
+   propósito (dice "Offline" = no es la que está en vivo; "Online" en verde = sí lo es).
+   Para quien sólo sigue, es un indicador fijo. */
 .online-badge{
-  width:28px;height:31px;border:1px solid var(--borde);border-radius:7px;
-  font-size:13px;font-weight:700;color:var(--tenue);
-  display:flex;align-items:center;justify-content:center;flex:none;
+  flex:none;height:30px;border:1px solid var(--borde);border-radius:7px;
+  color:var(--tenue);font-size:13px;font-weight:700;background:transparent;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0 8px;
 }
 .online-badge.en-vivo{border-color:#3DD68C!important;color:#3DD68C!important}
 
@@ -424,7 +422,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v155</span></div>
+    <div class="marca">Cancionero <span class="ver">v156</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -459,8 +457,6 @@ input{font-family:inherit;font-size:inherit}
 <div class="lector" id="lector">
   <div class="lector-tope" id="lector-tope">
     <div class="fila-baja">
-      <button class="cerrar" id="cerrar" title="Volver">←</button>
-      <button class="online-badge" id="online-badge" title="Transmitir esta canción" style="display:none">O</button>
       <button id="menos-t" title="Bajar medio tono">♭</button>
       <button id="mas-t" title="Subir medio tono">♯</button>
       <button id="menos-a" title="Letra más chica">A−</button>
@@ -468,10 +464,12 @@ input{font-family:inherit;font-size:inherit}
       <button id="vaciar-transmision" title="Vaciar la transmisión (por si quedó una canción vieja pegada)">⟲</button>
       <button id="editar" title="Editar la canción">✎</button>
       <div style="flex:1"></div>
+      <button class="online-badge" id="en-vivo-badge" title="Transmitir esta canción" style="display:none">Offline</button>
       <button class="expandir" id="expandir-lector" title="Pantalla completa" style="flex:none">⛶</button>
       <button class="rol-btn" id="rol-btn-lector" title="Cambiar rol" style="flex:none">Músico</button>
     </div>
     <div class="ctrl-fila">
+      <button class="cerrar" id="cerrar" title="Volver">←</button>
       <div class="riel" id="riel"></div>
     </div>
   </div>
@@ -1058,6 +1056,7 @@ function transmitirDesdeElPrincipio(){
   est.pestana = "online";
   est.semis = semisGuardado(id);
   $("lector").classList.add("abierto");
+  pedirPantallaCompletaSiCelular();
   $("cuerpo").scrollTop = 0;
   reiniciarColapsoTope();
   pintarLector();
@@ -1075,6 +1074,7 @@ function mostrarVistaOnline(d){
   const idx = est.lista.ids.indexOf(d.cancionId);
   est.posicion = idx >= 0 ? idx : 0;
   $("lector").classList.add("abierto");
+  pedirPantallaCompletaSiCelular();
   if (cambioCancion){ $("cuerpo").scrollTop = 0; reiniciarColapsoTope(); }
   pintarLector();
 }
@@ -2131,6 +2131,7 @@ function abrir(id, enReunion){
   est.soloLectura = false;  // abrir algo por cuenta propia siempre sale del modo sólo lectura
   est.semis = enReunion ? semisGuardado(id) : 0;
   $("lector").classList.add("abierto");
+  pedirPantallaCompletaSiCelular();
   $("cuerpo").scrollTop = 0;
   reiniciarColapsoTope();
   pintarLector();
@@ -2199,10 +2200,11 @@ function pintarLector(){
      canción que se ve es justo la que está en vivo. */
   const enVivo = !!(est.lista.enVivo && est.lista.enVivo.cancionId === est.abierta);
   const mostrarOnline = (est.esDirector && est.enReunion) || est.soloLectura;
-  $("online-badge").style.display = mostrarOnline ? "" : "none";
-  $("online-badge").classList.toggle("en-vivo", enVivo);
-  $("online-badge").disabled = !est.esDirector;
-  $("online-badge").title = est.esDirector
+  $("en-vivo-badge").style.display = mostrarOnline ? "" : "none";
+  $("en-vivo-badge").classList.toggle("en-vivo", enVivo);
+  $("en-vivo-badge").textContent = enVivo ? "Online" : "Offline";
+  $("en-vivo-badge").disabled = !est.esDirector;
+  $("en-vivo-badge").title = est.esDirector
     ? (enVivo ? "Se está transmitiendo esta canción" : "Transmitir esta canción")
     : "Vista Online: la ven todos los que estén siguiendo";
 
@@ -2474,7 +2476,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v155",
+    origen: "cancionero v156",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
@@ -2538,11 +2540,17 @@ $("menos-t").onclick = () => {
 $("mas-a").onclick   = () => { est.tamano = Math.min(30, est.tamano + 1); pintarLector(); guardarAjustes(); };
 $("menos-a").onclick = () => { est.tamano = Math.max(11, est.tamano - 1); pintarLector(); guardarAjustes(); };
 $("vaciar-transmision").onclick = vaciarTransmision;
-$("online-badge").onclick = () => { if (est.esDirector) transmitirEstado(); };
+$("en-vivo-badge").onclick = () => { if (est.esDirector) transmitirEstado(); };
 
 /* --- Pantalla completa ---------------------------------------------------
    Gana el alto que ocupan las barras del navegador o del visor. Puede no
    estar permitida según desde dónde se abra la app, así que se avisa. */
+function pedirPantallaCompletaSiCelular(){
+  if (!esCelular()) return;
+  if (document.fullscreenElement) return;
+  try{ document.documentElement.requestFullscreen(); }catch(e){}
+}
+
 async function alternarPantallaCompleta(){
   try{
     if (!document.fullscreenElement) await document.documentElement.requestFullscreen();
