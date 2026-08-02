@@ -229,7 +229,15 @@ input{font-family:inherit;font-size:inherit}
 /* Flecha de volver + riel con el número de canción, arriba del todo. */
 .fila-baja{display:flex;align-items:center;gap:8px;padding:11px 12px 10px}
 .cerrar{flex:none;width:32px;height:32px;font-size:20px;color:var(--tenue)}
+.fila-baja button:not(.cerrar):not(.expandir):not(.rol-btn-lector){
+  width:28px;height:31px;border:1px solid var(--borde);border-radius:7px;
+  font-size:13px;font-weight:700;color:var(--tenue);display:flex;align-items:center;justify-content:center;
+}
 .fila-baja .expandir{margin-left:auto}
+.fila-baja .expandir, .fila-baja .rol-btn-lector{
+  padding:6px 10px;font-size:12px;border:1px solid var(--borde);border-radius:4px;
+  color:var(--tenue);background:transparent;
+}
 
 /* .lector-barra/.lector-tit/.lector-nombre: la cabecera "arrow + título
    en la misma fila" que siguen usando Exportar, Agregar y Editar
@@ -453,7 +461,6 @@ input{font-family:inherit;font-size:inherit}
       <button id="mas-t" title="Subir medio tono">♯</button>
       <button id="menos-a" title="Letra más chica">A−</button>
       <button id="mas-a" title="Letra más grande">A+</button>
-      <button id="dir-toggle" title="Ser director: lo que veas se transmite a la pestaña Online">D</button>
       <button id="vaciar-transmision" title="Vaciar la transmisión (por si quedó una canción vieja pegada)">⟲</button>
       <button id="editar" title="Editar la canción">✎</button>
       <button class="expandir" id="expandir-lector" title="Pantalla completa" style="flex:none">⛶</button>
@@ -992,35 +999,6 @@ function escucharReunionActiva(id){
    Historial, Evento, o una canción abierta por cuenta propia) sigue
    navegándose libre, sin que el director interrumpa nada fuera de esa
    pestaña. */
-
-async function alternarDirector(){
-  est.esDirector = !est.esDirector;
-  pintar();
-  if (est.abierta) pintarLector();
-  if (!HAY_NUBE) return;
-  const ref = fs.doc(db, "cancionero", "directorEnVivo");
-  try{
-    if (est.esDirector){
-      await fs.setDoc(ref, { directores: fs.increment(1) }, { merge: true });
-    } else {
-      /* Al apagar, si éste era el último director, se reinicia el
-         documento entero (no un merge): si sólo se restara el contador,
-         el cancionId de la transmisión anterior quedaría pegado ahí, y
-         resucitaría como "hay transmisión" la próxima vez que alguien
-         prenda Director. Transacción para que sea seguro aunque dos
-         personas apaguen el chip al mismo tiempo. */
-      await fs.runTransaction(db, async tx => {
-        const snap = await tx.get(ref);
-        const actual = (snap.data() && snap.data().directores) || 0;
-        const nuevo = actual - 1;
-        if (nuevo <= 0) tx.set(ref, { directores: 0 });
-        else tx.set(ref, { directores: nuevo }, { merge: true });
-      });
-    }
-  }catch(e){
-    console.error("No se pudo actualizar directores activos:", e);
-  }
-}
 
 /* Cierra la vista en vivo porque dejó de haber director (no porque el
    usuario haya tocado la flecha): se queda en la pestaña Online, ahora
@@ -2200,8 +2178,6 @@ function pintarLector(){
     $(k).style.opacity = (puedeTransportar && !bloqueado) ? "" : ".25";
     $(k).classList.toggle("on", puedeTransportar && est.semis !== 0);
   });
-  $("dir-toggle").style.display = bloqueado ? "none" : "";
-  $("dir-toggle").classList.toggle("on", est.esDirector);
   $("editar").style.display = bloqueado ? "none" : "";
   /* Visible para cualquiera en la vista en vivo, sea o no director: es
      un botón de emergencia por si alguien se fue sin apagar Director y
@@ -2544,7 +2520,6 @@ $("menos-t").onclick = () => {
 };
 $("mas-a").onclick   = () => { est.tamano = Math.min(30, est.tamano + 1); pintarLector(); guardarAjustes(); };
 $("menos-a").onclick = () => { est.tamano = Math.max(11, est.tamano - 1); pintarLector(); guardarAjustes(); };
-$("dir-toggle").onclick = alternarDirector;
 $("vaciar-transmision").onclick = vaciarTransmision;
 $("online-badge").onclick = () => { if (est.esDirector) transmitirEstado(); };
 
