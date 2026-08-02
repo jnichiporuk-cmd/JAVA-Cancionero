@@ -2251,7 +2251,15 @@ function pintarLector(){
       </button>`;
       if (!bloqueado) pie.querySelector(".siguiente-info").onclick = () => paso(+1);
     } else {
-      pie.innerHTML = `<div class="si-fin">Última canción del evento</div>`;
+      if (bloqueado){
+        pie.innerHTML = `<div class="si-fin">Última canción del evento</div>`;
+      } else {
+        pie.innerHTML = `<div style="display:flex;align-items:center;gap:15px;padding:15px;flex-wrap:wrap">
+          <div class="si-fin" style="flex:1;min-width:200px">Última canción del evento</div>
+          <button class="btn-guardar" style="flex:none">+ Agregar canción</button>
+        </div>`;
+        pie.querySelector(".btn-guardar").onclick = abrirAgregar;
+      }
     }
     actualizarPieCercaFin();
   }
@@ -2631,10 +2639,12 @@ function fijarRol(esDirector){
   if (esCelular()){
     try{ document.documentElement.requestFullscreen(); }catch(e){}
   }
-  /* Si estamos en el primer arranque, continuar con la inicialización.
-     Si ya estamos en sesión (hay una canción abierta), solo refrescar la UI. */
-  if (est.abierta){
-    pintarLector();  // solo refrescar la vista actual
+  /* Si ya estamos en sesión (HAY_NUBE es true), solo recalcular y redibujar.
+     Si es el primer arranque, hacer la inicialización completa. */
+  if (HAY_NUBE){
+    recalcular();  // recargar cambios locales
+    if (est.abierta) pintarLector();  // si hay canción abierta
+    else pintar();  // si no, redibujar la pantalla actual
   } else {
     continuarArranque();  // primer arranque
   }
