@@ -410,7 +410,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v105</span></div>
+    <div class="marca">Cancionero <span class="ver">v106</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none;padding:6px 10px;font-size:12px;border:1px solid var(--borde);border-radius:4px;color:var(--tenue);background:transparent;cursor:pointer">Músico</button>
@@ -452,6 +452,7 @@ input{font-family:inherit;font-size:inherit}
     <div class="fila-baja">
       <button class="cerrar" id="cerrar" title="Volver">←</button>
       <div class="riel" id="riel"></div>
+      <button class="expandir" id="expandir-lector" title="Pantalla completa" style="flex:none">⛶</button>
     </div>
     <div class="ctrl-fila">
       <div class="ctrl">
@@ -2336,7 +2337,10 @@ function actualizarPieCercaFin(){
 }
 
 function paso(delta){
-  if (est.enReunion && !est.esDirector) return;  // sin ser director, no se navega dentro de un evento
+  /* Bloquea navegación sólo en vista online (soloLectura).
+     En la vista canción del evento (enReunion), cualquiera (director o
+     músico) puede navegar. */
+  if (est.soloLectura && !est.esDirector) return;
   const j = est.posicion + delta;
   if (j < 0 || j >= est.lista.ids.length) return;
   est.posicion = j;
@@ -2509,7 +2513,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v105",
+    origen: "cancionero v106",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
@@ -2543,6 +2547,7 @@ $("caja-orden").querySelectorAll(".orden-btn").forEach(b => {
 });
 
 $("cerrar").onclick = cerrarLector;
+$("expandir-lector").onclick = alternarPantallaCompleta;
 
 /* Editor */
 $("editar").onclick      = () => { if (est.abierta) abrirEditor(est.abierta); };

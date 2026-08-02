@@ -452,6 +452,7 @@ input{font-family:inherit;font-size:inherit}
     <div class="fila-baja">
       <button class="cerrar" id="cerrar" title="Volver">←</button>
       <div class="riel" id="riel"></div>
+      <button class="expandir" id="expandir-lector" title="Pantalla completa" style="flex:none">⛶</button>
     </div>
     <div class="ctrl-fila">
       <div class="ctrl">
@@ -2336,7 +2337,10 @@ function actualizarPieCercaFin(){
 }
 
 function paso(delta){
-  if (est.enReunion && !est.esDirector) return;  // sin ser director, no se navega dentro de un evento
+  /* Bloquea navegación sólo en vista online (soloLectura).
+     En la vista canción del evento (enReunion), cualquiera (director o
+     músico) puede navegar. */
+  if (est.soloLectura && !est.esDirector) return;
   const j = est.posicion + delta;
   if (j < 0 || j >= est.lista.ids.length) return;
   est.posicion = j;
@@ -2543,6 +2547,7 @@ $("caja-orden").querySelectorAll(".orden-btn").forEach(b => {
 });
 
 $("cerrar").onclick = cerrarLector;
+$("expandir-lector").onclick = alternarPantallaCompleta;
 
 /* Editor */
 $("editar").onclick      = () => { if (est.abierta) abrirEditor(est.abierta); };
