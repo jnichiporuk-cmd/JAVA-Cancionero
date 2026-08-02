@@ -422,7 +422,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v163</span></div>
+    <div class="marca">Cancionero <span class="ver">v164</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -2329,6 +2329,7 @@ function paso(delta){
   const j = est.posicion + delta;
   if (j < 0 || j >= est.lista.ids.length) return;
   const estabaTransmitiendo = est.lista.enVivo?.cancionId === est.abierta;
+  console.log("paso:", { estabaTransmitiendo, cancionAnterior: est.abierta, enVivoBefore: est.lista.enVivo?.cancionId });
   est.posicion = j;
   est.abierta = est.lista.ids[j];
   est.semis = semisGuardado(est.abierta);
@@ -2341,9 +2342,11 @@ function paso(delta){
       posicion: est.posicion,
       cuando: Date.now(),
     };
+    console.log("paso: enVivo actualizado a:", est.lista.enVivo.cancionId);
   }
   $("cuerpo").scrollTop = 0;
   reiniciarColapsoTope();
+  console.log("paso: antes de pintarLector, enVivo es:", est.lista.enVivo?.cancionId);
   pintarLector();
   if (estabaTransmitiendo && est.esDirector) activarTransmision();
 }
@@ -2510,7 +2513,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v163",
+    origen: "cancionero v164",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);

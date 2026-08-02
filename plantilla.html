@@ -2329,6 +2329,7 @@ function paso(delta){
   const j = est.posicion + delta;
   if (j < 0 || j >= est.lista.ids.length) return;
   const estabaTransmitiendo = est.lista.enVivo?.cancionId === est.abierta;
+  console.log("paso:", { estabaTransmitiendo, cancionAnterior: est.abierta, enVivoBefore: est.lista.enVivo?.cancionId });
   est.posicion = j;
   est.abierta = est.lista.ids[j];
   est.semis = semisGuardado(est.abierta);
@@ -2341,9 +2342,11 @@ function paso(delta){
       posicion: est.posicion,
       cuando: Date.now(),
     };
+    console.log("paso: enVivo actualizado a:", est.lista.enVivo.cancionId);
   }
   $("cuerpo").scrollTop = 0;
   reiniciarColapsoTope();
+  console.log("paso: antes de pintarLector, enVivo es:", est.lista.enVivo?.cancionId);
   pintarLector();
   if (estabaTransmitiendo && est.esDirector) activarTransmision();
 }
