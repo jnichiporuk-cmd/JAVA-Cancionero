@@ -422,7 +422,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v159</span></div>
+    <div class="marca">Cancionero <span class="ver">v160</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -1084,25 +1084,40 @@ function mostrarVistaOnline(d){
    modo reunión, no hace nada. */
 async function transmitirEstado(){
   if (!est.esDirector || !est.enReunion || !est.abierta || !est.lista.id || !HAY_NUBE) return;
-  /* Actualización optimista: pone verde el botón O al instante, sin esperar
-     a que vuelva el snapshot de Firestore. La escritura a Firestore sigue
-     igual y actualizará a los demás dispositivos. */
-  est.lista.enVivo = {
-    cancionId: est.abierta,
-    semis: est.semis,
-    posicion: est.posicion,
-    cuando: Date.now(),
-  };
-  pintarLector();
-  try{
-    await fs.updateDoc(fs.doc(db, "reuniones", est.lista.id), {
-      "enVivo.cancionId": est.abierta,
-      "enVivo.semis": est.semis,
-      "enVivo.posicion": est.posicion,
-      "enVivo.cuando": Date.now(),
-    });
-  }catch(e){
-    console.error("No se pudo transmitir:", e);
+  /* Toggle: si ya se está transmitiendo esta canción, desactiva.
+     Si no, activa la transmisión de esta canción. */
+  const estaTransmitiendo = est.lista.enVivo?.cancionId === est.abierta;
+  if (estaTransmitiendo){
+    /* Desactivar: limpiar enVivo y directoresLatido */
+    est.lista.enVivo = null;
+    pintarLector();
+    try{
+      await fs.updateDoc(fs.doc(db, "reuniones", est.lista.id), {
+        directoresLatido: {},
+        enVivo: fs.deleteField(),
+      });
+    }catch(e){
+      console.error("No se pudo vaciar la transmisión:", e);
+    }
+  } else {
+    /* Activar: transmitir esta canción */
+    est.lista.enVivo = {
+      cancionId: est.abierta,
+      semis: est.semis,
+      posicion: est.posicion,
+      cuando: Date.now(),
+    };
+    pintarLector();
+    try{
+      await fs.updateDoc(fs.doc(db, "reuniones", est.lista.id), {
+        "enVivo.cancionId": est.abierta,
+        "enVivo.semis": est.semis,
+        "enVivo.posicion": est.posicion,
+        "enVivo.cuando": Date.now(),
+      });
+    }catch(e){
+      console.error("No se pudo transmitir:", e);
+    }
   }
 }
 
@@ -2488,7 +2503,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v159",
+    origen: "cancionero v160",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
