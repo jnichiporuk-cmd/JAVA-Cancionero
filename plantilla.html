@@ -951,6 +951,7 @@ function escucharReunionActiva(id){
   }
   cancelarEscuchaActiva = fs.onSnapshot(fs.doc(db, "reuniones", id), snap => {
     const d = snap.data();
+    console.log("Snapshot de reunión:", { enVivoDelFirestore: d?.enVivo, fromCache: snap.metadata.fromCache });
     if (d){
       est.lista = {
         id, ids: d.ids || [], porQuien: d.porQuien || "",
@@ -959,6 +960,7 @@ function escucharReunionActiva(id){
         enVivo: d.enVivo ?? est.lista?.enVivo ?? null,
         directoresLatido: d.directoresLatido || {},
       };
+      console.log("est.lista.enVivo actualizado:", est.lista.enVivo);
       pintar();
       /* Si estamos viendo una canción, refrescar el lector para que se
          actualice el botón O (indicador de transmisión) */

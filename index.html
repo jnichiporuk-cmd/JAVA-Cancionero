@@ -422,7 +422,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v170</span></div>
+    <div class="marca">Cancionero <span class="ver">v171</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -951,6 +951,7 @@ function escucharReunionActiva(id){
   }
   cancelarEscuchaActiva = fs.onSnapshot(fs.doc(db, "reuniones", id), snap => {
     const d = snap.data();
+    console.log("Snapshot de reunión:", { enVivoDelFirestore: d?.enVivo, fromCache: snap.metadata.fromCache });
     if (d){
       est.lista = {
         id, ids: d.ids || [], porQuien: d.porQuien || "",
@@ -959,6 +960,7 @@ function escucharReunionActiva(id){
         enVivo: d.enVivo ?? est.lista?.enVivo ?? null,
         directoresLatido: d.directoresLatido || {},
       };
+      console.log("est.lista.enVivo actualizado:", est.lista.enVivo);
       pintar();
       /* Si estamos viendo una canción, refrescar el lector para que se
          actualice el botón O (indicador de transmisión) */
@@ -2527,7 +2529,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v170",
+    origen: "cancionero v171",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
