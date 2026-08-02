@@ -951,7 +951,6 @@ function escucharReunionActiva(id){
   }
   cancelarEscuchaActiva = fs.onSnapshot(fs.doc(db, "reuniones", id), snap => {
     const d = snap.data();
-    console.log("Snapshot de reunión:", { enVivoDelFirestore: d?.enVivo, fromCache: snap.metadata.fromCache });
     if (d){
       est.lista = {
         id, ids: d.ids || [], porQuien: d.porQuien || "",
@@ -960,7 +959,6 @@ function escucharReunionActiva(id){
         enVivo: ('enVivo' in d) ? d.enVivo : null,
         directoresLatido: d.directoresLatido || {},
       };
-      console.log("est.lista.enVivo actualizado:", est.lista.enVivo);
       pintar();
       /* Si estamos viendo una canción, refrescar el lector para que se
          actualice el botón O (indicador de transmisión) */
@@ -1112,26 +1110,21 @@ async function transmitirEstado(){
   /* Toggle global: si hay transmisión activa, desactiva para todos.
      Si no hay, activa la transmisión de esta canción. */
   const hayTransmision = !!est.lista.enVivo;
-  console.log("transmitirEstado:", { hayTransmision, enVivoActual: est.lista.enVivo });
   if (hayTransmision){
     /* Desactivar: limpiar enVivo */
-    console.log("Desactivando transmisión...");
     est.lista.enVivo = null;
     pintarLector();
     try{
-      console.log("Escribiendo deleteField para enVivo a Firestore...");
-      const resultado = await fs.updateDoc(fs.doc(db, "reuniones", est.lista.id), {
+      await fs.updateDoc(fs.doc(db, "reuniones", est.lista.id), {
         enVivo: fs.deleteField(),
       });
-      console.log("Desactivación exitosa, resultado:", resultado);
     }catch(e){
-      console.error("Error al desactivar:", e.message);
+      console.error("Error al desactivar transmisión:", e.message);
       est.lista.enVivo = { cancionId: est.abierta, semis: est.semis, posicion: est.posicion, cuando: Date.now() };
       pintarLector();
     }
   } else {
     /* No hay transmisión: activar */
-    console.log("Activando transmisión...");
     await activarTransmision();
   }
 }
