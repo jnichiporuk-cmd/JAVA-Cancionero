@@ -410,7 +410,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v110</span></div>
+    <div class="marca">Cancionero <span class="ver">v111</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none;padding:6px 10px;font-size:12px;border:1px solid var(--borde);border-radius:4px;color:var(--tenue);background:transparent;cursor:pointer">Músico</button>
@@ -2187,7 +2187,7 @@ function pintarLector(){
      no se le apaga nada, mire lo que mire. Fuera de un evento (una
      canción abierta suelta desde Canciones) no hay bloqueo: ahí el
      transporte es de sesión, por dispositivo, y no se comparte. */
-  const bloqueado = est.enReunion && !est.esDirector;
+  const bloqueado = est.soloLectura && !est.esDirector;
   ["mas-t","menos-t"].forEach(k => {
     $(k).disabled = !puedeTransportar || bloqueado;
     $(k).style.opacity = (puedeTransportar && !bloqueado) ? "" : ".25";
@@ -2474,7 +2474,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v110",
+    origen: "cancionero v111",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
