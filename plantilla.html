@@ -2306,12 +2306,14 @@ function paso(delta){
   if (est.soloLectura && !est.esDirector) return;
   const j = est.posicion + delta;
   if (j < 0 || j >= est.lista.ids.length) return;
+  const estabaTransmitiendo = est.lista.enVivo?.cancionId === est.abierta;
   est.posicion = j;
   est.abierta = est.lista.ids[j];
   est.semis = semisGuardado(est.abierta);
   $("cuerpo").scrollTop = 0;
   reiniciarColapsoTope();
   pintarLector();
+  if (estabaTransmitiendo && est.esDirector) transmitirEstado();
 }
 
 

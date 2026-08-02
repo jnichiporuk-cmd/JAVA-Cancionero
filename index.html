@@ -422,7 +422,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v156</span></div>
+    <div class="marca">Cancionero <span class="ver">v157</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -2306,12 +2306,14 @@ function paso(delta){
   if (est.soloLectura && !est.esDirector) return;
   const j = est.posicion + delta;
   if (j < 0 || j >= est.lista.ids.length) return;
+  const estabaTransmitiendo = est.lista.enVivo?.cancionId === est.abierta;
   est.posicion = j;
   est.abierta = est.lista.ids[j];
   est.semis = semisGuardado(est.abierta);
   $("cuerpo").scrollTop = 0;
   reiniciarColapsoTope();
   pintarLector();
+  if (estabaTransmitiendo && est.esDirector) transmitirEstado();
 }
 
 
@@ -2476,7 +2478,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v156",
+    origen: "cancionero v157",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
