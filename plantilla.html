@@ -1124,8 +1124,7 @@ async function transmitirEstado(){
       const ref = fs.doc(db, "reuniones", est.lista.id);
       console.log("Referencia creada:", ref.path);
       await fs.updateDoc(ref, {
-        directoresLatido: {},
-        enVivo: fs.deleteField(),
+        enVivo: null,
       });
       console.log("Transmisión desactivada exitosamente en Firestore");
     }catch(e){

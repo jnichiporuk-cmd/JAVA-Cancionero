@@ -422,7 +422,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v167</span></div>
+    <div class="marca">Cancionero <span class="ver">v168</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -1124,8 +1124,7 @@ async function transmitirEstado(){
       const ref = fs.doc(db, "reuniones", est.lista.id);
       console.log("Referencia creada:", ref.path);
       await fs.updateDoc(ref, {
-        directoresLatido: {},
-        enVivo: fs.deleteField(),
+        enVivo: null,
       });
       console.log("Transmisión desactivada exitosamente en Firestore");
     }catch(e){
@@ -2532,7 +2531,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v167",
+    origen: "cancionero v168",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
