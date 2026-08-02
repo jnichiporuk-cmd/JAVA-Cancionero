@@ -247,8 +247,9 @@ input{font-family:inherit;font-size:inherit}
    .lector-nombre/.lector-meta de arriba, pero sin el flex:1 ni el
    truncado con "…" — acá no comparte fila con nada, así que puede
    ocupar el ancho completo y pasar a la línea siguiente si hace falta. */
-.titulo-cancion{padding:2px 14px 14px}
+.titulo-cancion{padding:2px 14px 14px;display:flex;align-items:baseline;gap:10px}
 .titulo-cancion .lector-nombre{white-space:normal;overflow:visible;text-overflow:clip}
+.titulo-cancion .lector-meta{font-size:0.9em}
 
 /* Fila de controles (tamaño y transporte), debajo del riel. */
 .ctrl-fila{padding:0 12px 10px}
@@ -410,7 +411,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v116</span></div>
+    <div class="marca">Cancionero <span class="ver">v117</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none;padding:6px 10px;font-size:12px;border:1px solid var(--borde);border-radius:4px;color:var(--tenue);background:transparent;cursor:pointer">Músico</button>
@@ -2169,7 +2170,7 @@ function pintarLector(){
      junto con la letra en vez de competir con la cabecera por lugar. La
      cabecera fija queda sólo con la flecha, el riel y los botones. */
   const metaTexto = (puedeTransportar
-      ? `<b>${escapar(tonoActual)}</b>`
+      ? `<span style="color:var(--tenue)">${escapar(tonoActual)}</span>`
         + (est.semis ? ` <span style="color:var(--tenue)">(original ${escapar(s.tono)}, ${est.semis > 0 ? "+" : ""}${est.semis})</span>` : "")
       : `<span style="color:var(--tenue)">sin tono en el cancionero</span>`)
     + (s.bpm ? ` · ${s.bpm} bpm` : "");
@@ -2468,7 +2469,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v116",
+    origen: "cancionero v117",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
