@@ -213,6 +213,7 @@ input{font-family:inherit;font-size:inherit}
   display:none;flex-direction:column;
 }
 .lector.abierto{display:flex}
+#bienvenida.abierto{z-index:50}
 
 /* La flecha, el riel y los botones se esconden juntos, animado, al
    scrollear; reaparecen al volver arriba del todo. El título de la
@@ -243,6 +244,8 @@ input{font-family:inherit;font-size:inherit}
 }
 .fila-baja .rol-btn-lector{
   display:flex;align-items:center;justify-content:center;height:30px;
+  cursor:pointer;padding:0 8px;font-size:13px;font-weight:700;color:var(--tenue);
+  background:transparent;border:none;
 }
 
 /* .lector-barra/.lector-tit/.lector-nombre: la cabecera "arrow + título
@@ -2643,8 +2646,8 @@ function fijarRol(esDirector){
      Si es el primer arranque, hacer la inicialización completa. */
   if (HAY_NUBE){
     recalcular();  // recargar cambios locales
-    if (est.abierta) pintarLector();  // si hay canción abierta
-    else pintar();  // si no, redibujar la pantalla actual
+    if (est.abierta) pintarLector();  // si hay canción abierta, refrescar
+    else if (est.pestana) pintar();  // si no, redibujar la pantalla actual
   } else {
     continuarArranque();  // primer arranque
   }
