@@ -426,7 +426,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v137</span></div>
+    <div class="marca">Cancionero <span class="ver">v138</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -2464,7 +2464,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v137",
+    origen: "cancionero v138",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
@@ -2627,6 +2627,10 @@ function fijarRol(esDirector){
   est.esDirector = esDirector;
   guardarRol(esDirector);
   $("bienvenida").classList.remove("abierto");
+  /* En celulares, iniciar en pantalla completa automáticamente */
+  if (esCelular()){
+    try{ document.documentElement.requestFullscreen(); }catch(e){}
+  }
   continuarArranque();
 }
 
@@ -2650,10 +2654,6 @@ async function continuarArranque(){
 
   pintar();              // se ve el cancionero al instante, sin esperar la red
 
-  /* En celulares, iniciar en pantalla completa automáticamente */
-  if (esCelular()){
-    try{ await document.documentElement.requestFullscreen(); }catch(e){}
-  }
   if (await conectar()) {
     escuchar();   // a partir de acá los cambios llegan solos
 

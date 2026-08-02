@@ -2627,6 +2627,10 @@ function fijarRol(esDirector){
   est.esDirector = esDirector;
   guardarRol(esDirector);
   $("bienvenida").classList.remove("abierto");
+  /* En celulares, iniciar en pantalla completa automáticamente */
+  if (esCelular()){
+    try{ document.documentElement.requestFullscreen(); }catch(e){}
+  }
   continuarArranque();
 }
 
@@ -2650,10 +2654,6 @@ async function continuarArranque(){
 
   pintar();              // se ve el cancionero al instante, sin esperar la red
 
-  /* En celulares, iniciar en pantalla completa automáticamente */
-  if (esCelular()){
-    try{ await document.documentElement.requestFullscreen(); }catch(e){}
-  }
   if (await conectar()) {
     escuchar();   // a partir de acá los cambios llegan solos
 
