@@ -411,7 +411,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v123</span></div>
+    <div class="marca">Cancionero <span class="ver">v125</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none;padding:6px 10px;font-size:12px;border:1px solid var(--borde);border-radius:4px;color:var(--tenue);background:transparent;cursor:pointer">Músico</button>
@@ -2482,7 +2482,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v123",
+    origen: "cancionero v125",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
@@ -2649,6 +2649,15 @@ function fijarRol(esDirector){
   continuarArranque();
 }
 
+function esCelular(){
+  try{
+    return window.matchMedia("(max-width: 600px)").matches
+      || /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent.toLowerCase());
+  }catch(e){
+    return false;  // en Node o ambientes sin matchMedia
+  }
+}
+
 async function continuarArranque(){
   marcarSync("", "conectando");
   recalcular();          // catálogo base, sin cambios todavía
@@ -2659,6 +2668,11 @@ async function continuarArranque(){
   if (eventoId) est.lista.id = eventoId;  // placeholder, se reemplaza al escuchar
 
   pintar();              // se ve el cancionero al instante, sin esperar la red
+
+  /* En celulares, iniciar en pantalla completa automáticamente */
+  if (esCelular()){
+    try{ await document.documentElement.requestFullscreen(); }catch(e){}
+  }
   if (await conectar()) {
     escuchar();   // a partir de acá los cambios llegan solos
 
