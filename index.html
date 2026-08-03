@@ -192,9 +192,18 @@ input{font-family:inherit;font-size:inherit}
   background:var(--superficie-alta);border:1px solid var(--borde);border-radius:12px;
   padding:20px;min-width:240px;box-shadow:0 8px 24px rgba(0,0,0,0.4);
 }
-.dialogo-titulo{
-  color:var(--letra);font-size:15px;font-weight:600;margin-bottom:16px;text-align:center;
+.dialogo-encabezado{
+  display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;
 }
+.dialogo-titulo{
+  color:var(--letra);font-size:15px;font-weight:600;flex:1;
+}
+.dialogo-cerrar{
+  flex:none;width:28px;height:28px;border:none;background:none;color:var(--tenue);
+  font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  padding:0;
+}
+.dialogo-cerrar:hover{color:var(--letra)}
 .dialogo-btn{
   display:block;width:100%;padding:12px 16px;margin-bottom:8px;border:1px solid var(--borde);
   border-radius:8px;background:var(--superficie);color:var(--letra);font-size:14px;
@@ -476,7 +485,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v189</span></div>
+    <div class="marca">Cancionero <span class="ver">v192</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -515,7 +524,6 @@ input{font-family:inherit;font-size:inherit}
       <button id="mas-t" title="Subir medio tono">♯</button>
       <button id="menos-a" title="Letra más chica">A−</button>
       <button id="mas-a" title="Letra más grande">A+</button>
-      <button id="vaciar-transmision" title="Vaciar la transmisión (por si quedó una canción vieja pegada)">⟲</button>
       <button id="editar" title="Editar la canción">✎</button>
       <div style="flex:1"></div>
       <button class="online-badge" id="en-vivo-badge" title="Transmitir esta canción" style="display:none">Offline</button>
@@ -1069,25 +1077,6 @@ function cerrarVistaOnline(){
   est.abierta = null;
   est.soloLectura = false;
   if (est.pestana === "online") pintarOnline();
-}
-
-/* Botón de emergencia: reinicia directorEnVivo entero (sin merge), para
-   cuando alguien se fue sin apagar Director y quedó una canción vieja
-   pegada para todo el grupo. Cualquiera puede tocarlo, no sólo un
-   director, porque cualquiera puede notar el problema. */
-async function vaciarTransmision(){
-  if (!confirm("¿Vaciar la transmisión de este evento? Usalo sólo si quedó una canción vieja pegada.")) return;
-  if (!est.lista.id || !HAY_NUBE){ flotar("Sin conexión"); return; }
-  try{
-    await fs.updateDoc(fs.doc(db, "reuniones", est.lista.id), {
-      directoresLatido: {},
-      enVivo: fs.deleteField(),
-    });
-    flotar("Transmisión vaciada");
-  }catch(e){
-    console.error("No se pudo vaciar la transmisión:", e);
-    flotar("No se pudo vaciar la transmisión");
-  }
 }
 
 /* Abre el lector en modo sólo lectura con lo que transmitió el
@@ -1862,7 +1851,10 @@ function mostrarDialogoUbicacion(posicionActual){
   const contenido = document.createElement("div");
   contenido.className = "dialogo-contenido";
   contenido.innerHTML = `
-    <div class="dialogo-titulo">¿Dónde agregar la canción?</div>
+    <div class="dialogo-encabezado">
+      <div class="dialogo-titulo">¿Dónde agregar la canción?</div>
+      <button class="dialogo-cerrar">✕</button>
+    </div>
     <button class="dialogo-btn siguiente">Como siguiente</button>
     <button class="dialogo-btn final">Al final</button>
   `;
@@ -1870,25 +1862,32 @@ function mostrarDialogoUbicacion(posicionActual){
   dialogo.appendChild(contenido);
   document.body.appendChild(dialogo);
 
+  function cerrarDialogo(){
+    dialogo.remove();
+  }
+
   /* Evento: "Como siguiente" */
   contenido.querySelector(".siguiente").onclick = () => {
     est.posicionInsertarEn = posicionActual + 1;
     abrirAgregar();
-    dialogo.remove();
+    cerrarDialogo();
   };
 
   /* Evento: "Al final" */
   contenido.querySelector(".final").onclick = () => {
     est.posicionInsertarEn = null;
     abrirAgregar();
-    dialogo.remove();
+    cerrarDialogo();
   };
+
+  /* Evento: botón X */
+  contenido.querySelector(".dialogo-cerrar").onclick = cerrarDialogo;
 
   /* Cerrar al tocar afuera */
   setTimeout(() => {
     document.addEventListener("click", function cerrar(e){
       if (!dialogo.contains(e.target)){
-        dialogo.remove();
+        cerrarDialogo();
         document.removeEventListener("click", cerrar);
       }
     });
@@ -2343,6 +2342,28 @@ function cerrar(){
   est.soloLectura = false;
 }
 
+/* Hace scroll horizontal del riel para mantener la canción actual visible */
+function hacerScrollRiel(){
+  const riel = $("riel");
+  if (!riel || !est.enReunion) return;
+
+  const btnActual = riel.querySelector("button.aqui");
+  if (!btnActual) return;
+
+  /* Calcular el scroll necesario para centrar aproximadamente el botón actual */
+  const rielRect = riel.getBoundingClientRect();
+  const btnRect = btnActual.getBoundingClientRect();
+  const btnOffset = btnActual.offsetLeft;
+  const btnWidth = btnActual.offsetWidth;
+  const rielWidth = riel.offsetWidth;
+
+  /* Scroll de forma que el botón quede aproximadamente centrado
+     (o al menos visible y no cortado en los bordes) */
+  const scrollTarget = btnOffset - (rielWidth / 2) + (btnWidth / 2);
+  riel.scrollLeft = Math.max(0, scrollTarget);
+}
+
+
 /* Lo que efectivamente toca el botón ← del lector: además de cerrar, si
    se estaba mirando la vista en vivo manda al listado del Evento (sea o
    no director), en vez de dejar a alguien parado en la pestaña Online,
@@ -2388,12 +2409,8 @@ function pintarLector(){
     $(k).classList.toggle("on", puedeTransportar && est.semis !== 0);
   });
   $("editar").style.display = bloqueado ? "none" : "";
-  /* Visible para cualquiera en la vista en vivo, sea o no director: es
-     un botón de emergencia por si alguien se fue sin apagar Director y
-     quedó una canción vieja pegada para todos. */
-  $("vaciar-transmision").style.display = est.soloLectura ? "" : "none";
 
-  /* Botón O: visible para el director en cualquier canción del evento
+  /* Botón Online/Offline: visible para el director en cualquier canción del evento
      (para poder transmitirla a propósito) y para cualquiera que esté en
      la vista en vivo (ahí, sólo como indicador). Verde cuando la
      canción que se ve es justo la que está en vivo. */
@@ -2449,6 +2466,8 @@ function pintarLector(){
       };
       riel.appendChild(b);
     });
+    /* Hacer scroll automático del riel para que la canción actual sea visible */
+    hacerScrollRiel();
   }
 
   /* Pie con botón "+ Agregar" (izquierda) e info de siguiente (derecha).
@@ -2705,7 +2724,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v189",
+    origen: "cancionero v192",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
@@ -2769,7 +2788,6 @@ $("menos-t").onclick = () => {
 };
 $("mas-a").onclick   = () => { est.tamano = Math.min(30, est.tamano + 1); pintarLector(); guardarAjustes(); };
 $("menos-a").onclick = () => { est.tamano = Math.max(11, est.tamano - 1); pintarLector(); guardarAjustes(); };
-$("vaciar-transmision").onclick = vaciarTransmision;
 $("en-vivo-badge").onclick = () => { if (est.esDirector) transmitirEstado(); };
 
 /* --- Pantalla completa ---------------------------------------------------
