@@ -493,7 +493,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v209</span></div>
+    <div class="marca">Cancionero <span class="ver">v210</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -1858,7 +1858,7 @@ function mostrarMenuCancion(e, idCancion, indice){
   menu.className = "menu-dropdown";
 
   const opciones = [
-    { label: "Editar canción", action: () => abrirEditorCancion(idCancion) },
+    { label: "Editar canción", action: () => abrirEditor(idCancion) },
     { label: "Quitar del evento", action: () => quitar(idCancion), rojo: true },
   ];
 
@@ -2830,7 +2830,7 @@ function abrirExportar(){
   $("ex-resumen-contenido").innerHTML = resumenHTML;
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v209",
+    origen: "cancionero v210",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
