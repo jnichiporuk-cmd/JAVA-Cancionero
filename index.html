@@ -493,7 +493,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v212</span></div>
+    <div class="marca">Cancionero <span class="ver">v213</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -1698,12 +1698,15 @@ function pintarCatalogo(){
 
   /* Nueva canción y exportar. "Exportar" sólo aparece si hay algo que
      exportar, así no ocupa lugar cuando no hace falta. */
+  const pie = $("pie");
+  pie.style.display = "flex";
+  pie.innerHTML = "";
   const acc = document.createElement("div");
   acc.className = "acciones";
   const n = contarCambios();
   acc.innerHTML = `<button id="btn-nueva">+ Nueva canción</button>`
     + (n ? `<button class="exportar" id="btn-exportar">Exportar (${n})</button>` : "");
-  cont.appendChild(acc);
+  pie.appendChild(acc);
   $("btn-nueva").onclick = () => abrirEditor("nueva");
   if (n) $("btn-exportar").onclick = abrirExportar;
 
@@ -2045,13 +2048,15 @@ function pintarAgregar(){
 function pintarGuardadas(){
   const cont = $("contenido");
   cont.innerHTML = "";
-  $("pie").style.display = "none";
+  const pie = $("pie");
+  pie.style.display = "flex";
+  pie.innerHTML = "";
 
-  const acc = document.createElement("div");
-  acc.className = "acciones";
   if (est.esDirector){
+    const acc = document.createElement("div");
+    acc.className = "acciones";
     acc.innerHTML = `<button id="btn-nueva-reunion">+ Nuevo evento</button>`;
-    cont.appendChild(acc);
+    pie.appendChild(acc);
     $("btn-nueva-reunion").onclick = abrirNuevaReunion;
   }
 
@@ -2877,7 +2882,7 @@ function abrirExportar(){
   $("ex-resumen-contenido").innerHTML = resumenHTML;
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v212",
+    origen: "cancionero v213",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
