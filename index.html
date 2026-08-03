@@ -401,8 +401,8 @@ input{font-family:inherit;font-size:inherit}
 .si-fin{flex:1;padding:13px;text-align:center;color:var(--tenue);font-size:14px}
 .si-fin-derecha{flex:1;text-align:right;color:var(--tenue);font-size:14px}
 .btn-agregar-pie{
-  flex:1;padding:13px;border-radius:9px;font-weight:700;font-size:15px;
-  background:#0066FF;color:#fff;border:none;max-width:50%;
+  flex:0 0 calc(50% - 6px);padding:13px;border-radius:9px;font-weight:700;font-size:15px;
+  background:#0066FF;color:#fff;border:none;
 }
 .btn-agregar-pie:disabled{opacity:.6;cursor:default}
 .btn-agregar-pie:hover:not(:disabled){background:#0055DD}
@@ -490,7 +490,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v222</span></div>
+    <div class="marca">Cancionero <span class="ver">v223</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -2944,7 +2944,7 @@ function abrirExportar(){
   $("ex-resumen-contenido").innerHTML = resumenHTML;
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v222",
+    origen: "cancionero v223",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
