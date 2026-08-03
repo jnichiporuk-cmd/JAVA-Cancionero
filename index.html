@@ -454,11 +454,10 @@ input{font-family:inherit;font-size:inherit}
   white-space:pre;overflow-wrap:normal;outline:none;resize:vertical;
 }
 #ed-cuerpo:focus{border-color:var(--acordes)}
-#exportar #ex-texto{min-height:400px}
-#exportar{max-width:90vw}
-#exportar .lector-tope{max-height:85vh;flex:1 1 auto;display:flex;flex-direction:column}
-#exportar #ex-ayuda{flex:none}
-#exportar #ex-texto{flex:1;min-height:auto;max-height:60vh}
+#exportar{max-width:75vw;max-height:80vh}
+#exportar .lector-tope{display:flex;flex-direction:column;max-height:80vh}
+#exportar #ex-ayuda{flex:none;max-height:60px;overflow-y:auto}
+#exportar #ex-texto{flex:1;min-height:300px;max-height:calc(80vh - 180px)}
 .ed-rotulo-previa{
   margin:16px 0 7px;font-size:11px;letter-spacing:.14em;
   text-transform:uppercase;color:var(--tenue);
@@ -498,7 +497,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v206</span></div>
+    <div class="marca">Cancionero <span class="ver">v207</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -2824,7 +2823,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v206",
+    origen: "cancionero v207",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);

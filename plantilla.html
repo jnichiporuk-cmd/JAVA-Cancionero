@@ -454,11 +454,10 @@ input{font-family:inherit;font-size:inherit}
   white-space:pre;overflow-wrap:normal;outline:none;resize:vertical;
 }
 #ed-cuerpo:focus{border-color:var(--acordes)}
-#exportar #ex-texto{min-height:400px}
-#exportar{max-width:90vw}
-#exportar .lector-tope{max-height:85vh;flex:1 1 auto;display:flex;flex-direction:column}
-#exportar #ex-ayuda{flex:none}
-#exportar #ex-texto{flex:1;min-height:auto;max-height:60vh}
+#exportar{max-width:75vw;max-height:80vh}
+#exportar .lector-tope{display:flex;flex-direction:column;max-height:80vh}
+#exportar #ex-ayuda{flex:none;max-height:60px;overflow-y:auto}
+#exportar #ex-texto{flex:1;min-height:300px;max-height:calc(80vh - 180px)}
 .ed-rotulo-previa{
   margin:16px 0 7px;font-size:11px;letter-spacing:.14em;
   text-transform:uppercase;color:var(--tenue);
