@@ -161,6 +161,47 @@ input{font-family:inherit;font-size:inherit}
   display:flex;align-items:center;justify-content:center;
 }
 .btn-icono:disabled{opacity:.3;cursor:default}
+.btn-menu{
+  flex:none;width:30px;height:30px;border-radius:7px;
+  border:1px solid var(--borde);font-size:16px;color:var(--tenue);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+}
+.btn-menu:hover{background:var(--superficie);color:var(--letra)}
+.menu-dropdown{
+  position:fixed;z-index:100;background:var(--superficie-alta);border:1px solid var(--borde);
+  border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.3);min-width:140px;
+}
+.menu-item{
+  display:block;width:100%;padding:10px 12px;text-align:left;border:none;
+  background:none;color:var(--letra);font-size:13px;cursor:pointer;
+  border-bottom:1px solid var(--borde);font-family:inherit;
+}
+.menu-item:last-child{border-bottom:none}
+.menu-item:hover:not(:disabled){background:var(--borde)}
+.menu-item.rojo{color:var(--peligro)}
+.menu-item.rojo:hover:not(:disabled){background:var(--peligro);color:var(--letra)}
+.menu-item:disabled{opacity:0.4;cursor:not-allowed;text-decoration:line-through}
+.menu-item.rojo:disabled{color:var(--peligro)}
+
+/* Diálogo: dónde agregar canción */
+.dialogo-ubicacion{
+  position:fixed;inset:0;z-index:150;background:rgba(0,0,0,0.7);
+  display:flex;align-items:center;justify-content:center;
+}
+.dialogo-contenido{
+  background:var(--superficie-alta);border:1px solid var(--borde);border-radius:12px;
+  padding:20px;min-width:240px;box-shadow:0 8px 24px rgba(0,0,0,0.4);
+}
+.dialogo-titulo{
+  color:var(--letra);font-size:15px;font-weight:600;margin-bottom:16px;text-align:center;
+}
+.dialogo-btn{
+  display:block;width:100%;padding:12px 16px;margin-bottom:8px;border:1px solid var(--borde);
+  border-radius:8px;background:var(--superficie);color:var(--letra);font-size:14px;
+  font-weight:500;cursor:pointer;font-family:inherit;
+}
+.dialogo-btn:last-child{margin-bottom:0}
+.dialogo-btn:hover{background:var(--borde);color:var(--acordes)}
 
 /* ===================================================================
    4. REUNIÓN (armador de lista)
@@ -1801,8 +1842,57 @@ function pintarReunion(){
 function abrirAgregar(){
   est.filtroAgregar = "";
   $("ag-buscar").value = "";
+  est.posicionInsertarEn = null;  /* Sin restricción de posición */
   pintarAgregar();
   $("agregar").classList.add("abierto");
+}
+
+function abrirAgregarDesdeCancion(posicionActual){
+  /* Pregunta dónde insertar la nueva canción: como siguiente o al final */
+  mostrarDialogoUbicacion(posicionActual);
+}
+
+function mostrarDialogoUbicacion(posicionActual){
+  /* Cierra diálogos previos */
+  document.querySelectorAll(".dialogo-ubicacion").forEach(d => d.remove());
+
+  const dialogo = document.createElement("div");
+  dialogo.className = "dialogo-ubicacion";
+
+  const contenido = document.createElement("div");
+  contenido.className = "dialogo-contenido";
+  contenido.innerHTML = `
+    <div class="dialogo-titulo">¿Dónde agregar la canción?</div>
+    <button class="dialogo-btn siguiente">Como siguiente</button>
+    <button class="dialogo-btn final">Al final</button>
+  `;
+
+  dialogo.appendChild(contenido);
+  document.body.appendChild(dialogo);
+
+  /* Evento: "Como siguiente" */
+  contenido.querySelector(".siguiente").onclick = () => {
+    est.posicionInsertarEn = posicionActual + 1;
+    abrirAgregar();
+    dialogo.remove();
+  };
+
+  /* Evento: "Al final" */
+  contenido.querySelector(".final").onclick = () => {
+    est.posicionInsertarEn = null;
+    abrirAgregar();
+    dialogo.remove();
+  };
+
+  /* Cerrar al tocar afuera */
+  setTimeout(() => {
+    document.addEventListener("click", function cerrar(e){
+      if (!dialogo.contains(e.target)){
+        dialogo.remove();
+        document.removeEventListener("click", cerrar);
+      }
+    });
+  }, 0);
 }
 function cerrarAgregar(){
   $("agregar").classList.remove("abierto");
@@ -1886,9 +1976,7 @@ function pintarGuardadas(){
         <div class="fila-nombre">${escapar(r.nombre || "Sin nombre")}${activa ? `<span class="chip-activa">Activa</span>` : ""}</div>
         <div class="fila-meta">${fechaHoraTexto(r.fechaReunion || r.creada)} · ${r.ids.length} canción${r.ids.length === 1 ? "" : "es"}</div>
       </button>
-      ${est.esDirector ? `<button class="btn-icono editar" title="Cambiar nombre y fecha">✎</button>
-      <button class="btn-icono copiar" title="Copiar este evento">📋</button>
-      <button class="btn-icono borrar" title="${activa ? "No se puede borrar el evento activo" : "Borrar este evento"}"${activa ? " disabled" : ""}>✕</button>` : ""}`;
+      ${est.esDirector ? `<button class="btn-menu" title="Opciones">⋮</button>` : ""}`;
     /* Tocar el nombre activa la reunión (si no lo era ya) y lleva directo
        a la pestaña Reunión: hace de "Usar esta", sin ocupar un botón
        aparte en cada fila. */
@@ -1898,15 +1986,61 @@ function pintarGuardadas(){
       pintar();
     };
     if (est.esDirector){
-      const editar = fila.querySelector(".editar");
-      const copiar = fila.querySelector(".copiar");
-      const borrar = fila.querySelector(".borrar");
-      if (editar) editar.onclick = () => abrirEditarReunion(r);
-      if (copiar) copiar.onclick = () => abrirCopiarReunion(r);
-      if (borrar && !activa) borrar.onclick = () => borrarReunion(r);
+      const btnMenu = fila.querySelector(".btn-menu");
+      if (btnMenu){
+        btnMenu.onclick = (e) => {
+          e.stopPropagation();
+          mostrarMenuReunion(r, btnMenu, activa);
+        };
+      }
     }
     cont.appendChild(fila);
   });
+}
+
+function mostrarMenuReunion(r, btnMenu, activa){
+  /* Cierra cualquier menú abierto */
+  document.querySelectorAll(".menu-dropdown").forEach(m => m.remove());
+
+  const menu = document.createElement("div");
+  menu.className = "menu-dropdown";
+
+  const opciones = [
+    { label: "Editar", action: () => abrirEditarReunion(r) },
+    { label: "Copiar", action: () => abrirCopiarReunion(r) },
+    { label: "Eliminar", action: () => borrarReunion(r), rojo: true, disabled: activa, disabledReason: "No se puede borrar el evento activo" },
+  ];
+
+  opciones.forEach(opt => {
+    const btn = document.createElement("button");
+    btn.className = "menu-item" + (opt.rojo ? " rojo" : "") + (opt.disabled ? " disabled" : "");
+    btn.textContent = opt.label;
+    if (opt.disabled) {
+      btn.disabled = true;
+      btn.title = opt.disabledReason;
+    } else {
+      btn.onclick = () => {
+        opt.action();
+        menu.remove();
+      };
+    }
+    menu.appendChild(btn);
+  });
+
+  document.body.appendChild(menu);
+
+  /* Posicionar el menú cerca del botón */
+  const rect = btnMenu.getBoundingClientRect();
+  menu.style.top = (rect.bottom + 4) + "px";
+  menu.style.left = (rect.right - menu.offsetWidth) + "px";
+
+  /* Cerrar al tocar afuera */
+  setTimeout(() => {
+    document.addEventListener("click", function cerrar(){
+      menu.remove();
+      document.removeEventListener("click", cerrar);
+    });
+  }, 0);
 }
 
 /* Sólo el director puede borrar eventos del historial, y no se puede
@@ -2027,7 +2161,17 @@ async function alternarEnLista(id){
 
   const i = est.lista.ids.indexOf(id);
   if (i >= 0){ est.lista.ids.splice(i,1); flotar("Sacada del evento"); }
-  else { est.lista.ids.push(id); flotar("Sumada al evento"); }
+  else {
+    /* Insertar en la posición especificada o al final */
+    if (est.posicionInsertarEn !== null && est.posicionInsertarEn !== undefined){
+      est.lista.ids.splice(est.posicionInsertarEn, 0, id);
+      flotar("Sumada como siguiente");
+      est.posicionInsertarEn = null;
+    } else {
+      est.lista.ids.push(id);
+      flotar("Sumada al evento");
+    }
+  }
   pintar();
   if (esNueva){
     await crearReunion(est.lista.id, est.lista.nombre, est.lista.ids, est.lista.semis, est.lista.fechaReunion);
@@ -2333,7 +2477,7 @@ function pintarLector(){
 
     // Event listeners
     const btnAdd = pie.querySelector(".btn-agregar-pie");
-    if (btnAdd && !bloqueado) btnAdd.onclick = abrirAgregar;
+    if (btnAdd && !bloqueado) btnAdd.onclick = () => abrirAgregarDesdeCancion(est.posicion);
 
     const btnSig = pie.querySelector(".siguiente-info");
     if (btnSig && !bloqueado) btnSig.onclick = () => paso(+1);
