@@ -155,6 +155,17 @@ input{font-family:inherit;font-size:inherit}
   background:rgba(0,176,240,.15);color:var(--acordes);border:1px solid var(--acordes);
   vertical-align:middle;
 }
+/* El chip "Activa" no se recorta nunca: el que se recorta es el nombre.
+   Si los dos van en el mismo bloque con ellipsis, un nombre largo se
+   come el chip entero y no queda ninguna señal de cuál es el evento
+   activo. Pasaba al entrar como director (los tres íconos de la fila
+   dejan menos ancho para el nombre) y no como músico, donde la fila es
+   más ancha y el nombre entraba entero. */
+.fila-nombre.con-chip{display:flex;align-items:center;min-width:0}
+.fila-nombre.con-chip .nombre-txt{
+  min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.fila-nombre.con-chip .chip-activa{flex:none}
 .btn-icono{
   flex:none;width:30px;height:30px;border-radius:7px;
   border:1px solid var(--borde);font-size:14px;color:var(--tenue);
@@ -2031,7 +2042,7 @@ function pintarGuardadas(){
     fila.className = "fila";
     fila.innerHTML = `
       <button class="fila-txt">
-        <div class="fila-nombre">${escapar(r.nombre || "Sin nombre")}${activa ? `<span class="chip-activa">Activa</span>` : ""}</div>
+        <div class="fila-nombre${activa ? " con-chip" : ""}"><span class="nombre-txt">${escapar(r.nombre || "Sin nombre")}</span>${activa ? `<span class="chip-activa">Activa</span>` : ""}</div>
         <div class="fila-meta">${fechaHoraTexto(r.fechaReunion || r.creada)} · ${r.ids.length} canción${r.ids.length === 1 ? "" : "es"}</div>
       </button>
       ${est.esDirector ? `<button class="btn-menu" title="Opciones">⋮</button>` : ""}`;
