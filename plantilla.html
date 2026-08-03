@@ -222,7 +222,7 @@ input{font-family:inherit;font-size:inherit}
   flex:none;width:26px;text-align:center;
   font-family:var(--mono);font-size:13px;font-weight:700;color:var(--lista);
 }
-.quitar{flex:none;width:30px;height:30px;color:var(--tenue);font-size:17px}
+.menu-cancion{flex:none;width:30px;height:30px;color:var(--tenue);font-size:20px;background:none;border:none;cursor:pointer;padding:0}
 .fila.reordenando{touch-action:none}
 .fila.arrastrando{position:relative;z-index:5;background:var(--superficie-alta);box-shadow:0 4px 14px rgba(0,0,0,.45)}
 
@@ -454,6 +454,11 @@ input{font-family:inherit;font-size:inherit}
   white-space:pre;overflow-wrap:normal;outline:none;resize:vertical;
 }
 #ed-cuerpo:focus{border-color:var(--acordes)}
+#exportar #ex-texto{min-height:400px}
+#exportar{max-width:90vw}
+#exportar .lector-tope{max-height:85vh;flex:1 1 auto;display:flex;flex-direction:column}
+#exportar #ex-ayuda{flex:none}
+#exportar #ex-texto{flex:1;min-height:auto;max-height:60vh}
 .ed-rotulo-previa{
   margin:16px 0 7px;font-size:11px;letter-spacing:.14em;
   text-transform:uppercase;color:var(--tenue);
@@ -1784,8 +1789,8 @@ function pintarReunion(){
       fila.innerHTML = `<div class="orden">${i+1}</div>
         <div class="fila-txt"><div class="fila-nombre" style="color:var(--tenue)">Canción no encontrada</div>
         <div class="fila-meta">Actualizá el cancionero (${escapar(id)})</div></div>
-        ${est.esDirector ? `<button class="quitar">✕</button>` : ""}`;
-      if (est.esDirector) fila.querySelector(".quitar").onclick = () => quitar(id);
+        ${est.esDirector ? `<button class="menu-cancion" data-id="${id}" data-indice="${i}" title="Más opciones">⋮</button>` : ""}`;
+      if (est.esDirector) fila.querySelector(".menu-cancion").onclick = (e) => mostrarMenuCancion(e, id, i);
       cont.appendChild(fila);
       return;
     }
@@ -1798,8 +1803,8 @@ function pintarReunion(){
         <div class="fila-nombre">${escapar(s.nombre)}</div>
         <div class="fila-meta">${metaDe(s, semisGuardado(id))}</div>
       </button>
-      ${est.esDirector ? `<button class="quitar">✕</button>` : ""}`;
-    if (est.esDirector) fila.querySelector(".quitar").onclick = () => quitar(id);
+      ${est.esDirector ? `<button class="menu-cancion" data-id="${id}" data-indice="${i}" title="Más opciones">⋮</button>` : ""}`;
+    if (est.esDirector) fila.querySelector(".menu-cancion").onclick = (e) => mostrarMenuCancion(e, id, i);
     if (est.reordenando && est.esDirector){
       /* En este modo toda la fila es la manija: no tiene sentido que
          tocarla abra la canción, así que ese click no se conecta. */
@@ -1836,6 +1841,45 @@ function pintarReunion(){
     if ($("agregar-btn")) $("agregar-btn").onclick = abrirAgregar;
     if ($("reordenar-btn")) $("reordenar-btn").onclick = () => { est.reordenando = !est.reordenando; pintarReunion(); };
   }
+}
+
+function mostrarMenuCancion(e, idCancion, indice){
+  /* Cierra cualquier menú abierto */
+  document.querySelectorAll(".menu-dropdown").forEach(m => m.remove());
+
+  const menu = document.createElement("div");
+  menu.className = "menu-dropdown";
+
+  const opciones = [
+    { label: "Editar canción", action: () => abrirEditorCancion(idCancion) },
+    { label: "Quitar del evento", action: () => quitar(idCancion), rojo: true },
+  ];
+
+  opciones.forEach(opt => {
+    const btn = document.createElement("button");
+    btn.className = "menu-item" + (opt.rojo ? " rojo" : "");
+    btn.textContent = opt.label;
+    btn.onclick = () => {
+      opt.action();
+      menu.remove();
+    };
+    menu.appendChild(btn);
+  });
+
+  document.body.appendChild(menu);
+
+  /* Posicionar el menú cerca del botón */
+  const rect = e.target.getBoundingClientRect();
+  menu.style.top = (rect.bottom + 4) + "px";
+  menu.style.left = (rect.right - menu.offsetWidth) + "px";
+
+  /* Cerrar al tocar afuera */
+  setTimeout(() => {
+    document.addEventListener("click", function cerrar(){
+      menu.remove();
+      document.removeEventListener("click", cerrar);
+    });
+  }, 0);
 }
 
 /* --- Panel "Agregar canciones" ----------------------------------------
