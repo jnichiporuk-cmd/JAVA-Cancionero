@@ -468,12 +468,13 @@ input{font-family:inherit;font-size:inherit}
 }
 
 /* Fila de acciones arriba de la lista de canciones */
-.acciones{display:flex;gap:8px;padding:0 14px 12px}
+.acciones{display:flex;gap:8px;padding:0 14px 12px;width:100%}
 .acciones button{
   flex:1;padding:10px;border-radius:8px;border:1px solid var(--borde);
   font-size:14px;font-weight:600;color:var(--letra);
 }
 .acciones .exportar{color:var(--lista);border-color:var(--lista)}
+.pie-reunion .acciones{padding:0;width:100%}
 
 /* Cartel de aviso momentáneo */
 .aviso-flotante{
@@ -493,7 +494,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v213</span></div>
+    <div class="marca">Cancionero <span class="ver">v214</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -2882,7 +2883,7 @@ function abrirExportar(){
   $("ex-resumen-contenido").innerHTML = resumenHTML;
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v213",
+    origen: "cancionero v214",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
