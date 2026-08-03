@@ -490,7 +490,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v240</span></div>
+    <div class="marca">Cancionero <span class="ver">v241</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -1835,7 +1835,7 @@ function pintarReunion(){
      canción, desde ahí se transmite con el botón O). Si no hay
      transmisión y no se es director, "Offline": no hay nada para
      empezar, apagado. */
-  const hayTransmision = hayDirectorActivo(est.lista) && !!est.lista.enVivo;
+  const hayTransmision = !!est.lista.enVivo;
   const primerBoton = hayTransmision
     ? `<button class="btn btn-vivo" id="primer-btn">Online</button>`
     : est.esDirector
@@ -2941,7 +2941,7 @@ function abrirExportar(){
   $("ex-resumen-contenido").innerHTML = resumenHTML;
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v240",
+    origen: "cancionero v241",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);

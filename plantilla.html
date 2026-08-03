@@ -1835,7 +1835,7 @@ function pintarReunion(){
      canción, desde ahí se transmite con el botón O). Si no hay
      transmisión y no se es director, "Offline": no hay nada para
      empezar, apagado. */
-  const hayTransmision = hayDirectorActivo(est.lista) && !!est.lista.enVivo;
+  const hayTransmision = !!est.lista.enVivo;
   const primerBoton = hayTransmision
     ? `<button class="btn btn-vivo" id="primer-btn">Online</button>`
     : est.esDirector
