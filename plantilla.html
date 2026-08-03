@@ -1848,7 +1848,7 @@ function pintarReunion(){
   const botonesDirector = est.esDirector
     ? `<button class="btn" id="agregar-btn">+ Agregar</button>`
     : "";
-  pie.innerHTML = primerBoton + botonesDirector;
+  pie.innerHTML = botonesDirector + primerBoton;
 
   /* Conectar eventos de botones */
   if (hayTransmision) {
