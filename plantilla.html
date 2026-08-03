@@ -2070,6 +2070,13 @@ function cerrarAgregar(){
 function pintarAgregar(){
   const cont = $("ag-lista");
   cont.innerHTML = "";
+
+  /* Mostrar botón Nueva en el pie */
+  const pie = $("ag-pie");
+  pie.style.display = "flex";
+  pie.innerHTML = `<button id="ag-nueva-btn" class="btn" style="flex:1" title="Crear nueva canción">+ Nueva canción</button>`;
+  $("ag-nueva-btn").onclick = () => abrirEditor("nueva");
+
   const q = est.filtroAgregar.trim().toLowerCase();
   const encontradas = CATALOGO.filter(s =>
     !q || s.nombre.toLowerCase().includes(q) || (s.tono || "").toLowerCase() === q
