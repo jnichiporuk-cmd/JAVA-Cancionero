@@ -81,10 +81,6 @@ input{font-family:inherit;font-size:inherit}
   color:var(--tenue);font-size:13px;font-weight:700;background:transparent;
   cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0 8px;
 }
-#ag-nueva{
-  flex:none;padding:13px 15px;border-radius:9px;font-weight:700;font-size:15px;
-  border:1px solid var(--borde);color:var(--letra);cursor:pointer;white-space:nowrap;
-}
 .sync{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--tenue);height:30px}
 .punto{width:8px;height:8px;border-radius:50%;background:var(--tenue);flex:none}
 .punto.ok{background:#3DD68C}
@@ -494,7 +490,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v218</span></div>
+    <div class="marca">Cancionero <span class="ver">v220</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -616,7 +612,6 @@ input{font-family:inherit;font-size:inherit}
     <div class="lector-barra">
       <button class="cerrar" id="ag-cerrar" title="Volver">←</button>
       <div class="lector-tit"><div class="lector-nombre">Agregar canciones</div></div>
-      <button id="ag-nueva" class="btn" title="Crear nueva canción">Nueva</button>
     </div>
     <div class="buscador">
       <input id="ag-buscar" type="search" placeholder="Buscar por título, letra, tono o BPM" autocomplete="off">
@@ -2949,7 +2944,7 @@ function abrirExportar(){
   $("ex-resumen-contenido").innerHTML = resumenHTML;
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v218",
+    origen: "cancionero v220",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
@@ -3006,7 +3001,6 @@ $("ex-copiar").onclick = copiarExportado;
 /* Panel "Agregar canciones" */
 $("ag-cerrar").onclick = cerrarAgregar;
 $("ag-buscar").oninput = e => { est.filtroAgregar = e.target.value; pintarAgregar(); };
-$("ag-nueva").onclick = () => abrirEditor("nueva");
 
 /* Panel "Editar reunión" (nombre y fecha/hora) */
 $("er-cancelar").onclick = cerrarEditarReunion;
