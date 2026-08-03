@@ -498,7 +498,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v205</span></div>
+    <div class="marca">Cancionero <span class="ver">v206</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -2327,6 +2327,7 @@ function soltarArrastre(){
   arrastre = null;
   if (huboArrastre){
     guardarLista();
+    est.reordenando = false;  // Desactivar modo reordenamiento después de soltar
     pintarReunion();  // religar los índices de cada fila a su posición final
   }
 }
@@ -2823,7 +2824,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v205",
+    origen: "cancionero v206",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);

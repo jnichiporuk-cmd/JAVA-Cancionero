@@ -2327,6 +2327,7 @@ function soltarArrastre(){
   arrastre = null;
   if (huboArrastre){
     guardarLista();
+    est.reordenando = false;  // Desactivar modo reordenamiento después de soltar
     pintarReunion();  // religar los índices de cada fila a su posición final
   }
 }
