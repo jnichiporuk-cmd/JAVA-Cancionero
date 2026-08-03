@@ -490,7 +490,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v233</span></div>
+    <div class="marca">Cancionero <span class="ver">v234</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -1740,7 +1740,7 @@ function pintarCatalogo(){
       }
     }
     /* Sin botón de sumar acá: agregar a un evento sólo se hace desde
-       adentro de un evento (panel "+ Agregar"). Acá sólo se mira. */
+       adentro de un evento (panel "+ Agregar canción"). Acá sólo se mira. */
     const fila = document.createElement("div");
     fila.className = "fila";
     fila.innerHTML = `
@@ -1764,12 +1764,12 @@ function pintarReunion(){
   if (!est.lista.ids.length){
     cont.innerHTML = `<div class="vacio"><strong>Todavía no hay lista</strong>
       ${est.esDirector
-        ? `Tocá "+ Agregar canciones" abajo para sumar las de este domingo.`
+        ? `Tocá "+ Agregar canción canciones" abajo para sumar las de este domingo.`
         : `Todavía no la armó el director.`}
       Lo que armes acá lo ve todo el grupo.</div>`;
     pie.style.display = "flex";
     const hayTransmisionVacia = hayDirectorActivo(est.lista) && !!est.lista.enVivo;
-    pie.innerHTML = `<button class="btn btn-fuerte" id="agregar-btn"${est.esDirector ? "" : " disabled"}>+ Agregar canciones</button>`
+    pie.innerHTML = `<button class="btn btn-fuerte" id="agregar-btn"${est.esDirector ? "" : " disabled"}>+ Agregar canción canciones</button>`
       + (hayTransmisionVacia ? `<button class="btn btn-vivo" id="ver-vivo-evento">Transmitir</button>` : "");
     if (est.esDirector) $("agregar-btn").onclick = abrirAgregar;
     if (hayTransmisionVacia) $("ver-vivo-evento").onclick = () => { est.pestana = "online"; pintar(); };
@@ -1846,7 +1846,7 @@ function pintarReunion(){
       ? `<button class="btn btn-fuerte" id="primer-btn">Transmitir</button>`
       : `<button class="btn" id="primer-btn" disabled>Offline</button>`;
   const botonesDirector = est.esDirector
-    ? `<button class="btn" id="agregar-btn">+ Agregar</button>`
+    ? `<button class="btn" id="agregar-btn">+ Agregar canción</button>`
     : "";
   pie.innerHTML = botonesDirector + primerBoton;
 
@@ -2662,15 +2662,15 @@ function pintarLector(){
     hacerScrollRiel();
   }
 
-  /* Pie con botón "+ Agregar" (izquierda) e info de siguiente (derecha).
+  /* Pie con botón "+ Agregar canción" (izquierda) e info de siguiente (derecha).
      Si no hay siguiente, muestra "Última canción del evento". */
   pie.classList.toggle("visible", est.enReunion);
   if (est.enReunion){
     const idSig = est.lista.ids[est.posicion + 1];
     const sig = idSig ? PORID[idSig] : null;
 
-    // Botón "+ Agregar"
-    const btnAgregar = `<button class="btn-agregar-pie"${bloqueado ? " disabled" : ""}>+ Agregar</button>`;
+    // Botón "+ Agregar canción"
+    const btnAgregar = `<button class="btn-agregar-pie"${bloqueado ? " disabled" : ""}>+ Agregar canción</button>`;
 
     // Info de siguiente o última canción
     let infoSiguiente = "";
@@ -2944,7 +2944,7 @@ function abrirExportar(){
   $("ex-resumen-contenido").innerHTML = resumenHTML;
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v233",
+    origen: "cancionero v234",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
