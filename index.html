@@ -490,7 +490,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v237</span></div>
+    <div class="marca">Cancionero <span class="ver">v238</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -2667,7 +2667,7 @@ function pintarLector(){
     const sig = idSig ? PORID[idSig] : null;
 
     // Botón "+ Agregar canción"
-    const btnAgregar = `<button class="btn-agregar-pie"${bloqueado ? " disabled" : ""}>+ Agregar canción</button>`;
+    const btnAgregar = `<button class="btn-agregar-pie"${bloqueado ? " disabled" : ""}>+ Agregar</button>`;
 
     // Info de siguiente o última canción
     let infoSiguiente = "";
@@ -2941,7 +2941,7 @@ function abrirExportar(){
   $("ex-resumen-contenido").innerHTML = resumenHTML;
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v237",
+    origen: "cancionero v238",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
