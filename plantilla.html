@@ -1747,8 +1747,10 @@ function pintarCatalogo(){
       <button class="fila-txt">
         <div class="fila-nombre">${escapar(s.nombre)}</div>
         <div class="fila-meta">${metaDe(s)}</div>
-      </button>`;
+      </button>
+      <button class="menu-cancion" data-id="${s.id}" title="Más opciones">⋮</button>`;
     fila.querySelector(".fila-txt").onclick = () => abrir(s.id, false);
+    fila.querySelector(".menu-cancion").onclick = (e) => mostrarMenuCancionCatalogo(e, s.id);
     cont.appendChild(fila);
   });
 }
@@ -1860,6 +1862,51 @@ function mostrarMenuCancion(e, idCancion, indice){
   const opciones = [
     { label: "Editar canción", action: () => abrirEditor(idCancion) },
     { label: "Quitar del evento", action: () => quitar(idCancion), rojo: true },
+  ];
+
+  opciones.forEach(opt => {
+    const btn = document.createElement("button");
+    btn.className = "menu-item" + (opt.rojo ? " rojo" : "");
+    btn.textContent = opt.label;
+    btn.onclick = () => {
+      opt.action();
+      menu.remove();
+    };
+    menu.appendChild(btn);
+  });
+
+  document.body.appendChild(menu);
+
+  /* Posicionar el menú cerca del botón */
+  const rect = e.target.getBoundingClientRect();
+  menu.style.top = (rect.bottom + 4) + "px";
+  menu.style.left = (rect.right - menu.offsetWidth) + "px";
+
+  /* Cerrar al tocar afuera */
+  setTimeout(() => {
+    document.addEventListener("click", function cerrar(evt){
+      if (!menu.contains(evt.target)){
+        menu.remove();
+        document.removeEventListener("click", cerrar);
+      }
+    });
+  }, 0);
+}
+
+function mostrarMenuCancionCatalogo(e, idCancion){
+  /* Si ya hay un menú abierto, cerrarlo (toggle) */
+  const menuExistente = document.querySelector(".menu-dropdown");
+  if (menuExistente){
+    menuExistente.remove();
+    return;
+  }
+
+  const menu = document.createElement("div");
+  menu.className = "menu-dropdown";
+
+  const opciones = [
+    { label: "Editar canción", action: () => abrirEditor(idCancion) },
+    { label: "Eliminar canción", action: () => borrarCancion(idCancion), rojo: true },
   ];
 
   opciones.forEach(opt => {
@@ -2783,9 +2830,9 @@ async function guardarEditor(){
   await guardarCancion(cancion, nueva || iNueva >= 0);
 }
 
-async function borrarCancion(){
+async function borrarCancion(idOpcional){
   if (!est.esDirector) return flotar("Solo directores pueden borrar canciones");
-  const id = est.editando;
+  const id = idOpcional || est.editando;
   const s = PORID[id];
   if (!s) return;
   if (!confirm(`¿Borrar "${s.nombre}" del cancionero? Se borra para todo el grupo.`)) return;
@@ -2796,7 +2843,7 @@ async function borrarCancion(){
   est.lista.ids = est.lista.ids.filter(x => x !== id);
 
   recalcular();
-  cerrarEditor();
+  if (!idOpcional) cerrarEditor();  // Solo cerrar editor si se llamó desde el editor
   cerrar();
   pintar();
   flotar("Canción borrada");
