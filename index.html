@@ -163,10 +163,10 @@ input{font-family:inherit;font-size:inherit}
 .btn-icono:disabled{opacity:.3;cursor:default}
 .btn-menu{
   flex:none;width:30px;height:30px;border-radius:7px;
-  border:1px solid var(--borde);font-size:16px;color:var(--tenue);
-  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  border:none;font-size:16px;color:var(--tenue);background:none;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;
 }
-.btn-menu:hover{background:var(--superficie);color:var(--letra)}
+.btn-menu:hover{color:var(--letra)}
 .menu-dropdown{
   position:fixed;z-index:100;background:var(--superficie-alta);border:1px solid var(--borde);
   border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.3);min-width:140px;
@@ -493,7 +493,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v210</span></div>
+    <div class="marca">Cancionero <span class="ver">v211</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -2830,7 +2830,7 @@ function abrirExportar(){
   $("ex-resumen-contenido").innerHTML = resumenHTML;
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v210",
+    origen: "cancionero v211",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
