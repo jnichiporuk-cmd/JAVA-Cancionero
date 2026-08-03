@@ -1844,8 +1844,12 @@ function pintarReunion(){
 }
 
 function mostrarMenuCancion(e, idCancion, indice){
-  /* Cierra cualquier menú abierto */
-  document.querySelectorAll(".menu-dropdown").forEach(m => m.remove());
+  /* Si ya hay un menú abierto, cerrarlo (toggle) */
+  const menuExistente = document.querySelector(".menu-dropdown");
+  if (menuExistente){
+    menuExistente.remove();
+    return;
+  }
 
   const menu = document.createElement("div");
   menu.className = "menu-dropdown";
@@ -2052,8 +2056,12 @@ function pintarGuardadas(){
 }
 
 function mostrarMenuReunion(r, btnMenu, activa){
-  /* Cierra cualquier menú abierto */
-  document.querySelectorAll(".menu-dropdown").forEach(m => m.remove());
+  /* Si ya hay un menú abierto, cerrarlo (toggle) */
+  const menuExistente = document.querySelector(".menu-dropdown");
+  if (menuExistente){
+    menuExistente.remove();
+    return;
+  }
 
   const menu = document.createElement("div");
   menu.className = "menu-dropdown";

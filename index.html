@@ -498,7 +498,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v204</span></div>
+    <div class="marca">Cancionero <span class="ver">v205</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -1844,8 +1844,12 @@ function pintarReunion(){
 }
 
 function mostrarMenuCancion(e, idCancion, indice){
-  /* Cierra cualquier menú abierto */
-  document.querySelectorAll(".menu-dropdown").forEach(m => m.remove());
+  /* Si ya hay un menú abierto, cerrarlo (toggle) */
+  const menuExistente = document.querySelector(".menu-dropdown");
+  if (menuExistente){
+    menuExistente.remove();
+    return;
+  }
 
   const menu = document.createElement("div");
   menu.className = "menu-dropdown";
@@ -2052,8 +2056,12 @@ function pintarGuardadas(){
 }
 
 function mostrarMenuReunion(r, btnMenu, activa){
-  /* Cierra cualquier menú abierto */
-  document.querySelectorAll(".menu-dropdown").forEach(m => m.remove());
+  /* Si ya hay un menú abierto, cerrarlo (toggle) */
+  const menuExistente = document.querySelector(".menu-dropdown");
+  if (menuExistente){
+    menuExistente.remove();
+    return;
+  }
 
   const menu = document.createElement("div");
   menu.className = "menu-dropdown";
@@ -2815,7 +2823,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v204",
+    origen: "cancionero v205",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
