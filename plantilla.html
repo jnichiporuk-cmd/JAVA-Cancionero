@@ -1875,9 +1875,11 @@ function mostrarMenuCancion(e, idCancion, indice){
 
   /* Cerrar al tocar afuera */
   setTimeout(() => {
-    document.addEventListener("click", function cerrar(){
-      menu.remove();
-      document.removeEventListener("click", cerrar);
+    document.addEventListener("click", function cerrar(evt){
+      if (!menu.contains(evt.target)){
+        menu.remove();
+        document.removeEventListener("click", cerrar);
+      }
     });
   }, 0);
 }
@@ -1910,10 +1912,7 @@ function mostrarDialogoUbicacion(posicionActual){
   const contenido = document.createElement("div");
   contenido.className = "dialogo-contenido";
   contenido.innerHTML = `
-    <div class="dialogo-encabezado">
-      <div class="dialogo-titulo">¿Dónde agregar la canción?</div>
-      <button class="dialogo-cerrar">✕</button>
-    </div>
+    <div class="dialogo-titulo">¿Dónde agregar la canción?</div>
     <button class="dialogo-btn siguiente">Como siguiente</button>
     <button class="dialogo-btn final">Al final</button>
   `;
@@ -1938,9 +1937,6 @@ function mostrarDialogoUbicacion(posicionActual){
     abrirAgregar();
     cerrarDialogo();
   };
-
-  /* Evento: botón X */
-  contenido.querySelector(".dialogo-cerrar").onclick = cerrarDialogo;
 
   /* Cerrar al tocar afuera */
   setTimeout(() => {
@@ -2094,9 +2090,11 @@ function mostrarMenuReunion(r, btnMenu, activa){
 
   /* Cerrar al tocar afuera */
   setTimeout(() => {
-    document.addEventListener("click", function cerrar(){
-      menu.remove();
-      document.removeEventListener("click", cerrar);
+    document.addEventListener("click", function cerrar(evt){
+      if (!menu.contains(evt.target)){
+        menu.remove();
+        document.removeEventListener("click", cerrar);
+      }
     });
   }, 0);
 }
