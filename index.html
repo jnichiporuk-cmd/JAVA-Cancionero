@@ -386,8 +386,11 @@ input{font-family:inherit;font-size:inherit}
   position:absolute;bottom:0;left:0;right:0;
   display:none;gap:9px;padding:11px 14px 16px;
   background:linear-gradient(to top,var(--fondo) 65%,transparent);
+  transition:transform 0.3s ease, opacity 0.3s ease;
+  transform:translateY(0);opacity:1;
 }
-.lector-pie.visible.cerca-fin{display:flex}
+.lector-pie.visible{display:flex}
+.lector-pie.oculto{transform:translateY(100%);opacity:0;pointer-events:none}
 .siguiente-info{text-align:right}
 .siguiente-info:disabled{opacity:.6;cursor:default}
 .si-etiqueta{
@@ -485,7 +488,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v192</span></div>
+    <div class="marca">Cancionero <span class="ver">v197</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -1103,6 +1106,8 @@ function transmitirDesdeElPrincipio(){
   pedirPantallaCompletaSiCelular();
   $("cuerpo").scrollTop = 0;
   reiniciarColapsoTope();
+  scrollAnterior = 0;
+  $("l-pie").classList.remove("oculto");
   pintarLector();
   transmitirEstado();
 }
@@ -1118,7 +1123,12 @@ function mostrarVistaOnline(d){
   const idx = est.lista.ids.indexOf(d.cancionId);
   est.posicion = idx >= 0 ? idx : 0;
   $("lector").classList.add("abierto");
-  if (cambioCancion){ $("cuerpo").scrollTop = 0; reiniciarColapsoTope(); }
+  if (cambioCancion){
+    $("cuerpo").scrollTop = 0;
+    reiniciarColapsoTope();
+    scrollAnterior = 0;
+    $("l-pie").classList.remove("oculto");
+  }
   pintarLector();
 }
 
@@ -2332,6 +2342,8 @@ function abrir(id, enReunion){
   pedirPantallaCompletaSiCelular();
   $("cuerpo").scrollTop = 0;
   reiniciarColapsoTope();
+  scrollAnterior = 0;  /* Reset para mostrar pie al abrir */
+  $("l-pie").classList.remove("oculto");  /* Mostrar pie al abrir canción */
   pintarLector();
   /* No se transmite sola: el director mira canciones libremente y
      transmite a propósito con el botón O. */
@@ -2342,7 +2354,7 @@ function cerrar(){
   est.soloLectura = false;
 }
 
-/* Hace scroll horizontal del riel para mantener la canción actual visible */
+/* Smart scroll: solo desplaza si la canción actual está fuera de vista */
 function hacerScrollRiel(){
   const riel = $("riel");
   if (!riel || !est.enReunion) return;
@@ -2350,15 +2362,23 @@ function hacerScrollRiel(){
   const btnActual = riel.querySelector("button.aqui");
   if (!btnActual) return;
 
-  /* Calcular el scroll necesario para centrar aproximadamente el botón actual */
-  const rielRect = riel.getBoundingClientRect();
-  const btnRect = btnActual.getBoundingClientRect();
   const btnOffset = btnActual.offsetLeft;
   const btnWidth = btnActual.offsetWidth;
   const rielWidth = riel.offsetWidth;
+  const rielScrollLeft = riel.scrollLeft;
 
-  /* Scroll de forma que el botón quede aproximadamente centrado
-     (o al menos visible y no cortado en los bordes) */
+  /* Verificar si el botón ya es visible */
+  const btnStart = btnOffset;
+  const btnEnd = btnOffset + btnWidth;
+  const viewStart = rielScrollLeft;
+  const viewEnd = rielScrollLeft + rielWidth;
+
+  /* Si el botón ya está completamente visible, no hacer scroll */
+  if (btnStart >= viewStart && btnEnd <= viewEnd) {
+    return;
+  }
+
+  /* Si no está visible, hacer scroll para centrarlo */
   const scrollTarget = btnOffset - (rielWidth / 2) + (btnWidth / 2);
   riel.scrollLeft = Math.max(0, scrollTarget);
 }
@@ -2522,6 +2542,31 @@ function reiniciarColapsoTope(){
    se achica, pero nunca se traba. */
 function actualizarColapsoTope(){
   $("lector-tope").classList.toggle("oculta", $("cuerpo").scrollTop > 0);
+}
+
+/* Oculta/muestra el pie según la dirección del scroll */
+let scrollAnterior = 0;
+function actualizarVisibilidadPie(){
+  const cuerpo = $("cuerpo");
+  const pie = $("l-pie");
+  const scrollActual = cuerpo.scrollTop;
+
+  /* Verificar si estamos cerca del final */
+  const noScrollea = cuerpo.scrollHeight <= cuerpo.clientHeight + 4;
+  const cercaFin = noScrollea || (scrollActual + cuerpo.clientHeight >= cuerpo.scrollHeight - 24);
+
+  /* Si está cerca del final, siempre mostrar pie */
+  if (cercaFin){
+    pie.classList.remove("oculto");
+  } else if (scrollActual > scrollAnterior && scrollActual > 50){
+    /* Si scrollea hacia abajo y no está cerca del final, ocultar pie */
+    pie.classList.add("oculto");
+  } else {
+    /* Si sube o está al principio, mostrar pie */
+    pie.classList.remove("oculto");
+  }
+
+  scrollAnterior = scrollActual;
 }
 
 /* Decide si mostrar la tarjeta "Siguiente": sólo cuando se llegó al
@@ -2724,7 +2769,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v192",
+    origen: "cancionero v197",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
@@ -2829,6 +2874,8 @@ document.addEventListener("keydown", e => {
 /* Mostrar la tarjeta "Siguiente" recién al llegar al final del scroll */
 $("cuerpo").addEventListener("scroll", actualizarPieCercaFin, {passive:true});
 $("cuerpo").addEventListener("scroll", actualizarColapsoTope, {passive:true});
+/* Ocultar pie al scrollear hacia abajo, mostrar al subir */
+$("cuerpo").addEventListener("scroll", actualizarVisibilidadPie, {passive:true});
 
 /* Deslizar para pasar de canción en modo reunión */
 let xIni = null, yIni = null;
