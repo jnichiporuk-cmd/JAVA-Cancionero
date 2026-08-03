@@ -1853,9 +1853,17 @@ function pintarReunion(){
     ? `<button class="btn" id="agregar-btn">+ Agregar</button>`
     : "";
   pie.innerHTML = primerBoton + botonesDirector;
-  if (hayTransmision) $("primer-btn").onclick = () => { est.pestana = "online"; pintar(); };
-  else if (est.esDirector) $("primer-btn").onclick = transmitirDesdeElPrincipio;
-  if (est.esDirector && $("agregar-btn")) $("agregar-btn").onclick = abrirAgregar;
+
+  /* Conectar eventos de botones */
+  if (hayTransmision) {
+    $("primer-btn").onclick = () => { est.pestana = "online"; pintar(); };
+  } else if (est.esDirector) {
+    $("primer-btn").onclick = transmitirDesdeElPrincipio;
+  }
+  if (est.esDirector) {
+    const btnAgregar = $("agregar-btn");
+    if (btnAgregar) btnAgregar.onclick = abrirAgregar;
+  }
 }
 
 function mostrarMenuCancion(e, idCancion, indice){
