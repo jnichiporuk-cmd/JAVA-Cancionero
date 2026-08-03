@@ -1769,7 +1769,7 @@ function pintarReunion(){
       Lo que armes acá lo ve todo el grupo.</div>`;
     pie.style.display = "flex";
     const hayTransmisionVacia = hayDirectorActivo(est.lista) && !!est.lista.enVivo;
-    pie.innerHTML = `<button class="btn btn-fuerte" id="agregar-btn"${est.esDirector ? "" : " disabled"}>+ Agregar canción canciones</button>`
+    pie.innerHTML = `<button class="btn" id="agregar-btn"${est.esDirector ? "" : " disabled"}>+ Agregar canción</button>`
       + (hayTransmisionVacia ? `<button class="btn btn-vivo" id="ver-vivo-evento">Transmitir</button>` : "");
     if (est.esDirector) $("agregar-btn").onclick = abrirAgregar;
     if (hayTransmisionVacia) $("ver-vivo-evento").onclick = () => { est.pestana = "online"; pintar(); };

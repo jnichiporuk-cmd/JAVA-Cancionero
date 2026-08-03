@@ -490,7 +490,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v236</span></div>
+    <div class="marca">Cancionero <span class="ver">v237</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -1769,7 +1769,7 @@ function pintarReunion(){
       Lo que armes acá lo ve todo el grupo.</div>`;
     pie.style.display = "flex";
     const hayTransmisionVacia = hayDirectorActivo(est.lista) && !!est.lista.enVivo;
-    pie.innerHTML = `<button class="btn btn-fuerte" id="agregar-btn"${est.esDirector ? "" : " disabled"}>+ Agregar canción canciones</button>`
+    pie.innerHTML = `<button class="btn" id="agregar-btn"${est.esDirector ? "" : " disabled"}>+ Agregar canción</button>`
       + (hayTransmisionVacia ? `<button class="btn btn-vivo" id="ver-vivo-evento">Transmitir</button>` : "");
     if (est.esDirector) $("agregar-btn").onclick = abrirAgregar;
     if (hayTransmisionVacia) $("ver-vivo-evento").onclick = () => { est.pestana = "online"; pintar(); };
@@ -2941,7 +2941,7 @@ function abrirExportar(){
   $("ex-resumen-contenido").innerHTML = resumenHTML;
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v236",
+    origen: "cancionero v237",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
