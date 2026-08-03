@@ -196,7 +196,7 @@ input{font-family:inherit;font-size:inherit}
   display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;
 }
 .dialogo-titulo{
-  color:var(--letra);font-size:15px;font-weight:600;flex:1;
+  color:var(--letra);font-size:15px;font-weight:600;text-align:center;margin-bottom:20px;
 }
 .dialogo-cerrar{
   flex:none;width:28px;height:28px;border:none;background:none;color:var(--tenue);
@@ -1918,10 +1918,15 @@ function mostrarDialogoUbicacion(posicionActual){
   `;
 
   dialogo.appendChild(contenido);
+
+  /* Prevenir propagación en el diálogo */
+  dialogo.addEventListener("click", e => e.stopPropagation());
+
   document.body.appendChild(dialogo);
 
   function cerrarDialogo(){
     dialogo.remove();
+    document.removeEventListener("click", cerrar);
   }
 
   /* Evento: "Como siguiente" */
@@ -1939,14 +1944,10 @@ function mostrarDialogoUbicacion(posicionActual){
   };
 
   /* Cerrar al tocar afuera */
-  setTimeout(() => {
-    document.addEventListener("click", function cerrar(e){
-      if (!dialogo.contains(e.target)){
-        cerrarDialogo();
-        document.removeEventListener("click", cerrar);
-      }
-    });
-  }, 0);
+  function cerrar(){
+    cerrarDialogo();
+  }
+  setTimeout(() => document.addEventListener("click", cerrar), 10);
 }
 function cerrarAgregar(){
   $("agregar").classList.remove("abierto");
