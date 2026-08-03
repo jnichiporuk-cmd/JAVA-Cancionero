@@ -203,6 +203,9 @@ input{font-family:inherit;font-size:inherit}
   background:var(--superficie-alta);border:1px solid var(--borde);border-radius:12px;
   padding:20px;min-width:240px;box-shadow:0 8px 24px rgba(0,0,0,0.4);
 }
+/* Cabecera del diálogo: el título y la ✕ para volver sin agregar nada.
+   La salida tiene que verse: tocar afuera también cierra, pero eso no se
+   ve por ningún lado y arriba del escenario no se adivina. */
 .dialogo-encabezado{
   display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;
 }
@@ -509,7 +512,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v201</span></div>
+    <div class="marca">Cancionero <span class="ver">v202</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -1777,7 +1780,7 @@ function pintarReunion(){
     const hayTransmisionVacia = hayDirectorActivo(est.lista) && !!est.lista.enVivo;
     pie.innerHTML = `<button class="btn btn-fuerte" id="agregar-btn"${est.esDirector ? "" : " disabled"}>+ Agregar canciones</button>`
       + (hayTransmisionVacia ? `<button class="btn btn-vivo" id="ver-vivo-evento">Online</button>` : "");
-    if (est.esDirector) $("agregar-btn").onclick = abrirAgregar;
+    if (est.esDirector) $("agregar-btn").onclick = () => abrirAgregar();
     if (hayTransmisionVacia) $("ver-vivo-evento").onclick = () => { est.pestana = "online"; pintar(); };
     return;
   }
@@ -1849,7 +1852,7 @@ function pintarReunion(){
   if (hayTransmision) $("primer-btn").onclick = () => { est.pestana = "online"; pintar(); };
   else if (est.esDirector) $("primer-btn").onclick = transmitirDesdeElPrincipio;
   if (est.esDirector){
-    if ($("agregar-btn")) $("agregar-btn").onclick = abrirAgregar;
+    if ($("agregar-btn")) $("agregar-btn").onclick = () => abrirAgregar();
     if ($("reordenar-btn")) $("reordenar-btn").onclick = () => { est.reordenando = !est.reordenando; pintarReunion(); };
   }
 }
@@ -1898,10 +1901,12 @@ function mostrarMenuCancion(e, idCancion, indice){
    aparte para no perder de vista en qué reunión se está agregando: antes
    había que ir y volver entre pestañas, y ese viaje es justo donde se
    pierde la noción de a cuál reunión se estaba sumando. */
-function abrirAgregar(){
+/* posicion: dónde insertar lo que se sume. Sin argumento (el caso de
+   siempre, el botón Agregar de la pestaña Evento) va al final. */
+function abrirAgregar(posicion = null){
   est.filtroAgregar = "";
   $("ag-buscar").value = "";
-  est.posicionInsertarEn = null;  /* Sin restricción de posición */
+  est.posicionInsertarEn = posicion;
   pintarAgregar();
   $("agregar").classList.add("abierto");
 }
@@ -1923,7 +1928,7 @@ function mostrarDialogoUbicacion(posicionActual){
   contenido.innerHTML = `
     <div class="dialogo-encabezado">
       <div class="dialogo-titulo">¿Dónde agregar la canción?</div>
-      <button class="dialogo-cerrar">✕</button>
+      <button class="dialogo-cerrar" title="Volver sin agregar" aria-label="Cerrar">✕</button>
     </div>
     <button class="dialogo-btn siguiente">Como siguiente</button>
     <button class="dialogo-btn final">Al final</button>
@@ -1932,22 +1937,33 @@ function mostrarDialogoUbicacion(posicionActual){
   dialogo.appendChild(contenido);
   document.body.appendChild(dialogo);
 
+  /* Un solo lugar para cerrar: lo llaman la ✕, el toque afuera y Escape,
+     y todos tienen que sacar además el listener del teclado (si no,
+     queda uno escuchando para siempre por cada vez que se abre). */
   function cerrarDialogo(){
     dialogo.remove();
+    document.removeEventListener("keydown", alTeclado);
   }
 
-  /* Evento: "Como siguiente" */
+  function alTeclado(e){
+    if (e.key === "Escape") cerrarDialogo();
+  }
+
+  document.addEventListener("keydown", alTeclado);
+
+  /* Evento: "Como siguiente".
+     abrirAgregar() recibe la posición en vez de fijarla acá antes de
+     llamarlo: adentro se resetea a null, así que fijarla antes no
+     servía de nada y la canción terminaba siempre al final. */
   contenido.querySelector(".siguiente").onclick = () => {
-    est.posicionInsertarEn = posicionActual + 1;
-    abrirAgregar();
     cerrarDialogo();
+    abrirAgregar(posicionActual + 1);
   };
 
   /* Evento: "Al final" */
   contenido.querySelector(".final").onclick = () => {
-    est.posicionInsertarEn = null;
-    abrirAgregar();
     cerrarDialogo();
+    abrirAgregar();
   };
 
   /* Evento: botón X */
@@ -2829,7 +2845,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v201",
+    origen: "cancionero v202",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
