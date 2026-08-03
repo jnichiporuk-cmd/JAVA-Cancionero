@@ -401,7 +401,7 @@ input{font-family:inherit;font-size:inherit}
 .si-fin{flex:1;padding:13px;text-align:center;color:var(--tenue);font-size:14px}
 .si-fin-derecha{flex:1;text-align:right;color:var(--tenue);font-size:14px}
 .btn-agregar-pie{
-  flex:none;padding:8px 12px;border-radius:8px;font-weight:700;font-size:14px;
+  flex:1;padding:13px;border-radius:9px;font-weight:700;font-size:15px;
   background:#0066FF;color:#fff;border:none;
 }
 .btn-agregar-pie:disabled{opacity:.6;cursor:default}
@@ -466,8 +466,8 @@ input{font-family:inherit;font-size:inherit}
 /* Fila de acciones arriba de la lista de canciones */
 .acciones{display:flex;gap:8px;padding:0 14px 12px;width:100%}
 .acciones button{
-  flex:1;padding:10px;border-radius:8px;border:1px solid var(--borde);
-  font-size:14px;font-weight:600;color:var(--letra);
+  flex:1;padding:13px;border-radius:9px;border:1px solid var(--borde);
+  font-size:15px;font-weight:700;color:var(--letra);
 }
 .acciones .exportar{color:var(--lista);border-color:var(--lista)}
 .pie-reunion .acciones{padding:0;width:100%}
@@ -490,7 +490,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v220</span></div>
+    <div class="marca">Cancionero <span class="ver">v221</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -2944,7 +2944,7 @@ function abrirExportar(){
   $("ex-resumen-contenido").innerHTML = resumenHTML;
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v220",
+    origen: "cancionero v221",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
