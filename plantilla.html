@@ -2684,7 +2684,7 @@ function pintarLector(){
     pie.innerHTML = `<div style="display:flex;gap:12px;align-items:center;width:100%;min-width:0">${btnAgregar}<div style="flex:2;text-align:right;min-width:0;overflow:hidden">${infoSiguiente}</div></div>`;
 
     // Event listeners
-    const btnAdd = pie.querySelector(".btn-agregar-pie");
+    const btnAdd = pie.querySelector(".btn");
     if (btnAdd && !bloqueado) btnAdd.onclick = () => abrirAgregarDesdeCancion(est.posicion);
 
     const btnSig = pie.querySelector(".siguiente-info");

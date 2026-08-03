@@ -490,7 +490,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v241</span></div>
+    <div class="marca">Cancionero <span class="ver">v242</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -2684,7 +2684,7 @@ function pintarLector(){
     pie.innerHTML = `<div style="display:flex;gap:12px;align-items:center;width:100%;min-width:0">${btnAgregar}<div style="flex:2;text-align:right;min-width:0;overflow:hidden">${infoSiguiente}</div></div>`;
 
     // Event listeners
-    const btnAdd = pie.querySelector(".btn-agregar-pie");
+    const btnAdd = pie.querySelector(".btn");
     if (btnAdd && !bloqueado) btnAdd.onclick = () => abrirAgregarDesdeCancion(est.posicion);
 
     const btnSig = pie.querySelector(".siguiente-info");
@@ -2941,7 +2941,7 @@ function abrirExportar(){
   $("ex-resumen-contenido").innerHTML = resumenHTML;
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v241",
+    origen: "cancionero v242",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
