@@ -401,8 +401,8 @@ input{font-family:inherit;font-size:inherit}
 .si-fin{flex:1;padding:13px;text-align:center;color:var(--tenue);font-size:14px}
 .si-fin-derecha{flex:1;text-align:right;color:var(--tenue);font-size:14px}
 .btn-agregar-pie{
-  flex:0 0 calc(50% - 6px);padding:13px;border-radius:9px;font-weight:700;font-size:15px;
-  background:#0066FF;color:#fff;border:none;
+  flex:1;padding:13px;border-radius:9px;font-weight:700;font-size:15px;
+  background:#0066FF;color:#fff;border:none;min-width:0;
 }
 .btn-agregar-pie:disabled{opacity:.6;cursor:default}
 .btn-agregar-pie:hover:not(:disabled){background:#0055DD}
@@ -2684,7 +2684,7 @@ function pintarLector(){
       infoSiguiente = `<div class="si-fin-derecha">Última canción del evento</div>`;
     }
 
-    pie.innerHTML = `<div style="display:flex;gap:12px;align-items:center;width:100%">${btnAgregar}<div style="flex:1;text-align:right">${infoSiguiente}</div></div>`;
+    pie.innerHTML = `<div style="display:flex;gap:12px;align-items:center;width:100%;min-width:0">${btnAgregar}<div style="flex:1;text-align:right;min-width:0;overflow:hidden">${infoSiguiente}</div></div>`;
 
     // Event listeners
     const btnAdd = pie.querySelector(".btn-agregar-pie");
