@@ -490,7 +490,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v228</span></div>
+    <div class="marca">Cancionero <span class="ver">v229</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -2684,7 +2684,7 @@ function pintarLector(){
       infoSiguiente = `<div class="si-fin-derecha">Última canción del evento</div>`;
     }
 
-    pie.innerHTML = `<div style="display:flex;gap:12px;align-items:center;width:100%;min-width:0">${btnAgregar}<div style="flex:1;text-align:right;min-width:0;overflow:hidden">${infoSiguiente}</div></div>`;
+    pie.innerHTML = `<div style="display:flex;gap:12px;align-items:center;width:100%;min-width:0">${btnAgregar}<div style="flex:2;text-align:right;min-width:0;overflow:hidden">${infoSiguiente}</div></div>`;
 
     // Event listeners
     const btnAdd = pie.querySelector(".btn-agregar-pie");
@@ -2944,7 +2944,7 @@ function abrirExportar(){
   $("ex-resumen-contenido").innerHTML = resumenHTML;
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v228",
+    origen: "cancionero v229",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
