@@ -237,7 +237,7 @@ input{font-family:inherit;font-size:inherit}
 
 .pie-reunion{
   position:fixed;bottom:0;left:0;right:0;z-index:15;
-  display:flex;gap:9px;padding:11px 14px 15px;
+  display:flex;gap:9px;padding:11px 14px 15px;justify-content:space-between;
   background:linear-gradient(to top,var(--fondo) 65%,transparent);
 }
 .btn{
@@ -1784,10 +1784,20 @@ function pintarReunion(){
      cuál es y para cuándo es, sin tener que ir a Guardadas a revisar. */
   const info = document.createElement("div");
   info.style.padding = "12px 14px 6px";
+  info.style.display = "flex";
+  info.style.alignItems = "center";
+  info.style.justifyContent = "space-between";
   info.innerHTML = `
-    <div class="fila-nombre">${escapar(est.lista.nombre || "Sin nombre")}</div>
-    <div class="fila-meta">${fechaHoraTexto(est.lista.fechaReunion || est.lista.cuando || Date.now())}</div>`;
+    <div>
+      <div class="fila-nombre">${escapar(est.lista.nombre || "Sin nombre")}</div>
+      <div class="fila-meta">${fechaHoraTexto(est.lista.fechaReunion || est.lista.cuando || Date.now())}</div>
+    </div>
+    <button class="menu-cancion" id="menu-evento-btn" title="Más opciones">⋮</button>`;
   cont.appendChild(info);
+
+  if (est.esDirector){
+    $("menu-evento-btn").onclick = (e) => mostrarMenuEvento(e);
+  }
 
   est.lista.ids.forEach((id, i) => {
     const s = PORID[id];
@@ -1840,16 +1850,12 @@ function pintarReunion(){
       ? `<button class="btn btn-fuerte" id="primer-btn">Transmitir</button>`
       : `<button class="btn" id="primer-btn" disabled>Offline</button>`;
   const botonesDirector = est.esDirector
-    ? `<button class="btn" id="agregar-btn">+ Agregar</button>
-       <button class="btn${est.reordenando ? " on" : ""}" id="reordenar-btn">Reordenar</button>`
+    ? `<button class="btn" id="agregar-btn">+ Agregar</button>`
     : "";
   pie.innerHTML = primerBoton + botonesDirector;
   if (hayTransmision) $("primer-btn").onclick = () => { est.pestana = "online"; pintar(); };
   else if (est.esDirector) $("primer-btn").onclick = transmitirDesdeElPrincipio;
-  if (est.esDirector){
-    if ($("agregar-btn")) $("agregar-btn").onclick = abrirAgregar;
-    if ($("reordenar-btn")) $("reordenar-btn").onclick = () => { est.reordenando = !est.reordenando; pintarReunion(); };
-  }
+  if (est.esDirector && $("agregar-btn")) $("agregar-btn").onclick = abrirAgregar;
 }
 
 function mostrarMenuCancion(e, idCancion, indice){
@@ -1866,6 +1872,50 @@ function mostrarMenuCancion(e, idCancion, indice){
   const opciones = [
     { label: "Editar canción", action: () => abrirEditor(idCancion) },
     { label: "Quitar del evento", action: () => quitar(idCancion), rojo: true },
+  ];
+
+  opciones.forEach(opt => {
+    const btn = document.createElement("button");
+    btn.className = "menu-item" + (opt.rojo ? " rojo" : "");
+    btn.textContent = opt.label;
+    btn.onclick = () => {
+      opt.action();
+      menu.remove();
+    };
+    menu.appendChild(btn);
+  });
+
+  document.body.appendChild(menu);
+
+  /* Posicionar el menú cerca del botón */
+  const rect = e.target.getBoundingClientRect();
+  menu.style.top = (rect.bottom + 4) + "px";
+  menu.style.left = (rect.right - menu.offsetWidth) + "px";
+
+  /* Cerrar al tocar afuera */
+  setTimeout(() => {
+    document.addEventListener("click", function cerrar(evt){
+      if (!menu.contains(evt.target)){
+        menu.remove();
+        document.removeEventListener("click", cerrar);
+      }
+    });
+  }, 0);
+}
+
+function mostrarMenuEvento(e){
+  /* Si ya hay un menú abierto, cerrarlo (toggle) */
+  const menuExistente = document.querySelector(".menu-dropdown");
+  if (menuExistente){
+    menuExistente.remove();
+    return;
+  }
+
+  const menu = document.createElement("div");
+  menu.className = "menu-dropdown";
+
+  const opciones = [
+    { label: "Reordenar", action: () => { est.reordenando = !est.reordenando; pintarReunion(); } },
   ];
 
   opciones.forEach(opt => {
