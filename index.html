@@ -494,7 +494,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v216</span></div>
+    <div class="marca">Cancionero <span class="ver">v217</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -623,6 +623,7 @@ input{font-family:inherit;font-size:inherit}
     </div>
   </div>
   <div class="agregar-lista" id="ag-lista"></div>
+  <div class="lector-pie" id="ag-pie" style="display:none"></div>
 </div>
 
 <!-- Editar nombre y fecha/hora de una reunión guardada -->
@@ -2941,7 +2942,7 @@ function abrirExportar(){
   $("ex-resumen-contenido").innerHTML = resumenHTML;
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v216",
+    origen: "cancionero v217",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
