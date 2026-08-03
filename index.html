@@ -387,12 +387,12 @@ input{font-family:inherit;font-size:inherit}
 }
 .lector-pie.visible{display:flex}
 .lector-pie.oculto{transform:translateY(100%);opacity:0;pointer-events:none}
-.siguiente-info{text-align:right;min-width:0;width:100%}
+.siguiente-info{text-align:right;min-width:0;flex:1;overflow:hidden}
 .siguiente-info:disabled{opacity:.6;cursor:default}
 .siguiente-info .fila-nombre{
   font-size:14px;font-weight:500;text-transform:uppercase;letter-spacing:.02em;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  display:block;width:100%;
+  display:block;min-width:0;
 }
 .si-etiqueta{
   font-size:10px;letter-spacing:.14em;text-transform:uppercase;
@@ -490,7 +490,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v225</span></div>
+    <div class="marca">Cancionero <span class="ver">v226</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -2944,7 +2944,7 @@ function abrirExportar(){
   $("ex-resumen-contenido").innerHTML = resumenHTML;
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v225",
+    origen: "cancionero v226",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);

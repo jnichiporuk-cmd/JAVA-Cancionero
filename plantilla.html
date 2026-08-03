@@ -387,12 +387,12 @@ input{font-family:inherit;font-size:inherit}
 }
 .lector-pie.visible{display:flex}
 .lector-pie.oculto{transform:translateY(100%);opacity:0;pointer-events:none}
-.siguiente-info{text-align:right;min-width:0;width:100%}
+.siguiente-info{text-align:right;min-width:0;flex:1;overflow:hidden}
 .siguiente-info:disabled{opacity:.6;cursor:default}
 .siguiente-info .fila-nombre{
   font-size:14px;font-weight:500;text-transform:uppercase;letter-spacing:.02em;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  display:block;width:100%;
+  display:block;min-width:0;
 }
 .si-etiqueta{
   font-size:10px;letter-spacing:.14em;text-transform:uppercase;
