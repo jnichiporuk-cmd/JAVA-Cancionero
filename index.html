@@ -498,7 +498,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v203</span></div>
+    <div class="marca">Cancionero <span class="ver">v204</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -1918,10 +1918,6 @@ function mostrarDialogoUbicacion(posicionActual){
   `;
 
   dialogo.appendChild(contenido);
-
-  /* Prevenir propagación en el diálogo */
-  dialogo.addEventListener("click", e => e.stopPropagation());
-
   document.body.appendChild(dialogo);
 
   function cerrarDialogo(){
@@ -1944,8 +1940,10 @@ function mostrarDialogoUbicacion(posicionActual){
   };
 
   /* Cerrar al tocar afuera */
-  function cerrar(){
-    cerrarDialogo();
+  function cerrar(e){
+    if (!contenido.contains(e.target)){
+      cerrarDialogo();
+    }
   }
   setTimeout(() => document.addEventListener("click", cerrar), 10);
 }
@@ -2817,7 +2815,7 @@ function abrirExportar(){
     + "que no tocaron: sólo lo que cambió.";
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v203",
+    origen: "cancionero v204",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);

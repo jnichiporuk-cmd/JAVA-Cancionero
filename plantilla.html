@@ -1918,10 +1918,6 @@ function mostrarDialogoUbicacion(posicionActual){
   `;
 
   dialogo.appendChild(contenido);
-
-  /* Prevenir propagación en el diálogo */
-  dialogo.addEventListener("click", e => e.stopPropagation());
-
   document.body.appendChild(dialogo);
 
   function cerrarDialogo(){
@@ -1944,8 +1940,10 @@ function mostrarDialogoUbicacion(posicionActual){
   };
 
   /* Cerrar al tocar afuera */
-  function cerrar(){
-    cerrarDialogo();
+  function cerrar(e){
+    if (!contenido.contains(e.target)){
+      cerrarDialogo();
+    }
   }
   setTimeout(() => document.addEventListener("click", cerrar), 10);
 }
