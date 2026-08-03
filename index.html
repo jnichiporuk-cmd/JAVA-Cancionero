@@ -490,7 +490,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v234</span></div>
+    <div class="marca">Cancionero <span class="ver">v236</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -1787,13 +1787,9 @@ function pintarReunion(){
     <div>
       <div class="fila-nombre">${escapar(est.lista.nombre || "Sin nombre")}</div>
       <div class="fila-meta">${fechaHoraTexto(est.lista.fechaReunion || est.lista.cuando || Date.now())}</div>
-    </div>
-    <button class="menu-cancion" id="menu-evento-btn" title="Más opciones">⋮</button>`;
+    </div>`;
   cont.appendChild(info);
 
-  if (est.esDirector){
-    $("menu-evento-btn").onclick = (e) => mostrarMenuEvento(e);
-  }
 
   est.lista.ids.forEach((id, i) => {
     const s = PORID[id];
@@ -1874,6 +1870,7 @@ function mostrarMenuCancion(e, idCancion, indice){
   menu.className = "menu-dropdown";
 
   const opciones = [
+    { label: "Reordenar", action: () => { est.reordenando = !est.reordenando; pintarReunion(); } },
     { label: "Editar canción", action: () => abrirEditor(idCancion) },
     { label: "Quitar del evento", action: () => quitar(idCancion), rojo: true },
   ];
@@ -2944,7 +2941,7 @@ function abrirExportar(){
   $("ex-resumen-contenido").innerHTML = resumenHTML;
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v234",
+    origen: "cancionero v236",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
