@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refactor: Búsqueda Unificada - Cancionero</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0a0a0a;
+            color: #e0e0e0;
+            font-family: 'Monaco', 'Courier New', monospace;
+            padding: 40px;
+            line-height: 1.8;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #fff;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        .subtitle {
+            color: #888;
+            margin-bottom: 40px;
+        }
+        .section {
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #00b0f0;
+            font-size: 18px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+        }
+        h3 {
+            color: #3dd68c;
+            font-size: 14px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        code {
+            background: #1a1a1a;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #f2a33c;
+            font-size: 12px;
+        }
+        pre {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 15px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #ccc;
+        }
+        .problema {
+            background: #3a1a1a;
+            border-left: 3px solid #ff6b6b;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .problema-titulo {
+            color: #ff6b6b;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .ventaja {
+            background: #1a3a1a;
+            border-left: 3px solid #3dd68c;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .ventaja-titulo {
+            color: #3dd68c;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .paso {
+            background: #1a2a3a;
+            border-left: 3px solid #0066ff;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        .paso-numero {
+            display: inline-block;
+            background: #0066ff;
+            color: #fff;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            font-weight: 700;
+            margin-right: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #333;
+        }
+        th {
+            background: #1a1a1a;
+            color: #0066ff;
+            font-weight: 700;
+        }
+        .diferencia {
+            background: #2a2a2a;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Refactor: Búsqueda Unificada</h1>
+        <div class="subtitle">Centralizar la lógica de filtrado para que un cambio afecte todos los buscadores</div>
+
+        <!-- EL PROBLEMA -->
+        <div class="section">
+            <h2>❌ El Problema</h2>
+
+            <p>Tienes dos buscadores que hacen lo MISMO pero están en código separado:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Lugar</th>
+                        <th>Input</th>
+                        <th>Placeholder</th>
+                        <th>Función</th>
+                        <th>Dónde filtra</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Pestaña Canciones</td>
+                        <td><code>id="buscar"</code></td>
+                        <td>"Buscar por título, letra, tono o BPM"</td>
+                        <td><code>pintarCatalogo()</code></td>
+                        <td>Línea 1710-1716</td>
+                    </tr>
+                    <tr class="diferencia">
+                        <td>Panel Agregar</td>
+                        <td><code>id="ag-buscar"</code></td>
+                        <td>"Buscar por título, letra, tono o BPM"</td>
+                        <td><code>pintarAgregar()</code></td>
+                        <td>Línea 2072-2075</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="problema">
+                <div class="problema-titulo">Problema 1: Placeholder duplicado</div>
+                Cuando pediste que agregara "letra" al placeholder, tuviste que pedir dos cambios (uno en cada lugar).
+            </div>
+
+            <div class="problema">
+                <div class="problema-titulo">Problema 2: Lógica duplicada pero inconsistente</div>
+                <pre>// En Canciones - SÍ busca en letra
+return s.bloques.some(b => b.t === "l" && b.v.toLowerCase().includes(q));
+
+// En Agregar - NO busca en letra
+// (falta esta línea completamente)</pre>
+            </div>
+
+            <div class="problema">
+                <div class="problema-titulo">Problema 3: Cambios futuros = múltiples ediciones</div>
+                Si mañana quieres agregar búsqueda por fecha o por autor, tienes que tocar 2 funciones y mantener ambas sincronizadas.
+            </div>
+        </div>
+
+        <!-- LA SOLUCIÓN -->
+        <div class="section">
+            <h2>✅ La Solución: Función Centralizada</h2>
+
+            <p>Crear <strong>una sola función</strong> que concentre toda la lógica de búsqueda:</p>
+
+            <pre>// Nueva función centralizada
+function filtrarCanciones(query, catalogo = CATALOGO) {
+  const q = query.trim().toLowerCase();
+
+  if (!q) return catalogo;  // Sin query, devuelve todo
+
+  return catalogo.filter(s => {
+    // Buscar en nombre
+    if (s.nombre.toLowerCase().includes(q)) return true;
+
+    // Buscar en tono (búsqueda exacta: "G" ≠ "Sol")
+    if ((s.tono || "").toLowerCase() === q) return true;
+
+    // Buscar en letra (cualquier bloque de tipo "l")
+    if (s.bloques.some(b => b.t === "l" && b.v.toLowerCase().includes(q))) {
+      return true;
+    }
+
+    // Más criterios van acá (fecha, autor, etc.)
+
+    return false;
+  });
+}</pre>
+
+            <div class="ventaja">
+                <div class="ventaja-titulo">Ventaja 1: Un solo lugar donde filtra</div>
+                Toda la lógica de búsqueda está en una función. Cambios futuros = editar aquí.
+            </div>
+
+            <div class="ventaja">
+                <div class="ventaja-titulo">Ventaja 2: Reutilizable en cualquier lado</div>
+                Si mañana quieres un buscador en otra pantalla, llamas <code>filtrarCanciones(q)</code> y listo.
+            </div>
+
+            <div class="ventaja">
+                <div class="ventaja-titulo">Ventaja 3: Consistencia garantizada</div>
+                Ambos buscadores usan los MISMOS criterios, no hay sorpresas.
+            </div>
+        </div>
+
+        <!-- REFACTORIZACIÓN -->
+        <div class="section">
+            <h2>🛠️ Cómo Refactorizar</h2>
+
+            <h3>Paso 1: Crear la función filtrarCanciones()</h3>
+            <p>Al inicio del script, agregar:</p>
+            <pre>function filtrarCanciones(query, catalogo = CATALOGO) {
+  const q = query.trim().toLowerCase();
+
+  if (!q) return catalogo;
+
+  return catalogo.filter(s => {
+    if (s.nombre.toLowerCase().includes(q)) return true;
+    if ((s.tono || "").toLowerCase() === q) return true;
+    if (s.bloques.some(b => b.t === "l" && b.v.toLowerCase().includes(q))) return true;
+    return false;
+  });
+}</pre>
+
+            <h3>Paso 2: Refactorizar pintarCatalogo()</h3>
+            <p>Reemplazar líneas 1710-1717:</p>
+            <pre><strong>ANTES:</strong>
+const q = est.filtro.trim().toLowerCase();
+const encontradas = CATALOGO.filter(s => {
+  if (!q) return true;
+  if (s.nombre.toLowerCase().includes(q)) return true;
+  if ((s.tono || "").toLowerCase() === q) return true;
+  return s.bloques.some(b => b.t === "l" && b.v.toLowerCase().includes(q));
+}).sort(COMPARADORES[est.orden]);
+
+<strong>DESPUÉS:</strong>
+const encontradas = filtrarCanciones(est.filtro)
+  .sort(COMPARADORES[est.orden]);</pre>
+
+            <h3>Paso 3: Refactorizar pintarAgregar()</h3>
+            <p>Reemplazar líneas 2072-2075:</p>
+            <pre><strong>ANTES:</strong>
+const q = est.filtroAgregar.trim().toLowerCase();
+const encontradas = CATALOGO.filter(s =>
+  !q || s.nombre.toLowerCase().includes(q) || (s.tono || "").toLowerCase() === q
+);
+
+<strong>DESPUÉS:</strong>
+const encontradas = filtrarCanciones(est.filtroAgregar);</pre>
+
+            <h3>Paso 4: Actualizar placeholder (opcional)</h3>
+            <p>Puedes extraer el placeholder a una constante:</p>
+            <pre>const PLACEHOLDER_BUSCAR = "Buscar por título, letra, tono o BPM";
+
+// En HTML
+&lt;input id="buscar" placeholder="${PLACEHOLDER_BUSCAR}" /&gt;
+&lt;input id="ag-buscar" placeholder="${PLACEHOLDER_BUSCAR}" /&gt;</pre>
+
+            <p style="margin-top: 15px; color: #888; font-size: 13px;">
+                Nota: El placeholder en HTML es estático, así que no es práctico extraerlo a una constante JS. Mejor dejar los dos placeholders iguales "a mano", y si cambian, al menos la lógica de búsqueda está centralizada.
+            </p>
+
+            <h3 style="margin-top: 30px;">Paso 5: Probar</h3>
+            <div class="paso">
+                <span class="paso-numero">✓</span>
+                Buscar por nombre en Canciones → debe funcionar igual
+            </div>
+            <div class="paso">
+                <span class="paso-numero">✓</span>
+                Buscar por tono en Canciones → debe funcionar igual
+            </div>
+            <div class="paso">
+                <span class="paso-numero">✓</span>
+                Buscar por letra en Canciones → debe funcionar igual
+            </div>
+            <div class="paso">
+                <span class="paso-numero">✓</span>
+                Buscar en Panel Agregar → debe funcionar mejor (ahora busca letra también)
+            </div>
+            <div class="paso">
+                <span class="paso-numero">✓</span>
+                <code>python build.py</code> → sin errores
+            </div>
+        </div>
+
+        <!-- EJEMPLO FUTURO -->
+        <div class="section">
+            <h2>💡 Ejemplo: Agregar Búsqueda por Fecha</h2>
+
+            <p>Mañana quieres poder buscar canciones por fecha (cuando se agregaron). Con la búsqueda centralizada:</p>
+
+            <pre><strong>AHORA (con búsqueda duplicada):</strong>
+// Tendrías que editar AMBAS funciones:
+- pintarCatalogo() línea 1710-1716
+- pintarAgregar() línea 2072-2075
+- Riesgo: olvidar editar una, inconsistencia
+
+<strong>CON BÚSQUEDA CENTRALIZADA:</strong>
+// Editas UN solo lugar:
+function filtrarCanciones(query, catalogo = CATALOGO) {
+  const q = query.trim().toLowerCase();
+  if (!q) return catalogo;
+
+  return catalogo.filter(s => {
+    // ... criterios anteriores ...
+
+    // Nuevo criterio
+    if (s.cuando && new Date(s.cuando).toLocaleDateString().includes(q)) return true;
+
+    return false;
+  });
+}
+
+// Ambos buscadores lo usan automáticamente, sin tocar nada más.</pre>
+
+            <div class="ventaja">
+                <div class="ventaja-titulo">Mantenimiento futuro más fácil</div>
+                Un cambio = un lugar. Menos bugs, menos sorpresas.
+            </div>
+        </div>
+
+        <!-- RIESGOS -->
+        <div class="section">
+            <h2>⚠️ Riesgos y Consideraciones</h2>
+
+            <p>Muy bajo riesgo. La refactor es simple y testeable:</p>
+
+            <ul style="margin-left: 20px; line-height: 1.8;">
+                <li><strong>Paso 1:</strong> Crear función nueva (sin tocar nada existente yet)</li>
+                <li><strong>Paso 2:</strong> Reemplazar pintarCatalogo() (prueba inmediatamente)</li>
+                <li><strong>Paso 3:</strong> Reemplazar pintarAgregar() (prueba inmediatamente)</li>
+                <li><strong>Rollback fácil:</strong> Si algo falla, deshacer los reemplazos</li>
+            </ul>
+
+            <p style="margin-top: 20px; color: #888;">
+                <strong>Ventaja adicional:</strong> Ahora Panel Agregar buscará por letra también (antes no lo hacía).
+            </p>
+        </div>
+
+        <!-- CONCLUSIÓN -->
+        <div class="section" style="background: #1a3a1a; border-color: #3dd68c;">
+            <h2 style="color: #3dd68c; border-color: #3dd68c;">✅ Conclusión</h2>
+
+            <p><strong>Esta es una refactor de MÁXIMA prioridad.</strong></p>
+
+            <ul style="margin-left: 20px; margin-top: 15px; line-height: 1.8;">
+                <li>✅ <strong>Baja complejidad:</strong> ~20 líneas de código nuevo, ~4 líneas modificadas</li>
+                <li>✅ <strong>Alto impacto:</strong> Centraliza la lógica de búsqueda para siempre</li>
+                <li>✅ <strong>Bajo riesgo:</strong> La función es pura (no toca estado), fácil de testear</li>
+                <li>✅ <strong>Mejora directa:</strong> Agregar funciona mejor (ahora busca letra)</li>
+                <li>✅ <strong>Mantenimiento futuro:</strong> Cualquier cambio en búsqueda = 1 lugar</li>
+            </ul>
+
+            <p style="margin-top: 20px; color: #888;">
+                <strong>Recomendación:</strong> Hacer esto ahora. Es el tipo de refactor que evita deuda técnica futura.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

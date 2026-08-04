@@ -133,7 +133,7 @@ setImmediate(() => {
     __app.est.pestana = "reunion";
     const idNota = __app.generarIdNota();
     __app.est.lista.ids = [__app.CATALOGO[0].id, idNota, __app.CATALOGO[1].id];
-    __app.est.lista.notas[idNota] = "Pausa";
+    __app.est.lista.notas[idNota] = {nombre: "Pausa", contenido: "Esperar 5 segundos"};
     __app.est.reordenando = true;
     __app.renderReunion();
     __app.est.reordenando = false;

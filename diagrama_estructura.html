@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estructura y Conexiones - Cancionero</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0a0a0a;
+            color: #e0e0e0;
+            font-family: 'Monaco', 'Courier New', monospace;
+            padding: 40px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        h1 {
+            margin-bottom: 10px;
+            font-size: 28px;
+            color: #fff;
+        }
+        .subtitle {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        /* Estructura principal */
+        .diagrama-contenedor {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 50px;
+            padding: 30px;
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 12px;
+            min-height: 600px;
+        }
+
+        .columna {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .columna-titulo {
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #0066ff;
+            margin-bottom: 20px;
+        }
+
+        .item {
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        /* Colores por tipo */
+        .pestaña {
+            background: #003366;
+            border-color: #0066ff;
+            color: #00b0f0;
+        }
+        .pestaña:hover {
+            background: #004080;
+            box-shadow: 0 0 10px rgba(0, 176, 240, 0.3);
+        }
+
+        .vista {
+            background: #003300;
+            border-color: #3dd68c;
+            color: #3dd68c;
+        }
+        .vista:hover {
+            background: #004400;
+            box-shadow: 0 0 10px rgba(61, 214, 140, 0.3);
+        }
+
+        .accion {
+            background: #330000;
+            border-color: #ff6b6b;
+            color: #ff6b6b;
+            font-size: 12px;
+        }
+        .accion:hover {
+            background: #440000;
+            box-shadow: 0 0 10px rgba(255, 107, 107, 0.3);
+        }
+
+        .accion-repetida {
+            background: #333300;
+            border-color: #f2a33c;
+            color: #f2a33c;
+        }
+        .accion-repetida:hover {
+            background: #444400;
+            box-shadow: 0 0 10px rgba(242, 163, 60, 0.3);
+        }
+
+        /* Conexiones visuales */
+        svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .diagrama-contenedor {
+            position: relative;
+            overflow: visible;
+        }
+
+        /* Tabla de análisis */
+        .analisis {
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .analisis h2 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .tabla-grupos {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .grupo {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .grupo-titulo {
+            font-weight: 700;
+            color: #f2a33c;
+            margin-bottom: 10px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .grupo-titulo::before {
+            content: "⚠";
+            font-size: 16px;
+        }
+
+        .grupo ul {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .grupo li {
+            padding: 6px 0;
+            font-size: 12px;
+            color: #ccc;
+            padding-left: 16px;
+        }
+
+        .grupo li::before {
+            content: "→ ";
+            color: #888;
+        }
+
+        /* Legend */
+        .legend {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+        }
+
+        .legend-box {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            border: 2px solid;
+            flex-shrink: 0;
+        }
+
+        .lg-pestaña {
+            background: #003366;
+            border-color: #0066ff;
+        }
+
+        .lg-vista {
+            background: #003300;
+            border-color: #3dd68c;
+        }
+
+        .lg-accion {
+            background: #330000;
+            border-color: #ff6b6b;
+        }
+
+        .lg-repetida {
+            background: #333300;
+            border-color: #f2a33c;
+        }
+
+        /* Estadísticas */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .stat-numero {
+            font-size: 32px;
+            font-weight: 700;
+            color: #0066ff;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏗️ Estructura y Conexiones - Cancionero</h1>
+        <div class="subtitle">Análisis de pestañas, vistas y acciones para detectar optimizaciones</div>
+
+        <!-- Estadísticas -->
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-numero">4</div>
+                <div class="stat-label">Pestañas</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-numero">7</div>
+                <div class="stat-label">Vistas/Pantallas</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-numero">25+</div>
+                <div class="stat-label">Acciones</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-numero">8</div>
+                <div class="stat-label">Acciones Repetidas</div>
+            </div>
+        </div>
+
+        <!-- Diagrama Principal -->
+        <div class="diagrama-contenedor">
+            <!-- COLUMNA 1: Pestañas -->
+            <div class="columna">
+                <div class="columna-titulo">📑 Pestañas</div>
+                <div class="item pestaña">Canciones</div>
+                <div class="item pestaña">Evento</div>
+                <div class="item pestaña">Historial</div>
+                <div class="item pestaña">Transmisión</div>
+            </div>
+
+            <!-- COLUMNA 2: Vistas/Pantallas -->
+            <div class="columna">
+                <div class="columna-titulo">🎬 Vistas/Pantallas</div>
+                <div class="item vista">Catálogo (Canciones)</div>
+                <div class="item vista">Lector</div>
+                <div class="item vista">Editor</div>
+                <div class="item vista">Panel Agregar</div>
+                <div class="item vista">Lista Evento</div>
+                <div class="item vista">Reuniones Guardadas</div>
+                <div class="item vista">Vista Online (Transmisión)</div>
+            </div>
+
+            <!-- COLUMNA 3: Acciones -->
+            <div class="columna">
+                <div class="columna-titulo">🔘 Acciones/Botones</div>
+
+                <div class="item accion-repetida">📋 Editar (canción/evento)</div>
+                <div class="item accion-repetida">🗑️ Eliminar (canción/evento)</div>
+                <div class="item accion-repetida">📝 Buscar</div>
+                <div class="item accion-repetida">❌ Cerrar/Volver</div>
+                <div class="item accion-repetida">✅ Guardar</div>
+
+                <div class="item accion">+ Nueva canción</div>
+                <div class="item accion">+ Agregar canción</div>
+                <div class="item accion">Transmitir</div>
+                <div class="item accion">Quitar del evento</div>
+                <div class="item accion">+ Nuevo evento</div>
+                <div class="item accion">Usar evento</div>
+                <div class="item accion">Copiar evento</div>
+                <div class="item accion">Reordenar</div>
+                <div class="item accion">Cambiar rol</div>
+                <div class="item accion">Transporte (♭/♯)</div>
+                <div class="item accion">Aumentar/Reducir letra</div>
+            </div>
+        </div>
+
+        <!-- Análisis de Optimización -->
+        <div class="analisis">
+            <h2>🔍 Análisis de Optimización</h2>
+
+            <div class="tabla-grupos">
+                <div class="grupo">
+                    <div class="grupo-titulo">Editar (2 contextos)</div>
+                    <ul>
+                        <li>Editar Canción</li>
+                        <li>Editar Evento</li>
+                    </ul>
+                    <p style="font-size: 11px; color: #888; margin-top: 8px;">
+                        <strong>Idea:</strong> Podrían compartir función base <code>abrirEditor()</code> con parámetro de tipo.
+                    </p>
+                </div>
+
+                <div class="grupo">
+                    <div class="grupo-titulo">Eliminar (2 contextos)</div>
+                    <ul>
+                        <li>Eliminar Canción</li>
+                        <li>Eliminar Evento</li>
+                    </ul>
+                    <p style="font-size: 11px; color: #888; margin-top: 8px;">
+                        <strong>Idea:</strong> Podrían unificarse en <code>eliminar(tipo, id)</code>.
+                    </p>
+                </div>
+
+                <div class="grupo">
+                    <div class="grupo-titulo">Buscar (2 contextos)</div>
+                    <ul>
+                        <li>Buscar en Canciones</li>
+                        <li>Buscar en Panel Agregar</li>
+                    </ul>
+                    <p style="font-size: 11px; color: #888; margin-top: 8px;">
+                        <strong>Idea:</strong> Compartir lógica de filtrado en función <code>filtrar(catalogo, query)</code>.
+                    </p>
+                </div>
+
+                <div class="grupo">
+                    <div class="grupo-titulo">Cerrar/Volver (múltiple)</div>
+                    <ul>
+                        <li>Cerrar Lector</li>
+                        <li>Cerrar Editor</li>
+                        <li>Cerrar Panel Agregar</li>
+                        <li>Cerrar Vista Online</li>
+                    </ul>
+                    <p style="font-size: 11px; color: #888; margin-top: 8px;">
+                        <strong>Idea:</strong> Usar selector genérico: <code>cerrar(panelId)</code>.
+                    </p>
+                </div>
+
+                <div class="grupo">
+                    <div class="grupo-titulo">Guardar (múltiple)</div>
+                    <ul>
+                        <li>Guardar Canción</li>
+                        <li>Guardar Evento</li>
+                        <li>Guardar Ajustes</li>
+                    </ul>
+                    <p style="font-size: 11px; color: #888; margin-top: 8px;">
+                        <strong>Idea:</strong> Función base <code>guardar(tipo, datos)</code> + dispatch a Firestore.
+                    </p>
+                </div>
+
+                <div class="grupo">
+                    <div class="grupo-titulo">Mostrar Menú (3 contextos)</div>
+                    <ul>
+                        <li>Menú canción en Catálogo</li>
+                        <li>Menú canción en Evento</li>
+                        <li>Menú reunión en Historial</li>
+                    </ul>
+                    <p style="font-size: 11px; color: #888; margin-top: 8px;">
+                        <strong>Idea:</strong> Unificar renderizado con <code>mostrarMenu(tipo, opciones, posicion)</code>.
+                    </p>
+                </div>
+
+                <div class="grupo">
+                    <div class="grupo-titulo">Pintar/Renderizar</div>
+                    <ul>
+                        <li>pintarCatalogo()</li>
+                        <li>pintarReunion()</li>
+                        <li>pintarLector()</li>
+                        <li>pintarAgregar()</li>
+                        <li>pintarGuardadas()</li>
+                        <li>pintarOnline()</li>
+                    </ul>
+                    <p style="font-size: 11px; color: #888; margin-top: 8px;">
+                        <strong>Posible:</strong> Refactorizar a <code>pintar(vista, datos)</code> + templates.
+                    </p>
+                </div>
+
+                <div class="grupo">
+                    <div class="grupo-titulo">Filtrado/Búsqueda</div>
+                    <ul>
+                        <li>Buscar en Canciones</li>
+                        <li>Buscar en Agregador</li>
+                        <li>Buscar en Historial</li>
+                    </ul>
+                    <p style="font-size: 11px; color: #888; margin-top: 8px;">
+                        <strong>Idea:</strong> Componente reutilizable <code>Buscador</code>.
+                    </p>
+                </div>
+            </div>
+
+            <div style="background: #1a1a1a; border-left: 3px solid #f2a33c; padding: 15px; border-radius: 8px; margin-top: 20px;">
+                <h3 style="color: #f2a33c; margin-bottom: 10px;">📌 Oportunidades Clave</h3>
+                <ol style="font-size: 12px; color: #ccc; margin-left: 20px;">
+                    <li><strong>Función genérica de cierre:</strong> Reemplazar 4+ funciones de "cerrar" con una sola</li>
+                    <li><strong>Unificar menús:</strong> Un componente de menú con opciones dinámicas</li>
+                    <li><strong>Sistema de filtrado central:</strong> Reutilizar la lógica de búsqueda</li>
+                    <li><strong>Refactorizar renderizado:</strong> Usar un patrón de vista/dato en lugar de funciones específicas</li>
+                    <li><strong>Editor genérico:</strong> Mismo flujo para canción y evento (diferentes campos)</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-box lg-pestaña"></div>
+                <span><strong>Pestaña:</strong> Punto de entrada del usuario</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box lg-vista"></div>
+                <span><strong>Vista/Pantalla:</strong> Lo que ve en pantalla</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box lg-accion"></div>
+                <span><strong>Acción:</strong> Botón/función única</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box lg-repetida"></div>
+                <span><strong>Repetida:</strong> Aparece en múltiples contextos</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

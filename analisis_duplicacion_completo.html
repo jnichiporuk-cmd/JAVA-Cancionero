@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis: Duplicación en el Código - Cancionero</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0a0a0a;
+            color: #e0e0e0;
+            font-family: 'Monaco', 'Courier New', monospace;
+            padding: 40px;
+            line-height: 1.8;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #fff;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        .subtitle {
+            color: #888;
+            margin-bottom: 30px;
+        }
+        .section {
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #00b0f0;
+            font-size: 18px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+        }
+        h3 {
+            color: #3dd68c;
+            font-size: 13px;
+            margin-top: 15px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .patron {
+            background: #1a1a1a;
+            border-left: 3px solid #f2a33c;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+        .patron-titulo {
+            color: #f2a33c;
+            font-weight: 700;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+        code {
+            background: #0a0a0a;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #f2a33c;
+            font-size: 11px;
+        }
+        pre {
+            background: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 12px;
+            overflow-x: auto;
+            margin: 10px 0;
+            font-size: 11px;
+            color: #ccc;
+        }
+        .prioridad-alta {
+            border-left-color: #ff6b6b;
+        }
+        .prioridad-media {
+            border-left-color: #f2a33c;
+        }
+        .prioridad-baja {
+            border-left-color: #3dd68c;
+        }
+        .detalles {
+            font-size: 12px;
+            color: #ccc;
+            margin-top: 8px;
+        }
+        .localizacion {
+            background: #1a1a1a;
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin-top: 8px;
+            font-size: 11px;
+            color: #888;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 12px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #333;
+        }
+        th {
+            background: #1a1a1a;
+            color: #0066ff;
+            font-weight: 700;
+        }
+        .ranking {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .ranking-item {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 15px;
+        }
+        .ranking-numero {
+            display: inline-block;
+            background: #0066ff;
+            color: #fff;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            font-weight: 700;
+            margin-right: 8px;
+        }
+        .ranking-titulo {
+            font-weight: 700;
+            color: #fff;
+            margin-top: 8px;
+        }
+        .ranking-desc {
+            font-size: 11px;
+            color: #888;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Análisis: Duplicación en el Código Cancionero</h1>
+        <div class="subtitle">Búsqueda de patrones repetidos que podrían centralizarse (como filtrarCanciones)</div>
+
+        <!-- RESUMEN EJECUTIVO -->
+        <div class="section">
+            <h2>📊 Resumen Ejecutivo</h2>
+            <p>Análisis de todas las funciones render() para detectar lógica duplicada que se pueda centralizar.</p>
+            <table>
+                <tr>
+                    <td><strong>Patrones encontrados:</strong></td>
+                    <td><strong>10 duplicaciones</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>Prioridad ALTA:</strong></td>
+                    <td><strong>3</strong> (afectan funcionalidad)</td>
+                </tr>
+                <tr>
+                    <td><strong>Prioridad MEDIA:</strong></td>
+                    <td><strong>4</strong> (afectan mantenimiento)</td>
+                </tr>
+                <tr>
+                    <td><strong>Prioridad BAJA:</strong></td>
+                    <td><strong>3</strong> (cosmético)</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- PATRONES PRIORIDAD ALTA -->
+        <div class="section">
+            <h2>🔥 Prioridad ALTA (Afectan Funcionalidad)</h2>
+
+            <div class="patron prioridad-alta">
+                <div class="patron-titulo">1. Generar filas de canciones (3 lugares)</div>
+                <div class="detalles">
+                    La construcción de HTML para una fila de canción está repetida en:
+                    <ul style="margin-left: 20px; margin-top: 8px;">
+                        <li><code>renderCatalogo()</code> — línea ~1746</li>
+                        <li><code>renderAgregar()</code> — línea ~2086</li>
+                        <li><code>renderReunion()</code> — línea ~1800</li>
+                    </ul>
+                </div>
+                <pre>// Los tres generan HTML similar:
+fila.innerHTML = `
+  &lt;button class="fila-txt"&gt;
+    &lt;div class="fila-nombre"&gt;${escapar(s.nombre)}&lt;/div&gt;
+    &lt;div class="fila-meta"&gt;${metaDe(s)}&lt;/div&gt;
+  &lt;/button&gt;
+  &lt;button class="..."&gt;${icono}&lt;/button&gt;`;
+</pre>
+                <div class="detalles">
+                    <strong>Impacto:</strong> Si cambias el formato de filas, tocas 3 lugares. Si falta <code>metaDe()</code>, rompe en los 3.
+                    <br/><strong>Solución:</strong> Crear <code>function filaCancion(s, opciones)</code> que devuelva HTML formateado.
+                </div>
+                <div class="localizacion">Líneas: 1746, 1800, 2086 | Complejidad: Media</div>
+            </div>
+
+            <div class="patron prioridad-alta">
+                <div class="patron-titulo">2. Escapar HTML y mostrar nombre (2 lugares)</div>
+                <div class="detalles">
+                    En varias funciones se hace <code>escapar(s.nombre)</code> para evitar XSS. Pero hay:
+                    <ul style="margin-left: 20px; margin-top: 8px;">
+                        <li>Filas de canciones en renderCatalogo/Agregar/Reunion (3 lugares)</li>
+                        <li>Menús dinámicos que generan opciones HTML</li>
+                    </ul>
+                </div>
+                <pre>// Repetido:
+&lt;div class="fila-nombre"&gt;${escapar(s.nombre)}&lt;/div&gt;
+&lt;div class="fila-nombre"&gt;${escapar(s.nombre)}&lt;/div&gt;
+&lt;div class="fila-nombre"&gt;${escapar(s.nombre)}&lt;/div&gt;
+</pre>
+                <div class="detalles">
+                    <strong>Impacto:</strong> Si olvidás <code>escapar()</code> en uno, hay XSS. Si quieres cambiar el formato del nombre, tocas muchos lugares.
+                    <br/><strong>Solución:</strong> <code>function mostrarNombre(s, truncar = false)</code> que maneja escapado y truncado.
+                </div>
+                <div class="localizacion">Líneas: 1748, 1800, 2088 (y más) | Complejidad: Baja</div>
+            </div>
+
+            <div class="patron prioridad-alta">
+                <div class="patron-titulo">3. Obtener metadatos de canción (2+ lugares)</div>
+                <div class="detalles">
+                    <code>metaDe(s)</code> se llama en todas las filas. Pero el formato está hardcodeado y se repite:
+                </div>
+                <pre>// metaDe devuelve:
+`&lt;span class="fila-meta"&gt;...&lt;/span&gt;`
+
+// Se usa:
+&lt;div class="fila-meta"&gt;${metaDe(s)}&lt;/div&gt;
+</pre>
+                <div class="detalles">
+                    <strong>Impacto:</strong> Si quieres cambiar qué metadatos mostrar (hoy: tono + BPM), editas <code>metaDe()</code> y se actualiza en todos lados. ✅ Esto YA está bien.
+                    <br/><strong>Estado:</strong> ✅ No necesita refactor (ya centralizado).
+                </div>
+                <div class="localizacion">Función: metaDe() línea ~2306 | Complejidad: Ya optimizado</div>
+            </div>
+        </div>
+
+        <!-- PATRONES PRIORIDAD MEDIA -->
+        <div class="section">
+            <h2>⚠️ Prioridad MEDIA (Mantenimiento)</h2>
+
+            <div class="patron prioridad-media">
+                <div class="patron-titulo">4. Mensajes de "vacío" (3 lugares)</div>
+                <div class="detalles">
+                    Cuando una lista está vacía, se muestra un mensaje. Hay 3 variantes:
+                </div>
+                <pre>// renderCatalogo() - Sin resultados
+"Sin resultados. Probá con parte del nombre, o con el tono (G, Bm)."
+
+// renderAgregar() - Sin resultados
+"Sin resultados. Probá con parte del nombre, o con el tono (G, Bm)."
+
+// renderReunion() - Todavía no hay lista
+"Todavía no hay lista. Tocá \"+ Agregar canción\"..."
+</pre>
+                <div class="detalles">
+                    <strong>Impacto:</strong> Ya centralizamos parcialmente en TEXTOS. Pero faltan los otros.
+                    <br/><strong>Solución:</strong> Extender TEXTOS con todos los mensajes vacíos.
+                </div>
+                <div class="localizacion">Líneas: 1721, 2078, 1765 | Complejidad: Baja</div>
+            </div>
+
+            <div class="patron prioridad-media">
+                <div class="patron-titulo">5. Renderizar menús desplegables (3 variantes)</div>
+                <div class="detalles">
+                    Hay 3 menús distintos con lógica similar:
+                    <ul style="margin-left: 20px; margin-top: 8px;">
+                        <li><code>mostrarMenuCancion()</code> — Menú de canción en evento</li>
+                        <li><code>mostrarMenuCancionCatalogo()</code> — Menú de canción en catálogo</li>
+                        <li><code>mostrarMenuReunion()</code> — Menú de reunión guardada</li>
+                    </ul>
+                </div>
+                <pre>// Todos hacen básicamente:
+const menu = document.createElement("div");
+menu.className = "menu-dropdown";
+opciones.forEach(op => {
+  const btn = document.createElement("button");
+  btn.textContent = op.label;
+  btn.onclick = op.action;
+  menu.appendChild(btn);
+});
+</pre>
+                <div class="detalles">
+                    <strong>Impacto:</strong> Si quieres cambiar estilo/clase de menú, tocas 3 funciones.
+                    <br/><strong>Solución:</strong> <code>function mostrarMenu(opciones, posicion)</code> centralizado.
+                </div>
+                <div class="localizacion">Líneas: 1861, 1951, 2172 | Complejidad: Media</div>
+            </div>
+
+            <div class="patron prioridad-media">
+                <div class="patron-titulo">6. Validación de entrada (duplicado en algunos places)</div>
+                <div class="detalles">
+                    Hay validaciones que se repiten:
+                    <ul style="margin-left: 20px; margin-top: 8px;">
+                        <li><code>trim().toLowerCase()</code> — En búsquedas (ahora centralizado ✅)</li>
+                        <li><code>RE_TONO_VALIDO.test()</code> — En editor + transporte (2+ lugares)</li>
+                        <li>Validar nombre no vacío — En 3+ funciones de guardar</li>
+                    </ul>
+                </div>
+                <div class="detalles">
+                    <strong>Impacto:</strong> Si cambias el regex de tonos, tocas múltiples lugares.
+                    <br/><strong>Solución:</strong> Crear <code>function validarTono(s)</code>, <code>function validarNombre(s)</code>.
+                </div>
+                <div class="localizacion">Líneas: 2824, 2839, 2857, 1354 | Complejidad: Baja</div>
+            </div>
+        </div>
+
+        <!-- PATRONES PRIORIDAD BAJA -->
+        <div class="section">
+            <h2>📝 Prioridad BAJA (Cosmético)</h2>
+
+            <div class="patron prioridad-baja">
+                <div class="patron-titulo">7. Padding/styling de contenedores</div>
+                <div class="detalles">
+                    El CSS maneja bien esto. No necesita refactor JS.
+                </div>
+            </div>
+
+            <div class="patron prioridad-baja">
+                <div class="patron-titulo">8. Estados booleanos (est.esDirector checks)</div>
+                <div class="detalles">
+                    Se repite mucho <code>if (est.esDirector) ...</code> para mostrar/ocultar botones.
+                    <br/>Podrías crear <code>function mostrarSiDirector(elemento)</code>, pero es bajo impacto.
+                </div>
+            </div>
+
+            <div class="patron prioridad-baja">
+                <div class="patron-titulo">9. Formateo de fechas</div>
+                <div class="detalles">
+                    <code>fechaHoraTexto()</code> ya está centralizado ✅. Bien hecho.
+                </div>
+            </div>
+        </div>
+
+        <!-- RANKING FINAL -->
+        <div class="section">
+            <h2>🎯 Ranking de Refactors Recomendados</h2>
+
+            <div class="ranking">
+                <div class="ranking-item">
+                    <div class="ranking-numero">1</div>
+                    <div class="ranking-titulo">Centralizar generación de filas</div>
+                    <div class="ranking-desc">
+                        <strong>Impacto:</strong> Alto
+                        <br/><strong>Esfuerzo:</strong> Medio
+                        <br/><strong>Líneas de código:</strong> ~30 líneas de refactor
+                        <br/><strong>Afecta:</strong> renderCatalogo, renderAgregar, renderReunion
+                    </div>
+                </div>
+
+                <div class="ranking-item">
+                    <div class="ranking-numero">2</div>
+                    <div class="ranking-titulo">Centralizar menús desplegables</div>
+                    <div class="ranking-desc">
+                        <strong>Impacto:</strong> Medio
+                        <br/><strong>Esfuerzo:</strong> Bajo
+                        <br/><strong>Líneas de código:</strong> ~40 líneas de refactor
+                        <br/><strong>Afecta:</strong> 3 funciones mostrarMenu*()
+                    </div>
+                </div>
+
+                <div class="ranking-item">
+                    <div class="ranking-numero">3</div>
+                    <div class="ranking-titulo">Extender TEXTOS con mensajes vacíos</div>
+                    <div class="ranking-desc">
+                        <strong>Impacto:</strong> Bajo
+                        <br/><strong>Esfuerzo:</strong> Muy bajo
+                        <br/><strong>Líneas de código:</strong> ~5 líneas
+                        <br/><strong>Afecta:</strong> Mensajes en render()
+                    </div>
+                </div>
+
+                <div class="ranking-item">
+                    <div class="ranking-numero">4</div>
+                    <div class="ranking-titulo">Crear funciones de validación</div>
+                    <div class="ranking-desc">
+                        <strong>Impacto:</strong> Medio
+                        <br/><strong>Esfuerzo:</strong> Bajo
+                        <br/><strong>Líneas de código:</strong> ~20 líneas
+                        <br/><strong>Afecta:</strong> Múltiples validaciones
+                    </div>
+                </div>
+
+                <div class="ranking-item">
+                    <div class="ranking-numero">5</div>
+                    <div class="ranking-titulo">Función mostrarNombre() centralizada</div>
+                    <div class="ranking-desc">
+                        <strong>Impacto:</strong> Bajo (cosmético)
+                        <br/><strong>Esfuerzo:</strong> Muy bajo
+                        <br/><strong>Líneas de código:</strong> ~10 líneas
+                        <br/><strong>Afecta:</strong> Formato de nombres en filas
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONCLUSIÓN -->
+        <div class="section" style="background: #1a3a1a; border-color: #3dd68c;">
+            <h2 style="color: #3dd68c; border-color: #3dd68c;">✅ Próximos Pasos Recomendados</h2>
+
+            <h3 style="color: #fff; margin-bottom: 15px;">En este orden:</h3>
+
+            <table>
+                <tr>
+                    <th>Paso</th>
+                    <th>Qué hacer</th>
+                    <th>Esfuerzo</th>
+                    <th>Impacto</th>
+                </tr>
+                <tr>
+                    <td>1 (Ya hecho)</td>
+                    <td>✅ Centralizar búsqueda (filtrarCanciones)</td>
+                    <td>Bajo</td>
+                    <td>Alto</td>
+                </tr>
+                <tr>
+                    <td>2 (Siguiente)</td>
+                    <td>Centralizar filas de canciones</td>
+                    <td>Medio</td>
+                    <td>Alto</td>
+                </tr>
+                <tr>
+                    <td>3 (Fácil win)</td>
+                    <td>Extender TEXTOS con mensajes</td>
+                    <td>Muy bajo</td>
+                    <td>Bajo</td>
+                </tr>
+                <tr>
+                    <td>4 (Mantenimiento)</td>
+                    <td>Centralizar menús</td>
+                    <td>Bajo</td>
+                    <td>Medio</td>
+                </tr>
+                <tr>
+                    <td>5 (Polish)</td>
+                    <td>Funciones de validación</td>
+                    <td>Bajo</td>
+                    <td>Bajo</td>
+                </tr>
+            </table>
+
+            <p style="margin-top: 20px; color: #888;">
+                El patrón que ya aplicaste (filtrarCanciones) es exactamente lo que necesitas replicar:
+                <strong>Si una lógica se repite en 2+ lugares, extrae a función centralizada.</strong>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

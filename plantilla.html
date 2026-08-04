@@ -1880,7 +1880,7 @@ function renderReunion(){
       + (hayTransmisionVacia ? `<button class="btn btn-vivo" id="ver-vivo-evento">Transmitir</button>` : "");
     if (est.esDirector) {
       $("agregar-btn").onclick = abrirAgregar;
-      $("agregar-nota-btn").onclick = () => mostrarDialogoNota("", agregarNota);
+      $("agregar-nota-btn").onclick = () => mostrarDialogoNota({nombre: "", contenido: ""}, agregarNota);
     }
     if (hayTransmisionVacia) $("ver-vivo-evento").onclick = () => { est.pestana = "online"; render(); };
     return;
@@ -1893,12 +1893,12 @@ function renderReunion(){
 
     /* Manejar notas (texto libre intercalado) */
     if (esNota(id)){
-      const nota = est.lista.notas[id] || "";
+      const nota = est.lista.notas[id] || {nombre: "", contenido: ""};
       fila.classList.toggle("reordenando", est.reordenando && est.esDirector);
       fila.innerHTML = `
         <div class="orden">${i+1}</div>
         <button class="fila-txt">
-          <div class="fila-nombre" style="color:var(--tenue);font-style:italic">${escapar(nota)}</div>
+          <div class="fila-nombre" style="color:var(--tenue);font-style:italic">${escapar(nota.nombre)}</div>
         </button>
         ${est.esDirector ? `<button class="menu-cancion" data-id="${id}" data-indice="${i}" title="Más opciones">⋮</button>` : ""}`;
       if (est.esDirector) fila.querySelector(".menu-cancion").onclick = (e) => mostrarMenuNota(e, id, i);
@@ -1906,8 +1906,8 @@ function renderReunion(){
         fila.addEventListener("touchstart", e => iniciarArrastre(e, i, fila), {passive:true});
         fila.addEventListener("mousedown", e => iniciarArrastre(e, i, fila));
       } else {
-        fila.querySelector(".fila-txt").onclick = () => mostrarDialogoNota(nota, (texto) => {
-          est.lista.notas[id] = texto;
+        fila.querySelector(".fila-txt").onclick = () => mostrarDialogoNota(nota, (notaEditada) => {
+          est.lista.notas[id] = notaEditada;
           guardarLista();
         });
       }
@@ -2026,8 +2026,8 @@ function mostrarMenuCancion(e, idCancion, indice){
 function mostrarMenuNota(e, idNota, indice){
   mostrarMenu(e.target, [
     { label: "Reordenar", action: () => { est.reordenando = !est.reordenando; renderReunion(); } },
-    { label: "Editar anotación", action: () => mostrarDialogoNota(est.lista.notas[idNota], (texto) => {
-      est.lista.notas[idNota] = texto;
+    { label: "Editar anotación", action: () => mostrarDialogoNota(est.lista.notas[idNota], (notaEditada) => {
+      est.lista.notas[idNota] = notaEditada;
       guardarLista();
     }) },
     { label: "Eliminar anotación", action: () => quitarNota(idNota), rojo: true },
@@ -2122,7 +2122,7 @@ function mostrarDialogoTipo(posicionActual){
   setTimeout(() => document.addEventListener("click", cerrar), 10);
 }
 
-function mostrarDialogoNota(textoInicial, onGuardar){
+function mostrarDialogoNota(notaInicial, onGuardar){
   /* Cierra diálogos previos */
   document.querySelectorAll(".dialogo-nota").forEach(d => d.remove());
 
@@ -2133,8 +2133,15 @@ function mostrarDialogoNota(textoInicial, onGuardar){
   contenido.className = "dialogo-contenido";
   contenido.innerHTML = `
     <div class="dialogo-titulo">Anotación del evento</div>
-    <textarea id="nota-texto" class="nota-textarea" placeholder="Pausa, Bienvenida, Salida, lectura..."></textarea>
-    <div style="display:flex;gap:9px;margin-top:12px">
+    <div style="margin-bottom:12px">
+      <label style="display:block;font-size:12px;color:var(--tenue);margin-bottom:6px">Nombre</label>
+      <input id="nota-nombre" type="text" class="ed-campos input" placeholder="Pausa, Bienvenida, Lectura...">
+    </div>
+    <div style="margin-bottom:12px">
+      <label style="display:block;font-size:12px;color:var(--tenue);margin-bottom:6px">Contenido</label>
+      <textarea id="nota-contenido" class="nota-textarea" placeholder="Detalles, instrucciones, cita..."></textarea>
+    </div>
+    <div style="display:flex;gap:9px">
       <button id="nota-guardar" class="dialogo-btn" style="flex:1;margin-bottom:0">Guardar</button>
       <button id="nota-cancelar" class="dialogo-btn" style="flex:1;margin-bottom:0">Cancelar</button>
     </div>
@@ -2142,9 +2149,13 @@ function mostrarDialogoNota(textoInicial, onGuardar){
   dialogo.appendChild(contenido);
   document.body.appendChild(dialogo);
 
-  const textarea = $("nota-texto");
-  textarea.value = textoInicial;
-  setTimeout(() => textarea.focus(), 10);
+  const inputNombre = $("nota-nombre");
+  const textareContenido = $("nota-contenido");
+  if (notaInicial && typeof notaInicial === "object"){
+    inputNombre.value = notaInicial.nombre || "";
+    textareContenido.value = notaInicial.contenido || "";
+  }
+  setTimeout(() => inputNombre.focus(), 10);
 
   function cerrarDialogo(){
     dialogo.remove();
@@ -2152,9 +2163,15 @@ function mostrarDialogoNota(textoInicial, onGuardar){
   }
 
   $("nota-guardar").onclick = () => {
-    const texto = textarea.value.trim();
-    if (texto) onGuardar(texto);
-    cerrarDialogo();
+    const nombre = inputNombre.value.trim();
+    const textoContenido = textareContenido.value.trim();
+    if (nombre && textoContenido){
+      onGuardar({nombre, contenido: textoContenido});
+      cerrarDialogo();
+    } else {
+      if (!nombre) flotar("El nombre no puede estar vacío");
+      else flotar("El contenido no puede estar vacío");
+    }
   };
 
   $("nota-cancelar").onclick = cerrarDialogo;
@@ -2167,7 +2184,7 @@ function mostrarDialogoNota(textoInicial, onGuardar){
   setTimeout(() => document.addEventListener("click", cerrar), 10);
 }
 
-function agregarNota(texto){
+function agregarNota(nota){
   /* Crea un nuevo evento si no existe (mismo patrón que alternarEnLista) */
   const esNueva = !est.lista.id;
   if (esNueva){
@@ -2183,7 +2200,7 @@ function agregarNota(texto){
   } else {
     est.lista.ids.push(idNota);
   }
-  est.lista.notas[idNota] = texto;
+  est.lista.notas[idNota] = nota;
 
   render();
   flotar("Anotación agregada");
@@ -2225,7 +2242,7 @@ function mostrarDialogoUbicacion(posicionActual, tipo = "cancion"){
   contenido.querySelector(".siguiente").onclick = () => {
     est.posicionInsertarEn = posicionActual + 1;
     if (tipo === "nota"){
-      mostrarDialogoNota("", agregarNota);
+      mostrarDialogoNota({nombre: "", contenido: ""}, agregarNota);
     } else {
       abrirAgregar();
     }
@@ -2236,7 +2253,7 @@ function mostrarDialogoUbicacion(posicionActual, tipo = "cancion"){
   contenido.querySelector(".final").onclick = () => {
     est.posicionInsertarEn = null;
     if (tipo === "nota"){
-      mostrarDialogoNota("", agregarNota);
+      mostrarDialogoNota({nombre: "", contenido: ""}, agregarNota);
     } else {
       abrirAgregar();
     }
@@ -2722,16 +2739,22 @@ function cerrarLector(){
 function renderLector(){
   /* Manejar notas (texto libre) */
   if (esNota(est.abierta)){
+    const nota = est.lista.notas[est.abierta] || {nombre: "", contenido: ""};
     const cuerpo = $("cuerpo");
     cuerpo.style.fontSize = est.tamano + "px";
-    cuerpo.innerHTML = `<div class="nota-lector">${escapar(est.lista.notas[est.abierta] || "")}</div>`;
+    cuerpo.innerHTML = `
+      <div class="titulo-cancion">
+        <div class="lector-nombre" style="font-style:normal;color:var(--letra)">${escapar(nota.nombre)}</div>
+      </div>
+      <div class="nota-contenido-lector" style="padding:16px 14px;white-space:pre-wrap">${escapar(nota.contenido)}</div>
+    `;
     $("mas-t").disabled = true;
     $("menos-t").disabled = true;
     $("mas-t").style.opacity = ".25";
     $("menos-t").style.opacity = ".25";
-    $("editar").style.display = "";
-    $("editar").onclick = () => mostrarDialogoNota(est.lista.notas[est.abierta], (texto) => {
-      est.lista.notas[est.abierta] = texto;
+    $("editar").style.display = est.esDirector && est.enReunion ? "" : "none";
+    $("editar").onclick = () => mostrarDialogoNota(nota, (notaEditada) => {
+      est.lista.notas[est.abierta] = notaEditada;
       guardarLista();
       renderLector();
     });
@@ -2747,7 +2770,9 @@ function renderLector(){
         b.onclick = () => { est.posicion = i; est.abierta = id; est.semis = semisGuardado(id); renderLector(); };
         riel.appendChild(b);
       });
-      pie.innerHTML = `<div style="color:var(--tenue);padding:0 14px">Paso ${est.posicion + 1} de ${est.lista.ids.length}</div>`;
+      pie.innerHTML = `<button class="btn">+ Agregar</button>`;
+      const btnAdd = pie.querySelector(".btn");
+      if (btnAdd) btnAdd.onclick = () => mostrarDialogoTipo(est.posicion);
     }
     return;
   }
@@ -2858,9 +2883,10 @@ function renderLector(){
     // Info de siguiente o última canción
     let infoSiguiente = "";
     if (idSig && esNota(idSig)){
+      const nota = est.lista.notas[idSig] || {nombre: "", contenido: ""};
       infoSiguiente = `<button class="siguiente-info"${bloqueado ? " disabled" : ""}>
         <div class="si-etiqueta">Siguiente</div>
-        <div class="fila-nombre" style="color:var(--tenue);font-style:italic">${escapar(est.lista.notas[idSig])}</div>
+        <div class="fila-nombre" style="color:var(--tenue);font-style:italic">${escapar(nota.nombre)}</div>
       </button>`;
     } else if (sig){
       infoSiguiente = `<button class="siguiente-info"${bloqueado ? " disabled" : ""}>

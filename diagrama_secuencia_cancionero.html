@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagrama de Secuencia - Cancionero</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0a0a0a;
+            color: #e0e0e0;
+            font-family: 'Monaco', 'Courier New', monospace;
+            padding: 40px;
+            line-height: 1.8;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        h1 {
+            margin-bottom: 10px;
+            font-size: 28px;
+            color: #fff;
+        }
+        .subtitle {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 40px;
+        }
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            padding: 10px 20px;
+            background: #1a1a1a;
+            border: 2px solid #333;
+            color: #0066ff;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            font-size: 13px;
+        }
+        .tab-btn:hover {
+            border-color: #0066ff;
+        }
+        .tab-btn.active {
+            background: #0066ff;
+            color: #fff;
+            border-color: #0066ff;
+        }
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .mermaid-container {
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 30px;
+            overflow-x: auto;
+            margin-bottom: 40px;
+        }
+        .mermaid {
+            display: flex;
+            justify-content: center;
+        }
+        .description {
+            background: #1a1a1a;
+            border-left: 3px solid #0066ff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+        .description h3 {
+            color: #fff;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .description ul {
+            margin-left: 20px;
+            color: #ccc;
+        }
+        .description li {
+            margin-bottom: 6px;
+        }
+        .step {
+            color: #3dd68c;
+            font-weight: 600;
+        }
+        .legend {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 40px;
+            font-size: 13px;
+        }
+        .legend h3 {
+            margin-bottom: 15px;
+            color: #fff;
+        }
+        .legend-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 8px;
+            align-items: center;
+        }
+        .legend-icon {
+            width: 3px;
+            height: 16px;
+            border-radius: 2px;
+        }
+        .legend-solid { background: #0066ff; }
+        .legend-dashed {
+            background: linear-gradient(90deg, #0066ff 50%, transparent 50%);
+            background-size: 4px 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Diagrama de Secuencia - Cancionero</h1>
+        <div class="subtitle">Flujos de interacción entre componentes y Firestore</div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="mostrarTab('abrir-cancion')">1. Abrir Canción</button>
+            <button class="tab-btn" onclick="mostrarTab('transmitir')">2. Transmitir</button>
+            <button class="tab-btn" onclick="mostrarTab('agregar-evento')">3. Agregar a Evento</button>
+            <button class="tab-btn" onclick="mostrarTab('sincronizar')">4. Sincronizar Múltiples Dispositivos</button>
+            <button class="tab-btn" onclick="mostrarTab('editar-cancion')">5. Editar Canción</button>
+            <button class="tab-btn" onclick="mostrarTab('crear-evento')">6. Crear Evento</button>
+        </div>
+
+        <!-- TAB 1: Abrir Canción -->
+        <div id="abrir-cancion" class="tab-content active">
+            <div class="description">
+                <h3>Flujo: Abrir una canción desde el catálogo</h3>
+                <ul>
+                    <li><span class="step">1.</span> Usuario toca nombre de canción</li>
+                    <li><span class="step">2.</span> Se invoca <code>abrir(id, false)</code> → estado local</li>
+                    <li><span class="step">3.</span> Se invoca <code>pintarLector()</code> para renderizar</li>
+                    <li><span class="step">4.</span> Si es celular, pide pantalla completa</li>
+                </ul>
+            </div>
+            <div class="mermaid-container">
+                <div class="mermaid">
+diagram LR
+    Usuario["👤 Usuario<br/>Toca nombre"]
+    abrir["abrir(id, false)"]
+    estado["est.abierta = id<br/>est.enReunion = false"]
+    pintar["pintarLector()"]
+    fullscreen["requestFullscreen()<br/>si celular"]
+    lector["📱 Lector<br/>Canción visible"]
+
+    Usuario -->|click| abrir
+    abrir -->|setea| estado
+    estado -->|invoca| pintar
+    pintar -->|muestra| lector
+    abrir -->|intenta| fullscreen
+    fullscreen -->|activa en<br/>celular| lector
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: Transmitir -->
+        <div id="transmitir" class="tab-content">
+            <div class="description">
+                <h3>Flujo: Director transmite una canción</h3>
+                <ul>
+                    <li><span class="step">1.</span> Director toca botón "Transmitir" (o "Online")</li>
+                    <li><span class="step">2.</span> Se invoca <code>transmitirDesdeElPrincipio()</code></li>
+                    <li><span class="step">3.</span> Escribe en Firestore: <code>cancionero/directorEnVivo</code></li>
+                    <li><span class="step">4.</span> Los listener de otros dispositivos disparan <code>escucharDirector()</code></li>
+                    <li><span class="step">5.</span> Todos abren automáticamente la canción en vivo</li>
+                </ul>
+            </div>
+            <div class="mermaid-container">
+                <div class="mermaid">
+sequenceDiagram
+    participant Director as 👨‍💼 Director<br/>Dispositivo A
+    participant Firebase as 🔥 Firestore<br/>directorEnVivo
+    participant Espectador as 👤 Espectador<br/>Dispositivo B
+    participant Lector as 📱 Lector<br/>Transmisión
+
+    Director->>Director: toca "Transmitir"
+    Director->>Director: transmitirDesdeElPrincipio()
+    Director->>Firebase: setDoc({cancionId, tono, ...})
+    Firebase-->>Espectador: onSnapshot dispara
+    Espectador->>Espectador: escucharDirector()
+    Espectador->>Espectador: mostrarVistaOnline()
+    Espectador->>Lector: abre(id, true)<br/>soloLectura=true
+    Lector-->>Espectador: ✅ Canción visible
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: Agregar a Evento -->
+        <div id="agregar-evento" class="tab-content">
+            <div class="description">
+                <h3>Flujo: Agregar una canción a la lista del evento</h3>
+                <ul>
+                    <li><span class="step">1.</span> Usuario toca "+" en el buscador o menú</li>
+                    <li><span class="step">2.</span> Se invoca <code>alternarEnLista(id)</code></li>
+                    <li><span class="step">3.</span> Se agrega/quita id del array <code>est.lista.ids</code></li>
+                    <li><span class="step">4.</span> Se escribe en Firestore: <code>reuniones/{id}</code></li>
+                    <li><span class="step">5.</span> El listener de otros dispositivos dispara</li>
+                    <li><span class="step">6.</span> Todos ven la canción nueva en la lista</li>
+                </ul>
+            </div>
+            <div class="mermaid-container">
+                <div class="mermaid">
+sequenceDiagram
+    participant Usuario as 👤 Usuario<br/>Panel Agregar
+    participant Estado as ⚙️ Estado<br/>est.lista.ids
+    participant Firebase as 🔥 Firestore<br/>reuniones/{id}
+    participant OtroDispositivo as 📱 Otro<br/>Dispositivo
+
+    Usuario->>Usuario: toca "+" en canción
+    Usuario->>Estado: alternarEnLista(idCancion)
+    Estado->>Estado: push/splice en ids[]
+    Estado->>Firebase: guardarLista()
+    Firebase-->>OtroDispositivo: onSnapshot dispara
+    OtroDispositivo->>OtroDispositivo: recalcular()
+    OtroDispositivo->>OtroDispositivo: pintar()
+    OtroDispositivo->>OtroDispositivo: ✅ Lista actualizada
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: Sincronizar Múltiples -->
+        <div id="sincronizar" class="tab-content">
+            <div class="description">
+                <h3>Flujo: Dos dispositivos transmiten simultáneamente</h3>
+                <ul>
+                    <li><span class="step">1.</span> Dispositivo A escribe su transmisión en Firestore</li>
+                    <li><span class="step">2.</span> Dispositivo B también escribe (posible conflicto)</li>
+                    <li><span class="step">3.</span> Firestore usa <code>merge:true</code> para no pisar datos</li>
+                    <li><span class="step">4.</span> Campo <code>directoresLatido</code> usa <code>increment()</code> (operación atómica)</li>
+                    <li><span class="step">5.</span> Gana la última escritura si dos modifican campos distintos</li>
+                </ul>
+            </div>
+            <div class="mermaid-container">
+                <div class="mermaid">
+sequenceDiagram
+    participant A as 📱 Dispositivo A<br/>Director
+    participant B as 📱 Dispositivo B<br/>Director
+    participant Firebase as 🔥 Firestore<br/>directorEnVivo
+    participant Listeners as 👁️ Listeners<br/>Todos
+
+    par Simultáneo
+        A->>A: transmite canción X
+        B->>B: transmite canción Y
+    end
+    A->>Firebase: updateDoc({cancionId:X})
+    B->>Firebase: updateDoc({cancionId:Y})
+    Note over Firebase: merge:true previene<br/>conflicto destructivo
+    Firebase-->>Listeners: onSnapshot dispara
+    Listeners->>Listeners: ✅ Ambos cambios visibles
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 5: Editar Canción -->
+        <div id="editar-cancion" class="tab-content">
+            <div class="description">
+                <h3>Flujo: Editar acordes o letra de una canción</h3>
+                <ul>
+                    <li><span class="step">1.</span> Usuario toca "Editar" desde menú</li>
+                    <li><span class="step">2.</span> Se invoca <code>abrirEditor(id)</code></li>
+                    <li><span class="step">3.</span> Se cargan datos actuales en el formulario</li>
+                    <li><span class="step">4.</span> Usuario modifica y toca "Guardar"</li>
+                    <li><span class="step">5.</span> Se invoca <code>guardarEditor()</code></li>
+                    <li><span class="step">6.</span> Escribe en Firestore: <code>canciones/{id}</code></li>
+                    <li><span class="step">7.</span> Recalcula catálogo y actualiza vista</li>
+                </ul>
+            </div>
+            <div class="mermaid-container">
+                <div class="mermaid">
+sequenceDiagram
+    participant Usuario as 👤 Usuario
+    participant Editor as ✏️ Editor
+    participant Firebase as 🔥 Firestore<br/>canciones/{id}
+    participant Lector as 📱 Lector
+
+    Usuario->>Usuario: toca "Editar"
+    Usuario->>Editor: abrirEditor(id)
+    Editor->>Editor: carga datos
+    Usuario->>Editor: modifica acordes
+    Usuario->>Editor: toca "Guardar"
+    Editor->>Firebase: guardarEditor()
+    Firebase-->>Lector: onSnapshot dispara
+    Lector->>Lector: recalcular()
+    Lector->>Lector: pintarLector()
+    Lector->>Lector: ✅ Cambios visibles
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 6: Crear Evento -->
+        <div id="crear-evento" class="tab-content">
+            <div class="description">
+                <h3>Flujo: Crear un nuevo evento</h3>
+                <ul>
+                    <li><span class="step">1.</span> Usuario toca "+ Nuevo evento"</li>
+                    <li><span class="step">2.</span> Se invoca <code>crearReunion()</code></li>
+                    <li><span class="step">3.</span> Se genera <code>idReunion</code> único</li>
+                    <li><span class="step">4.</span> Se crea doc en Firestore: <code>reuniones/{idReunion}</code></li>
+                    <li><span class="step">5.</span> Se setea como activo: <code>cancionero/activa = {reunionActivaId}</code></li>
+                    <li><span class="step">6.</span> Todos los listeners notan el cambio de reunión activa</li>
+                    <li><span class="step">7.</span> App navega a pestaña Evento con lista vacía</li>
+                </ul>
+            </div>
+            <div class="mermaid-container">
+                <div class="mermaid">
+sequenceDiagram
+    participant Usuario as 👤 Usuario<br/>Pestaña Guardadas
+    participant App as 🎵 App
+    participant Firebase as 🔥 Firestore
+    participant OtroDispositivo as 📱 Otro<br/>Dispositivo
+
+    Usuario->>Usuario: toca "+ Nuevo evento"
+    Usuario->>App: crearReunion()
+    App->>App: generarIdReunion()
+    App->>Firebase: setDoc(reuniones/{id})
+    App->>Firebase: setDoc(cancionero/activa)
+    Firebase-->>OtroDispositivo: onSnapshot dispara
+    OtroDispositivo->>OtroDispositivo: listener en cancionero/activa
+    OtroDispositivo->>OtroDispositivo: recalcular()
+    OtroDispositivo->>OtroDispositivo: ✅ Todos ven el nuevo evento
+                </div>
+            </div>
+        </div>
+
+        <div class="legend">
+            <h3>Leyenda</h3>
+            <div class="legend-item">
+                <div class="legend-icon legend-solid"></div>
+                <span>Escritura en Firestore (setDoc, updateDoc)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-icon legend-dashed"></div>
+                <span>Lectura/Listener (onSnapshot)</span>
+            </div>
+            <div class="legend-item">
+                <span><strong>merge:true</strong> = No pisa datos existentes, solo actualiza los campos especificados</span>
+            </div>
+            <div class="legend-item">
+                <span><strong>increment()</strong> = Operación atómica de incremento (segura con múltiples escritores)</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+
+        function mostrarTab(tabName) {
+            // Ocultar todos los tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Mostrar el tab seleccionado
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+
+            // Re-render mermaid
+            mermaid.contentLoaded();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Árbol de Componentes - Cancionero</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0a0a0a;
+            color: #e0e0e0;
+            font-family: 'Monaco', 'Courier New', monospace;
+            padding: 40px;
+            line-height: 1.8;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            margin-bottom: 10px;
+            font-size: 28px;
+            color: #fff;
+        }
+        .subtitle {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 40px;
+        }
+        .tree {
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 30px;
+            overflow-x: auto;
+            font-size: 13px;
+            line-height: 1.9;
+        }
+        .tree-line {
+            margin: 0;
+        }
+        .tree-item {
+            cursor: pointer;
+            transition: color 0.2s;
+            user-select: none;
+        }
+        .tree-item:hover {
+            color: #00b0f0;
+        }
+        .toggle {
+            color: #666;
+            display: inline-block;
+            width: 16px;
+            text-align: center;
+            margin-right: 4px;
+            font-weight: bold;
+        }
+        .toggle.collapsed::after {
+            content: "▶";
+        }
+        .toggle.expanded::after {
+            content: "▼";
+        }
+        .children {
+            display: none;
+            margin-left: 16px;
+        }
+        .children.show {
+            display: block;
+        }
+        .root { color: #fff; font-weight: bold; }
+        .pantalla { color: #0066ff; font-weight: 600; }
+        .componente { color: #00b0f0; }
+        .funcion { color: #3dd68c; }
+        .notas { color: #888; font-size: 12px; margin-left: 10px; }
+
+        .legend {
+            display: flex;
+            gap: 30px;
+            margin-top: 40px;
+            padding: 20px;
+            background: #1a1a1a;
+            border-radius: 8px;
+            border: 1px solid #333;
+            font-size: 13px;
+            flex-wrap: wrap;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .legend-box {
+            width: 60px;
+            height: 20px;
+            border-radius: 4px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 600;
+        }
+        .legend-pantalla {
+            background: #0066ff;
+        }
+        .legend-componente {
+            background: #00b0f0;
+        }
+        .legend-funcion {
+            background: #3dd68c;
+        }
+
+        .controls {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .btn {
+            padding: 8px 16px;
+            background: #0066ff;
+            border: 1px solid #0066ff;
+            color: #fff;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .btn:hover {
+            background: #0055dd;
+        }
+        .btn.outline {
+            background: transparent;
+            color: #0066ff;
+        }
+        .btn.outline:hover {
+            background: #0066ff;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 Árbol de Componentes - Cancionero</h1>
+        <div class="subtitle">Estructura jerárquica completa de la aplicación</div>
+
+        <div class="controls">
+            <button class="btn" onclick="expandAll()">Expandir Todo</button>
+            <button class="btn outline" onclick="collapseAll()">Contraer Todo</button>
+        </div>
+
+        <div class="tree">
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="root">CANCIONERO (v220)</span>
+<span class="notas">App principal - Estado global (est)</span>
+<div class="children">
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="pantalla">📱 Pestañas Principales</span>
+<span class="notas">Navegación superior</span>
+<div class="children">
+<div class="tree-line">→ <span class="funcion">pintarPestanas()</span> - Actualiza estado activo de pestaña</div>
+<div class="tree-line">→ <span class="funcion">est.pestana</span> - Rastreo de pestaña activa</div>
+<div class="tree-line">
+<span class="componente">• Canciones</span>
+<span class="notas">Catálogo completo</span>
+</div>
+<div class="tree-line">
+<span class="componente">• Histórico</span>
+<span class="notas">Reuniones guardadas</span>
+</div>
+<div class="tree-line">
+<span class="componente">• Evento (Reunión Activa)</span>
+<span class="notas">Lista en vivo</span>
+</div>
+<div class="tree-line">
+<span class="componente">• Transmisión</span>
+<span class="notas">Vista Online</span>
+</div>
+</div>
+</div>
+
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="pantalla">🎵 Lector (Ver Canción)</span>
+<span class="notas">Pantalla principal de lectura</span>
+<div class="children">
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="componente">├─ Encabezado</span>
+<div class="children">
+<div class="tree-line">→ <span class="funcion">pintarLector()</span> - Dibuja título, tono, BPM</div>
+<div class="tree-line">→ <span class="componente">Transporte (♭/♯)</span> - Cambiar tono</div>
+<div class="tree-line">→ <span class="componente">Online badge</span> - Indicador transmisión</div>
+<div class="tree-line">→ <span class="componente">Director badge</span> - Rol actual</div>
+</div>
+</div>
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="componente">├─ Letra y Acordes</span>
+<div class="children">
+<div class="tree-line">→ <span class="funcion">pintarBloques()</span> - Renderiza líneas por tipo</div>
+<div class="tree-line">→ <span class="funcion">bloquesATexto()</span> - Convierte JSON a visual</div>
+<div class="tree-line">→ <span class="componente">Monoespaciado</span> - Alineación de acordes</div>
+<div class="tree-line">→ <span class="funcion">mostrarBloques()</span> - Mostrar/ocultar acordes</div>
+</div>
+</div>
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="componente">├─ Riel de Posición</span>
+<span class="notas">Solo en evento</span>
+<div class="children">
+<div class="tree-line">→ <span class="funcion">hacerScrollRiel()</span> - Scroll inteligente</div>
+<div class="tree-line">→ <span class="componente">Números 1..N</span> - Orden en evento</div>
+<div class="tree-line">→ <span class="funcion">paso(delta)</span> - Navegar Anterior/Siguiente</div>
+</div>
+</div>
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="componente">└─ Pie (Controles Inferiores)</span>
+<div class="children">
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="componente">├─ Botón "+ Agregar"</span>
+<span class="notas">Solo en evento</span>
+<div class="children">
+<div class="tree-line">→ <span class="funcion">abrirAgregarDesdeCancion()</span></div>
+<div class="tree-line">↓ Dispara <span class="pantalla">Diálogo Ubicación</span></div>
+<div class="tree-line">
+<span class="componente">• Opción: Siguiente</span>
+<span class="funcion">agregarSiguiente()</span>
+</div>
+<div class="tree-line">
+<span class="componente">• Opción: Al final</span>
+<span class="funcion">agregarAlFinal()</span>
+</div>
+</div>
+</div>
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="componente">├─ Menú (⋮)</span>
+<div class="children">
+<div class="tree-line">→ <span class="funcion">mostrarMenuCancion()</span></div>
+<div class="tree-line">
+<span class="componente">• Editar</span>
+<span class="funcion">abrirEditor(id)</span>
+</div>
+<div class="tree-line">
+<span class="componente">• Quitar</span>
+<span class="funcion">quitar(id)</span>
+</div>
+<div class="tree-line">
+<span class="componente">• Reordenar</span>
+<span class="funcion">est.reordenando = true</span>
+</div>
+</div>
+</div>
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="componente">└─ Info Siguiente</span>
+<div class="children">
+<div class="tree-line">→ <span class="funcion">metaDe(siguiente)</span></div>
+<div class="tree-line">→ Título truncado con ellipsis</div>
+<div class="tree-line">→ Tono y BPM</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="pantalla">📋 Evento (Reunión Activa)</span>
+<span class="notas">Lista de canciones de la reunión</span>
+<div class="children">
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="componente">├─ Encabezado del Evento</span>
+<div class="children">
+<div class="tree-line">→ Nombre de la reunión</div>
+<div class="tree-line">→ Fecha y hora</div>
+<div class="tree-line">→ <span class="funcion">fechaHoraTexto()</span></div>
+</div>
+</div>
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="componente">├─ Lista de Canciones</span>
+<div class="children">
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="componente">├─ Fila Canción</span>
+<div class="children">
+<div class="tree-line">→ Número de orden (1, 2, 3...)</div>
+<div class="tree-line">→ Click en nombre → <span class="funcion">abrir(id, true)</span></div>
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="componente">└─ Menú (⋮)</span>
+<div class="children">
+<div class="tree-line">→ <span class="funcion">mostrarMenuCancion(e, id, indice)</span></div>
+<div class="tree-line">
+<span class="componente">• Reordenar</span>
+<span class="funcion">est.reordenando = !est.reordenando</span>
+</div>
+<div class="tree-line">
+<span class="componente">• Editar canción</span>
+<span class="funcion">abrirEditor(id)</span>
+</div>
+<div class="tree-line">
+<span class="componente">• Quitar del evento</span>
+<span class="funcion">quitar(id)</span>
+</div>
+</div>
+</div>
+</div>
+<div class="tree-line">→ Drag&drop si est.reordenando = true</div>
+<div class="tree-line">→ <span class="funcion">iniciarArrastre()</span>, <span class="funcion">moverArrastre()</span>, <span class="funcion">soltarArrastre()</span></div>
+</div>
+</div>
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="componente">├─ Buscador (cuando vacío)</span>
+<div class="children">
+<div class="tree-line">→ <span class="componente">"Todavía no hay lista"</span></div>
+<div class="tree-line">→ Sugiere usar "+ Agregar canción"</div>
+</div>
+</div>
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="componente">└─ Pie</span>
+<div class="children">
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="componente">├─ "+ Agregar canción"</span>
+<div class="children">
+<div class="tree-line">→ <span class="funcion">abrirAgregar()</span></div>
+<div class="tree-line">↓ Abre <span class="pantalla">Panel Agregar</span></div>
+</div>
+</div>
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="componente">└─ "Transmitir" / "Online"</span>
+<div class="children">
+<div class="tree-line">→ <span class="funcion">transmitirDesdeElPrincipio()</span></div>
+<div class="tree-line">→ Botón outline (sin relleno)</div>
+<div class="tree-line">→ Verde si hay transmisión activa</div>
+<div class="tree-line">↓ Abre <span class="pantalla">Lector en modo Transmisión</span></div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="pantalla">📱 Canciones (Catálogo)</span>
+<span class="notas">Todas las canciones disponibles</span>
+<div class="children">
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="componente">├─ Buscador</span>
+<div class="children">
+<div class="tree-line">→ <span class="funcion">buscar()</span> - Filtra por nombre, tono, letra</div>
+<div class="tree-line">→ <span class="componente">est.filtro</span> - Rastreo de búsqueda</div>
+</div>
+</div>
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="componente">├─ Orden</span>
+<div class="children">
+<div class="tree-line">→ Nombre, Tono o BPM</div>
+<div class="tree-line">→ <span class="funcion">compararNombre()</span>, <span class="funcion">compararTono()</span>, <span class="funcion">compararBpm()</span></div>
+</div>
+</div>
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="componente">├─ Lista de Filas</span>
+<div class="children">
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="componente">├─ Fila Canción</span>
+<div class="children">
+<div class="tree-line">→ Click en nombre → <span class="funcion">abrir(id, false)</span></div>
+<div class="tree-line">→ Abre en <span class="pantalla">Lector</span> (solo lectura)</div>
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="componente">└─ Menú (⋮)</span>
+<div class="children">
+<div class="tree-line">→ <span class="funcion">mostrarMenuCancionCatalogo(e, id)</span></div>
+<div class="tree-line">
+<span class="componente">• Editar</span>
+<span class="funcion">abrirEditor(id)</span>
+</div>
+<div class="tree-line">
+<span class="componente">• Eliminar</span>
+<span class="funcion">borrarCancion(id)</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="componente">└─ Pie</span>
+<div class="children">
+<div class="tree-line">→ "+ Nueva canción"</div>
+<div class="tree-line">→ <span class="funcion">abrirEditor('nueva')</span></div>
+<div class="tree-line">→ "Exportar (N)" si hay cambios</div>
+</div>
+</div>
+</div>
+
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="pantalla">🔍 Panel Agregar</span>
+<span class="notas">Búsqueda rápida para agregar a evento</span>
+<div class="children">
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="componente">├─ Encabezado</span>
+<div class="children">
+<div class="tree-line">→ Título: "Agregar canciones"</div>
+<div class="tree-line">→ Botón "← Volver" <span class="funcion">cerrarAgregar()</span></div>
+</div>
+</div>
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="componente">├─ Buscador</span>
+<div class="children">
+<div class="tree-line">→ <span class="funcion">est.filtroAgregar</span> - Rastreo</div>
+<div class="tree-line">→ Placeholder: "Buscar por título, letra, tono o BPM"</div>
+<div class="tree-line">→ <span class="funcion">pintarAgregar()</span> al escribir</div>
+</div>
+</div>
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="componente">├─ Lista de Canciones</span>
+<div class="children">
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="componente">├─ Fila Canción</span>
+<div class="children">
+<div class="tree-line">→ Click en nombre → nada (no abre lector)</div>
+<div class="tree-line">→ Click en "+" → <span class="funcion">alternarEnLista(id)</span></div>
+<div class="tree-line">→ Si ya está: "✓" en lugar de "+"</div>
+<div class="tree-line">→ <span class="funcion">pintarAgregar()</span> recalcula lista</div>
+</div>
+</div>
+</div>
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="componente">└─ Pie</span>
+<div class="children">
+<div class="tree-line">→ "+ Nueva canción"</div>
+<div class="tree-line">→ <span class="funcion">abrirEditor('nueva')</span></div>
+<div class="tree-line">→ Abre <span class="pantalla">Editor</span> sobre el panel</div>
+</div>
+</div>
+</div>
+
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="pantalla">✏️ Editor (Nueva/Editar Canción)</span>
+<span class="notas">Crear o modificar una canción</span>
+<div class="children">
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="componente">├─ Encabezado</span>
+<div class="children">
+<div class="tree-line">→ Título del editor</div>
+<div class="tree-line">→ Botón "Cancelar" <span class="funcion">cerrarEditor()</span></div>
+</div>
+</div>
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="componente">├─ Formulario</span>
+<div class="children">
+<div class="tree-line">→ Nombre de canción</div>
+<div class="tree-line">→ Tono (desplegable)</div>
+<div class="tree-line">→ BPM</div>
+<div class="tree-line">→ Editor de bloques (acordes + letra)</div>
+<div class="tree-line">→ Vista previa en tiempo real</div>
+</div>
+</div>
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="componente">├─ Editor de Bloques</span>
+<div class="children">
+<div class="tree-line">→ <span class="funcion">textoABloques()</span> - Parsea texto a estructura</div>
+<div class="tree-line">→ <span class="funcion">bloquesATexto()</span> - Muestra en tiempo real</div>
+<div class="tree-line">→ Tipos: Rótulo (r), Acordes (a), Letra (l), Blanco (v)</div>
+</div>
+</div>
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="componente">├─ Transporte</span>
+<div class="children">
+<div class="tree-line">→ <span class="funcion">transportarEditor()</span></div>
+<div class="tree-line">→ Reescribe tono y acordes</div>
+<div class="tree-line">→ Permanente para la canción</div>
+</div>
+</div>
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="componente">└─ Pie</span>
+<div class="children">
+<div class="tree-line">→ Botón "Guardar"</div>
+<div class="tree-line">→ <span class="funcion">guardarEditor()</span> → <span class="funcion">recalcular()</span> → <span class="funcion">pintar()</span></div>
+<div class="tree-line">→ Botón "Eliminar" (rojo)</div>
+<div class="tree-line">→ <span class="funcion">borrarCancion()</span></div>
+</div>
+</div>
+</div>
+
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="pantalla">📡 Transmisión (Online)</span>
+<span class="notas">Vista en vivo del director</span>
+<div class="children">
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="componente">├─ Estado Vacío</span>
+<div class="children">
+<div class="tree-line">→ Si no hay director transmitiendo</div>
+<div class="tree-line">→ Mensaje: "Online vacío"</div>
+</div>
+</div>
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="componente">└─ Lector (soloLectura = true)</span>
+<div class="children">
+<div class="tree-line">→ <span class="funcion">mostrarVistaOnline()</span></div>
+<div class="tree-line">→ Misma estructura que Lector normal</div>
+<div class="tree-line">→ Pero: est.soloLectura = true</div>
+<div class="tree-line">→ Botones deshabilitados (excepto para director)</div>
+<div class="tree-line">→ <span class="funcion">escucharDirector()</span> actualiza en tiempo real</div>
+</div>
+</div>
+</div>
+
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="pantalla">📚 Histórico (Reuniones Guardadas)</span>
+<span class="notas">Lista de reuniones anteriores</span>
+<div class="children">
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="componente">├─ Buscador</span>
+<div class="children">
+<div class="tree-line">→ <span class="funcion">est.filtroGuardadas</span> - Rastreo</div>
+<div class="tree-line">→ Filtra por nombre</div>
+</div>
+</div>
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="componente">├─ Lista de Reuniones</span>
+<div class="children">
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="componente">├─ Fila Reunión</span>
+<div class="children">
+<div class="tree-line">→ Nombre + Fecha/Hora</div>
+<div class="tree-line">→ Click → <span class="funcion">usarReunion(id)</span></div>
+<div class="tree-line">→ Setea como "activa" (cancionero/activa en Firestore)</div>
+<div class="tree-line">→ Regresa a vista Evento</div>
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="componente">└─ Menú (⋮)</span>
+<div class="children">
+<div class="tree-line">→ <span class="funcion">mostrarMenuReunion()</span></div>
+<div class="tree-line">
+<span class="componente">• Editar</span>
+<span class="funcion">abrirEditarReunion()</span>
+</div>
+<div class="tree-line">
+<span class="componente">• Copiar</span>
+<span class="funcion">abrirCopiarReunion()</span>
+</div>
+<div class="tree-line">
+<span class="componente">• Eliminar</span>
+<span class="funcion">borrarReunion()</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="componente">└─ Pie</span>
+<div class="children">
+<div class="tree-line">→ "+ Nuevo evento"</div>
+<div class="tree-line">→ <span class="funcion">crearReunion()</span></div>
+<div class="tree-line">→ Crea reunión con fecha de hoy</div>
+</div>
+</div>
+</div>
+
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="pantalla">⚙️ Estado Global (est)</span>
+<span class="notas">Rastreo de datos de la app</span>
+<div class="children">
+<div class="tree-line">→ est.pestana - Pestaña activa</div>
+<div class="tree-line">→ est.abierta - Canción abierta en lector</div>
+<div class="tree-line">→ est.lista - Reunion activa (ids, nombre, cuando, etc)</div>
+<div class="tree-line">→ est.cambios - Ediciones locales (editados, nuevas, borradas)</div>
+<div class="tree-line">→ est.esDirector - Rol actual</div>
+<div class="tree-line">→ est.reordenando - Modo drag&drop activo</div>
+<div class="tree-line">→ est.soloLectura - Vista Online o no director en evento</div>
+<div class="tree-line">→ est.semis - Transportes de canción actual</div>
+<div class="tree-line">→ est.filtro - Búsqueda en Canciones</div>
+<div class="tree-line">→ est.filtroAgregar - Búsqueda en Panel Agregar</div>
+<div class="tree-line">→ est.orden - Orden del catálogo (nombre/tono/bpm)</div>
+<div class="tree-line">→ est.tamano - Tamaño fuente</div>
+</div>
+</div>
+
+<div class="tree-line tree-item" onclick="toggle(this)">
+<span class="toggle collapsed"></span>
+<span class="pantalla">🔄 Conexiones Firebase (Firestore)</span>
+<span class="notas">Sincronización real-time</span>
+<div class="children">
+<div class="tree-line">→ <span class="funcion">escuchar()</span> - Inicia listeners</div>
+<div class="tree-line">→ <span class="funcion">onSnapshot()</span> en canciones, reuniones, directorEnVivo</div>
+<div class="tree-line">→ <span class="funcion">setDoc()</span> para escribir cambios</div>
+<div class="tree-line">→ <span class="funcion">updateDoc()</span> para actualizar campos</div>
+<div class="tree-line">→ <span class="funcion">deleteDoc()</span> para borrar documentos</div>
+<div class="tree-line">→ <span class="funcion">increment()</span> para contadores (directoresLatido)</span></div>
+</div>
+</div>
+</div>
+</div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-box legend-pantalla">PANTALLA</div>
+                <span>Pantalla principal o modal</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box legend-componente">COMPONENTE</div>
+                <span>Elemento dentro de una pantalla</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box legend-funcion">FUNCIÓN</div>
+                <span>Función o acción JavaScript</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggle(element) {
+            const toggle = element.querySelector('.toggle');
+            const children = element.querySelector('.children');
+
+            if (!children) return;
+
+            toggle.classList.toggle('collapsed');
+            toggle.classList.toggle('expanded');
+            children.classList.toggle('show');
+        }
+
+        function expandAll() {
+            document.querySelectorAll('.tree-item').forEach(item => {
+                const toggle = item.querySelector('.toggle');
+                const children = item.querySelector('.children');
+
+                if (children) {
+                    toggle.classList.remove('collapsed');
+                    toggle.classList.add('expanded');
+                    children.classList.add('show');
+                }
+            });
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.tree-item').forEach(item => {
+                const toggle = item.querySelector('.toggle');
+                const children = item.querySelector('.children');
+
+                if (children) {
+                    toggle.classList.add('collapsed');
+                    toggle.classList.remove('expanded');
+                    children.classList.remove('show');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

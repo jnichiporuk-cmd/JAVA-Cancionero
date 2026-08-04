@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grafo de Dependencias - Cancionero</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0a0a0a;
+            color: #e0e0e0;
+            font-family: 'Monaco', 'Courier New', monospace;
+            overflow: hidden;
+        }
+        #network {
+            width: 100vw;
+            height: 100vh;
+            background: #0a0a0a;
+        }
+        .info-panel {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            max-width: 350px;
+            z-index: 100;
+            font-size: 12px;
+        }
+        .info-panel h3 {
+            color: #fff;
+            margin-bottom: 10px;
+        }
+        .info-panel p {
+            margin-bottom: 8px;
+            color: #ccc;
+        }
+        .legend {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            max-width: 300px;
+            z-index: 100;
+            font-size: 12px;
+        }
+        .legend h3 {
+            color: #fff;
+            margin-bottom: 12px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .legend-box {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+        .color-pantalla { background: #00b0f0; }
+        .color-firebase { background: #ff6b6b; }
+        .color-interaccion { background: #f2a33c; }
+        .color-estado { background: #3dd68c; }
+        .controls {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 15px;
+            z-index: 100;
+        }
+        .controls button {
+            display: block;
+            width: 140px;
+            padding: 8px;
+            margin-bottom: 8px;
+            background: #0066ff;
+            border: 1px solid #0066ff;
+            color: #fff;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .controls button:hover {
+            background: #0055dd;
+        }
+        .controls button:last-child {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="network"></div>
+
+    <div class="controls">
+        <button onclick="focusOnNode('canciones')">Canciones</button>
+        <button onclick="focusOnNode('evento')">Evento</button>
+        <button onclick="focusOnNode('transmision')">Transmisión</button>
+        <button onclick="focusOnNode('editor')">Editor</button>
+        <button onclick="resetZoom()">Resetear vista</button>
+    </div>
+
+    <div class="legend">
+        <h3>Leyenda</h3>
+        <div class="legend-item">
+            <div class="legend-box color-pantalla"></div>
+            <span>Pantalla/Vista</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-box color-firebase"></div>
+            <span>Sincronización</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-box color-interaccion"></div>
+            <span>Interacción/Acción</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-box color-estado"></div>
+            <span>Estado local</span>
+        </div>
+    </div>
+
+    <div class="info-panel">
+        <h3>📊 Grafo de Dependencias</h3>
+        <p><strong>Nodos:</strong> Pantallas y acciones</p>
+        <p><strong>Enlaces:</strong> Flujo de datos/navegación</p>
+        <p><strong>Zoom:</strong> Rueda del mouse</p>
+        <p><strong>Pan:</strong> Drag del mouse</p>
+        <p><strong>Seleccionar:</strong> Click en nodo</p>
+    </div>
+
+    <script>
+        const nodes = new vis.DataSet([
+            // Pestañas principales
+            { id: 'canciones', label: 'Canciones', color: '#00b0f0', title: 'Catálogo completo de canciones' },
+            { id: 'evento', label: 'Evento', color: '#00b0f0', title: 'Lista de la reunión activa' },
+            { id: 'historial', label: 'Historial', color: '#00b0f0', title: 'Reuniones guardadas' },
+            { id: 'transmision', label: 'Transmisión', color: '#00b0f0', title: 'Vista en vivo del director' },
+
+            // Acciones desde Canciones
+            { id: 'nueva-cancion', label: '+ Nueva canción', color: '#f2a33c' },
+            { id: 'editar-cancion', label: 'Editar canción', color: '#f2a33c' },
+            { id: 'buscar-cancion', label: 'Buscar', color: '#f2a33c' },
+
+            // Acciones desde Evento
+            { id: 'agregar-cancion', label: '+ Agregar canción', color: '#f2a33c' },
+            { id: 'transmitir', label: 'Transmitir', color: '#f2a33c' },
+            { id: 'quitar-cancion', label: 'Quitar de evento', color: '#f2a33c' },
+            { id: 'reordenar', label: 'Reordenar', color: '#f2a33c' },
+            { id: 'nuevo-evento', label: '+ Nuevo evento', color: '#f2a33c' },
+
+            // Acciones desde Historial
+            { id: 'usar-evento', label: 'Usar evento', color: '#f2a33c' },
+            { id: 'copiar-evento', label: 'Copiar evento', color: '#f2a33c' },
+            { id: 'editar-evento', label: 'Editar evento', color: '#f2a33c' },
+            { id: 'eliminar-evento', label: 'Eliminar evento', color: '#f2a33c' },
+
+            // Vistas
+            { id: 'lector', label: 'Lector (Ver canción)', color: '#00b0f0' },
+            { id: 'editor', label: 'Editor (Editar canción)', color: '#00b0f0' },
+            { id: 'agregar-panel', label: 'Panel Agregar', color: '#00b0f0' },
+            { id: 'exportar', label: 'Exportar cambios', color: '#00b0f0' },
+
+            // Sincronización y Estado
+            { id: 'firestore', label: 'Firestore (Cambios)', color: '#ff6b6b', title: 'Almacenamiento compartido' },
+            { id: 'estado', label: 'Estado (est)', color: '#3dd68c', title: 'Datos locales de la app' },
+            { id: 'director-badge', label: 'Director badge', color: '#f2a33c' },
+            { id: 'online-badge', label: 'Online/Offline', color: '#f2a33c' },
+        ]);
+
+        const edges = new vis.DataSet([
+            // Canciones → acciones
+            { from: 'canciones', to: 'nueva-cancion' },
+            { from: 'canciones', to: 'editar-cancion' },
+            { from: 'canciones', to: 'buscar-cancion' },
+
+            // Acciones Canciones → Lector
+            { from: 'nueva-cancion', to: 'editor' },
+            { from: 'editar-cancion', to: 'editor' },
+            { from: 'buscar-cancion', to: 'lector' },
+
+            // Evento → acciones
+            { from: 'evento', to: 'agregar-cancion' },
+            { from: 'evento', to: 'transmitir' },
+            { from: 'evento', to: 'quitar-cancion' },
+            { from: 'evento', to: 'reordenar' },
+            { from: 'evento', to: 'nuevo-evento' },
+            { from: 'evento', to: 'director-badge' },
+
+            // Acciones Evento → Lector
+            { from: 'agregar-cancion', to: 'agregar-panel' },
+            { from: 'reordenar', to: 'evento' },
+            { from: 'quitar-cancion', to: 'evento' },
+
+            // Transmisión
+            { from: 'transmitir', to: 'transmision' },
+            { from: 'transmision', to: 'lector' },
+            { from: 'transmitir', to: 'online-badge' },
+
+            // Historial → acciones
+            { from: 'historial', to: 'nuevo-evento' },
+            { from: 'historial', to: 'usar-evento' },
+            { from: 'historial', to: 'copiar-evento' },
+            { from: 'historial', to: 'editar-evento' },
+            { from: 'historial', to: 'eliminar-evento' },
+
+            // Usar evento
+            { from: 'usar-evento', to: 'evento' },
+            { from: 'copiar-evento', to: 'nuevo-evento' },
+
+            // Panel Agregar
+            { from: 'agregar-panel', to: 'nueva-cancion' },
+            { from: 'agregar-panel', to: 'lector' },
+
+            // Editor
+            { from: 'editor', to: 'estado' },
+            { from: 'editor', to: 'firestore' },
+            { from: 'editor', to: 'evento' },
+
+            // Lector
+            { from: 'lector', to: 'editor' },
+            { from: 'lector', to: 'online-badge' },
+            { from: 'lector', to: 'director-badge' },
+
+            // Firestore sync
+            { from: 'firestore', to: 'estado' },
+            { from: 'estado', to: 'evento' },
+            { from: 'estado', to: 'canciones' },
+            { from: 'estado', to: 'historial' },
+
+            // Rol/Director
+            { from: 'director-badge', to: 'transmitir' },
+
+            // Exportar
+            { from: 'canciones', to: 'exportar' },
+            { from: 'exportar', to: 'firestore' },
+        ]);
+
+        const data = { nodes: nodes, edges: edges };
+        const options = {
+            physics: {
+                enabled: true,
+                barnesHut: {
+                    gravitationalConstant: -26000,
+                    centralGravity: 0.3,
+                    springLength: 200,
+                    springConstant: 0.05
+                },
+                maxVelocity: 50,
+                stabilization: { iterations: 200 }
+            },
+            nodes: {
+                shape: 'box',
+                margin: 10,
+                widthConstraint: { maximum: 180 },
+                font: {
+                    size: 12,
+                    color: '#fff',
+                    face: 'Monaco, Courier New, monospace'
+                },
+                borderWidth: 2,
+                borderWidthSelected: 3,
+            },
+            edges: {
+                color: {
+                    color: '#444',
+                    highlight: '#0066ff',
+                    opacity: 0.5
+                },
+                width: 1.5,
+                smooth: {
+                    type: 'continuous'
+                },
+                arrows: {
+                    to: {
+                        enabled: true,
+                        scaleFactor: 0.5,
+                        type: 'arrow'
+                    }
+                },
+                hoverWidth: 3,
+            },
+            interaction: {
+                hover: true,
+                navigationButtons: true,
+                keyboard: true,
+                zoomView: true,
+            }
+        };
+
+        const container = document.getElementById('network');
+        const network = new vis.Network(container, data, options);
+
+        function focusOnNode(nodeId) {
+            const node = nodes.get(nodeId);
+            if (!node) {
+                alert('Nodo no encontrado: ' + nodeId);
+                return;
+            }
+
+            network.focus(nodeId, {
+                scale: 1.5,
+                animation: {
+                    duration: 1000,
+                    easingFunction: 'easeInOutQuad'
+                }
+            });
+            network.selectNodes([nodeId], false);
+        }
+
+        function resetZoom() {
+            network.fit({
+                animation: {
+                    duration: 1000,
+                    easingFunction: 'easeInOutQuad'
+                }
+            });
+            network.unselectAll();
+        }
+
+        setTimeout(() => {
+            network.fit({
+                animation: {
+                    duration: 1000,
+                    easingFunction: 'easeInOutQuad'
+                }
+            });
+        }, 500);
+    </script>
+</body>
+</html>

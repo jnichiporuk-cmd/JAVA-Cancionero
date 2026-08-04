@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis: Nomenclatura "Pintar" y Placeholders - Cancionero</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0a0a0a;
+            color: #e0e0e0;
+            font-family: 'Monaco', 'Courier New', monospace;
+            padding: 40px;
+            line-height: 1.8;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #fff;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        .subtitle {
+            color: #888;
+            margin-bottom: 40px;
+        }
+        .section {
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #00b0f0;
+            font-size: 18px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+        }
+        h3 {
+            color: #3dd68c;
+            font-size: 14px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        code {
+            background: #1a1a1a;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #f2a33c;
+            font-size: 12px;
+        }
+        pre {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 15px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #ccc;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 13px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #333;
+        }
+        th {
+            background: #1a1a1a;
+            color: #0066ff;
+            font-weight: 700;
+        }
+        tr:nth-child(even) {
+            background: #1a1a1a;
+        }
+        .problema {
+            background: #3a1a1a;
+            border-left: 3px solid #ff6b6b;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .problema-titulo {
+            color: #ff6b6b;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .ventaja {
+            background: #1a3a1a;
+            border-left: 3px solid #3dd68c;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .ventaja-titulo {
+            color: #3dd68c;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .ejemplo-box {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .ejemplo-titulo {
+            color: #f2a33c;
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏷️ Análisis: Nomenclatura y Constantes Duplicadas</h1>
+        <div class="subtitle">¿Por qué se llaman "pintar"? ¿Por qué no centralizar los placeholders?</div>
+
+        <!-- PARTE 1: NOMENCLATURA "PINTAR" -->
+        <div class="section">
+            <h2>❓ ¿Por qué se llaman "pintar"?</h2>
+
+            <p>Es un término heredado de interfaz gráfica (GUI). Significa <strong>"renderizar" o "dibujar en pantalla"</strong>.</p>
+
+            <h3>En el código:</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Función</th>
+                        <th>Qué hace</th>
+                        <th>Nombre alternativo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>pintarCatalogo()</code></td>
+                        <td>Renderiza lista de canciones</td>
+                        <td>renderCatalogo() / updateCatalogo()</td>
+                    </tr>
+                    <tr>
+                        <td><code>pintarReunion()</code></td>
+                        <td>Renderiza lista del evento</td>
+                        <td>renderMeeting() / updateEvent()</td>
+                    </tr>
+                    <tr>
+                        <td><code>pintarLector()</code></td>
+                        <td>Renderiza vista de canción</td>
+                        <td>renderSongView() / updateReader()</td>
+                    </tr>
+                    <tr>
+                        <td><code>pintarAgregar()</code></td>
+                        <td>Renderiza panel de búsqueda</td>
+                        <td>renderAddPanel() / updateAddSongs()</td>
+                    </tr>
+                    <tr>
+                        <td><code>pintar()</code></td>
+                        <td>Renderiza TODO según estado</td>
+                        <td>render() / updateUI() / refreshUI()</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="ventaja">
+                <div class="ventaja-titulo">✅ "Pintar" es común en código español</div>
+                En proyectos hispanohablantes es un término reconocido. No es incorrecto, es una convención.
+            </div>
+
+            <div class="problema">
+                <div class="problema-titulo">⚠️ Pero tiene problemas:</div>
+                <ul style="margin-left: 20px;">
+                    <li><strong>Inconsistencia:</strong> Hay también <code>actualizarNumerosOrden()</code>, <code>actualizarColapsoTope()</code>, etc. Mezcla "pintar" con "actualizar"</li>
+                    <li><strong>Menos claro en inglés:</strong> Si alguien de otro país lee el código, "pintar" no es obvio</li>
+                    <li><strong>Buscar es confuso:</strong> "paint" en Google tiene muchos resultados, "render" es más específico</li>
+                </ul>
+            </div>
+
+            <h3 style="margin-top: 30px;">Opciones para mejorar:</h3>
+
+            <div class="ejemplo-box">
+                <div class="ejemplo-titulo">Opción 1: Renombrar a "render" (más estándar)</div>
+                <pre>renderCatalogo()      // Más claro internacionalmente
+renderReunion()
+renderLector()
+renderAgregar()
+render()             // Función principal</pre>
+                <p style="color: #888; font-size: 12px; margin-top: 10px;">
+                    ✅ Estándar en React/Vue/Svelte. Claro qué hace.
+                    ❌ Requiere cambiar ~40 referencias en el código.
+                </p>
+            </div>
+
+            <div class="ejemplo-box">
+                <div class="ejemplo-titulo">Opción 2: Mantener "pintar" pero hacer consistente</div>
+                <pre>// Cambiar actualizar* → pintar*
+pintarNumerosOrden()       // No actualizarNumerosOrden()
+pintarColapsoTope()        // No actualizarColapsoTope()
+pintarVisibilidadPie()     // No actualizarVisibilidadPie()
+pintarBotonesTransporte()  // No actualizarBotonesTransporte()</pre>
+                <p style="color: #888; font-size: 12px; margin-top: 10px;">
+                    ✅ Consistencia total, menos cambios que opción 1.
+                    ✅ Mantiene la convención española del proyecto.
+                    ❌ Sigue siendo menos claro que "render".
+                </p>
+            </div>
+
+            <div class="ejemplo-box">
+                <div class="ejemplo-titulo">Opción 3: Dejar como está (conservador)</div>
+                <pre>// Sin cambios</pre>
+                <p style="color: #888; font-size: 12px; margin-top: 10px;">
+                    ✅ Cero riesgo, funciona bien.
+                    ❌ Inconsistencia + confusión futura.
+                </p>
+            </div>
+        </div>
+
+        <!-- PARTE 2: PLACEHOLDERS DUPLICADOS -->
+        <div class="section">
+            <h2>📋 Placeholders Duplicados</h2>
+
+            <p>Tienes razón. El placeholder está en el HTML hardcoded en dos lugares:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Línea</th>
+                        <th>Input</th>
+                        <th>Placeholder</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>505</td>
+                        <td><code>id="buscar"</code></td>
+                        <td>"Buscar por título, letra, tono o BPM"</td>
+                    </tr>
+                    <tr>
+                        <td>617</td>
+                        <td><code>id="ag-buscar"</code></td>
+                        <td>"Buscar por título, letra, tono o BPM"</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="problema">
+                <div class="problema-titulo">El problema real</div>
+                <p>Si mañana quieres cambiar "Buscar por..." a "Encontrar...", tocas 2 líneas de HTML en lugar de 1.</p>
+                <p>Y si los textos se desincronizaban (una dice "título, letra" y la otra dice solo "título"), causaría confusión.</p>
+            </div>
+
+            <h3>Solución: Constante centralizada</h3>
+
+            <pre>// Al inicio del script (después de CATALOGO_BASE)
+const TEXTOS = {
+  placeholder_buscar: "Buscar por título, letra, tono o BPM",
+  vacio_catalogo: "Sin resultados. Probá con parte del nombre, o con el tono (G, Bm).",
+  vacio_agregar: "Sin resultados. Probá con parte del nombre, o con el tono (G, Bm).",
+  vacio_evento: "Todavía no hay lista",
+  // ... más textos comunes
+};</pre>
+
+            <p style="margin-top: 15px; color: #888; font-size: 12px;">
+                <strong>Nota:</strong> El placeholder está en HTML, no en JS. Para usarlo tendrías que genrar el HTML dinámicamente, lo cual es un cambio más grande.
+            </p>
+
+            <h3 style="margin-top: 30px;">Alternativa más práctica:</h3>
+
+            <p>Mantener los placeholders en HTML (como ahora) pero asegurarse de que sean <strong>exactamente idénticos</strong> con un comentario que diga por qué:</p>
+
+            <pre><!-- Pestaña Canciones - línea 505 -->
+&lt;input id="buscar" type="search"
+  placeholder="Buscar por título, letra, tono o BPM"
+  autocomplete="off"&gt;
+
+<!-- Panel Agregar - línea 617 [DEBE ser idéntico al input id="buscar"] -->
+&lt;input id="ag-buscar" type="search"
+  placeholder="Buscar por título, letra, tono o BPM"
+  autocomplete="off"&gt;</pre>
+
+            <p style="margin-top: 15px; color: #888; font-size: 12px;">
+                Así en el futuro, si alguien edita uno, sabe que tiene que editar el otro también.
+            </p>
+        </div>
+
+        <!-- CONCLUSIÓN -->
+        <div class="section" style="background: #1a3a1a; border-color: #3dd68c;">
+            <h2 style="color: #3dd68c; border-color: #3dd68c;">✅ Resumen</h2>
+
+            <h3>"Pintar" vs otros nombres:</h3>
+            <ul style="margin-left: 20px; line-height: 1.8;">
+                <li><strong>Estado actual:</strong> Mezcla "pintar" con "actualizar" (inconsistente)</li>
+                <li><strong>Mejor opción:</strong> Renombrar todo a <code>render*()</code> (más claro, estándar)</li>
+                <li><strong>Alternativa:</strong> Hacer consistente: todo "pintar" o todo "actualizar"</li>
+                <li><strong>Realidad:</strong> El nombre no afecta funcionalmente, es cosmético</li>
+            </ul>
+
+            <h3 style="margin-top: 20px;">Placeholders duplicados:</h3>
+            <ul style="margin-left: 20px; line-height: 1.8;">
+                <li><strong>Estado actual:</strong> Mismo texto en 2 lugares del HTML (duplicación)</li>
+                <li><strong>Mejor opción:</strong> Constante JS <code>TEXTOS.placeholder_buscar</code></li>
+                <li><strong>Alternativa práctica:</strong> Comentario en HTML que diga "debe ser idéntico a id=buscar"</li>
+                <li><strong>Prioridad baja:</strong> No causa bugs, solo mantenimiento futuro</li>
+            </ul>
+
+            <h3 style="margin-top: 20px; color: #f2a33c;">Ranking de prioridades (de tu pregunta):</h3>
+            <table style="margin-top: 10px;">
+                <tr>
+                    <td><strong>1. 🔥 Refactor búsqueda (filtrarCanciones)</strong></td>
+                    <td style="color: #3dd68c;">Código duplicado funcional, afecta lógica</td>
+                </tr>
+                <tr>
+                    <td><strong>2. ⚠️ Renombrar a "render"</strong></td>
+                    <td style="color: #f2a33c;">Legibilidad + consistencia, cambio cosmético</td>
+                </tr>
+                <tr>
+                    <td><strong>3. 📝 Centralizar placeholders</strong></td>
+                    <td style="color: #888;">Mantenimiento futuro, bajo impacto</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
