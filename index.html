@@ -518,7 +518,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v269</span></div>
+    <div class="marca">Cancionero <span class="ver">v270</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -2168,11 +2168,11 @@ function mostrarDialogoNota(notaInicial, onGuardar){
   campos.innerHTML = `
     <div style="margin-bottom:16px">
       <label style="font-size:11px;color:var(--tenue);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px">Nombre</label>
-      <input id="nota-nombre" type="text" placeholder="Pausa, Bienvenida, Lectura..." style="width:100%;padding:10px;border:1px solid var(--borde);border-radius:6px;background:rgba(255,255,255,0.05);color:var(--letra);font-size:14px;font-family:inherit;box-sizing:border-box;margin:0">
+      <input id="nota-nombre" type="text" placeholder="Anotación" style="width:100%;padding:10px;border:1px solid var(--borde);border-radius:6px;background:rgba(255,255,255,0.05);color:var(--letra);font-size:14px;font-family:inherit;box-sizing:border-box;margin:0">
     </div>
     <div style="margin-bottom:16px;flex:1;display:flex;flex-direction:column;min-height:0">
       <label style="font-size:11px;color:var(--tenue);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px">Contenido</label>
-      <textarea id="nota-contenido" class="nota-textarea" placeholder="Detalles, instrucciones, cita..." style="flex:1;min-height:280px;box-sizing:border-box;margin:0"></textarea>
+      <textarea id="nota-contenido" class="nota-textarea" placeholder="Detalle..." style="flex:1;min-height:280px;box-sizing:border-box;margin:0"></textarea>
     </div>
   `;
 
@@ -2210,14 +2210,14 @@ function mostrarDialogoNota(notaInicial, onGuardar){
 
   $("nota-guardar").onclick = () => {
     const nombre = inputNombre.value.trim();
-    const textoContenido = textareContenido.value.trim();
-    if (nombre && textoContenido){
-      onGuardar({nombre, contenido: textoContenido});
-      cerrarDialogo();
-    } else {
-      if (!nombre) flotar("El nombre no puede estar vacío");
-      else flotar("El contenido no puede estar vacío");
+    let textoContenido = textareContenido.value.trim();
+    if (!nombre){
+      flotar("El nombre no puede estar vacío");
+      return;
     }
+    if (!textoContenido) textoContenido = nombre;
+    onGuardar({nombre, contenido: textoContenido});
+    cerrarDialogo();
   };
 
   $("nota-cancelar").onclick = cerrarDialogo;
@@ -3255,7 +3255,7 @@ function abrirExportar(){
   $("ex-resumen-contenido").innerHTML = resumenHTML;
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v269",
+    origen: "cancionero v270",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
