@@ -519,7 +519,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v253</span></div>
+    <div class="marca">Cancionero <span class="ver">v254</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -2825,7 +2825,7 @@ function renderLector(){
       b.textContent = i + 1;
       b.className = i === est.posicion ? "aqui" : (i < est.posicion ? "pasada" : "");
       if (!bloqueado) b.onclick = () => {
-        const estabaTransmitiendo = est.lista.enVivo?.cancionId === est.abierta;
+        const estabaTransmitiendo = !!est.lista.enVivo;
         est.posicion = i; est.abierta = id; est.semis = semisGuardado(id);
         /* Si estaba transmitiendo, actualizar enVivo antes de pintar */
         if (estabaTransmitiendo){
@@ -2947,7 +2947,7 @@ function paso(delta){
   if (est.soloLectura && !est.esDirector) return;
   const j = est.posicion + delta;
   if (j < 0 || j >= est.lista.ids.length) return;
-  const estabaTransmitiendo = est.lista.enVivo?.cancionId === est.abierta;
+  const estabaTransmitiendo = !!est.lista.enVivo;
   est.posicion = j;
   est.abierta = est.lista.ids[j];
   est.semis = semisGuardado(est.abierta);
@@ -3132,7 +3132,7 @@ function abrirExportar(){
   $("ex-resumen-contenido").innerHTML = resumenHTML;
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v253",
+    origen: "cancionero v254",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);

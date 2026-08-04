@@ -2825,7 +2825,7 @@ function renderLector(){
       b.textContent = i + 1;
       b.className = i === est.posicion ? "aqui" : (i < est.posicion ? "pasada" : "");
       if (!bloqueado) b.onclick = () => {
-        const estabaTransmitiendo = est.lista.enVivo?.cancionId === est.abierta;
+        const estabaTransmitiendo = !!est.lista.enVivo;
         est.posicion = i; est.abierta = id; est.semis = semisGuardado(id);
         /* Si estaba transmitiendo, actualizar enVivo antes de pintar */
         if (estabaTransmitiendo){
@@ -2947,7 +2947,7 @@ function paso(delta){
   if (est.soloLectura && !est.esDirector) return;
   const j = est.posicion + delta;
   if (j < 0 || j >= est.lista.ids.length) return;
-  const estabaTransmitiendo = est.lista.enVivo?.cancionId === est.abierta;
+  const estabaTransmitiendo = !!est.lista.enVivo;
   est.posicion = j;
   est.abierta = est.lista.ids[j];
   est.semis = semisGuardado(est.abierta);
