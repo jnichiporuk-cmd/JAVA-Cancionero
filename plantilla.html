@@ -2777,7 +2777,21 @@ function renderLector(){
         const b = document.createElement("button");
         b.textContent = i + 1;
         b.className = i === est.posicion ? "aqui" : (i < est.posicion ? "pasada" : "");
-        b.onclick = () => { est.posicion = i; est.abierta = id; est.semis = semisGuardado(id); renderLector(); };
+        b.onclick = () => {
+          const estabaTransmitiendo = !!est.lista.enVivo;
+          est.posicion = i; est.abierta = id; est.semis = semisGuardado(id);
+          /* Si estaba transmitiendo, actualizar enVivo antes de pintar */
+          if (estabaTransmitiendo){
+            est.lista.enVivo = {
+              cancionId: est.abierta,
+              semis: est.semis,
+              posicion: est.posicion,
+              cuando: Date.now(),
+            };
+          }
+          $("cuerpo").scrollTop = 0; reiniciarColapsoTope(); renderLector();
+          if (estabaTransmitiendo && est.esDirector) activarTransmision();
+        };
         riel.appendChild(b);
       });
       pie.innerHTML = `<button class="btn">+ Agregar</button>`;

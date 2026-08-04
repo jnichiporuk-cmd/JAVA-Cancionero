@@ -519,7 +519,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v256</span></div>
+    <div class="marca">Cancionero <span class="ver">v257</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -2777,7 +2777,21 @@ function renderLector(){
         const b = document.createElement("button");
         b.textContent = i + 1;
         b.className = i === est.posicion ? "aqui" : (i < est.posicion ? "pasada" : "");
-        b.onclick = () => { est.posicion = i; est.abierta = id; est.semis = semisGuardado(id); renderLector(); };
+        b.onclick = () => {
+          const estabaTransmitiendo = !!est.lista.enVivo;
+          est.posicion = i; est.abierta = id; est.semis = semisGuardado(id);
+          /* Si estaba transmitiendo, actualizar enVivo antes de pintar */
+          if (estabaTransmitiendo){
+            est.lista.enVivo = {
+              cancionId: est.abierta,
+              semis: est.semis,
+              posicion: est.posicion,
+              cuando: Date.now(),
+            };
+          }
+          $("cuerpo").scrollTop = 0; reiniciarColapsoTope(); renderLector();
+          if (estabaTransmitiendo && est.esDirector) activarTransmision();
+        };
         riel.appendChild(b);
       });
       pie.innerHTML = `<button class="btn">+ Agregar</button>`;
@@ -3168,7 +3182,7 @@ function abrirExportar(){
   $("ex-resumen-contenido").innerHTML = resumenHTML;
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v256",
+    origen: "cancionero v257",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
