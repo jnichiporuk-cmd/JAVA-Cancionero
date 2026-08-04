@@ -1231,15 +1231,17 @@ async function activarTransmision(){
      llamar a activarTransmision(). Si se llama dos veces puede haber problema
      con sincronización de Firestore. */
   try{
+    console.log("Transmitiendo:", {id: est.abierta, semis: est.semis, posicion: est.posicion, tipo: esNota(est.abierta) ? "nota" : "canción"});
     await fs.updateDoc(fs.doc(db, "reuniones", est.lista.id), {
       "enVivo.cancionId": est.abierta,
       "enVivo.semis": est.semis,
       "enVivo.posicion": est.posicion,
       "enVivo.cuando": ahora,
     });
+    console.log("✓ Transmisión guardada en Firestore");
   }catch(e){
-    console.error("Error al transmitir:", e.code, e.message, "ID:", est.abierta);
-    flotar("⚠️ Error al transmitir: " + (e.message || e.code));
+    console.error("✗ Error al transmitir:", e.code, e.message, "ID:", est.abierta);
+    flotar("⚠️ Firestore rechazó: " + (e.message || e.code));
     /* Revertir cambio local para que no quede inconsistente */
     est.lista.enVivo = null;
   }

@@ -519,7 +519,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v260</span></div>
+    <div class="marca">Cancionero <span class="ver">v261</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -1231,15 +1231,17 @@ async function activarTransmision(){
      llamar a activarTransmision(). Si se llama dos veces puede haber problema
      con sincronización de Firestore. */
   try{
+    console.log("Transmitiendo:", {id: est.abierta, semis: est.semis, posicion: est.posicion, tipo: esNota(est.abierta) ? "nota" : "canción"});
     await fs.updateDoc(fs.doc(db, "reuniones", est.lista.id), {
       "enVivo.cancionId": est.abierta,
       "enVivo.semis": est.semis,
       "enVivo.posicion": est.posicion,
       "enVivo.cuando": ahora,
     });
+    console.log("✓ Transmisión guardada en Firestore");
   }catch(e){
-    console.error("Error al transmitir:", e.code, e.message, "ID:", est.abierta);
-    flotar("⚠️ Error al transmitir: " + (e.message || e.code));
+    console.error("✗ Error al transmitir:", e.code, e.message, "ID:", est.abierta);
+    flotar("⚠️ Firestore rechazó: " + (e.message || e.code));
     /* Revertir cambio local para que no quede inconsistente */
     est.lista.enVivo = null;
   }
@@ -3214,7 +3216,7 @@ function abrirExportar(){
   $("ex-resumen-contenido").innerHTML = resumenHTML;
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v260",
+    origen: "cancionero v261",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
