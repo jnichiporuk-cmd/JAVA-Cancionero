@@ -2150,11 +2150,13 @@ function renderGuardadas(){
 }
 
 function mostrarMenuReunion(r, btnMenu, activa){
-  mostrarMenu(btnMenu, [
+  const opciones = [
     { label: "Editar", action: () => abrirEditarReunion(r) },
     { label: "Copiar", action: () => abrirCopiarReunion(r) },
     { label: "Eliminar", action: () => borrarReunion(r), rojo: true, disabled: activa, disabledReason: "No se puede borrar el evento activo" },
-  ]);
+  ];
+  if (activa) opciones.push({ label: "Salir de este evento", action: salirDelEvento, rojo: true });
+  mostrarMenu(btnMenu, opciones);
 }
 
 /* Sólo el director puede borrar eventos del historial, y no se puede

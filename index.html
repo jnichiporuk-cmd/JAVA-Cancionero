@@ -497,7 +497,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v249</span></div>
+    <div class="marca">Cancionero <span class="ver">v250</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -2150,11 +2150,13 @@ function renderGuardadas(){
 }
 
 function mostrarMenuReunion(r, btnMenu, activa){
-  mostrarMenu(btnMenu, [
+  const opciones = [
     { label: "Editar", action: () => abrirEditarReunion(r) },
     { label: "Copiar", action: () => abrirCopiarReunion(r) },
     { label: "Eliminar", action: () => borrarReunion(r), rojo: true, disabled: activa, disabledReason: "No se puede borrar el evento activo" },
-  ]);
+  ];
+  if (activa) opciones.push({ label: "Salir de este evento", action: salirDelEvento, rojo: true });
+  mostrarMenu(btnMenu, opciones);
 }
 
 /* Sólo el director puede borrar eventos del historial, y no se puede
@@ -2878,7 +2880,7 @@ function abrirExportar(){
   $("ex-resumen-contenido").innerHTML = resumenHTML;
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v249",
+    origen: "cancionero v250",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
