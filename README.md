@@ -71,29 +71,20 @@ service cloud.firestore {
                        || request.resource.data.ordenReuniones is list);
     }
 
-    // Lo que transmite quien tenga prendido "Director": un solo documento,
-    // lo pisa el último que transmite. "directoresLatido" es un mapa con
-    // timestamps por dispositivo, para detectar directores desconectados.
-    match /cancionero/directorEnVivo {
-      allow read: if true;
-      allow write: if request.resource.data.keys().hasOnly(['cancionId','semis','posicion','cuando','directoresLatido'])
-                   && (!('cancionId' in request.resource.data) || request.resource.data.cancionId is string)
-                   && (!('semis' in request.resource.data) || request.resource.data.semis is number)
-                   && (!('posicion' in request.resource.data) || request.resource.data.posicion is number)
-                   && (!('directoresLatido' in request.resource.data) || request.resource.data.directoresLatido is map);
-    }
-
     // Cada reunión guardada (la de hoy y las anteriores): un documento por reunión
     match /reuniones/{id} {
       allow read: if true;
       allow write: if request.resource.data.keys().hasOnly(
-                        ['nombre','ids','semis','notas','porQuien','directoresLatido','creada','actualizada','fechaReunion'])
+                        ['nombre','ids','semis','notas','porQuien','creada','actualizada','fechaReunion','enVivo','directoresLatido'])
                    && request.resource.data.ids is list
                    && request.resource.data.ids.size() < 100
                    && (!('semis' in request.resource.data)
                        || request.resource.data.semis is map)
                    && (!('notas' in request.resource.data)
                        || request.resource.data.notas is map)
+                   && (!('enVivo' in request.resource.data)
+                       || request.resource.data.enVivo is map
+                       || request.resource.data.enVivo == null)
                    && (!('directoresLatido' in request.resource.data)
                        || request.resource.data.directoresLatido is map)
                    && (!('fechaReunion' in request.resource.data)
