@@ -2077,8 +2077,49 @@ function abrirAgregar(){
 }
 
 function abrirAgregarDesdeCancion(posicionActual){
-  /* Pregunta dónde insertar la nueva canción: como siguiente o al final */
-  mostrarDialogoUbicacion(posicionActual);
+  /* Pregunta qué agregar (Canción o Nota) y después dónde */
+  mostrarDialogoTipo(posicionActual);
+}
+
+function mostrarDialogoTipo(posicionActual){
+  /* Diálogo: ¿Qué querés agregar? Canción o Nota */
+  document.querySelectorAll(".dialogo-ubicacion").forEach(d => d.remove());
+
+  const dialogo = document.createElement("div");
+  dialogo.className = "dialogo-ubicacion";
+
+  const contenido = document.createElement("div");
+  contenido.className = "dialogo-contenido";
+  contenido.innerHTML = `
+    <div class="dialogo-titulo">¿Qué querés agregar?</div>
+    <button class="dialogo-btn cancion">Canción</button>
+    <button class="dialogo-btn nota">Anotación</button>
+  `;
+
+  dialogo.appendChild(contenido);
+  document.body.appendChild(dialogo);
+
+  function cerrarDialogo(){
+    dialogo.remove();
+    document.removeEventListener("click", cerrar);
+  }
+
+  contenido.querySelector(".cancion").onclick = () => {
+    mostrarDialogoUbicacion(posicionActual, "cancion");
+    cerrarDialogo();
+  };
+
+  contenido.querySelector(".nota").onclick = () => {
+    mostrarDialogoUbicacion(posicionActual, "nota");
+    cerrarDialogo();
+  };
+
+  function cerrar(e){
+    if (!contenido.contains(e.target)){
+      cerrarDialogo();
+    }
+  }
+  setTimeout(() => document.addEventListener("click", cerrar), 10);
 }
 
 function mostrarDialogoNota(textoInicial, onGuardar){
@@ -2094,8 +2135,8 @@ function mostrarDialogoNota(textoInicial, onGuardar){
     <div class="dialogo-titulo">Anotación del evento</div>
     <textarea id="nota-texto" class="nota-textarea" placeholder="Pausa, Bienvenida, Salida, lectura..."></textarea>
     <div style="display:flex;gap:9px;margin-top:12px">
-      <button id="nota-guardar" class="dialogo-btn" style="flex:1">Guardar</button>
-      <button id="nota-cancelar" class="dialogo-btn" style="flex:1">Cancelar</button>
+      <button id="nota-guardar" class="dialogo-btn" style="flex:1;margin-bottom:0">Guardar</button>
+      <button id="nota-cancelar" class="dialogo-btn" style="flex:1;margin-bottom:0">Cancelar</button>
     </div>
   `;
   dialogo.appendChild(contenido);
@@ -2135,7 +2176,13 @@ function agregarNota(texto){
   }
 
   const idNota = generarIdNota();
-  est.lista.ids.push(idNota);
+  /* Respetar posición: si se especificó una, insertar en ese índice; sino, agregar al final */
+  if (est.posicionInsertarEn !== null && est.posicionInsertarEn !== undefined){
+    est.lista.ids.splice(est.posicionInsertarEn, 0, idNota);
+    est.posicionInsertarEn = null;
+  } else {
+    est.lista.ids.push(idNota);
+  }
   est.lista.notas[idNota] = texto;
 
   render();
@@ -2150,7 +2197,7 @@ function agregarNota(texto){
   }
 }
 
-function mostrarDialogoUbicacion(posicionActual){
+function mostrarDialogoUbicacion(posicionActual, tipo = "cancion"){
   /* Cierra diálogos previos */
   document.querySelectorAll(".dialogo-ubicacion").forEach(d => d.remove());
 
@@ -2159,8 +2206,9 @@ function mostrarDialogoUbicacion(posicionActual){
 
   const contenido = document.createElement("div");
   contenido.className = "dialogo-contenido";
+  const titulo = tipo === "nota" ? "¿Dónde agregar la anotación?" : "¿Dónde agregar la canción?";
   contenido.innerHTML = `
-    <div class="dialogo-titulo">¿Dónde agregar la canción?</div>
+    <div class="dialogo-titulo">${titulo}</div>
     <button class="dialogo-btn siguiente">Como siguiente</button>
     <button class="dialogo-btn final">Al final</button>
   `;
@@ -2176,14 +2224,22 @@ function mostrarDialogoUbicacion(posicionActual){
   /* Evento: "Como siguiente" */
   contenido.querySelector(".siguiente").onclick = () => {
     est.posicionInsertarEn = posicionActual + 1;
-    abrirAgregar();
+    if (tipo === "nota"){
+      mostrarDialogoNota("", agregarNota);
+    } else {
+      abrirAgregar();
+    }
     cerrarDialogo();
   };
 
   /* Evento: "Al final" */
   contenido.querySelector(".final").onclick = () => {
     est.posicionInsertarEn = null;
-    abrirAgregar();
+    if (tipo === "nota"){
+      mostrarDialogoNota("", agregarNota);
+    } else {
+      abrirAgregar();
+    }
     cerrarDialogo();
   };
 

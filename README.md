@@ -87,11 +87,13 @@ service cloud.firestore {
     match /reuniones/{id} {
       allow read: if true;
       allow write: if request.resource.data.keys().hasOnly(
-                        ['nombre','ids','semis','porQuien','creada','actualizada','fechaReunion'])
+                        ['nombre','ids','semis','notas','porQuien','creada','actualizada','fechaReunion'])
                    && request.resource.data.ids is list
                    && request.resource.data.ids.size() < 100
                    && (!('semis' in request.resource.data)
                        || request.resource.data.semis is map)
+                   && (!('notas' in request.resource.data)
+                       || request.resource.data.notas is map)
                    && (!('fechaReunion' in request.resource.data)
                        || request.resource.data.fechaReunion is number)
                    && (!('nombre' in request.resource.data)
