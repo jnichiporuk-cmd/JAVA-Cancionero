@@ -519,7 +519,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v255</span></div>
+    <div class="marca">Cancionero <span class="ver">v256</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -2131,19 +2131,20 @@ function mostrarDialogoNota(notaInicial, onGuardar){
 
   const contenido = document.createElement("div");
   contenido.className = "dialogo-contenido";
+  contenido.style.maxWidth = "520px";
+  contenido.style.display = "flex";
+  contenido.style.flexDirection = "column";
   contenido.innerHTML = `
     <div class="dialogo-titulo">Anotación del evento</div>
-    <div style="margin-bottom:12px">
-      <label style="display:block;font-size:12px;color:var(--tenue);margin-bottom:6px">Nombre</label>
-      <input id="nota-nombre" type="text" class="ed-campos input" placeholder="Pausa, Bienvenida, Lectura...">
+    <div style="padding:20px;flex:1;overflow-y:auto;display:flex;flex-direction:column">
+      <label style="font-size:12px;color:var(--tenue);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px">Nombre</label>
+      <input id="nota-nombre" type="text" class="ed-campos input" placeholder="Pausa, Bienvenida, Lectura..." style="padding:10px;margin-bottom:16px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:6px;color:var(--letra);font-size:14px">
+      <label style="font-size:12px;color:var(--tenue);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px">Contenido</label>
+      <textarea id="nota-contenido" class="nota-textarea" placeholder="Detalles, instrucciones, cita..." style="flex:1;padding:10px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:6px;color:var(--letra);font-size:13px;font-family:'Courier New',monospace;resize:none;min-height:280px"></textarea>
     </div>
-    <div style="margin-bottom:12px">
-      <label style="display:block;font-size:12px;color:var(--tenue);margin-bottom:6px">Contenido</label>
-      <textarea id="nota-contenido" class="nota-textarea" placeholder="Detalles, instrucciones, cita..."></textarea>
-    </div>
-    <div style="display:flex;gap:9px">
-      <button id="nota-guardar" class="dialogo-btn" style="flex:1;margin-bottom:0">Guardar</button>
-      <button id="nota-cancelar" class="dialogo-btn" style="flex:1;margin-bottom:0">Cancelar</button>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px 20px;border-top:1px solid var(--border)">
+      <button id="nota-guardar" class="dialogo-btn" style="padding:12px;background:var(--azul);color:#000;border:none;border-radius:6px;font-weight:600;cursor:pointer">Guardar</button>
+      <button id="nota-cancelar" class="dialogo-btn" style="padding:12px;background:rgba(255,255,255,0.1);color:var(--letra);border:none;border-radius:6px;font-weight:600;cursor:pointer">Cancelar</button>
     </div>
   `;
   dialogo.appendChild(contenido);
@@ -2758,7 +2759,16 @@ function renderLector(){
       guardarLista();
       renderLector();
     });
-    $("en-vivo-badge").style.display = (est.esDirector && est.enReunion) ? "" : "none";
+    /* Actualizar badge de Online/Offline igual que para canciones */
+    const enVivo = !!(est.lista.enVivo && est.lista.enVivo.cancionId === est.abierta);
+    const mostrarOnline = (est.esDirector && est.enReunion) || est.soloLectura;
+    $("en-vivo-badge").style.display = mostrarOnline ? "" : "none";
+    $("en-vivo-badge").classList.toggle("en-vivo", enVivo);
+    $("en-vivo-badge").textContent = enVivo ? "Online" : "Offline";
+    $("en-vivo-badge").disabled = !est.esDirector;
+    $("en-vivo-badge").title = est.esDirector
+      ? (enVivo ? "Se está transmitiendo esta anotación" : "Transmitir esta anotación")
+      : "Vista Online: la ven todos los que estén siguiendo";
     if (est.enReunion){
       const riel = $("riel"), pie = $("l-pie");
       riel.classList.add("visible");
@@ -3158,7 +3168,7 @@ function abrirExportar(){
   $("ex-resumen-contenido").innerHTML = resumenHTML;
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v255",
+    origen: "cancionero v256",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
