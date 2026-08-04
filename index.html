@@ -519,7 +519,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v262</span></div>
+    <div class="marca">Cancionero <span class="ver">v263</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -2139,20 +2139,21 @@ function mostrarDialogoNota(notaInicial, onGuardar){
 
   const contenido = document.createElement("div");
   contenido.className = "dialogo-contenido";
-  contenido.style.maxWidth = "520px";
+  contenido.style.maxWidth = "380px";
   contenido.style.display = "flex";
   contenido.style.flexDirection = "column";
+  contenido.style.height = "600px";
   contenido.innerHTML = `
     <div class="dialogo-titulo">Anotación del evento</div>
     <div style="padding:20px;flex:1;overflow-y:auto;display:flex;flex-direction:column">
       <label style="font-size:12px;color:var(--tenue);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px">Nombre</label>
       <input id="nota-nombre" type="text" class="ed-campos input" placeholder="Pausa, Bienvenida, Lectura..." style="padding:10px;margin-bottom:16px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:6px;color:var(--letra);font-size:14px">
       <label style="font-size:12px;color:var(--tenue);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px">Contenido</label>
-      <textarea id="nota-contenido" class="nota-textarea" placeholder="Detalles, instrucciones, cita..." style="flex:1;padding:10px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:6px;color:var(--letra);font-size:13px;font-family:'Courier New',monospace;resize:none;min-height:280px"></textarea>
+      <textarea id="nota-contenido" class="nota-textarea" placeholder="Detalles, instrucciones, cita..." style="flex:1;padding:10px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:6px;color:var(--letra);font-size:14px;font-family:inherit;resize:none;min-height:280px"></textarea>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px 20px;border-top:1px solid var(--border)">
-      <button id="nota-guardar" class="dialogo-btn" style="padding:12px;background:var(--azul);color:#000;border:none;border-radius:6px;font-weight:600;cursor:pointer">Guardar</button>
-      <button id="nota-cancelar" class="dialogo-btn" style="padding:12px;background:rgba(255,255,255,0.1);color:var(--letra);border:none;border-radius:6px;font-weight:600;cursor:pointer">Cancelar</button>
+      <button id="nota-guardar" class="dialogo-btn" style="padding:12px;background:rgba(255,255,255,0.05);color:var(--letra);border:1px solid var(--border);border-radius:6px;font-weight:600;cursor:pointer">Guardar</button>
+      <button id="nota-cancelar" class="dialogo-btn" style="padding:12px;background:rgba(255,255,255,0.05);color:var(--letra);border:1px solid var(--border);border-radius:6px;font-weight:600;cursor:pointer">Cancelar</button>
     </div>
   `;
   dialogo.appendChild(contenido);
@@ -3218,7 +3219,7 @@ function abrirExportar(){
   $("ex-resumen-contenido").innerHTML = resumenHTML;
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v262",
+    origen: "cancionero v263",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
