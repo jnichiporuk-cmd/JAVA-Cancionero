@@ -65,7 +65,7 @@ global.document = {
   fullscreenElement: null,
   visibilityState: "visible",
 };
-global.window = { storage: undefined };
+global.window = { storage: undefined, print: () => {}, location: { origin: "http://localhost", pathname: "/", search: "" } };
 global.navigator = { clipboard: { writeText: async () => {} } };
 global.localStorage = {
   datos: {},
@@ -90,9 +90,10 @@ try {
       get CATALOGO(){ return CATALOGO },
       get est(){ return est },
       get PORID(){ return PORID },
-      pintarCatalogo, pintarReunion, abrir, pintarLector, abrirEditor,
+      renderCatalogo, renderReunion, abrir, renderLector, abrirEditor,
       refrescarPrevia, abrirExportar, alternarEnLista,
       bloquesATexto, textoABloques, guardarEditor,
+      compartirLink, compartirPDF,
     };
   `);
 } catch (e) {
@@ -117,12 +118,12 @@ setImmediate(() => {
   paso("catálogo cargado (96 canciones)", () => {
     if (__app.CATALOGO.length !== 96) throw new Error("hay " + __app.CATALOGO.length);
   });
-  paso("dibujar la lista de canciones", () => __app.pintarCatalogo());
+  paso("dibujar la lista de canciones", () => __app.renderCatalogo());
   paso("sumar una canción a la reunión", () => __app.alternarEnLista(__app.CATALOGO[0].id));
-  paso("dibujar la pestaña Reunión", () => { __app.est.pestana = "reunion"; __app.pintarReunion(); });
+  paso("dibujar la pestaña Reunión", () => { __app.est.pestana = "reunion"; __app.renderReunion(); });
   paso("abrir una canción en el lector", () => __app.abrir(__app.CATALOGO[0].id, false));
-  paso("transportar +2 semitonos", () => { __app.est.semis = 2; __app.pintarLector(); });
-  paso("entrar en modo reunión", () => { __app.est.enReunion = true; __app.est.posicion = 0; __app.pintarLector(); });
+  paso("transportar +2 semitonos", () => { __app.est.semis = 2; __app.renderLector(); });
+  paso("entrar en modo reunión", () => { __app.est.enReunion = true; __app.est.posicion = 0; __app.renderLector(); });
   paso("abrir el editor de una canción", () => __app.abrirEditor(__app.CATALOGO[0].id));
   paso("abrir el editor de canción nueva", () => __app.abrirEditor("nueva"));
   paso("vista previa del editor", () => __app.refrescarPrevia());
@@ -131,7 +132,7 @@ setImmediate(() => {
     __app.est.pestana = "reunion";
     __app.est.lista.ids = [__app.CATALOGO[0].id, __app.CATALOGO[1].id];
     __app.est.reordenando = true;
-    __app.pintarReunion();
+    __app.renderReunion();
     __app.est.reordenando = false;
   });
 
@@ -145,6 +146,14 @@ setImmediate(() => {
     const c = __app.CATALOGO[5];
     const v = __app.textoABloques(__app.bloquesATexto(c.bloques));
     if (JSON.stringify(v) !== JSON.stringify(c.bloques)) throw new Error("no vuelve igual");
+  });
+
+  paso("compartir canción como PDF (sin explotar)", () => {
+    __app.compartirPDF(__app.CATALOGO[0]);
+  });
+
+  paso("compartir canción como link (fallback a clipboard)", async () => {
+    await __app.compartirLink(__app.CATALOGO[0]);
   });
 
   let malos = 0;

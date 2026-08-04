@@ -83,7 +83,7 @@ if huerfanos:
 # alguien abre esa pantalla.
 try:
     fin_estilo = html.index("</style>")
-    for fn in ("function pintarBloques", "function bloquesATexto",
+    for fn in ("function renderBloques", "function bloquesATexto",
                "function textoABloques", "function abrirEditor",
                "function guardarEditor", "function recalcular"):
         if fn not in html:

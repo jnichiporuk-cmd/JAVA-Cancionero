@@ -482,6 +482,13 @@ input{font-family:inherit;font-size:inherit}
 .aviso-flotante.visible{opacity:1;transform:translate(-50%,0)}
 
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+@media print{
+  body *{ visibility:hidden; }
+  #lector.abierto, #lector.abierto #cuerpo, #lector.abierto #cuerpo *{ visibility:visible; }
+  .tope, #pie, .lector-tope, .lector-pie, .menu-dropdown{ display:none !important; }
+  #lector.abierto #cuerpo{ position:absolute; top:0; left:0; width:100%; }
+}
 </style>
 
 
@@ -490,18 +497,19 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v242</span></div>
+    <div class="marca">Cancionero <span class="ver">v249</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
   </div>
   <div class="pestanas">
     <button class="pestana activa" id="tab-canciones">Canciones</button>
-    <button class="pestana" id="tab-guardadas">Historial</button>
+    <button class="pestana" id="tab-guardadas" style="display:none">Historial</button>
     <button class="pestana" id="tab-reunion">Evento<span class="cuenta" id="cuenta" style="display:none">0</span></button>
     <button class="pestana" id="tab-online">Transmisión</button>
   </div>
   <div class="buscador" id="caja-buscador">
+    <!-- Placeholder centralizado: DEBE ser idéntico a id="ag-buscar" (línea ~617) -->
     <input id="buscar" type="search" placeholder="Buscar por título, letra, tono o BPM" autocomplete="off">
   </div>
   <div class="buscador" id="caja-buscador-guardadas" style="display:none">
@@ -614,6 +622,7 @@ input{font-family:inherit;font-size:inherit}
       <div class="lector-tit"><div class="lector-nombre">Agregar canciones</div></div>
     </div>
     <div class="buscador">
+      <!-- Placeholder centralizado: DEBE ser idéntico a id="buscar" (línea ~505) -->
       <input id="ag-buscar" type="search" placeholder="Buscar por título, letra, tono o BPM" autocomplete="off">
     </div>
   </div>
@@ -704,6 +713,38 @@ function nuevoId(nombre, tono){
   return n;
 }
 
+/* ===================================================================
+   6b. TEXTOS Y CONSTANTES CENTRALIZADAS
+   Placeholders y textos que se reutilizan en m\u00faltiples lugares.
+   Si cambias ac\u00e1, se actualiza autom\u00e1ticamente en toda la app.
+   =================================================================== */
+const TEXTOS = {
+  placeholder_buscar: "Buscar por t\u00edtulo, letra, tono o BPM",
+  vacio_catalogo: "Sin resultados. Prob\u00e1 con parte del nombre, o con el tono (G, Bm).",
+  vacio_agregar: "Sin resultados. Prob\u00e1 con parte del nombre, o con el tono (G, Bm).",
+};
+
+/* Filtrado centralizado de canciones por query.
+   Usado en Canciones y Panel Agregar para mantener la l\u00f3gica consistente.
+   Si ma\u00f1ana quieres cambiar criterios de b\u00fasqueda, editas ac\u00e1 una sola vez. */
+function filtrarCanciones(query, catalogo = CATALOGO) {
+  const q = query.trim().toLowerCase();
+
+  if (!q) return catalogo;  // Sin query, devuelve todo
+
+  return catalogo.filter(s => {
+    // Buscar en nombre
+    if (s.nombre.toLowerCase().includes(q)) return true;
+
+    // Buscar en tono (b\u00fasqueda exacta: "G" \u2260 "Sol")
+    if ((s.tono || "").toLowerCase() === q) return true;
+
+    // Buscar en letra (cualquier bloque de tipo "l")
+    if (s.bloques.some(b => b.t === "l" && b.v.toLowerCase().includes(q))) return true;
+
+    return false;
+  });
+}
 
 /* ===================================================================
    7. TRANSPORTE DE ACORDES
@@ -789,7 +830,7 @@ function moverLinea(linea, semis, usarBemoles){
 /* Dibuja los bloques de una canción. La usan el lector y la vista previa
    del editor, así lo que ves mientras editás es idéntico a lo que se ve
    después en el escenario. */
-function pintarBloques(destino, bloques, semis, conBemoles){
+function renderBloques(destino, bloques, semis, conBemoles){
   destino.innerHTML = "";
   const envoltorio = document.createElement("div");
   envoltorio.className = "scrollx";
@@ -983,7 +1024,7 @@ function escuchar(){
     });
     arr.sort((a, b) => b.creada - a.creada);
     est.guardadas = arr;
-    if (est.pestana === "guardadas") pintar();
+    if (est.pestana === "guardadas") render();
   }, e => {
     console.error("Error escuchando las reuniones guardadas:", e);
     marcarSync("error", "error de permisos");
@@ -1004,8 +1045,8 @@ function escuchar(){
     recalcular();
     /* No redibujar el editor mientras alguien escribe en él */
     if (!est.editando){
-      pintar();
-      if (est.abierta && PORID[est.abierta]) pintarLector();
+      render();
+      if (est.abierta && PORID[est.abierta]) renderLector();
     }
   }, e => {
     console.error("Error escuchando las canciones:", e);
@@ -1022,7 +1063,7 @@ function escucharReunionActiva(id){
   if (cancelarEscuchaActiva){ cancelarEscuchaActiva(); cancelarEscuchaActiva = null; }
   if (!id){
     est.lista = { id:null, ids:[], porQuien:"", cuando:0, nombre:"", semis:{}, fechaReunion:0 };
-    pintar();
+    render();
     return;
   }
   cancelarEscuchaActiva = fs.onSnapshot(fs.doc(db, "reuniones", id), snap => {
@@ -1035,10 +1076,10 @@ function escucharReunionActiva(id){
         enVivo: ('enVivo' in d) ? d.enVivo : null,
         directoresLatido: d.directoresLatido || {},
       };
-      pintar();
+      render();
       /* Si estamos viendo una canción, refrescar el lector para que se
          actualice el botón O (indicador de transmisión) */
-      if (est.abierta) pintarLector();
+      if (est.abierta) renderLector();
       /* Si cambió la transmisión en vivo, actualiza la pestaña Online
          si estamos mirándola o en vista de sólo lectura. */
       if (est.pestana === "online" || est.soloLectura){
@@ -1089,7 +1130,7 @@ function cerrarVistaOnline(){
   $("lector").classList.remove("abierto");
   est.abierta = null;
   est.soloLectura = false;
-  if (est.pestana === "online") pintarOnline();
+  if (est.pestana === "online") renderOnline();
 }
 
 /* Abre el lector en modo sólo lectura con lo que transmitió el
@@ -1118,7 +1159,7 @@ function transmitirDesdeElPrincipio(){
   reiniciarColapsoTope();
   scrollAnterior = 0;
   $("l-pie").classList.remove("oculto");
-  pintarLector();
+  renderLector();
   transmitirEstado();
 }
 
@@ -1139,7 +1180,7 @@ function mostrarVistaOnline(d){
     scrollAnterior = 0;
     $("l-pie").classList.remove("oculto");
   }
-  pintarLector();
+  renderLector();
 }
 
 /* Se llama después de cada acción que cambia lo que se ve en modo
@@ -1156,7 +1197,7 @@ async function activarTransmision(){
     posicion: est.posicion,
     cuando: Date.now(),
   };
-  pintarLector();
+  renderLector();
   try{
     await fs.updateDoc(fs.doc(db, "reuniones", est.lista.id), {
       "enVivo.cancionId": est.abierta,
@@ -1177,7 +1218,7 @@ async function transmitirEstado(){
   if (hayTransmision){
     /* Desactivar: limpiar enVivo */
     est.lista.enVivo = null;
-    pintarLector();
+    renderLector();
     try{
       await fs.updateDoc(fs.doc(db, "reuniones", est.lista.id), {
         enVivo: fs.deleteField(),
@@ -1185,7 +1226,7 @@ async function transmitirEstado(){
     }catch(e){
       console.error("Error al desactivar transmisión:", e.message);
       est.lista.enVivo = { cancionId: est.abierta, semis: est.semis, posicion: est.posicion, cuando: Date.now() };
-      pintarLector();
+      renderLector();
     }
   } else {
     /* No hay transmisión: activar */
@@ -1278,13 +1319,21 @@ async function usarReunion(r){
   await fijarEventoLocal(r.id);
 }
 
+function salirDelEvento(){
+  /* Limpia el evento activo y vuelve a mostrar el Historial en la pestaña Evento.
+     Permite ingresar sin evento elegido en cualquier momento. */
+  est.lista = { id:null, ids:[], porQuien:"", cuando:0, nombre:"", semis:{}, fechaReunion:null, directoresLatido:{} };
+  localStorage.removeItem("cancionero:eventoId");
+  render();
+}
+
 /* --- Crear una reunión vacía a propósito (botón de Guardadas) --------- */
 async function nuevaReunion(nombre){
   if (!est.esDirector) return;
   const id = generarIdReunion();
   const ahora = Date.now();
   est.lista = { id, ids:[], porQuien:"", cuando:ahora, nombre, semis:{}, fechaReunion:ahora, directoresLatido:{} };
-  pintar();
+  render();
   await crearReunion(id, nombre, [], {}, ahora);
   /* Fija este evento como el actual de este dispositivo */
   guardarEventoLocal(id);
@@ -1370,7 +1419,7 @@ async function guardarEditarReunion(){
     const semis = { ...(r.semis || {}) };
     est.lista = { id, ids, porQuien:"", cuando:Date.now(), nombre, semis, fechaReunion, directoresLatido:{} };
     cerrarEditarReunion();
-    pintar();
+    render();
     await crearReunion(id, nombre, ids, semis, fechaReunion);
     /* Fija este nuevo evento como el actual de este dispositivo */
     guardarEventoLocal(id);
@@ -1385,7 +1434,7 @@ async function guardarEditarReunion(){
     const id = generarIdReunion();
     est.lista = { id, ids:[], porQuien:"", cuando:Date.now(), nombre, semis:{}, fechaReunion, directoresLatido:{} };
     cerrarEditarReunion();
-    pintar();
+    render();
     await crearReunion(id, nombre, [], {}, fechaReunion);
     /* Fija este nuevo evento como el actual de este dispositivo */
     guardarEventoLocal(id);
@@ -1404,7 +1453,7 @@ async function guardarDatosReunion(r, nombre, fechaReunion){
   if (r.id === est.lista.id){ est.lista.nombre = nombre; est.lista.fechaReunion = fechaReunion; }
   const enGuardadas = est.guardadas.find(g => g.id === r.id);
   if (enGuardadas){ enGuardadas.nombre = nombre; enGuardadas.fechaReunion = fechaReunion; }
-  pintar();
+  render();
   if (!HAY_NUBE){ flotar("Sin conexión: no se comparte"); return; }
   try{
     await fs.setDoc(fs.doc(db, "reuniones", r.id), { nombre, fechaReunion, actualizada: Date.now() }, { merge: true });
@@ -1541,7 +1590,7 @@ async function fijarEventoLocal(idNuevo){
     if (cancelarEscuchaActiva) cancelarEscuchaActiva();
   }
 
-  pintar();
+  render();
 }
 
 /* Latido periódico de presencia para directores activos en cada evento.
@@ -1644,7 +1693,7 @@ function flotar(msg){
    Una sola función de dibujo por pestaña. Se redibuja todo en vez de
    parchar el DOM: son 130 filas, no hace falta nada más sofisticado.
    =================================================================== */
-function pintar(){
+function render(){
   /* actualizar indicador de rol en la barra */
   const rolTexto = est.esDirector ? "Director" : "Músico";
   $("rol-btn").textContent = rolTexto;
@@ -1663,10 +1712,10 @@ function pintar(){
   $("caja-buscador").style.display = est.pestana === "canciones" ? "block" : "none";
   $("caja-buscador-guardadas").style.display = est.pestana === "guardadas" ? "block" : "none";
 
-  if (est.pestana === "canciones") pintarCatalogo();
-  else if (est.pestana === "guardadas") pintarGuardadas();
-  else if (est.pestana === "reunion") pintarReunion();
-  else pintarOnline();
+  if (est.pestana === "canciones") renderCatalogo();
+  else if (est.pestana === "guardadas") renderGuardadas();
+  else if (est.pestana === "reunion") renderReunion();
+  else renderOnline();
 }
 
 /* --- Orden del catálogo -----------------------------------------------
@@ -1688,7 +1737,7 @@ function compararBpm(a, b){
 const COMPARADORES = { nombre: compararNombre, tono: compararTono, bpm: compararBpm };
 
 /* --- Pestaña Canciones ---------------------------------------------- */
-function pintarCatalogo(){
+function renderCatalogo(){
   const cont = $("contenido");
   cont.innerHTML = "";
   $("pie").style.display = "none";
@@ -1707,18 +1756,12 @@ function pintarCatalogo(){
   $("btn-nueva").onclick = () => abrirEditor("nueva");
   if (n) $("btn-exportar").onclick = abrirExportar;
 
-  const q = est.filtro.trim().toLowerCase();
-  const encontradas = CATALOGO.filter(s => {
-    if (!q) return true;
-    if (s.nombre.toLowerCase().includes(q)) return true;
-    if ((s.tono || "").toLowerCase() === q) return true;
-    /* Buscar en la letra: cualquier bloque de tipo "l" que contenga el término */
-    return s.bloques.some(b => b.t === "l" && b.v.toLowerCase().includes(q));
-  }).sort(COMPARADORES[est.orden]);
+  const encontradas = filtrarCanciones(est.filtro)
+    .sort(COMPARADORES[est.orden]);
 
   if (!encontradas.length){
     cont.insertAdjacentHTML("beforeend",
-      `<div class="vacio"><strong>Sin resultados</strong>Probá con parte del nombre, tono (G, Bm) o letra.</div>`);
+      `<div class="vacio"><strong>Sin resultados</strong>${TEXTOS.vacio_catalogo.split('. ')[1] || 'Probá otra búsqueda.'}</div>`);
     return;
   }
 
@@ -1755,40 +1798,56 @@ function pintarCatalogo(){
   });
 }
 
+/* Encabezado de la pestaña Evento: nombre + fecha + menú ⋮ para cambiar
+   de evento. Asume siempre que hay un evento activo (el caso sin evento
+   se resuelve en renderReunion() mostrando directo renderGuardadas()). */
+function renderEncabezadoEvento(cont){
+  const info = document.createElement("div");
+  info.className = "encabezado-evento";
+  info.style.padding = "12px 14px 6px";
+  info.style.display = "flex";
+  info.style.alignItems = "center";
+  info.style.justifyContent = "space-between";
+
+  info.innerHTML = `
+    <div>
+      <div class="fila-nombre">${escapar(est.lista.nombre || "Sin nombre")}</div>
+      <div class="fila-meta">${fechaHoraTexto(est.lista.fechaReunion || est.lista.cuando || Date.now())}</div>
+    </div>
+    <button class="menu-cancion" id="menu-evento" title="Más opciones">⋮</button>`;
+  cont.appendChild(info);
+  $("menu-evento").onclick = (e) => mostrarMenuEvento(e);
+}
+
 /* --- Pestaña Reunión ------------------------------------------------ */
-function pintarReunion(){
+function renderReunion(){
   const cont = $("contenido");
   cont.innerHTML = "";
   const pie = $("pie");
 
+  if (est.lista.id === null){
+    $("caja-buscador-guardadas").style.display = "block";
+    renderGuardadas();
+    return;
+  }
+  $("caja-buscador-guardadas").style.display = "none";
+
+  renderEncabezadoEvento(cont);
+
   if (!est.lista.ids.length){
-    cont.innerHTML = `<div class="vacio"><strong>Todavía no hay lista</strong>
+    cont.insertAdjacentHTML("beforeend", `<div class="vacio"><strong>Todavía no hay lista</strong>
       ${est.esDirector
         ? `Tocá "+ Agregar canción canciones" abajo para sumar las de este domingo.`
         : `Todavía no la armó el director.`}
-      Lo que armes acá lo ve todo el grupo.</div>`;
+      Lo que armes acá lo ve todo el grupo.</div>`);
     pie.style.display = "flex";
     const hayTransmisionVacia = hayDirectorActivo(est.lista) && !!est.lista.enVivo;
     pie.innerHTML = `<button class="btn" id="agregar-btn"${est.esDirector ? "" : " disabled"}>+ Agregar canción</button>`
       + (hayTransmisionVacia ? `<button class="btn btn-vivo" id="ver-vivo-evento">Transmitir</button>` : "");
     if (est.esDirector) $("agregar-btn").onclick = abrirAgregar;
-    if (hayTransmisionVacia) $("ver-vivo-evento").onclick = () => { est.pestana = "online"; pintar(); };
+    if (hayTransmisionVacia) $("ver-vivo-evento").onclick = () => { est.pestana = "online"; render(); };
     return;
   }
-
-  /* Nombre y fecha/hora de la reunión activa: para saber de un vistazo
-     cuál es y para cuándo es, sin tener que ir a Guardadas a revisar. */
-  const info = document.createElement("div");
-  info.style.padding = "12px 14px 6px";
-  info.style.display = "flex";
-  info.style.alignItems = "center";
-  info.style.justifyContent = "space-between";
-  info.innerHTML = `
-    <div>
-      <div class="fila-nombre">${escapar(est.lista.nombre || "Sin nombre")}</div>
-      <div class="fila-meta">${fechaHoraTexto(est.lista.fechaReunion || est.lista.cuando || Date.now())}</div>
-    </div>`;
-  cont.appendChild(info);
 
 
   est.lista.ids.forEach((id, i) => {
@@ -1848,7 +1907,7 @@ function pintarReunion(){
 
   /* Conectar eventos de botones */
   if (hayTransmision) {
-    $("primer-btn").onclick = () => { est.pestana = "online"; pintar(); };
+    $("primer-btn").onclick = () => { est.pestana = "online"; render(); };
   } else if (est.esDirector) {
     $("primer-btn").onclick = transmitirDesdeElPrincipio;
   }
@@ -1858,139 +1917,63 @@ function pintarReunion(){
   }
 }
 
-function mostrarMenuCancion(e, idCancion, indice){
-  /* Si ya hay un menú abierto, cerrarlo (toggle) */
+/* Menú desplegable genérico: crea el <div class="menu-dropdown">, arma un
+   botón por opción, lo posiciona pegado a anchorEl y lo cierra solo al
+   tocar afuera. Las pantallas que necesitan un menú ⋮ arman su propia
+   lista de opciones y delegan acá el resto (toggle si ya hay abierto,
+   crear botones, posicionar, cerrar). */
+function mostrarMenu(anchorEl, opciones){
   const menuExistente = document.querySelector(".menu-dropdown");
-  if (menuExistente){
-    menuExistente.remove();
-    return;
-  }
-
+  if (menuExistente){ menuExistente.remove(); return; }
   const menu = document.createElement("div");
   menu.className = "menu-dropdown";
-
-  const opciones = [
-    { label: "Reordenar", action: () => { est.reordenando = !est.reordenando; pintarReunion(); } },
-    { label: "Editar canción", action: () => abrirEditor(idCancion) },
-    { label: "Quitar del evento", action: () => quitar(idCancion), rojo: true },
-  ];
-
   opciones.forEach(opt => {
     const btn = document.createElement("button");
-    btn.className = "menu-item" + (opt.rojo ? " rojo" : "");
+    btn.className = "menu-item" + (opt.rojo ? " rojo" : "") + (opt.disabled ? " disabled" : "");
     btn.textContent = opt.label;
-    btn.onclick = () => {
-      opt.action();
-      menu.remove();
-    };
+    if (opt.disabled){
+      btn.disabled = true;
+      if (opt.disabledReason) btn.title = opt.disabledReason;
+    } else {
+      btn.onclick = () => { menu.remove(); opt.action(); };
+    }
     menu.appendChild(btn);
   });
-
   document.body.appendChild(menu);
-
-  /* Posicionar el menú cerca del botón */
-  const rect = e.target.getBoundingClientRect();
+  const rect = anchorEl.getBoundingClientRect();
   menu.style.top = (rect.bottom + 4) + "px";
   menu.style.left = (rect.right - menu.offsetWidth) + "px";
-
-  /* Cerrar al tocar afuera */
   setTimeout(() => {
     document.addEventListener("click", function cerrar(evt){
-      if (!menu.contains(evt.target)){
-        menu.remove();
-        document.removeEventListener("click", cerrar);
-      }
+      if (!menu.contains(evt.target)){ menu.remove(); document.removeEventListener("click", cerrar); }
     });
   }, 0);
+}
+
+function mostrarMenuCancion(e, idCancion, indice){
+  mostrarMenu(e.target, [
+    { label: "Reordenar", action: () => { est.reordenando = !est.reordenando; renderReunion(); } },
+    { label: "Compartir", action: () => mostrarMenuCompartir(e, idCancion) },
+    { label: "Editar canción", action: () => abrirEditor(idCancion) },
+    { label: "Quitar del evento", action: () => quitar(idCancion), rojo: true },
+  ]);
 }
 
 function mostrarMenuEvento(e){
-  /* Si ya hay un menú abierto, cerrarlo (toggle) */
-  const menuExistente = document.querySelector(".menu-dropdown");
-  if (menuExistente){
-    menuExistente.remove();
-    return;
-  }
-
-  const menu = document.createElement("div");
-  menu.className = "menu-dropdown";
-
   const opciones = [
-    { label: "Reordenar", action: () => { est.reordenando = !est.reordenando; pintarReunion(); } },
+    { label: "Ver historial", action: () => { est.pestana = "guardadas"; render(); } },
   ];
-
-  opciones.forEach(opt => {
-    const btn = document.createElement("button");
-    btn.className = "menu-item" + (opt.rojo ? " rojo" : "");
-    btn.textContent = opt.label;
-    btn.onclick = () => {
-      opt.action();
-      menu.remove();
-    };
-    menu.appendChild(btn);
-  });
-
-  document.body.appendChild(menu);
-
-  /* Posicionar el menú cerca del botón */
-  const rect = e.target.getBoundingClientRect();
-  menu.style.top = (rect.bottom + 4) + "px";
-  menu.style.left = (rect.right - menu.offsetWidth) + "px";
-
-  /* Cerrar al tocar afuera */
-  setTimeout(() => {
-    document.addEventListener("click", function cerrar(evt){
-      if (!menu.contains(evt.target)){
-        menu.remove();
-        document.removeEventListener("click", cerrar);
-      }
-    });
-  }, 0);
+  if (est.esDirector) opciones.push({ label: "+ Crear nuevo evento", action: abrirNuevaReunion });
+  opciones.push({ label: "Salir de este evento", action: salirDelEvento, rojo: true });
+  mostrarMenu(e.target, opciones);
 }
 
 function mostrarMenuCancionCatalogo(e, idCancion){
-  /* Si ya hay un menú abierto, cerrarlo (toggle) */
-  const menuExistente = document.querySelector(".menu-dropdown");
-  if (menuExistente){
-    menuExistente.remove();
-    return;
-  }
-
-  const menu = document.createElement("div");
-  menu.className = "menu-dropdown";
-
-  const opciones = [
+  mostrarMenu(e.target, [
+    { label: "Compartir", action: () => mostrarMenuCompartir(e, idCancion) },
     { label: "Editar canción", action: () => abrirEditor(idCancion) },
     { label: "Eliminar canción", action: () => borrarCancion(idCancion), rojo: true },
-  ];
-
-  opciones.forEach(opt => {
-    const btn = document.createElement("button");
-    btn.className = "menu-item" + (opt.rojo ? " rojo" : "");
-    btn.textContent = opt.label;
-    btn.onclick = () => {
-      opt.action();
-      menu.remove();
-    };
-    menu.appendChild(btn);
-  });
-
-  document.body.appendChild(menu);
-
-  /* Posicionar el menú cerca del botón */
-  const rect = e.target.getBoundingClientRect();
-  menu.style.top = (rect.bottom + 4) + "px";
-  menu.style.left = (rect.right - menu.offsetWidth) + "px";
-
-  /* Cerrar al tocar afuera */
-  setTimeout(() => {
-    document.addEventListener("click", function cerrar(evt){
-      if (!menu.contains(evt.target)){
-        menu.remove();
-        document.removeEventListener("click", cerrar);
-      }
-    });
-  }, 0);
+  ]);
 }
 
 /* --- Panel "Agregar canciones" ----------------------------------------
@@ -2002,7 +1985,7 @@ function abrirAgregar(){
   est.filtroAgregar = "";
   $("ag-buscar").value = "";
   est.posicionInsertarEn = null;  /* Sin restricción de posición */
-  pintarAgregar();
+  renderAgregar();
   $("agregar").classList.add("abierto");
 }
 
@@ -2059,7 +2042,7 @@ function mostrarDialogoUbicacion(posicionActual){
 function cerrarAgregar(){
   $("agregar").classList.remove("abierto");
 }
-function pintarAgregar(){
+function renderAgregar(){
   const cont = $("ag-lista");
   cont.innerHTML = "";
 
@@ -2069,13 +2052,10 @@ function pintarAgregar(){
   pie.innerHTML = `<button id="ag-nueva-btn" class="btn" style="flex:1" title="Crear nueva canción">+ Nueva canción</button>`;
   $("ag-nueva-btn").onclick = () => abrirEditor("nueva");
 
-  const q = est.filtroAgregar.trim().toLowerCase();
-  const encontradas = CATALOGO.filter(s =>
-    !q || s.nombre.toLowerCase().includes(q) || (s.tono || "").toLowerCase() === q
-  );
+  const encontradas = filtrarCanciones(est.filtroAgregar);
 
   if (!encontradas.length){
-    cont.innerHTML = `<div class="vacio"><strong>Sin resultados</strong>Probá con parte del nombre, o con el tono (G, Bm).</div>`;
+    cont.innerHTML = `<div class="vacio"><strong>Sin resultados</strong>${TEXTOS.vacio_agregar.split('. ')[1] || 'Probá otra búsqueda.'}</div>`;
     return;
   }
 
@@ -2091,7 +2071,7 @@ function pintarAgregar(){
       <button class="sumar${puesta ? " puesta" : ""}">${puesta ? "✓" : "+"}</button>`;
     /* Acá el toque suma o saca directo, sin abrir la canción: es un
        panel para armar la lista rápido, no para leer letras. */
-    const alternar = () => { alternarEnLista(s.id); pintarAgregar(); };
+    const alternar = () => { alternarEnLista(s.id); renderAgregar(); };
     fila.querySelector(".fila-txt").onclick = alternar;
     fila.querySelector(".sumar").onclick = alternar;
     cont.appendChild(fila);
@@ -2104,7 +2084,7 @@ function pintarAgregar(){
    el único orden, sin opciones para cambiarlo. No se toca nada de lo
    que ve el escenario: sólo permite crear una reunión nueva, copiar una
    existente como punto de partida, o elegir cuál es la activa. */
-function pintarGuardadas(){
+function renderGuardadas(){
   const cont = $("contenido");
   cont.innerHTML = "";
   const pie = $("pie");
@@ -2154,7 +2134,7 @@ function pintarGuardadas(){
     fila.querySelector(".fila-txt").onclick = () => {
       if (!activa) usarReunion(r);
       est.pestana = "reunion";
-      pintar();
+      render();
     };
     if (est.esDirector){
       const btnMenu = fila.querySelector(".btn-menu");
@@ -2170,54 +2150,11 @@ function pintarGuardadas(){
 }
 
 function mostrarMenuReunion(r, btnMenu, activa){
-  /* Si ya hay un menú abierto, cerrarlo (toggle) */
-  const menuExistente = document.querySelector(".menu-dropdown");
-  if (menuExistente){
-    menuExistente.remove();
-    return;
-  }
-
-  const menu = document.createElement("div");
-  menu.className = "menu-dropdown";
-
-  const opciones = [
+  mostrarMenu(btnMenu, [
     { label: "Editar", action: () => abrirEditarReunion(r) },
     { label: "Copiar", action: () => abrirCopiarReunion(r) },
     { label: "Eliminar", action: () => borrarReunion(r), rojo: true, disabled: activa, disabledReason: "No se puede borrar el evento activo" },
-  ];
-
-  opciones.forEach(opt => {
-    const btn = document.createElement("button");
-    btn.className = "menu-item" + (opt.rojo ? " rojo" : "") + (opt.disabled ? " disabled" : "");
-    btn.textContent = opt.label;
-    if (opt.disabled) {
-      btn.disabled = true;
-      btn.title = opt.disabledReason;
-    } else {
-      btn.onclick = () => {
-        opt.action();
-        menu.remove();
-      };
-    }
-    menu.appendChild(btn);
-  });
-
-  document.body.appendChild(menu);
-
-  /* Posicionar el menú cerca del botón */
-  const rect = btnMenu.getBoundingClientRect();
-  menu.style.top = (rect.bottom + 4) + "px";
-  menu.style.left = (rect.right - menu.offsetWidth) + "px";
-
-  /* Cerrar al tocar afuera */
-  setTimeout(() => {
-    document.addEventListener("click", function cerrar(evt){
-      if (!menu.contains(evt.target)){
-        menu.remove();
-        document.removeEventListener("click", cerrar);
-      }
-    });
-  }, 0);
+  ]);
 }
 
 /* Sólo el director puede borrar eventos del historial, y no se puede
@@ -2274,7 +2211,7 @@ function fondoOnline(){
 /* Punto de entrada de la pestaña: dibuja el fondo y, si hay algo
    transmitido, la abre directo (para eso está la pestaña Online, no
    hace falta ningún botón de "activar"). */
-function pintarOnline(){
+function renderOnline(){
   fondoOnline();
   const d = est.lista.enVivo;
   const s = d ? PORID[d.cancionId] : null;
@@ -2349,7 +2286,7 @@ async function alternarEnLista(id){
       flotar("Sumada al evento");
     }
   }
-  pintar();
+  render();
   if (esNueva){
     await crearReunion(est.lista.id, est.lista.nombre, est.lista.ids, est.lista.semis, est.lista.fechaReunion);
     /* Fija el evento nuevo como el actual y empieza latido */
@@ -2363,7 +2300,7 @@ function quitar(id){
   const s = PORID[id];
   if (!confirm(`¿Sacar "${s ? s.nombre : id}" de este evento?`)) return;
   est.lista.ids = est.lista.ids.filter(x => x !== id);
-  pintar(); guardarLista();
+  render(); guardarLista();
 }
 
 /* ===================================================================
@@ -2374,11 +2311,11 @@ function quitar(id){
    Mientras se arrastra, la fila tocada NUNCA se destruye ni se vuelve a
    crear: se mueve de verdad en el DOM (insertBefore contra la fila
    vecina, un paso a la vez) y sólo se actualiza el numerito de orden de
-   cada una. Se probó primero rehaciendo toda la lista con pintarReunion()
+   cada una. Se probó primero rehaciendo toda la lista con renderReunion()
    en cada cruce de fila, pero varios navegadores cortan el gesto de
    arrastre (touchcancel) en cuanto el elemento que se está tocando
    desaparece del DOM, así que sólo llegaba a moverse un lugar por toque.
-   Recién al soltar se llama a pintarReunion(), para que cada fila quede
+   Recién al soltar se llama a renderReunion(), para que cada fila quede
    con los índices bien religados a su posición final. */
 let arrastre = null;  // { i, filaEl, startY, moviendo, alto }
 
@@ -2442,14 +2379,14 @@ function soltarArrastre(){
   if (huboArrastre){
     guardarLista();
     est.reordenando = false;  // Desactivar modo reordenamiento después de soltar
-    pintarReunion();  // religar los índices de cada fila a su posición final
+    renderReunion();  // religar los índices de cada fila a su posición final
   }
 }
 function vaciar(){
   if (!est.esDirector) return flotar("Solo directores pueden vaciar eventos");
   if (!confirm("¿Vaciar la lista de este evento? Cualquiera que lo tenga elegido lo va a ver vacío.")) return;
   est.lista.ids = [];
-  pintar(); guardarLista();
+  render(); guardarLista();
 }
 
 
@@ -2513,7 +2450,7 @@ function abrir(id, enReunion){
   reiniciarColapsoTope();
   scrollAnterior = 0;  /* Reset para mostrar pie al abrir */
   $("l-pie").classList.remove("oculto");  /* Mostrar pie al abrir canción */
-  pintarLector();
+  renderLector();
   /* No se transmite sola: el director mira canciones libremente y
      transmite a propósito con el botón O. */
 }
@@ -2562,10 +2499,10 @@ function cerrarLector(){
   cerrar();
   if (!veniaDeSoloLectura) return;
   est.pestana = "reunion";
-  pintar();
+  render();
 }
 
-function pintarLector(){
+function renderLector(){
   const s = PORID[est.abierta];
   if (!s) return cerrar();
 
@@ -2621,7 +2558,7 @@ function pintarLector(){
      respetando el orden del cancionero. */
   const cuerpo = $("cuerpo");
   cuerpo.style.fontSize = est.tamano + "px";
-  pintarBloques(cuerpo, s.bloques, est.semis, conBemoles);
+  renderBloques(cuerpo, s.bloques, est.semis, conBemoles);
   cuerpo.insertAdjacentHTML("afterbegin",
     `<div class="titulo-cancion">
        <div class="lector-nombre">${escapar(s.nombre)}</div>
@@ -2650,7 +2587,7 @@ function pintarLector(){
             cuando: Date.now(),
           };
         }
-        $("cuerpo").scrollTop = 0; reiniciarColapsoTope(); pintarLector();
+        $("cuerpo").scrollTop = 0; reiniciarColapsoTope(); renderLector();
         if (estabaTransmitiendo && est.esDirector) activarTransmision();
       };
       riel.appendChild(b);
@@ -2695,7 +2632,7 @@ function pintarLector(){
 }
 
 /* Muestra la cabecera de vuelta: se llama junto con cada scrollTop=0
-   que abre/cambia de canción (no dentro de pintarLector() en general,
+   que abre/cambia de canción (no dentro de renderLector() en general,
    que también se llama por cosas como transportar o cambiar tamaño de
    letra — ahí no hay que reaparecer la cabecera de golpe). */
 function reiniciarColapsoTope(){
@@ -2772,7 +2709,7 @@ function paso(delta){
   }
   $("cuerpo").scrollTop = 0;
   reiniciarColapsoTope();
-  pintarLector();
+  renderLector();
   if (estabaTransmitiendo && est.esDirector) activarTransmision();
 }
 
@@ -2814,7 +2751,7 @@ function cerrarEditor(){
 function refrescarPrevia(){
   const bloques = textoABloques($("ed-cuerpo").value);
   const tono = $("ed-tono").value.trim();
-  pintarBloques($("ed-previa"), bloques, 0, /^(F|Bb|Eb|Ab|Db|Gb)m?$/.test(tono));
+  renderBloques($("ed-previa"), bloques, 0, /^(F|Bb|Eb|Ab|Db|Gb)m?$/.test(tono));
 }
 
 /* Sin un tono válido no se sabe desde dónde transportar (mismo motivo
@@ -2887,8 +2824,8 @@ async function guardarEditor(){
 
   recalcular();
   cerrarEditor();
-  pintar();
-  if (est.abierta === id) pintarLector();
+  render();
+  if (est.abierta === id) renderLector();
   flotar(nueva ? "Canción agregada" : "Cambios guardados");
   /* Se escribe sólo esta canción, en su propio documento */
   await guardarCancion(cancion, nueva || iNueva >= 0);
@@ -2909,7 +2846,7 @@ async function borrarCancion(idOpcional){
   recalcular();
   if (!idOpcional) cerrarEditor();  // Solo cerrar editor si se llamó desde el editor
   cerrar();
-  pintar();
+  render();
   flotar("Canción borrada");
   await marcarBorrada(id);
   await guardarLista();   // por si estaba en la lista de la reunión
@@ -2941,7 +2878,7 @@ function abrirExportar(){
   $("ex-resumen-contenido").innerHTML = resumenHTML;
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v242",
+    origen: "cancionero v249",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
@@ -2969,15 +2906,57 @@ async function copiarExportado(){
   }
 }
 
+/* Genera el link de una canción y lo comparte: usa el selector nativo
+   (navigator.share) si el navegador lo tiene — en celular abre WhatsApp,
+   Mensajes, etc. directo — y si no, cae a copiar al portapapeles, mismo
+   patrón que copiarExportado(). location.origin+pathname en vez de
+   href a secas para no arrastrar querystrings viejos si ya se abrió
+   otro link. */
+async function compartirLink(cancion){
+  const url = window.location.origin + window.location.pathname + "?cancion=" + encodeURIComponent(cancion.id);
+  if (typeof navigator.share === "function"){
+    try{ await navigator.share({ title: cancion.nombre, url }); return; }
+    catch(e){ /* usuario canceló el selector: no hacer nada más */ return; }
+  }
+  try{
+    await navigator.clipboard.writeText(url);
+    flotar("Link copiado");
+  }catch(e){
+    flotar("No se pudo copiar el link");
+  }
+}
+
+/* Asegura que la canción esté cargada en el lector y dispara el diálogo
+   de impresión nativo. En el celular, "Guardar como PDF" o compartir
+   directo desde ahí. No genera el PDF con una librería: reutilizamos el
+   layout ya renderizado por renderBloques() en vez de reimplementarlo
+   en una librería, así el acorde no se puede desalinear de la sílaba. */
+function compartirPDF(cancion){
+  if (est.abierta !== cancion.id) abrir(cancion.id, est.enReunion);
+  setTimeout(() => window.print(), 50);
+}
+
+/* "Compartir" abre un segundo menú anclado al mismo botón ⋮ con los dos
+   modos de compartir. Reutiliza mostrarMenu() en vez de inventar un
+   submenú anidado. */
+function mostrarMenuCompartir(e, idCancion){
+  const s = PORID[idCancion];
+  if (!s) return;
+  mostrarMenu(e.target, [
+    { label: "Compartir como link", action: () => compartirLink(s) },
+    { label: "Compartir como PDF", action: () => compartirPDF(s) },
+  ]);
+}
+
 /* ===================================================================
    13. CONEXIONES DE LA INTERFAZ
    =================================================================== */
-$("tab-canciones").onclick  = () => { est.pestana = "canciones"; pintar(); };
-$("tab-reunion").onclick    = () => { est.pestana = "reunion"; pintar(); };
-$("tab-guardadas").onclick  = () => { est.pestana = "guardadas"; pintar(); };
-$("tab-online").onclick     = () => { est.pestana = "online"; pintar(); };
-$("buscar").oninput = e => { est.filtro = e.target.value; pintarCatalogo(); };
-$("bg-buscar").oninput = e => { est.filtroGuardadas = e.target.value; pintarGuardadas(); };
+$("tab-canciones").onclick  = () => { est.pestana = "canciones"; render(); };
+$("tab-reunion").onclick    = () => { est.pestana = "reunion"; render(); };
+$("tab-guardadas").onclick  = () => { est.pestana = "guardadas"; render(); };
+$("tab-online").onclick     = () => { est.pestana = "online"; render(); };
+$("buscar").oninput = e => { est.filtro = e.target.value; renderCatalogo(); };
+$("bg-buscar").oninput = e => { est.filtroGuardadas = e.target.value; renderGuardadas(); };
 $("cerrar").onclick = cerrarLector;
 $("expandir-lector").onclick = alternarPantallaCompleta;
 
@@ -2997,21 +2976,21 @@ $("ex-copiar").onclick = copiarExportado;
 
 /* Panel "Agregar canciones" */
 $("ag-cerrar").onclick = cerrarAgregar;
-$("ag-buscar").oninput = e => { est.filtroAgregar = e.target.value; pintarAgregar(); };
+$("ag-buscar").oninput = e => { est.filtroAgregar = e.target.value; renderAgregar(); };
 
 /* Panel "Editar reunión" (nombre y fecha/hora) */
 $("er-cancelar").onclick = cerrarEditarReunion;
 $("er-guardar").onclick = guardarEditarReunion;
 $("mas-t").onclick   = () => {
   if (!PORID[est.abierta] || !PORID[est.abierta].tono) return;
-  est.semis = Math.min(11, est.semis + 1); pintarLector(); guardarSemisSiCorresponde(); retransmitirSiYaEstaEnVivo();
+  est.semis = Math.min(11, est.semis + 1); renderLector(); guardarSemisSiCorresponde(); retransmitirSiYaEstaEnVivo();
 };
 $("menos-t").onclick = () => {
   if (!PORID[est.abierta] || !PORID[est.abierta].tono) return;
-  est.semis = Math.max(-11, est.semis - 1); pintarLector(); guardarSemisSiCorresponde(); retransmitirSiYaEstaEnVivo();
+  est.semis = Math.max(-11, est.semis - 1); renderLector(); guardarSemisSiCorresponde(); retransmitirSiYaEstaEnVivo();
 };
-$("mas-a").onclick   = () => { est.tamano = Math.min(30, est.tamano + 1); pintarLector(); guardarAjustes(); };
-$("menos-a").onclick = () => { est.tamano = Math.max(11, est.tamano - 1); pintarLector(); guardarAjustes(); };
+$("mas-a").onclick   = () => { est.tamano = Math.min(30, est.tamano + 1); renderLector(); guardarAjustes(); };
+$("menos-a").onclick = () => { est.tamano = Math.max(11, est.tamano - 1); renderLector(); guardarAjustes(); };
 $("en-vivo-badge").onclick = () => { if (est.esDirector) transmitirEstado(); };
 
 /* --- Pantalla completa ---------------------------------------------------
@@ -3127,8 +3106,8 @@ function fijarRol(esDirector){
      Si es el primer arranque, hacer la inicialización completa. */
   if (HAY_NUBE){
     recalcular();  // recargar cambios locales
-    if (est.abierta) pintarLector();  // si hay canción abierta, refrescar
-    else if (est.pestana) pintar();  // si no, redibujar la pantalla actual
+    if (est.abierta) renderLector();  // si hay canción abierta, refrescar
+    else if (est.pestana) render();  // si no, redibujar la pantalla actual
   } else {
     continuarArranque();  // primer arranque
   }
@@ -3143,6 +3122,22 @@ function esCelular(){
   }
 }
 
+/* Si la URL trae ?cancion=<id> (por ejemplo, alguien tocó un link
+   compartido desde WhatsApp), abre esa canción directo, sin pasos
+   intermedios. Envuelto en try/catch porque `location` no existe en el
+   DOM simulado de probar_app.js. Si el id no está en el catálogo (link
+   viejo, canción borrada), no revienta: se queda en la pantalla normal
+   y avisa. */
+function abrirDesdeLink(){
+  try{
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("cancion");
+    if (!id) return;
+    if (PORID[id]) abrir(id, false);
+    else flotar("La canción del link ya no está disponible");
+  }catch(e){ /* sin location (Node) o URL malformada: ignorar */ }
+}
+
 async function continuarArranque(){
   marcarSync("", "conectando");
   recalcular();          // catálogo base, sin cambios todavía
@@ -3152,7 +3147,9 @@ async function continuarArranque(){
   const eventoId = leerEventoLocal();
   if (eventoId) est.lista.id = eventoId;  // placeholder, se reemplaza al escuchar
 
-  pintar();              // se ve el cancionero al instante, sin esperar la red
+  render();              // se ve el cancionero al instante, sin esperar la red
+
+  abrirDesdeLink();      // si la URL trae ?cancion=id, abrir esa canción
 
   if (await conectar()) {
     escuchar();   // a partir de acá los cambios llegan solos
@@ -3164,7 +3161,7 @@ async function continuarArranque(){
       if ((est.pestana === "online" || est.soloLectura) && est.lista.directoresLatido){
         if (!hayDirectorActivo(est.lista)){
           /* Transmisión expiró, refresca la UI */
-          pintar();
+          render();
           if (est.soloLectura) cerrarVistaOnline();
         }
       }
