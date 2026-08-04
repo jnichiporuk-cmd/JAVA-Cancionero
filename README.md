@@ -235,6 +235,23 @@ Sólo toca los bloques `a`. Al reescribir la línea conserva las columnas: si
 `G` pasa a `A#` y ocupa un carácter más, se come un espacio de al lado en vez
 de correr todo y desalinear la letra.
 
+### Notas/Anotaciones
+
+Además de canciones, los eventos pueden incluir **notas**: anotaciones de texto
+libre intercaladas en la secuencia (pausas, lecturas, instrucciones, etc.).
+
+Técnicamente:
+- Se almacenan en el mismo documento `reuniones/{id}`, en un mapa `notas`
+- El array `ids` mezcla IDs de canciones y notas. Las notas siempre usan prefijo
+  `"nota:"` para evitar colisiones
+- Estructura de una nota: `{nombre: "Bienvenida", contenido: "Lectura Sal 119:1"}`
+- Participan en todo lo que las canciones: riel numerado, transmisión en vivo,
+  navegación por director, reordenamiento
+- No se transportan (no tienen tono ni BPM)
+- Solo director puede crear/editar/eliminar; cualquiera puede ver y navegar
+
+Firestore valida que `notas` sea un map (ver reglas en sección 2).
+
 ---
 
 ## 6. Lo que quedó pendiente

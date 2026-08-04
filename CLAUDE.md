@@ -430,6 +430,81 @@ transporte es su propia escritura puntual, no una foto completa del
 documento. El mismo riesgo sigue latente en `guardarLista()` para `ids`
 (agregar, sacar, reordenar canciones): ese camino no se tocó todavía.
 
+## 8d. Notas/Anotaciones en eventos — implementado
+
+**Notas** son anotaciones de texto libre intercaladas entre canciones en la
+lista del evento. Sirven para pausas, lecturas, bienvenidas, o instrucciones
+que el director quiera que aparezcan en secuencia.
+
+### Estructura y almacenamiento
+
+- **ID**: prefijo `"nota:"` + timestamp + random → `"nota:mselcydlbq2iejn"`
+  - Prefijo garantiza cero colisiones con IDs de canciones (que son `name-tono`)
+- **Contenido**: objeto `{nombre: "...", contenido: "..."}`
+  - `nombre`: título de la anotación ("Pausa", "Lectura Sal 119:1", etc.)
+  - `contenido`: texto libre con detalles (multilinea, respeta saltos)
+- **Ubicación**: dentro de cada `reuniones/{id}`:
+  - `ids`: array que mezcla IDs de canciones y notas en orden
+  - `notas`: map `{ [idNota]: {nombre, contenido}, ... }`
+  - No toca nada en el catálogo base (`canciones/{id}`)
+
+### Ciclo de vida
+
+1. **Crear**: director toca "+ Nota" en pie de evento
+   - Abre diálogo con dos campos (nombre + contenido)
+   - Se crea reunión automática si no existe (`alternarEnLista` pattern)
+   - Se guarda en Firestore via `guardarLista()`
+
+2. **Editar**: click en la nota desde lista de evento
+   - Abre mismo diálogo con valores actuales
+   - Persiste con `guardarLista()`
+
+3. **Reordenar**: director entra en modo Reordenar
+   - Mismo arrastre que canciones (toca el número, arrastra)
+   - Notas participan en el riel numerado como cualquier paso
+
+4. **Eliminar**: menú ⋮ de la nota, "Eliminar anotación"
+   - Quita del array `ids` y del map `notas`
+   - Persiste con `guardarLista()`
+
+### En el lector
+
+Cuando se abre una nota:
+- **Título**: nombre de la nota (tipografía normal, grande)
+- **Cuerpo**: contenido con saltos de línea (textarea, monoespaciado)
+- **Sin transporte**: botones ♭/♯ apagados (las notas no tienen tono)
+- **Riel**: número igual que canciones, navega por todos los pasos
+- **Pie**: "+ Agregar" a la izquierda, "Siguiente" a la derecha (si existe)
+
+### En transmisión
+
+- **Online funciona igual para notas que para canciones**
+  - Director transmite nota toca botón O (verde si está en vivo)
+  - Otros ven en pestaña Transmisión: nombre de la nota y contenido
+  - Navegación por riel retransmite automáticamente (mismo que canciones)
+  - Sin transporte, pero sí aparece en "Siguiente" en el pie de otros
+
+- **Bug arreglado** (v260): `renderOnline()` solo buscaba en `PORID`
+  - Notas no están en `PORID`, así que "Online vacío" cuando era una nota
+  - Ahora verifica tanto `PORID[id]` (canciones) como `est.lista.notas[id]`
+
+### Restricciones (como diseño)
+
+- **Solo director puede agregar/editar/eliminar** (check en `pintarReunion()`)
+- **Cualquiera puede navegar** (notas son pasos del evento)
+- **No hay límite de largo**, pero UI asume < 500 caracteres (textarea)
+- **No se transportan** (sin tono, sin semis)
+- **Se comparten en tiempo real** (Firestore `onSnapshot` como canciones)
+
+### Funciones clave
+
+- `esNota(id)` — detecta si id empieza con `"nota:"`
+- `generarIdNota()` — crea ID único
+- `soloCanciones(ids)` — filtra array para contar solo canciones (mostrador de "7 canciones")
+- `mostrarDialogoNota(notaInicial, onGuardar)` — modal para crear/editar
+- `agregarNota(nota)` — inserta en lista y Firestore
+- `mostrarMenuNota(e, idNota)` — menú ⋮ con opciones
+
 ## 9. Cómo trabajar en este proyecto
 
 **Al arrancar cualquier conversación en esta carpeta**, revisar hace cuánto
