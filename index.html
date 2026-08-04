@@ -519,7 +519,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v261</span></div>
+    <div class="marca">Cancionero <span class="ver">v262</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -2456,8 +2456,10 @@ function fondoOnline(){
 function renderOnline(){
   fondoOnline();
   const d = est.lista.enVivo;
-  const s = d ? PORID[d.cancionId] : null;
-  if (s) mostrarVistaOnline(d);
+  /* Si hay transmisión y existe la canción o nota, mostrarla */
+  const existeCancion = d && PORID[d.cancionId];
+  const existeNota = d && esNota(d.cancionId) && est.lista.notas[d.cancionId];
+  if (existeCancion || existeNota) mostrarVistaOnline(d);
 }
 
 /* Nombres de día abreviados, domingo primero (así coincide con
@@ -3216,7 +3218,7 @@ function abrirExportar(){
   $("ex-resumen-contenido").innerHTML = resumenHTML;
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v261",
+    origen: "cancionero v262",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
