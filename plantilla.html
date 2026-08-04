@@ -214,10 +214,9 @@ input{font-family:inherit;font-size:inherit}
   display:flex;align-items:center;justify-content:center;
 }
 .nota-textarea{
-  display:block;width:100%;padding:12px;border:1px solid var(--borde);
-  border-radius:8px;background:var(--superficie);color:var(--letra);
-  font-family:inherit;font-size:14px;line-height:1.4;resize:none;
-  min-height:100px;max-height:240px;
+  display:block;width:100%;padding:10px;border:1px solid var(--borde);
+  border-radius:6px;background:rgba(255,255,255,0.05);color:var(--letra);
+  font-family:inherit;font-size:15px;line-height:1.4;resize:none;
 }
 .nota-textarea:focus{outline:none;border-color:var(--acordes)}
 .nota-lector{
@@ -2138,24 +2137,61 @@ function mostrarDialogoNota(notaInicial, onGuardar){
   dialogo.className = "dialogo-nota";
 
   const contenido = document.createElement("div");
-  contenido.className = "dialogo-contenido";
-  contenido.style.maxWidth = "340px";
+  contenido.style.width = "100%";
+  contenido.style.maxWidth = "380px";
+  contenido.style.maxHeight = "85vh";
   contenido.style.display = "flex";
   contenido.style.flexDirection = "column";
-  contenido.style.maxHeight = "80vh";
-  contenido.innerHTML = `
-    <div class="dialogo-titulo">Anotación del evento</div>
-    <div style="padding:12px 14px;flex:1;overflow-y:auto;display:flex;flex-direction:column">
-      <label style="font-size:11px;color:var(--tenue);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px">Nombre</label>
-      <input id="nota-nombre" type="text" class="ed-campos input" placeholder="Pausa, Bienvenida, Lectura..." style="padding:8px;margin-bottom:12px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:4px;color:var(--letra);font-size:13px">
-      <label style="font-size:11px;color:var(--tenue);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px">Contenido</label>
-      <textarea id="nota-contenido" class="nota-textarea" placeholder="Detalles, instrucciones, cita..." style="flex:1;padding:8px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:4px;color:var(--letra);font-size:13px;font-family:inherit;resize:none;min-height:160px"></textarea>
+  contenido.style.background = "var(--superficie-alta)";
+  contenido.style.border = "1px solid var(--borde)";
+  contenido.style.borderRadius = "12px";
+  contenido.style.overflow = "hidden";
+  contenido.style.boxShadow = "0 20px 60px rgba(0,0,0,0.8)";
+
+  const header = document.createElement("div");
+  header.style.padding = "16px";
+  header.style.borderBottom = "1px solid var(--borde)";
+  header.style.fontSize = "16px";
+  header.style.fontWeight = "600";
+  header.style.color = "var(--letra)";
+  header.style.textAlign = "center";
+  header.style.flexShrink = "0";
+  header.textContent = "Anotación del evento";
+
+  const campos = document.createElement("div");
+  campos.style.padding = "20px";
+  campos.style.flex = "1";
+  campos.style.overflowY = "auto";
+  campos.style.display = "flex";
+  campos.style.flexDirection = "column";
+  campos.style.minHeight = "0";
+  campos.innerHTML = `
+    <div style="margin-bottom:16px">
+      <label style="font-size:11px;color:var(--tenue);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px">Nombre</label>
+      <input id="nota-nombre" type="text" placeholder="Pausa, Bienvenida, Lectura..." style="width:100%;padding:10px;border:1px solid var(--borde);border-radius:6px;background:rgba(255,255,255,0.05);color:var(--letra);font-size:14px;font-family:inherit;box-sizing:border-box;margin:0">
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 14px;border-top:1px solid var(--border)">
-      <button id="nota-guardar" class="dialogo-btn" style="padding:10px;background:rgba(255,255,255,0.05);color:var(--letra);border:1px solid var(--border);border-radius:4px;font-weight:600;cursor:pointer;font-size:13px">Guardar</button>
-      <button id="nota-cancelar" class="dialogo-btn" style="padding:10px;background:rgba(255,255,255,0.05);color:var(--letra);border:1px solid var(--border);border-radius:4px;font-weight:600;cursor:pointer;font-size:13px">Cancelar</button>
+    <div style="margin-bottom:16px;flex:1;display:flex;flex-direction:column;min-height:0">
+      <label style="font-size:11px;color:var(--tenue);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px">Contenido</label>
+      <textarea id="nota-contenido" class="nota-textarea" placeholder="Detalles, instrucciones, cita..." style="flex:1;min-height:280px;box-sizing:border-box;margin:0"></textarea>
     </div>
   `;
+
+  const botones = document.createElement("div");
+  botones.style.display = "grid";
+  botones.style.gridTemplateColumns = "1fr 1fr";
+  botones.style.gap = "12px";
+  botones.style.paddingTop = "16px";
+  botones.style.borderTop = "1px solid var(--borde)";
+  botones.style.marginTop = "auto";
+  botones.style.flexShrink = "0";
+  botones.innerHTML = `
+    <button id="nota-guardar" style="padding:12px;border:1px solid var(--borde);border-radius:6px;background:rgba(255,255,255,0.05);color:var(--letra);font-weight:600;font-size:14px;cursor:pointer;font-family:inherit;margin:0">Guardar</button>
+    <button id="nota-cancelar" style="padding:12px;border:1px solid var(--borde);border-radius:6px;background:rgba(255,255,255,0.05);color:var(--letra);font-weight:600;font-size:14px;cursor:pointer;font-family:inherit;margin:0">Cancelar</button>
+  `;
+
+  campos.appendChild(botones);
+  contenido.appendChild(header);
+  contenido.appendChild(campos);
   dialogo.appendChild(contenido);
   document.body.appendChild(dialogo);
 
