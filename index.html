@@ -208,6 +208,23 @@ input{font-family:inherit;font-size:inherit}
 .dialogo-btn:last-child{margin-bottom:0}
 .dialogo-btn:hover{background:var(--borde);color:var(--acordes)}
 
+/* Diálogo de notas (texto libre) */
+.dialogo-nota{
+  position:fixed;inset:0;z-index:150;background:rgba(0,0,0,0.7);
+  display:flex;align-items:center;justify-content:center;
+}
+.nota-textarea{
+  display:block;width:100%;padding:12px;border:1px solid var(--borde);
+  border-radius:8px;background:var(--superficie);color:var(--letra);
+  font-family:inherit;font-size:14px;line-height:1.4;resize:none;
+  min-height:100px;max-height:240px;
+}
+.nota-textarea:focus{outline:none;border-color:var(--acordes)}
+.nota-lector{
+  padding:20px;font-size:15px;line-height:1.6;color:var(--letra);
+  font-style:italic;color:var(--tenue);white-space:pre-wrap;
+}
+
 /* ===================================================================
    4. REUNIÓN (armador de lista)
    Reordenar es "modo Reordenar" + arrastrar la fila entera, no flechas:
@@ -502,7 +519,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v251</span></div>
+    <div class="marca">Cancionero <span class="ver">v252</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -717,6 +734,11 @@ function nuevoId(nombre, tono){
   while (ocupados.has(n)) n = `${cand}-${i++}`;
   return n;
 }
+
+/* Helpers para notas (texto libre intercalado en eventos). */
+function esNota(id){ return typeof id === "string" && id.startsWith("nota:"); }
+function generarIdNota(){ return "nota:" + Date.now().toString(36) + Math.random().toString(36).slice(2, 9); }
+function soloCanciones(ids){ return ids.filter(id => !esNota(id)); }
 
 /* ===================================================================
    6b. TEXTOS Y CONSTANTES CENTRALIZADAS
@@ -955,7 +977,7 @@ const est = {
   filtroGuardadas:"",  // buscador de la pestaña Guardadas, por nombre
   /* La reunión activa. id:null significa que todavía no se creó
      ninguna: se crea sola la primera vez que alguien toca +. */
-  lista:{ id:null, ids:[], porQuien:"", cuando:0, nombre:"", semis:{} },
+  lista:{ id:null, ids:[], porQuien:"", cuando:0, nombre:"", semis:{}, notas:{} },
   guardadas:[],         // todas las reuniones guardadas, para la pestaña Guardadas
   cambios:{ editados:{}, nuevas:[], borradas:[] }, // capa de ediciones
   editando:null,       // id de la canción abierta en el editor (o "nueva")
@@ -1023,7 +1045,7 @@ function escuchar(){
       arr.push({
         id: doc.id, nombre: d.nombre || "", ids: d.ids || [],
         porQuien: d.porQuien || "", creada: d.creada || 0,
-        actualizada: d.actualizada || d.creada || 0, semis: d.semis || {},
+        actualizada: d.actualizada || d.creada || 0, semis: d.semis || {}, notas: d.notas || {},
         fechaReunion: d.fechaReunion || d.creada || 0,
       });
     });
@@ -1067,7 +1089,7 @@ function escuchar(){
 function escucharReunionActiva(id){
   if (cancelarEscuchaActiva){ cancelarEscuchaActiva(); cancelarEscuchaActiva = null; }
   if (!id){
-    est.lista = { id:null, ids:[], porQuien:"", cuando:0, nombre:"", semis:{}, fechaReunion:0 };
+    est.lista = { id:null, ids:[], porQuien:"", cuando:0, nombre:"", semis:{}, notas:{}, fechaReunion:0 };
     render();
     return;
   }
@@ -1077,7 +1099,7 @@ function escucharReunionActiva(id){
       est.lista = {
         id, ids: d.ids || [], porQuien: d.porQuien || "",
         cuando: d.actualizada || d.creada || 0, nombre: d.nombre || "",
-        semis: d.semis || {}, fechaReunion: d.fechaReunion || d.creada || 0,
+        semis: d.semis || {}, notas: d.notas || {}, fechaReunion: d.fechaReunion || d.creada || 0,
         enVivo: ('enVivo' in d) ? d.enVivo : null,
         directoresLatido: d.directoresLatido || {},
       };
@@ -1169,8 +1191,10 @@ function transmitirDesdeElPrincipio(){
 }
 
 function mostrarVistaOnline(d){
-  const s = PORID[d.cancionId];
-  if (!s) return;
+  /* Permitir notas (esNota) además de canciones (PORID) */
+  const esNotaEnVivo = esNota(d.cancionId);
+  const s = esNotaEnVivo ? null : PORID[d.cancionId];
+  if (!s && !esNotaEnVivo) return;
   const cambioCancion = est.abierta !== d.cancionId;
   est.abierta = d.cancionId;
   est.enReunion = true;
@@ -1281,6 +1305,7 @@ async function guardarLista(){
     await fs.setDoc(fs.doc(db, "reuniones", est.lista.id), {
       ids: est.lista.ids,
       semis: est.lista.semis || {},
+      notas: est.lista.notas || {},
       actualizada: Date.now(),
     }, { merge: true });
     marcarSync("ok", "al día");
@@ -1297,13 +1322,13 @@ async function guardarLista(){
    en que se va a tocar (editable después, puede ser a futuro): por
    defecto arranca en el momento de la creación, pero es un dato aparte
    de "creada" (que sólo sirve para ordenar por "Recientes"). */
-async function crearReunion(id, nombre, ids, semis, fechaReunion){
+async function crearReunion(id, nombre, ids, semis, notas, fechaReunion){
   if (!est.esDirector) return;  // sólo directores crean eventos
   if (!HAY_NUBE){ flotar("Sin conexión: el evento no se comparte"); return; }
   marcarSync("escribiendo", "guardando");
   try{
     await fs.setDoc(fs.doc(db, "reuniones", id), {
-      nombre, ids, semis: semis || {}, porQuien: "", directoresLatido:{},
+      nombre, ids, semis: semis || {}, notas: notas || {}, porQuien: "", directoresLatido:{},
       creada: Date.now(), actualizada: Date.now(),
       fechaReunion: fechaReunion || Date.now(),
     });
@@ -1327,7 +1352,7 @@ async function usarReunion(r){
 function salirDelEvento(){
   /* Limpia el evento activo y vuelve a mostrar el Historial en la pestaña Evento.
      Permite ingresar sin evento elegido en cualquier momento. */
-  est.lista = { id:null, ids:[], porQuien:"", cuando:0, nombre:"", semis:{}, fechaReunion:null, directoresLatido:{} };
+  est.lista = { id:null, ids:[], porQuien:"", cuando:0, nombre:"", semis:{}, notas:{}, fechaReunion:null, directoresLatido:{} };
   localStorage.removeItem("cancionero:eventoId");
   render();
 }
@@ -1337,9 +1362,9 @@ async function nuevaReunion(nombre){
   if (!est.esDirector) return;
   const id = generarIdReunion();
   const ahora = Date.now();
-  est.lista = { id, ids:[], porQuien:"", cuando:ahora, nombre, semis:{}, fechaReunion:ahora, directoresLatido:{} };
+  est.lista = { id, ids:[], porQuien:"", cuando:ahora, nombre, semis:{}, notas:{}, fechaReunion:ahora, directoresLatido:{} };
   render();
-  await crearReunion(id, nombre, [], {}, ahora);
+  await crearReunion(id, nombre, [], {}, {}, ahora);
   /* Fija este evento como el actual de este dispositivo */
   guardarEventoLocal(id);
   if (est.esDirector) iniciarLatido(id);
@@ -1422,10 +1447,11 @@ async function guardarEditarReunion(){
     const id = generarIdReunion();
     const ids = r.ids.slice();
     const semis = { ...(r.semis || {}) };
-    est.lista = { id, ids, porQuien:"", cuando:Date.now(), nombre, semis, fechaReunion, directoresLatido:{} };
+    const notas = { ...(r.notas || {}) };
+    est.lista = { id, ids, porQuien:"", cuando:Date.now(), nombre, semis, notas, fechaReunion, directoresLatido:{} };
     cerrarEditarReunion();
     render();
-    await crearReunion(id, nombre, ids, semis, fechaReunion);
+    await crearReunion(id, nombre, ids, semis, notas, fechaReunion);
     /* Fija este nuevo evento como el actual de este dispositivo */
     guardarEventoLocal(id);
     if (est.esDirector) iniciarLatido(id);
@@ -1437,10 +1463,10 @@ async function guardarEditarReunion(){
     /* Crear un evento nuevo vacío */
     if (!est.esDirector) return flotar("Sólo directores pueden crear eventos");
     const id = generarIdReunion();
-    est.lista = { id, ids:[], porQuien:"", cuando:Date.now(), nombre, semis:{}, fechaReunion, directoresLatido:{} };
+    est.lista = { id, ids:[], porQuien:"", cuando:Date.now(), nombre, semis:{}, notas:{}, fechaReunion, directoresLatido:{} };
     cerrarEditarReunion();
     render();
-    await crearReunion(id, nombre, [], {}, fechaReunion);
+    await crearReunion(id, nombre, [], {}, {}, fechaReunion);
     /* Fija este nuevo evento como el actual de este dispositivo */
     guardarEventoLocal(id);
     if (est.esDirector) iniciarLatido(id);
@@ -1591,7 +1617,7 @@ async function fijarEventoLocal(idNuevo){
     if (est.esDirector) iniciarLatido(idNuevo);
   } else {
     /* Evento null = no hay ninguno elegido */
-    est.lista = { id:null, ids:[], porQuien:"", cuando:0, nombre:"", semis:{}, fechaReunion:0 };
+    est.lista = { id:null, ids:[], porQuien:"", cuando:0, nombre:"", semis:{}, notas:{}, fechaReunion:0 };
     if (cancelarEscuchaActiva) cancelarEscuchaActiva();
   }
 
@@ -1704,8 +1730,8 @@ function render(){
   $("rol-btn").textContent = rolTexto;
   if ($("rol-btn-lector")) $("rol-btn-lector").textContent = rolTexto;
 
-  /* contador de la pestaña Reunión */
-  const n = est.lista.ids.length;
+  /* contador de la pestaña Reunión (sólo canciones, no notas) */
+  const n = soloCanciones(est.lista.ids).length;
   const c = $("cuenta");
   c.style.display = n ? "inline-block" : "none";
   c.textContent = n;
@@ -1847,18 +1873,49 @@ function renderReunion(){
       Lo que armes acá lo ve todo el grupo.</div>`);
     pie.style.display = "flex";
     const hayTransmisionVacia = hayDirectorActivo(est.lista) && !!est.lista.enVivo;
-    pie.innerHTML = `<button class="btn" id="agregar-btn"${est.esDirector ? "" : " disabled"}>+ Agregar canción</button>`
+    const botonesVacios = est.esDirector
+      ? `<button class="btn" id="agregar-btn">+ Canción</button><button class="btn" id="agregar-nota-btn">+ Nota</button>`
+      : "";
+    pie.innerHTML = botonesVacios
       + (hayTransmisionVacia ? `<button class="btn btn-vivo" id="ver-vivo-evento">Transmitir</button>` : "");
-    if (est.esDirector) $("agregar-btn").onclick = abrirAgregar;
+    if (est.esDirector) {
+      $("agregar-btn").onclick = abrirAgregar;
+      $("agregar-nota-btn").onclick = () => mostrarDialogoNota("", agregarNota);
+    }
     if (hayTransmisionVacia) $("ver-vivo-evento").onclick = () => { est.pestana = "online"; render(); };
     return;
   }
 
 
   est.lista.ids.forEach((id, i) => {
-    const s = PORID[id];
     const fila = document.createElement("div");
     fila.className = "fila";
+
+    /* Manejar notas (texto libre intercalado) */
+    if (esNota(id)){
+      const nota = est.lista.notas[id] || "";
+      fila.classList.toggle("reordenando", est.reordenando && est.esDirector);
+      fila.innerHTML = `
+        <div class="orden">${i+1}</div>
+        <button class="fila-txt">
+          <div class="fila-nombre" style="color:var(--tenue);font-style:italic">${escapar(nota)}</div>
+        </button>
+        ${est.esDirector ? `<button class="menu-cancion" data-id="${id}" data-indice="${i}" title="Más opciones">⋮</button>` : ""}`;
+      if (est.esDirector) fila.querySelector(".menu-cancion").onclick = (e) => mostrarMenuNota(e, id, i);
+      if (est.reordenando && est.esDirector){
+        fila.addEventListener("touchstart", e => iniciarArrastre(e, i, fila), {passive:true});
+        fila.addEventListener("mousedown", e => iniciarArrastre(e, i, fila));
+      } else {
+        fila.querySelector(".fila-txt").onclick = () => mostrarDialogoNota(nota, (texto) => {
+          est.lista.notas[id] = texto;
+          guardarLista();
+        });
+      }
+      cont.appendChild(fila);
+      return;
+    }
+
+    const s = PORID[id];
     if (!s){
       /* Puede pasar si alguien armó la lista con un catálogo más nuevo */
       fila.innerHTML = `<div class="orden">${i+1}</div>
@@ -1906,7 +1963,7 @@ function renderReunion(){
       ? `<button class="btn btn-fuerte" id="primer-btn">Transmitir</button>`
       : `<button class="btn" id="primer-btn" disabled>Offline</button>`;
   const botonesDirector = est.esDirector
-    ? `<button class="btn" id="agregar-btn">+ Agregar canción</button>`
+    ? `<button class="btn" id="agregar-btn">+ Canción</button><button class="btn" id="agregar-nota-btn">+ Nota</button>`
     : "";
   pie.innerHTML = botonesDirector + primerBoton;
 
@@ -1919,6 +1976,8 @@ function renderReunion(){
   if (est.esDirector) {
     const btnAgregar = $("agregar-btn");
     if (btnAgregar) btnAgregar.onclick = abrirAgregar;
+    const btnAgregarNota = $("agregar-nota-btn");
+    if (btnAgregarNota) btnAgregarNota.onclick = () => mostrarDialogoNota("", agregarNota);
   }
 }
 
@@ -1964,6 +2023,28 @@ function mostrarMenuCancion(e, idCancion, indice){
   ]);
 }
 
+function mostrarMenuNota(e, idNota, indice){
+  mostrarMenu(e.target, [
+    { label: "Reordenar", action: () => { est.reordenando = !est.reordenando; renderReunion(); } },
+    { label: "Editar anotación", action: () => mostrarDialogoNota(est.lista.notas[idNota], (texto) => {
+      est.lista.notas[idNota] = texto;
+      guardarLista();
+    }) },
+    { label: "Eliminar anotación", action: () => quitarNota(idNota), rojo: true },
+  ]);
+}
+
+function quitarNota(idNota){
+  const i = est.lista.ids.indexOf(idNota);
+  if (i >= 0){
+    est.lista.ids.splice(i, 1);
+    delete est.lista.notas[idNota];
+    render();
+    flotar("Anotación eliminada");
+    guardarLista();
+  }
+}
+
 function mostrarMenuEvento(e){
   const opciones = [
     { label: "Ver historial", action: () => { est.pestana = "guardadas"; render(); } },
@@ -1998,6 +2079,75 @@ function abrirAgregar(){
 function abrirAgregarDesdeCancion(posicionActual){
   /* Pregunta dónde insertar la nueva canción: como siguiente o al final */
   mostrarDialogoUbicacion(posicionActual);
+}
+
+function mostrarDialogoNota(textoInicial, onGuardar){
+  /* Cierra diálogos previos */
+  document.querySelectorAll(".dialogo-nota").forEach(d => d.remove());
+
+  const dialogo = document.createElement("div");
+  dialogo.className = "dialogo-nota";
+
+  const contenido = document.createElement("div");
+  contenido.className = "dialogo-contenido";
+  contenido.innerHTML = `
+    <div class="dialogo-titulo">Anotación del evento</div>
+    <textarea id="nota-texto" class="nota-textarea" placeholder="Pausa, Bienvenida, Salida, lectura..."></textarea>
+    <div style="display:flex;gap:9px;margin-top:12px">
+      <button id="nota-guardar" class="dialogo-btn" style="flex:1">Guardar</button>
+      <button id="nota-cancelar" class="dialogo-btn" style="flex:1">Cancelar</button>
+    </div>
+  `;
+  dialogo.appendChild(contenido);
+  document.body.appendChild(dialogo);
+
+  const textarea = $("nota-texto");
+  textarea.value = textoInicial;
+  setTimeout(() => textarea.focus(), 10);
+
+  function cerrarDialogo(){
+    dialogo.remove();
+    document.removeEventListener("click", cerrar);
+  }
+
+  $("nota-guardar").onclick = () => {
+    const texto = textarea.value.trim();
+    if (texto) onGuardar(texto);
+    cerrarDialogo();
+  };
+
+  $("nota-cancelar").onclick = cerrarDialogo;
+
+  function cerrar(e){
+    if (!contenido.contains(e.target)){
+      cerrarDialogo();
+    }
+  }
+  setTimeout(() => document.addEventListener("click", cerrar), 10);
+}
+
+function agregarNota(texto){
+  /* Crea un nuevo evento si no existe (mismo patrón que alternarEnLista) */
+  const esNueva = !est.lista.id;
+  if (esNueva){
+    const ahora = Date.now();
+    est.lista = { id: generarIdReunion(), ids:[], porQuien:"", cuando:ahora, nombre: fechaHoyTexto(), semis:{}, notas:{}, fechaReunion:ahora, directoresLatido:{} };
+  }
+
+  const idNota = generarIdNota();
+  est.lista.ids.push(idNota);
+  est.lista.notas[idNota] = texto;
+
+  render();
+  flotar("Anotación agregada");
+
+  if (esNueva){
+    crearReunion(est.lista.id, est.lista.nombre, est.lista.ids, est.lista.semis, est.lista.notas, est.lista.fechaReunion);
+    guardarEventoLocal(est.lista.id);
+    if (est.esDirector) iniciarLatido(est.lista.id);
+  } else {
+    guardarLista();
+  }
 }
 
 function mostrarDialogoUbicacion(posicionActual){
@@ -2128,10 +2278,11 @@ function renderGuardadas(){
     const activa = r.id === est.lista.id;
     const fila = document.createElement("div");
     fila.className = "fila";
+    const nCanciones = soloCanciones(r.ids).length;
     fila.innerHTML = `
       <button class="fila-txt">
         <div class="fila-nombre">${escapar(r.nombre || "Sin nombre")}${activa ? `<span class="chip-activa">Activo</span>` : ""}</div>
-        <div class="fila-meta">${fechaHoraTexto(r.fechaReunion || r.creada)} · ${r.ids.length} canción${r.ids.length === 1 ? "" : "es"}</div>
+        <div class="fila-meta">${fechaHoraTexto(r.fechaReunion || r.creada)} · ${nCanciones} canción${nCanciones === 1 ? "" : "es"}</div>
       </button>
       ${est.esDirector ? `<button class="btn-menu" title="Opciones">⋮</button>` : ""}`;
     /* Tocar el nombre activa la reunión (si no lo era ya) y lleva directo
@@ -2279,7 +2430,7 @@ async function alternarEnLista(id){
   const esNueva = !est.lista.id;
   if (esNueva){
     const ahora = Date.now();
-    est.lista = { id: generarIdReunion(), ids:[], porQuien:"", cuando:ahora, nombre: fechaHoyTexto(), semis:{}, fechaReunion:ahora, directoresLatido:{} };
+    est.lista = { id: generarIdReunion(), ids:[], porQuien:"", cuando:ahora, nombre: fechaHoyTexto(), semis:{}, notas:{}, fechaReunion:ahora, directoresLatido:{} };
   }
 
   const i = est.lista.ids.indexOf(id);
@@ -2297,7 +2448,7 @@ async function alternarEnLista(id){
   }
   render();
   if (esNueva){
-    await crearReunion(est.lista.id, est.lista.nombre, est.lista.ids, est.lista.semis, est.lista.fechaReunion);
+    await crearReunion(est.lista.id, est.lista.nombre, est.lista.ids, est.lista.semis, est.lista.notas, est.lista.fechaReunion);
     /* Fija el evento nuevo como el actual y empieza latido */
     guardarEventoLocal(est.lista.id);
     if (est.esDirector) iniciarLatido(est.lista.id);
@@ -2395,6 +2546,7 @@ function vaciar(){
   if (!est.esDirector) return flotar("Solo directores pueden vaciar eventos");
   if (!confirm("¿Vaciar la lista de este evento? Cualquiera que lo tenga elegido lo va a ver vacío.")) return;
   est.lista.ids = [];
+  est.lista.notas = {};
   render(); guardarLista();
 }
 
@@ -2512,6 +2664,38 @@ function cerrarLector(){
 }
 
 function renderLector(){
+  /* Manejar notas (texto libre) */
+  if (esNota(est.abierta)){
+    const cuerpo = $("cuerpo");
+    cuerpo.style.fontSize = est.tamano + "px";
+    cuerpo.innerHTML = `<div class="nota-lector">${escapar(est.lista.notas[est.abierta] || "")}</div>`;
+    $("mas-t").disabled = true;
+    $("menos-t").disabled = true;
+    $("mas-t").style.opacity = ".25";
+    $("menos-t").style.opacity = ".25";
+    $("editar").style.display = "";
+    $("editar").onclick = () => mostrarDialogoNota(est.lista.notas[est.abierta], (texto) => {
+      est.lista.notas[est.abierta] = texto;
+      guardarLista();
+      renderLector();
+    });
+    $("en-vivo-badge").style.display = (est.esDirector && est.enReunion) ? "" : "none";
+    if (est.enReunion){
+      const riel = $("riel"), pie = $("l-pie");
+      riel.classList.add("visible");
+      riel.innerHTML = "";
+      est.lista.ids.forEach((id, i) => {
+        const b = document.createElement("button");
+        b.textContent = i + 1;
+        b.className = i === est.posicion ? "aqui" : (i < est.posicion ? "pasada" : "");
+        b.onclick = () => { est.posicion = i; est.abierta = id; est.semis = semisGuardado(id); renderLector(); };
+        riel.appendChild(b);
+      });
+      pie.innerHTML = `<div style="color:var(--tenue);padding:0 14px">Paso ${est.posicion + 1} de ${est.lista.ids.length}</div>`;
+    }
+    return;
+  }
+
   const s = PORID[est.abierta];
   if (!s) return cerrar();
 
@@ -2610,21 +2794,26 @@ function renderLector(){
   pie.classList.toggle("visible", est.enReunion);
   if (est.enReunion){
     const idSig = est.lista.ids[est.posicion + 1];
-    const sig = idSig ? PORID[idSig] : null;
+    const sig = esNota(idSig) ? null : PORID[idSig];
 
     // Botón "+ Agregar canción"
     const btnAgregar = `<button class="btn"${bloqueado ? " disabled" : ""}>+ Agregar</button>`;
 
     // Info de siguiente o última canción
     let infoSiguiente = "";
-    if (sig){
+    if (idSig && esNota(idSig)){
+      infoSiguiente = `<button class="siguiente-info"${bloqueado ? " disabled" : ""}>
+        <div class="si-etiqueta">Siguiente</div>
+        <div class="fila-nombre" style="color:var(--tenue);font-style:italic">${escapar(est.lista.notas[idSig])}</div>
+      </button>`;
+    } else if (sig){
       infoSiguiente = `<button class="siguiente-info"${bloqueado ? " disabled" : ""}>
         <div class="si-etiqueta">Siguiente</div>
         <div class="fila-nombre">${escapar(sig.nombre)}</div>
         <div class="fila-meta">${metaDe(sig, semisGuardado(idSig))}</div>
       </button>`;
     } else {
-      infoSiguiente = `<div class="si-fin-derecha">Última canción del evento</div>`;
+      infoSiguiente = `<div class="si-fin-derecha">Última ${esNota(est.abierta) ? "anotación" : "canción"} del evento</div>`;
     }
 
     pie.innerHTML = `<div style="display:flex;gap:12px;align-items:center;width:100%;min-width:0">${btnAgregar}<div style="flex:2;text-align:right;min-width:0;overflow:hidden">${infoSiguiente}</div></div>`;
@@ -2887,7 +3076,7 @@ function abrirExportar(){
   $("ex-resumen-contenido").innerHTML = resumenHTML;
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v251",
+    origen: "cancionero v252",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);

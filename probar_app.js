@@ -94,6 +94,7 @@ try {
       refrescarPrevia, abrirExportar, alternarEnLista,
       bloquesATexto, textoABloques, guardarEditor,
       compartirLink, compartirPDF, compartirLinkEvento,
+      generarIdNota, esNota,
     };
   `);
 } catch (e) {
@@ -130,10 +131,17 @@ setImmediate(() => {
   paso("pantalla de exportar", () => __app.abrirExportar());
   paso("reordenar el evento (modo Reordenar)", () => {
     __app.est.pestana = "reunion";
-    __app.est.lista.ids = [__app.CATALOGO[0].id, __app.CATALOGO[1].id];
+    const idNota = __app.generarIdNota();
+    __app.est.lista.ids = [__app.CATALOGO[0].id, idNota, __app.CATALOGO[1].id];
+    __app.est.lista.notas[idNota] = "Pausa";
     __app.est.reordenando = true;
     __app.renderReunion();
     __app.est.reordenando = false;
+  });
+
+  paso("abrir una nota en el lector", () => {
+    __app.est.abierta = Object.keys(__app.est.lista.notas)[0];
+    __app.renderLector();
   });
 
   paso("guardar una edición sin nube configurada", () => {
