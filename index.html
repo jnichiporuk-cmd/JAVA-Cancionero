@@ -519,7 +519,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v259</span></div>
+    <div class="marca">Cancionero <span class="ver">v260</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -1220,11 +1220,12 @@ async function activarTransmision(){
   /* Activa la transmisión de la canción/nota actual. Se usa cuando cambias de
      canción mientras transmites (desde paso()) y desde transmitirEstado()
      cuando se toca el botón y no está transmitiendo. */
+  const ahora = Date.now();
   est.lista.enVivo = {
     cancionId: est.abierta,
     semis: est.semis,
     posicion: est.posicion,
-    cuando: Date.now(),
+    cuando: ahora,
   };
   /* No llamar renderLector acá: ya se llama en el click handler antes de
      llamar a activarTransmision(). Si se llama dos veces puede haber problema
@@ -1234,10 +1235,13 @@ async function activarTransmision(){
       "enVivo.cancionId": est.abierta,
       "enVivo.semis": est.semis,
       "enVivo.posicion": est.posicion,
-      "enVivo.cuando": Date.now(),
+      "enVivo.cuando": ahora,
     });
   }catch(e){
-    console.error("No se pudo transmitir:", e.message, "ID:", est.abierta);
+    console.error("Error al transmitir:", e.code, e.message, "ID:", est.abierta);
+    flotar("⚠️ Error al transmitir: " + (e.message || e.code));
+    /* Revertir cambio local para que no quede inconsistente */
+    est.lista.enVivo = null;
   }
 }
 
@@ -3210,7 +3214,7 @@ function abrirExportar(){
   $("ex-resumen-contenido").innerHTML = resumenHTML;
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v259",
+    origen: "cancionero v260",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
