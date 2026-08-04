@@ -1217,7 +1217,7 @@ function mostrarVistaOnline(d){
    modo reunión, no hace nada. */
 async function activarTransmision(){
   if (!est.esDirector || !est.enReunion || !est.abierta || !est.lista.id || !HAY_NUBE) return;
-  /* Activa la transmisión de la canción actual. Se usa cuando cambias de
+  /* Activa la transmisión de la canción/nota actual. Se usa cuando cambias de
      canción mientras transmites (desde paso()) y desde transmitirEstado()
      cuando se toca el botón y no está transmitiendo. */
   est.lista.enVivo = {
@@ -1226,7 +1226,9 @@ async function activarTransmision(){
     posicion: est.posicion,
     cuando: Date.now(),
   };
-  renderLector();
+  /* No llamar renderLector acá: ya se llama en el click handler antes de
+     llamar a activarTransmision(). Si se llama dos veces puede haber problema
+     con sincronización de Firestore. */
   try{
     await fs.updateDoc(fs.doc(db, "reuniones", est.lista.id), {
       "enVivo.cancionId": est.abierta,
@@ -1235,7 +1237,7 @@ async function activarTransmision(){
       "enVivo.cuando": Date.now(),
     });
   }catch(e){
-    console.error("No se pudo transmitir:", e);
+    console.error("No se pudo transmitir:", e.message, "ID:", est.abierta);
   }
 }
 
