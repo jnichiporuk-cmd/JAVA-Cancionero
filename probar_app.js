@@ -93,7 +93,7 @@ try {
       renderCatalogo, renderReunion, abrir, renderLector, abrirEditor,
       refrescarPrevia, abrirExportar, alternarEnLista,
       bloquesATexto, textoABloques, guardarEditor,
-      compartirLink, compartirPDF,
+      compartirLink, compartirPDF, compartirLinkEvento,
     };
   `);
 } catch (e) {
@@ -154,6 +154,10 @@ setImmediate(() => {
 
   paso("compartir canción como link (fallback a clipboard)", async () => {
     await __app.compartirLink(__app.CATALOGO[0]);
+  });
+
+  paso("compartir evento como link (fallback a clipboard)", async () => {
+    await __app.compartirLinkEvento({ id: "prueba-evento", nombre: "Prueba" });
   });
 
   let malos = 0;

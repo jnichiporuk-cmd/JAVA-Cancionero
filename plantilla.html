@@ -484,10 +484,15 @@ input{font-family:inherit;font-size:inherit}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 
 @media print{
-  body *{ visibility:hidden; }
-  #lector.abierto, #lector.abierto #cuerpo, #lector.abierto #cuerpo *{ visibility:visible; }
-  .tope, #pie, .lector-tope, .lector-pie, .menu-dropdown{ display:none !important; }
-  #lector.abierto #cuerpo{ position:absolute; top:0; left:0; width:100%; }
+  body > *:not(#lector){ display:none !important; }
+  #lector{ position:static !important; height:auto !important; }
+  #lector > *:not(#cuerpo){ display:none !important; }
+  #cuerpo{
+    position:static !important;
+    overflow:visible !important;
+    height:auto !important;
+    padding:0 !important;
+  }
 }
 </style>
 
@@ -1962,6 +1967,7 @@ function mostrarMenuCancion(e, idCancion, indice){
 function mostrarMenuEvento(e){
   const opciones = [
     { label: "Ver historial", action: () => { est.pestana = "guardadas"; render(); } },
+    { label: "Compartir evento", action: () => compartirLinkEvento(est.lista) },
   ];
   if (est.esDirector) opciones.push({ label: "+ Crear nuevo evento", action: abrirNuevaReunion });
   opciones.push({ label: "Salir de este evento", action: salirDelEvento, rojo: true });
@@ -2124,7 +2130,7 @@ function renderGuardadas(){
     fila.className = "fila";
     fila.innerHTML = `
       <button class="fila-txt">
-        <div class="fila-nombre">${escapar(r.nombre || "Sin nombre")}${activa ? `<span class="chip-activa">Activa</span>` : ""}</div>
+        <div class="fila-nombre">${escapar(r.nombre || "Sin nombre")}${activa ? `<span class="chip-activa">Activo</span>` : ""}</div>
         <div class="fila-meta">${fechaHoraTexto(r.fechaReunion || r.creada)} · ${r.ids.length} canción${r.ids.length === 1 ? "" : "es"}</div>
       </button>
       ${est.esDirector ? `<button class="btn-menu" title="Opciones">⋮</button>` : ""}`;
@@ -2153,6 +2159,7 @@ function mostrarMenuReunion(r, btnMenu, activa){
   const opciones = [
     { label: "Editar", action: () => abrirEditarReunion(r) },
     { label: "Copiar", action: () => abrirCopiarReunion(r) },
+    { label: "Compartir evento", action: () => compartirLinkEvento(r) },
     { label: "Eliminar", action: () => borrarReunion(r), rojo: true, disabled: activa, disabledReason: "No se puede borrar el evento activo" },
   ];
   if (activa) opciones.push({ label: "Salir de este evento", action: salirDelEvento, rojo: true });
@@ -2928,6 +2935,22 @@ async function compartirLink(cancion){
   }
 }
 
+/* Comparte el link de un evento (cualquiera, no sólo el activo).
+   Mismo patrón que compartirLink(). */
+async function compartirLinkEvento(reunion){
+  const url = window.location.origin + window.location.pathname + "?evento=" + encodeURIComponent(reunion.id);
+  if (typeof navigator.share === "function"){
+    try{ await navigator.share({ title: reunion.nombre || "Evento", url }); return; }
+    catch(e){ return; }
+  }
+  try{
+    await navigator.clipboard.writeText(url);
+    flotar("Link copiado");
+  }catch(e){
+    flotar("No se pudo copiar el link");
+  }
+}
+
 /* Asegura que la canción esté cargada en el lector y dispara el diálogo
    de impresión nativo. En el celular, "Guardar como PDF" o compartir
    directo desde ahí. No genera el PDF con una librería: reutilizamos el
@@ -3140,6 +3163,18 @@ function abrirDesdeLink(){
   }catch(e){ /* sin location (Node) o URL malformada: ignorar */ }
 }
 
+/* Si la URL trae ?evento=<id>, activa ese evento. Se ejecuta después
+   de conectar a Firestore, así el listener puede buscar el documento
+   en la base directamente. */
+function abrirEventoDesdeLink(){
+  try{
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("evento");
+    if (!id) return;
+    fijarEventoLocal(id);
+  }catch(e){ /* sin location (Node) o URL malformada: ignorar */ }
+}
+
 async function continuarArranque(){
   marcarSync("", "conectando");
   recalcular();          // catálogo base, sin cambios todavía
@@ -3155,6 +3190,8 @@ async function continuarArranque(){
 
   if (await conectar()) {
     escuchar();   // a partir de acá los cambios llegan solos
+
+    abrirEventoDesdeLink();  // si la URL trae ?evento=id, activar ese evento
 
     /* Revisar vigencia de latidos cada ~15s. Firestore sólo notifica
        cambios cuando alguien escribe; si un director desaparece, su
