@@ -519,7 +519,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v257</span></div>
+    <div class="marca">Cancionero <span class="ver">v258</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -2794,9 +2794,35 @@ function renderLector(){
         };
         riel.appendChild(b);
       });
-      pie.innerHTML = `<button class="btn">+ Agregar</button>`;
+      const idSig = est.lista.ids[est.posicion + 1];
+      const sig = esNota(idSig) ? null : PORID[idSig];
+
+      const btnAgregar = `<button class="btn">+ Agregar</button>`;
+
+      let infoSiguiente = "";
+      if (idSig && esNota(idSig)){
+        const notaSig = est.lista.notas[idSig] || {nombre: "", contenido: ""};
+        infoSiguiente = `<button class="siguiente-info">
+          <div class="si-etiqueta">Siguiente</div>
+          <div class="fila-nombre" style="color:var(--tenue);font-style:italic">${escapar(notaSig.nombre)}</div>
+        </button>`;
+      } else if (sig){
+        infoSiguiente = `<button class="siguiente-info">
+          <div class="si-etiqueta">Siguiente</div>
+          <div class="fila-nombre">${escapar(sig.nombre)}</div>
+          <div class="fila-meta">${metaDe(sig, semisGuardado(idSig))}</div>
+        </button>`;
+      } else {
+        infoSiguiente = `<div class="si-fin-derecha">Última anotación del evento</div>`;
+      }
+
+      pie.innerHTML = `<div style="display:flex;gap:12px;align-items:center;width:100%;min-width:0">${btnAgregar}<div style="flex:2;text-align:right;min-width:0;overflow:hidden">${infoSiguiente}</div></div>`;
+
       const btnAdd = pie.querySelector(".btn");
       if (btnAdd) btnAdd.onclick = () => mostrarDialogoTipo(est.posicion);
+
+      const btnSig = pie.querySelector(".siguiente-info");
+      if (btnSig) btnSig.onclick = () => paso(+1);
     }
     return;
   }
@@ -3182,7 +3208,7 @@ function abrirExportar(){
   $("ex-resumen-contenido").innerHTML = resumenHTML;
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v257",
+    origen: "cancionero v258",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
