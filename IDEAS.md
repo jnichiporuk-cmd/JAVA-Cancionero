@@ -23,3 +23,5 @@ Registro de ideas/mejoras para trabajar, con estado (abierta/resuelta) y fecha d
   Resuelto en commits `1c096ce` y posteriores. Documentado en CLAUDE.md sección 8d.
   Requirió: estructura {nombre, contenido}, prefijo "nota:" en IDs, transmisión,
   riel integrado.
+
+quiero probar si esto está funcionando
