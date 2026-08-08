@@ -3297,8 +3297,11 @@ async function copiarExportado(){
     flotar("Copiado");
     /* Limpiar cambios después de exportar */
     est.cambios = {editados: {}, nuevas: [], borradas: []};
-    cerrarLector();
-    renderCatalogo();
+    /* Re-renderizar pestaña activa para que desaparezca el botón */
+    if (est.pestana === "canciones") renderCatalogo();
+    else if (est.pestana === "reunion") renderReunion();
+    /* Cerrar ventana de exportar después de un delay */
+    setTimeout(() => $("exportar").classList.remove("abierto"), 500);
   }catch(e){
     /* Si el portapapeles está bloqueado, al menos queda seleccionado */
     t.focus(); t.select();
