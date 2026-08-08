@@ -5,6 +5,18 @@ seis meses habiendo olvidado los detalles.
 
 ---
 
+## Mapa de servicios/infraestructura
+
+| Servicio | Rol | Qué corre ahí |
+|---|---|---|
+| GitHub | Repositorio de código | Git + histórico de cambios (plantilla.html, build.py, etc.) |
+| GitHub Pages | Hosting del frontend | `index.html` compilado (la app web publicada) |
+| Firebase (cancionero-peniel) | Base de datos en tiempo real | Firestore: reuniones, canciones, ediciones, transmisión en vivo |
+| Local (HTML) | Catálogo base + offline | 96 canciones embebidas en JSON dentro de `index.html` |
+| Browser (celular/computadora) | Cliente | JavaScript ejecutado: la app que abre en el navegador |
+
+---
+
 ## Datos del proyecto
 
 Cuando algo falle, lo primero es tener esto a mano.
