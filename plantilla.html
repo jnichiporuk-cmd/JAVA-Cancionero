@@ -1073,20 +1073,9 @@ function escuchar(){
   /* Las canciones editadas, agregadas y borradas */
   fs.onSnapshot(fs.collection(db, "canciones"), snap => {
     const cam = { editados:{}, nuevas:[], borradas:[] };
-    const hoy = new Date();
-    hoy.setHours(0, 0, 0, 0);
-
     snap.forEach(doc => {
       const d = doc.data();
       if (d.borrada){ cam.borradas.push(doc.id); return; }
-      if (d.exportado){ return; } /* Ignorar si ya fue exportado */
-
-      /* Ignorar cambios anteriores a hoy (cambios históricos del grupo) */
-      if (d.cuando){
-        const fecha = new Date(d.cuando);
-        fecha.setHours(0, 0, 0, 0);
-        if (fecha < hoy) return;
-      }
 
       const cancion = { id:doc.id, nombre:d.nombre, tono:d.tono ?? null,
                         bpm:d.bpm ?? null, bloques:d.bloques || [] };
