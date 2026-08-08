@@ -17,6 +17,55 @@ seis meses habiendo olvidado los detalles.
 
 ---
 
+## Decisiones arquitectónicas y alternativas
+
+### Arquitectura actual (2026-08)
+
+| Componente | Actual | Por qué |
+|---|---|---|
+| **Frontend hosting** | GitHub Pages | Gratis, simple, integrado con repo |
+| **Base de datos** | Firebase Firestore | Tiempo real, sin servidor, plan gratuito |
+| **Repositorio** | GitHub | Control de versiones, hosting de código |
+| **Backend REST** | Ninguno | No necesita — acceso directo desde cliente |
+| **Auth** | Ninguna | Por diseño: cualquiera con el link puede usar |
+
+### Alternativas si querés cambiar en el futuro
+
+**Opción 1: Máxima portabilidad (SQL estándar)**
+```
+Frontend: Vercel o Netlify (deployment automático desde GitHub)
+BD:      Supabase PostgreSQL (realtime listeners, SQL estándar)
+Backend: No necesita
+Ventaja: SQL estándar, menos vendor lock-in
+Costo:   Parecido a actual
+Esfuerzo: Medio (refactor de capa de datos)
+```
+
+**Opción 2: Mantener Firebase + mejor frontend**
+```
+Frontend: Vercel o Netlify (en lugar de GitHub Pages)
+BD:      Firebase Firestore (igual)
+Backend: No necesita
+Ventaja: Cero cambios en el código, mejor DX
+Costo:   Similar
+Esfuerzo: Mínimo (solo cambiar deploy)
+```
+
+**Opción 3: Control completo (backend + DB)**
+```
+Frontend: Vercel
+BD:      Supabase PostgreSQL + Supabase Auth
+Backend: Render o Railway (REST API)
+Ventaja: Control total, permisos granulares
+Costo:   Más que actual
+Esfuerzo: Alto (reescribir aplicación entera)
+Nota:    Innecesario para el caso de uso actual
+```
+
+**Recomendación:** Si algún día querés cambiar, opción 1 (Supabase + Vercel) es la mejor balance entre portabilidad y esfuerzo.
+
+---
+
 ## Datos del proyecto
 
 Cuando algo falle, lo primero es tener esto a mano.
