@@ -3295,6 +3295,10 @@ async function copiarExportado(){
   try{
     await navigator.clipboard.writeText(t.value);
     flotar("Copiado");
+    /* Limpiar cambios después de exportar */
+    est.cambios = {editados: {}, nuevas: [], borradas: []};
+    cerrarLector();
+    renderCatalogo();
   }catch(e){
     /* Si el portapapeles está bloqueado, al menos queda seleccionado */
     t.focus(); t.select();

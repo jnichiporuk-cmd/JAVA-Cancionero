@@ -519,7 +519,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v277</span></div>
+    <div class="marca">Cancionero <span class="ver">v278</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -3274,7 +3274,7 @@ function abrirExportar(){
   $("ex-resumen-contenido").innerHTML = resumenHTML;
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v277",
+    origen: "cancionero v278",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
@@ -3295,6 +3295,10 @@ async function copiarExportado(){
   try{
     await navigator.clipboard.writeText(t.value);
     flotar("Copiado");
+    /* Limpiar cambios después de exportar */
+    est.cambios = {editados: {}, nuevas: [], borradas: []};
+    cerrarLector();
+    renderCatalogo();
   }catch(e){
     /* Si el portapapeles está bloqueado, al menos queda seleccionado */
     t.focus(); t.select();
