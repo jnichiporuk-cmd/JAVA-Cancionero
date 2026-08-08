@@ -519,7 +519,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v281</span></div>
+    <div class="marca">Cancionero <span class="ver">v282</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -633,7 +633,6 @@ input{font-family:inherit;font-size:inherit}
     <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--tenue);margin:8px 0 6px">JSON (completo)</div>
     <textarea id="ex-texto" spellcheck="false" readonly style="flex:1;min-height:300px"></textarea>
     <button class="btn-guardar btn-ancho" id="ex-copiar" style="margin-top:12px">Copiar todo</button>
-    <button class="btn-guardar btn-ancho" id="ex-limpiar" style="margin-top:6px;background:var(--tenue);color:var(--bg)">Limpiar cambios</button>
   </div>
 </div>
 
@@ -1076,7 +1075,7 @@ function escuchar(){
     const cam = { editados:{}, nuevas:[], borradas:[] };
     snap.forEach(doc => {
       const d = doc.data();
-      if (d.borrada){ cam.borradas.push(doc.id); return; }
+      if (d.borrada || d.exportado){ cam.borradas.push(doc.id); return; }
       const cancion = { id:doc.id, nombre:d.nombre, tono:d.tono ?? null,
                         bpm:d.bpm ?? null, bloques:d.bloques || [] };
       if (d.nueva) cam.nuevas.push(cancion);
@@ -3275,7 +3274,7 @@ function abrirExportar(){
   $("ex-resumen-contenido").innerHTML = resumenHTML;
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v281",
+    origen: "cancionero v282",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
@@ -3295,9 +3294,28 @@ async function copiarExportado(){
   const t = $("ex-texto");
   try{
     await navigator.clipboard.writeText(t.value);
-    flotar("Copiado — tocá 'Limpiar' para vaciar");
+    flotar("Copiado");
+
+    /* Marcar cambios como exportados en Firestore */
+    const c = est.cambios;
+    const ahora = new Date().toISOString();
+
+    Object.values(c.editados || {}).forEach(cancion => {
+      fs.updateDoc(fs.doc(db, "canciones", cancion.id), {
+        exportado: true,
+        exportadoEn: ahora
+      });
+    });
+
+    (c.nuevas || []).forEach(cancion => {
+      fs.updateDoc(fs.doc(db, "canciones", cancion.id), {
+        exportado: true,
+        exportadoEn: ahora
+      });
+    });
+
+    $("exportar").classList.remove("abierto");
   }catch(e){
-    /* Si el portapapeles está bloqueado, al menos queda seleccionado */
     t.focus(); t.select();
     flotar("Seleccionado: copialo a mano");
   }
@@ -3386,19 +3404,6 @@ $("ed-sostenido").onclick = () => transportarEditor(+1);
 /* Exportación */
 $("ex-cerrar").onclick = () => $("exportar").classList.remove("abierto");
 $("ex-copiar").onclick = copiarExportado;
-$("ex-limpiar").onclick = () => {
-  /* Borrar cada documento editado/nuevo de Firestore */
-  const c = est.cambios;
-  Object.values(c.editados || {}).forEach(cancion => {
-    fs.deleteDoc(fs.doc(db, "canciones", cancion.id));
-  });
-  c.nuevas.forEach(cancion => {
-    fs.deleteDoc(fs.doc(db, "canciones", cancion.id));
-  });
-  flotar("Cambios limpiados");
-  $("exportar").classList.remove("abierto");
-  renderCatalogo();
-};
 
 /* Panel "Agregar canciones" */
 $("ag-cerrar").onclick = cerrarAgregar;
