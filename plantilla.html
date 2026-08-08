@@ -1796,19 +1796,23 @@ function renderCatalogo(){
   cont.innerHTML = `<div class="catalogo-header">Canciones (${CATALOGO.length})</div>`;
   $("pie").style.display = "none";
 
-  /* Nueva canción y exportar. "Exportar" sólo aparece si hay algo que
-     exportar, así no ocupa lugar cuando no hace falta. */
   const pie = $("pie");
   pie.style.display = "flex";
   pie.innerHTML = "";
   const acc = document.createElement("div");
   acc.className = "acciones";
-  const n = contarCambios();
   acc.innerHTML = `<button id="btn-nueva">+ Nueva canción</button>`
-    + `<button class="exportar${n ? "" : " deshabilitado"}" id="btn-exportar" ${n ? "" : "disabled"}>Exportar (${n})</button>`;
+    + `<button id="btn-nuevo-evento">+ Nuevo evento</button>`;
   pie.appendChild(acc);
   $("btn-nueva").onclick = () => abrirEditor("nueva");
-  if (n) $("btn-exportar").onclick = abrirExportar;
+  $("btn-nuevo-evento").onclick = () => {
+    const id = generarIdReunion();
+    est.reunionActiva = id;
+    const hoy = new Date().toLocaleDateString("es-AR", {year:"numeric", month:"2-digit", day:"2-digit"});
+    guardarReunion({id, nombre:hoy, ids:[], semis:{}, porQuien:"📱", creada:Date.now(), actualizada:Date.now()});
+    est.pestana = "reunion";
+    render();
+  };
 
   const encontradas = filtrarCanciones(est.filtro)
     .sort(COMPARADORES[est.orden]);
