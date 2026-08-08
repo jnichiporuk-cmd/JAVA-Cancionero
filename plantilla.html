@@ -245,7 +245,7 @@ input{font-family:inherit;font-size:inherit}
   background:var(--fondo);border-bottom:1px solid var(--borde);
   position:sticky;top:0;z-index:5;
 }
-.vacio{padding:44px 26px;text-align:center;color:var(--tenue)}
+.vacio{padding:44px 26px;text-align:center;color:var(--tenue)}.catalogo-header{padding:12px 26px;font-size:14px;color:var(--tenue);font-weight:600;border-bottom:1px solid var(--borde)}
 .vacio strong{display:block;color:var(--letra);font-size:17px;margin-bottom:7px;font-weight:600}
 
 .pie-reunion{
@@ -1791,7 +1791,7 @@ const COMPARADORES = { nombre: compararNombre, tono: compararTono, bpm: comparar
 /* --- Pestaña Canciones ---------------------------------------------- */
 function renderCatalogo(){
   const cont = $("contenido");
-  cont.innerHTML = "";
+  cont.innerHTML = `<div class="catalogo-header">Canciones (${CATALOGO.length})</div>`;
   $("pie").style.display = "none";
 
   /* Nueva canción y exportar. "Exportar" sólo aparece si hay algo que
