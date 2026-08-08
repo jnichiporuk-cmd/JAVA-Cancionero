@@ -519,7 +519,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v285</span></div>
+    <div class="marca">Cancionero <span class="ver">v286</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -1073,10 +1073,21 @@ function escuchar(){
   /* Las canciones editadas, agregadas y borradas */
   fs.onSnapshot(fs.collection(db, "canciones"), snap => {
     const cam = { editados:{}, nuevas:[], borradas:[] };
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+
     snap.forEach(doc => {
       const d = doc.data();
       if (d.borrada){ cam.borradas.push(doc.id); return; }
       if (d.exportado){ return; } /* Ignorar si ya fue exportado */
+
+      /* Ignorar cambios anteriores a hoy (cambios históricos del grupo) */
+      if (d.cuando){
+        const fecha = new Date(d.cuando);
+        fecha.setHours(0, 0, 0, 0);
+        if (fecha < hoy) return;
+      }
+
       const cancion = { id:doc.id, nombre:d.nombre, tono:d.tono ?? null,
                         bpm:d.bpm ?? null, bloques:d.bloques || [] };
       if (d.nueva) cam.nuevas.push(cancion);
@@ -3276,7 +3287,7 @@ function abrirExportar(){
   $("ex-resumen-contenido").innerHTML = resumenHTML;
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v285",
+    origen: "cancionero v286",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
