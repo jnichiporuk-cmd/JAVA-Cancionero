@@ -3299,25 +3299,34 @@ async function copiarExportado(){
     /* Marcar cambios como exportados en Firestore */
     const c = est.cambios;
     const ahora = new Date().toISOString();
+    const promesas = [];
 
     Object.values(c.editados || {}).forEach(cancion => {
-      fs.updateDoc(fs.doc(db, "canciones", cancion.id), {
+      promesas.push(fs.setDoc(fs.doc(db, "canciones", cancion.id), {
         exportado: true,
         exportadoEn: ahora
-      });
+      }, { merge: true }));
     });
 
     (c.nuevas || []).forEach(cancion => {
-      fs.updateDoc(fs.doc(db, "canciones", cancion.id), {
+      promesas.push(fs.setDoc(fs.doc(db, "canciones", cancion.id), {
         exportado: true,
         exportadoEn: ahora
-      });
+      }, { merge: true }));
     });
+
+    await Promise.all(promesas);
+
+    /* Forzar recalculación local inmediatamente */
+    est.cambios = {editados: {}, nuevas: [], borradas: []};
+    recalcular();
+    render();
 
     $("exportar").classList.remove("abierto");
   }catch(e){
+    console.error("Error al exportar:", e);
     t.focus(); t.select();
-    flotar("Seleccionado: copialo a mano");
+    flotar("Error: " + e.message);
   }
 }
 
