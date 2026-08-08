@@ -519,14 +519,14 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v286</span></div>
+    <div class="marca">Cancionero <span class="ver">v271</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
   </div>
   <div class="pestanas">
     <button class="pestana activa" id="tab-canciones">Canciones</button>
-    <button class="pestana" id="tab-guardadas" style="display:none">Historial</button>
+    <button class="pestana" id="tab-guardadas">Historial</button>
     <button class="pestana" id="tab-reunion">Evento<span class="cuenta" id="cuenta" style="display:none">0</span></button>
     <button class="pestana" id="tab-online">Transmisión</button>
   </div>
@@ -3287,7 +3287,7 @@ function abrirExportar(){
   $("ex-resumen-contenido").innerHTML = resumenHTML;
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v286",
+    origen: "cancionero v271",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
