@@ -486,7 +486,7 @@ input{font-family:inherit;font-size:inherit}
   flex:1;padding:13px;border-radius:9px;border:1px solid var(--borde);
   font-size:15px;font-weight:700;color:var(--letra);
 }
-.acciones .exportar{color:var(--lista);border-color:var(--lista)}
+.acciones .exportar{color:var(--lista);border-color:var(--lista)}.acciones .exportar.deshabilitado{color:var(--tenue);border-color:var(--tenue);cursor:not-allowed;opacity:0.6}
 .pie-reunion .acciones{padding:0;width:100%}
 
 /* Cartel de aviso momentáneo */
@@ -519,7 +519,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v279</span></div>
+    <div class="marca">Cancionero <span class="ver">v280</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -1803,7 +1803,7 @@ function renderCatalogo(){
   acc.className = "acciones";
   const n = contarCambios();
   acc.innerHTML = `<button id="btn-nueva">+ Nueva canción</button>`
-    + (n ? `<button class="exportar" id="btn-exportar">Exportar (${n})</button>` : "");
+    + `<button class="exportar${n ? "" : " deshabilitado"}" id="btn-exportar" ${n ? "" : "disabled"}>Exportar (${n})</button>`;
   pie.appendChild(acc);
   $("btn-nueva").onclick = () => abrirEditor("nueva");
   if (n) $("btn-exportar").onclick = abrirExportar;
@@ -3274,7 +3274,7 @@ function abrirExportar(){
   $("ex-resumen-contenido").innerHTML = resumenHTML;
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v279",
+    origen: "cancionero v280",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);

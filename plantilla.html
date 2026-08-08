@@ -486,7 +486,7 @@ input{font-family:inherit;font-size:inherit}
   flex:1;padding:13px;border-radius:9px;border:1px solid var(--borde);
   font-size:15px;font-weight:700;color:var(--letra);
 }
-.acciones .exportar{color:var(--lista);border-color:var(--lista)}
+.acciones .exportar{color:var(--lista);border-color:var(--lista)}.acciones .exportar.deshabilitado{color:var(--tenue);border-color:var(--tenue);cursor:not-allowed;opacity:0.6}
 .pie-reunion .acciones{padding:0;width:100%}
 
 /* Cartel de aviso momentáneo */
@@ -1803,7 +1803,7 @@ function renderCatalogo(){
   acc.className = "acciones";
   const n = contarCambios();
   acc.innerHTML = `<button id="btn-nueva">+ Nueva canción</button>`
-    + (n ? `<button class="exportar" id="btn-exportar">Exportar (${n})</button>` : "");
+    + `<button class="exportar${n ? "" : " deshabilitado"}" id="btn-exportar" ${n ? "" : "disabled"}>Exportar (${n})</button>`;
   pie.appendChild(acc);
   $("btn-nueva").onclick = () => abrirEditor("nueva");
   if (n) $("btn-exportar").onclick = abrirExportar;
