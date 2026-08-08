@@ -1075,7 +1075,8 @@ function escuchar(){
     const cam = { editados:{}, nuevas:[], borradas:[] };
     snap.forEach(doc => {
       const d = doc.data();
-      if (d.borrada || d.exportado){ cam.borradas.push(doc.id); return; }
+      if (d.borrada){ cam.borradas.push(doc.id); return; }
+      if (d.exportado){ return; } /* Ignorar si ya fue exportado */
       const cancion = { id:doc.id, nombre:d.nombre, tono:d.tono ?? null,
                         bpm:d.bpm ?? null, bloques:d.bloques || [] };
       if (d.nueva) cam.nuevas.push(cancion);
@@ -1527,6 +1528,7 @@ async function guardarCancion(cancion, esNueva){
       bloques: cancion.bloques,
       nueva: !!esNueva,
       borrada: false,
+      exportado: false,
       cuando: Date.now(),
     });
     marcarSync("ok", "al día");
