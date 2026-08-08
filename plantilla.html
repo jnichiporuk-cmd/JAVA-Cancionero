@@ -1805,11 +1805,13 @@ function renderCatalogo(){
     + `<button id="btn-nuevo-evento">+ Nuevo evento</button>`;
   pie.appendChild(acc);
   $("btn-nueva").onclick = () => abrirEditor("nueva");
-  $("btn-nuevo-evento").onclick = () => {
+  $("btn-nuevo-evento").onclick = async () => {
+    if (!est.esDirector) return flotar("Solo directores pueden crear eventos");
+    const ahora = Date.now();
     const id = generarIdReunion();
-    est.reunionActiva = id;
-    const hoy = new Date().toLocaleDateString("es-AR", {year:"numeric", month:"2-digit", day:"2-digit"});
-    guardarReunion({id, nombre:hoy, ids:[], semis:{}, porQuien:"📱", creada:Date.now(), actualizada:Date.now()});
+    est.lista = { id, ids:[], porQuien:"", nombre: fechaHoyTexto(), semis:{}, notas:{}, fechaReunion:ahora, directoresLatido:{} };
+    await crearReunion(id, est.lista.nombre, [], {}, {}, ahora);
+    guardarEventoLocal(id);
     est.pestana = "reunion";
     render();
   };
