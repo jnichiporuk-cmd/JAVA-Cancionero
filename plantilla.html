@@ -1805,16 +1805,7 @@ function renderCatalogo(){
     + `<button id="btn-nuevo-evento">+ Nuevo evento</button>`;
   pie.appendChild(acc);
   $("btn-nueva").onclick = () => abrirEditor("nueva");
-  $("btn-nuevo-evento").onclick = async () => {
-    if (!est.esDirector) return flotar("Solo directores pueden crear eventos");
-    const ahora = Date.now();
-    const id = generarIdReunion();
-    est.lista = { id, ids:[], porQuien:"", nombre: fechaHoyTexto(), semis:{}, notas:{}, fechaReunion:ahora, directoresLatido:{} };
-    await crearReunion(id, est.lista.nombre, [], {}, {}, ahora);
-    guardarEventoLocal(id);
-    est.pestana = "reunion";
-    render();
-  };
+  $("btn-nuevo-evento").onclick = () => abrirNuevaReunion();
 
   const encontradas = filtrarCanciones(est.filtro)
     .sort(COMPARADORES[est.orden]);
