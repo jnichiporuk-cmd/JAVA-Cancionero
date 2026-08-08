@@ -633,6 +633,7 @@ input{font-family:inherit;font-size:inherit}
     <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--tenue);margin:8px 0 6px">JSON (completo)</div>
     <textarea id="ex-texto" spellcheck="false" readonly style="flex:1;min-height:300px"></textarea>
     <button class="btn-guardar btn-ancho" id="ex-copiar" style="margin-top:12px">Copiar todo</button>
+    <button class="btn-guardar btn-ancho" id="ex-limpiar" style="margin-top:6px;background:var(--tenue);color:var(--bg)">Limpiar cambios</button>
   </div>
 </div>
 
@@ -3294,14 +3295,7 @@ async function copiarExportado(){
   const t = $("ex-texto");
   try{
     await navigator.clipboard.writeText(t.value);
-    flotar("Copiado");
-    /* Limpiar cambios después de exportar */
-    est.cambios = {editados: {}, nuevas: [], borradas: []};
-    /* Re-renderizar pestaña activa para que desaparezca el botón */
-    if (est.pestana === "canciones") renderCatalogo();
-    else if (est.pestana === "reunion") renderReunion();
-    /* Cerrar ventana de exportar después de un delay */
-    setTimeout(() => $("exportar").classList.remove("abierto"), 500);
+    flotar("Copiado — tocá 'Limpiar' para vaciar");
   }catch(e){
     /* Si el portapapeles está bloqueado, al menos queda seleccionado */
     t.focus(); t.select();
@@ -3392,6 +3386,19 @@ $("ed-sostenido").onclick = () => transportarEditor(+1);
 /* Exportación */
 $("ex-cerrar").onclick = () => $("exportar").classList.remove("abierto");
 $("ex-copiar").onclick = copiarExportado;
+$("ex-limpiar").onclick = () => {
+  /* Borrar cada documento editado/nuevo de Firestore */
+  const c = est.cambios;
+  Object.values(c.editados || {}).forEach(cancion => {
+    fs.deleteDoc(fs.doc(db, "canciones", cancion.id));
+  });
+  c.nuevas.forEach(cancion => {
+    fs.deleteDoc(fs.doc(db, "canciones", cancion.id));
+  });
+  flotar("Cambios limpiados");
+  $("exportar").classList.remove("abierto");
+  renderCatalogo();
+};
 
 /* Panel "Agregar canciones" */
 $("ag-cerrar").onclick = cerrarAgregar;
