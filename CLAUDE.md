@@ -599,7 +599,7 @@ Forma de trabajo esperada:
 
 `bloquesATexto(bloques)` (~911)
 - Convierte bloques JSON a texto (para editar)
-- Llamada desde: `abrirEditor()`; compartirPDF()
+- Llamada desde: `abrirEditor()`; `compartirPDF()`
 
 `textoABloques(txt)` (~921)
 - Convierte texto a bloques JSON (al guardar edición)
@@ -611,7 +611,7 @@ Forma de trabajo esperada:
 
 `renderLector()` (~2806)
 - Dibuja pantalla de lectura de una canción
-- Llamada desde: `abrir()`; paso(); transportar()
+- Llamada desde: `abrir()`; `paso()`; `transportar()`
 
 `renderReunion()` (~1878)
 - Dibuja pestaña Evento (lista de canciones del evento)
@@ -657,7 +657,7 @@ Forma de trabajo esperada:
 
 `reiniciarColapsoTope()` (~3034)
 - Reinicia el colapso de encabezado al abrir canción
-- Llamada desde: `abrir()`; cerrar()
+- Llamada desde: `abrir()`; `cerrar()`
 
 `actualizarColapsoTope()` (~3045)
 - Actualiza si encabezado está colapsado según scroll
@@ -701,15 +701,15 @@ Forma de trabajo esperada:
 
 `abrirEditarReunion(r)` (~1409)
 - Abre diálogo para editar evento existente
-- Llamada desde: Menú ⋮ de evento en **Guardadas**
+- Llamada desde: **Menú ⋮** de evento en **Guardadas**
 
 `abrirCopiarReunion(r)` (~1432)
 - Abre diálogo para copiar evento como base
-- Llamada desde: Menú ⋮ de evento en **Guardadas**
+- Llamada desde: **Menú ⋮** de evento en **Guardadas**
 
 `llenarCamposReunion(nombre, ms)` (~1440)
 - Llena campos de nombre/fecha en diálogo de evento
-- Llamada desde: `abrirNuevaReunion()`; abrirEditarReunion()
+- Llamada desde: `abrirNuevaReunion()`; `abrirEditarReunion()`
 
 `cerrarEditarReunion()` (~1448)
 - Cierra diálogo sin guardar cambios
@@ -721,7 +721,7 @@ Forma de trabajo esperada:
 
 `salirDelEvento()` (~1374)
 - Marca fin del evento actual (sin borrar)
-- Llamada desde: Menú ⋮ evento
+- Llamada desde: **Menú ⋮** evento
 
 `renderEncabezadoEvento(cont)` (~1859)
 - Dibuja encabezado de evento (nombre + fecha + menú)
@@ -735,7 +735,7 @@ Forma de trabajo esperada:
 
 `abrirAgregarDesdeCancion(posicionActual)` (~2103)
 - Abre diálogo: ¿Agregar canción o nota?
-- Llamada desde: **Botón** "+ Agregar" en pie de lector
+- Llamada desde: **Botón** "+ Agregar" en pie de **Lector**
 
 `mostrarDialogoTipo(posicionActual)` (~2108)
 - Diálogo: Canción o Nota
@@ -751,7 +751,7 @@ Forma de trabajo esperada:
 
 `alternarEnLista(id)` (~2572)
 - Suma/quita canción del evento actual
-- Llamada desde: **Botón** +/✓ en lista; panel Agregar
+- Llamada desde: **Botón** +/✓ en lista; panel **Agregar**
 
 ### 8. NOTAS/ANOTACIONES
 
@@ -761,7 +761,7 @@ Forma de trabajo esperada:
 
 `esNota(id)` (~740)
 - Detecta si ID es una nota (prefijo "nota:")
-- Llamada desde: `soloCanciones()`; renderReunion(); paso()
+- Llamada desde: `soloCanciones()`; `renderReunion()`; `paso()`
 
 `mostrarDialogoNota(notaInicial, onGuardar)` (~2149)
 - Abre diálogo para crear/editar nota
@@ -773,11 +773,11 @@ Forma de trabajo esperada:
 
 `quitarNota(idNota)` (~2061)
 - Elimina nota del evento
-- Llamada desde: Menú ⋮ de nota "Eliminar anotación"
+- Llamada desde: **Menú ⋮** de nota "Eliminar anotación"
 
 `mostrarMenuNota(e, idNota, indice)` (~2050)
 - Menú ⋮ de una nota (editar, eliminar)
-- Llamada desde: Tocar ⋮ en fila de nota
+- Llamada desde: Tocar **⋮** en fila de nota
 
 `soloCanciones(ids)` (~742)
 - Filtra array para contar solo canciones (excluye notas)
@@ -821,11 +821,11 @@ Forma de trabajo esperada:
 
 `mostrarMenuCancion(e, idCancion, indice)` (~2041)
 - Menú ⋮ de canción en evento (quitar, editar, copiar link)
-- Llamada desde: Tocar ⋮ en fila de canción
+- Llamada desde: Tocar **⋮** en fila de canción
 
 `mostrarMenuEvento(e)` (~2072)
 - Menú ⋮ de evento (editar, copiar, borrar)
-- Llamada desde: Tocar ⋮ en encabezado Evento
+- Llamada desde: Tocar **⋮** en encabezado **Evento**
 
 `mostrarMenuCancionCatalogo(e, idCancion)` (~2082)
 - Menú ⋮ de canción en Canciones (editar, borrar, compartir)
@@ -833,7 +833,7 @@ Forma de trabajo esperada:
 
 `mostrarMenuReunion(r, btnMenu, activa)` (~2448)
 - Menú ⋮ de reunión en Guardadas
-- Llamada desde: Tocar ⋮ en fila de reunión
+- Llamada desde: Tocar **⋮** en fila de reunión
 
 ### 11. ARRASTRAR Y REORDENAR
 
@@ -951,11 +951,11 @@ Forma de trabajo esperada:
 
 `fechaHoraTexto(ms)` (~2532)
 - Convierte timestamp a texto legible (ej "hoy a las 19:30")
-- Llamada desde: `renderReunion()`; renderGuardadas()
+- Llamada desde: `renderReunion()`; `renderGuardadas()`
 
 `metaDe(s, semis)` (~2544)
 - Texto meta de canción (tono, BPM, si hay cambios)
-- Llamada desde: `renderCatalogo()`; renderReunion(); renderAgregar()
+- Llamada desde: `renderCatalogo()`; `renderReunion()`; `renderAgregar()`
 
 `escapar(t)` (~2557)
 - Escapa HTML especial (previene XSS)
@@ -1011,29 +1011,29 @@ Forma de trabajo esperada:
 
 `compararNombre(a, b)` (~1779)
 - Comparador para ordenar alfabéticamente
-- Llamada desde: `sort()` en renderCatalogo()
+- Llamada desde: `sort()` en `renderCatalogo()`
 
 `compararTono(a, b)` (~1782)
 - Comparador para ordenar por tono
-- Llamada desde: `sort()` en renderCatalogo()
+- Llamada desde: `sort()` en `renderCatalogo()`
 
 `compararBpm(a, b)` (~1786)
 - Comparador para ordenar por BPM
-- Llamada desde: `sort()` en renderCatalogo()
+- Llamada desde: `sort()` en `renderCatalogo()`
 
 ### 20. OTROS
 
 `quitar(id)` (~2600)
 - Quita canción/nota del evento
-- Llamada desde: Menú ⋮ Quitar; alternarEnLista()
+- Llamada desde: **Menú ⋮** **Quitar**; `alternarEnLista()`
 
 `vaciar()` (~2686)
 - Vacía el evento actual (borra todos los pasos)
-- Llamada desde: Menú ⋮ Vaciar evento
+- Llamada desde: **Menú ⋮** **Vaciar evento**
 
 `semisGuardado(id)` (~2701)
 - Lee transporte guardado de una canción en evento
-- Llamada desde: `abrir()`; mostrarVistaOnline()
+- Llamada desde: `abrir()`; `mostrarVistaOnline()`
 
 ---
 
