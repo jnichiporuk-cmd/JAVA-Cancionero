@@ -585,11 +585,11 @@ Forma de trabajo esperada:
 
 `transportar(delta)` (~2750)
 - Botones ♭/♯ en lector: transporta +/- 1 semitono
-- Llamada desde: Botones ♭/♯ en Lector (solo director en evento)
+- Llamada desde: Botones ♭/♯ en **Lector** (solo director en evento)
 
 `transportarEditor(delta)` (~3170)
 - Botones ♭/♯ en editor: transporta y reescribe la canción
-- Llamada desde: Botones ♭/♯ en pantalla Editor
+- Llamada desde: Botones ♭/♯ en **Pantalla Editor**
 
 ### 3. RENDERIZADO DE CONTENIDO
 
@@ -641,15 +641,15 @@ Forma de trabajo esperada:
 
 `cerrar()` (~2758)
 - Cierra el lector y vuelve a la pantalla anterior
-- Llamada desde: Botón flecha ◀ al abrir canción
+- Llamada desde: **Botón** flecha ◀ al abrir canción
 
 `paso(delta)` (~3085)
 - Navega anterior/siguiente en evento (+1 o -1 pasos)
-- Llamada desde: Botones ◀ Anterior, Siguiente ▶ en lector (modo evento)
+- Llamada desde: **Botones** ◀ Anterior, Siguiente ▶ en **Lector** (modo evento)
 
 `cerrarLector()` (~2798)
 - Cierra lector y vuelve a la pantalla anterior
-- Llamada desde: Botón ◀ en pie del lector
+- Llamada desde: **Botón** ◀ en pie del lector
 
 `hacerScrollRiel()` (~2765)
 - Ajusta scroll del riel (posición dentro del evento)
@@ -661,29 +661,29 @@ Forma de trabajo esperada:
 
 `actualizarColapsoTope()` (~3045)
 - Actualiza si encabezado está colapsado según scroll
-- Llamada desde: Listener de scroll en lector
+- Llamada desde: Listener de scroll en **Lector**
 
 `actualizarVisibilidadPie()` (~3051)
 - Muestra/oculta pie según scroll (para leer)
-- Llamada desde: Listener de scroll en lector
+- Llamada desde: Listener de scroll en **Lector**
 
 `actualizarPieCercaFin()` (~3077)
 - Muestra pie completo si está cerca del final
-- Llamada desde: Listener de scroll en lector
+- Llamada desde: Listener de scroll en **Lector**
 
 ### 5. EDITOR DE CANCIONES
 
 `abrirEditor(id)` (~3122)
 - Abre editor para nueva canción o editar existente
-- Llamada desde: Botón "+ Nueva canción"; menú ⋮ Editar
+- Llamada desde: **Botón** "+ Nueva canción"; **menú ⋮** Editar
 
 `cerrarEditor()` (~3140)
 - Cierra editor sin guardar
-- Llamada desde: Botón Cancelar en editor
+- Llamada desde: **Botón** Cancelar en **Editor**
 
 `refrescarPrevia()` (~3147)
 - Actualiza vista previa de la canción mientras se edita
-- Llamada desde: Botón Preview; cambio en campos
+- Llamada desde: **Botón** Preview; cambio en campos
 
 `actualizarBotonesTransporteEditor()` (~3155)
 - Habilita/deshabilita botones ♭/♯ según si hay tono
@@ -691,21 +691,21 @@ Forma de trabajo esperada:
 
 `guardarEditor()` (~3187)
 - Guarda cambios de la canción
-- Llamada desde: Botón Guardar en editor
+- Llamada desde: **Botón** Guardar en **Editor**
 
 ### 6. EVENTOS (reuniones)
 
 `abrirNuevaReunion()` (~1424)
 - Abre diálogo para crear evento nuevo
-- Llamada desde: Botón "+ Nuevo evento" en Canciones
+- Llamada desde: **Botón** "+ Nuevo evento" en **Canciones**
 
 `abrirEditarReunion(r)` (~1409)
 - Abre diálogo para editar evento existente
-- Llamada desde: Menú ⋮ de evento en Guardadas
+- Llamada desde: Menú ⋮ de evento en **Guardadas**
 
 `abrirCopiarReunion(r)` (~1432)
 - Abre diálogo para copiar evento como base
-- Llamada desde: Menú ⋮ de evento en Guardadas
+- Llamada desde: Menú ⋮ de evento en **Guardadas**
 
 `llenarCamposReunion(nombre, ms)` (~1440)
 - Llena campos de nombre/fecha en diálogo de evento
@@ -713,7 +713,7 @@ Forma de trabajo esperada:
 
 `cerrarEditarReunion()` (~1448)
 - Cierra diálogo sin guardar cambios
-- Llamada desde: Botón Cancelar en diálogo evento
+- Llamada desde: **Botón** Cancelar en diálogo evento
 
 `generarIdReunion()` (~1300)
 - Genera ID único para nuevo evento
@@ -731,11 +731,11 @@ Forma de trabajo esperada:
 
 `abrirAgregar()` (~2095)
 - Abre panel flotante para agregar canciones
-- Llamada desde: Botón "+ Agregar" en Evento
+- Llamada desde: **Botón** "+ Agregar" en **Evento**
 
 `abrirAgregarDesdeCancion(posicionActual)` (~2103)
 - Abre diálogo: ¿Agregar canción o nota?
-- Llamada desde: Botón "+ Agregar" en pie de lector
+- Llamada desde: **Botón** "+ Agregar" en pie de lector
 
 `mostrarDialogoTipo(posicionActual)` (~2108)
 - Diálogo: Canción o Nota
@@ -751,7 +751,7 @@ Forma de trabajo esperada:
 
 `alternarEnLista(id)` (~2572)
 - Suma/quita canción del evento actual
-- Llamada desde: Botón +/✓ en lista; panel Agregar
+- Llamada desde: **Botón** +/✓ en lista; panel Agregar
 
 ### 8. NOTAS/ANOTACIONES
 
@@ -765,7 +765,7 @@ Forma de trabajo esperada:
 
 `mostrarDialogoNota(notaInicial, onGuardar)` (~2149)
 - Abre diálogo para crear/editar nota
-- Llamada desde: Botón "+ Nota"; menú ⋮ Editar nota
+- Llamada desde: **Botón** "+ Nota"; **menú ⋮** Editar nota
 
 `agregarNota(nota)` (~2250)
 - Guarda nueva nota en evento
@@ -787,11 +787,11 @@ Forma de trabajo esperada:
 
 `alternarDirector()` (~3544)
 - Prende/apaga chip "D" (director)
-- Llamada desde: Chip D en lector
+- Llamada desde: **Chip D** en **Lector**
 
 `transmitirEstado()` (~2710)
 - Transmite la canción actual en vivo
-- Llamada desde: Chip O (online) en lector
+- Llamada desde: **Chip O** (online) en **Lector**
 
 `mostrarVistaOnline(d)` (~1207)
 - Abre lector en modo transmisión en vivo
@@ -857,19 +857,19 @@ Forma de trabajo esperada:
 
 `compartirPDF(cancion)` (~3334)
 - Descarga canción como PDF
-- Llamada desde: Botón 📄 en pie de lector
+- Llamada desde: **Botón** 📄 en pie de lector
 
 `compartirLink(cancion)` (~2310)
 - Copia link a canción en clipboard
-- Llamada desde: Botón 📋 en pie de lector
+- Llamada desde: **Botón** 📋 en pie de lector
 
 `compartirLinkEvento(evento)` (~2330)
 - Copia link a evento en clipboard
-- Llamada desde: Botón 🔗 en pie de lector (modo evento)
+- Llamada desde: **Botón** 🔗 en pie de lector (modo evento)
 
 `mostrarMenuCompartir(e, idCancion)` (~3342)
 - Menú de opciones de compartir
-- Llamada desde: Botón de compartir
+- Llamada desde: **Botón** de compartir
 
 `abrirExportar()` (~3257)
 - Pantalla de exportación (obsoleta, no visible)
@@ -981,7 +981,7 @@ Forma de trabajo esperada:
 
 `alternarPantallaCompleta()` (~3403)
 - Botón ⛶ en lector: activa/desactiva pantalla completa
-- Llamada desde: Chip expandir (⛶) en pie del lector
+- Llamada desde: **Chip expandir** (⛶) en pie del lector
 
 `esCelular()` (~3515)
 - Detecta si es dispositivo móvil
@@ -1001,7 +1001,7 @@ Forma de trabajo esperada:
 
 `mostrarPantallaRol()` (~3490)
 - Abre diálogo para elegir rol (director o músico)
-- Llamada desde: Botón de rol; arranque sin rol definido
+- Llamada desde: **Botón** de rol; arranque sin rol definido
 
 `fijarRol(esDirector)` (~3496)
 - Guarda rol elegido
@@ -1285,18 +1285,3 @@ Forma de trabajo esperada:
 5. Otros ven en pestaña Transmisión: la canción en tiempo real
 6. Al navegar con ◀/▶ la transmisión se actualiza automáticamente (si ya era la canción activa)
 7. Tocar **O** de nuevo para dejar de transmitir
-
-
-
-
-
-- Códigos (backticks azul): funciones, variables, campos JSON, rutas, IDs
-  Ej: `filtrarCanciones()`, `est.pestana`, `semis.${id}`
-  
-- UI/Botones (negrita): nombres de pantallas, botones, chips, textos que ve usuario
-  Ej: **Canciones**, **Botón Guardar**, **Chip D**, **Pestaña Evento**
-  
-- Línea completa ejemplo:
-  `abrir(id, enReunion)` (~2744)
-  - Abre una canción en el lector
-  - Llamada desde: tocar canción en lista (**Canciones**/**Evento**); links compartidos
