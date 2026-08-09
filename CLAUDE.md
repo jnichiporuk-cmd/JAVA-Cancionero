@@ -548,7 +548,12 @@ Forma de trabajo esperada:
 
 ## 10. Referencia exhaustiva de funciones (104 totales)
 
-Índice completo de todas las funciones: **FUNCIÓN (línea) → QUÉ HACE → CÓMO SE LLAMA DESDE UI**
+Índice completo de TODAS las funciones. **Formato:** `` `función()` `` (código/azul) | **UI** (negrita) | texto normal.
+
+**Guía de lectura:**
+- `` `nombreFuncion()` `` (~línea): backticks para código, variables, rutas
+- **Canciones**, **Botón Guardar**, **Chip D**: negrita para UI que ve el usuario
+- "Llamada desde:": puede mezclar backticks (`` `función()` ``) + negrita (**UI**)
 
 ### 1. BÚSQUEDA Y FILTRADO
 
@@ -1280,3 +1285,18 @@ Forma de trabajo esperada:
 5. Otros ven en pestaña Transmisión: la canción en tiempo real
 6. Al navegar con ◀/▶ la transmisión se actualiza automáticamente (si ya era la canción activa)
 7. Tocar **O** de nuevo para dejar de transmitir
+
+
+
+
+
+- Códigos (backticks azul): funciones, variables, campos JSON, rutas, IDs
+  Ej: `filtrarCanciones()`, `est.pestana`, `semis.${id}`
+  
+- UI/Botones (negrita): nombres de pantallas, botones, chips, textos que ve usuario
+  Ej: **Canciones**, **Botón Guardar**, **Chip D**, **Pestaña Evento**
+  
+- Línea completa ejemplo:
+  `abrir(id, enReunion)` (~2744)
+  - Abre una canción en el lector
+  - Llamada desde: tocar canción en lista (**Canciones**/**Evento**); links compartidos
