@@ -546,52 +546,257 @@ Forma de trabajo esperada:
 
 ---
 
-## 10. Referencia rápida de botones y funciones
+## 10. Referencia exhaustiva de pantallas, campos y flujos
 
-Índice de qué hace cada botón, qué función lo activa y dónde encontrarlo. Esto es tu mapa para no olvidar funcionalidades.
+Detalle completo de cada pantalla: qué campos tiene, qué botones hacen qué, validaciones, restricciones.
 
-### Pestaña Canciones
+---
 
-| Botón | Función | Línea aprox. | Qué hace |
+### PESTAÑA: Canciones (lista de todas las canciones)
+
+**Función que la dibuja:** `renderCatalogo()` (~1795)
+
+**Elementos:**
+- **Encabezado:** "Canciones (96)" — muestra cantidad total
+- **Buscador:** campo de texto, filtra en tiempo real (`filtrarCanciones()` ~1815)
+- **Botones de pie:**
+  - `+ Nueva canción` → `abrirEditor("nueva")` (~1810) → abre **Pantalla: Editor de canción**
+  - `+ Nuevo evento` → `abrirNuevaReunion()` (~1809) → abre **Pantalla: Crear/editar evento**
+- **Lista de canciones:** cada fila muestra:
+  - Nombre (mayúsculas)
+  - Tono + BPM (gris)
+  - Al tocar: abre **Pantalla: Lector** (lectura de canciones)
+  - Menú ⋮: editar, borrar, copiar link, descargar PDF
+
+**Restricciones:**
+- Solo directores pueden crear canciones nuevas (`est.esDirector`)
+
+---
+
+### PANTALLA: Editor de canción
+
+**Función que la abre:** `abrirEditor(idOpcional)` (~3120)
+**Función que guarda:** `guardarEditor()` (~3187)
+
+**Campos:**
+- **Nombre** (text input, requerido)
+  - Validación: no puede estar vacío
+- **Tono** (text input, opcional)
+  - Validación: debe ser acorde válido (ej: "C", "D#", "Em7") o vacío
+  - Regex: `RE_TONO_VALIDO` (~550)
+- **BPM** (text input, opcional)
+  - Validación: debe ser número o vacío
+- **Cuerpo** (textarea, requerido)
+  - Formato: línea por línea, se convierte con `textoABloques()` (~3560)
+  - Tipos de línea:
+    - `:Nombre` → rótulo (gris)
+    - Acordes (ej `D  Bm  G`) → línea de acordes (azul)
+    - Letra normal → línea de letra (blanco)
+  - Validación: debe tener al menos 1 línea
+
+**Validaciones al guardar (línea ~3194):**
+1. Nombre no vacío
+2. Tono válido si se pone
+3. Debe haber contenido (bloques)
+
+**Botones:**
+- Guardar → `guardarEditor()` (~3187)
+  - Guarda en `est.cambios` (local)
+  - Llama a `guardarCancion(cancion, esNueva)` (~1521) que escribe en Firestore
+  - Muestra "Canción agregada" o "Cambios guardados"
+- Cancelar → `cerrarEditor()` (~3182)
+- Preview → `refrescarPrevia()` (~3160) muestra cómo se verá
+
+**Restricciones:**
+- `if (!est.esDirector)` → no permite editar, muestra "Solo directores pueden editar canciones" (~3188)
+- Solo director puede guardar
+
+---
+
+### PANTALLA: Lector (visualización de una canción)
+
+**Función que la dibuja:** `renderLector()` (~2030)
+**Función que la abre:** `abrir(id, enReunion)` (~3250)
+
+**Elementos principales:**
+- **Encabezado:** Nombre - Tono - BPM (tachado si falta tono)
+- **Riel de navegación:** número de paso / total (línea ~2100)
+  - Al tocar: muestra número actual en evento
+- **Cuerpo:** contenido de la canción (monoespaciado)
+  - Acordes en azul
+  - Rótulos en gris cursiva
+  - Letra en blanco
+- **Pie (si está en evento):**
+  - Botón ◀ Anterior (si existe paso anterior)
+  - Botón Siguiente ▶ (si existe paso siguiente)
+  - Número de orden en evento (ej "1/5")
+  - Si es director: botones ♭/♯ para transportar
+
+**Pie (compartir, siempre visible):**
+- 📋 Copiar link → `compartirLink()` (~2310)
+- 📄 Descargar PDF → `compartirPDF()` (~2290)
+- 🔗 Evento → `compartirLinkEvento()` (~2330) (solo si hay evento activo)
+
+**Chips (si está en evento):**
+- **D** (director) → `alternarDirector()` (~3544) prende/apaga transmisión
+- **O** (online, solo si es director) → `transmitirEstado()` (~2710) transmite esta canción en vivo
+
+**Transporte (si en evento y es director):**
+- Botones ♭ / ♯ → `transportar(delta)` (~2750)
+- Muestra semitono actual (ej "+2")
+- Se guarda en `est.lista.semis[id]` (solo para esta reunión)
+
+**Bloqueado (si en evento pero NO es director):**
+- No se puede transportar
+- No se puede editar
+- Se puede navegar (anterior/siguiente)
+- Se puede leer
+
+---
+
+### PESTAÑA: Evento (lista del evento activo)
+
+**Función que la dibuja:** `renderReunion()` (~1850)
+
+**Elementos:**
+- **Encabezado:** Nombre del evento, fecha (editable con menú)
+- **Contador:** "N canciones" (solo cuenta canciones, no notas)
+- **Lista:** mezcla de canciones (con ✓ si están en la lista) y notas intercaladas
+  - Al tocar canción: abre **Pantalla: Lector** en modo evento
+  - Al tocar nota: abre **Pantalla: Lector** (nota)
+  - Menú ⋮ por canción: quitar, editar, copiar link
+  - Menú ⋮ por nota: editar, eliminar
+
+**Botones de pie:**
+- `+ Agregar` → abre **Pestaña: Canciones** (misma lógica que tocar en lista)
+- `+ Nota` → `mostrarDialogoNota()` (~1917) → abre **Pantalla: Crear/editar nota**
+- `Reordenar` → `est.reordenando = true` (~2628) → activa arrastrar
+
+**Chips encabezado:**
+- **D** (si director) → muestra que transmite
+- Menú ⋮ → editar evento, copiar, usar otra reunión, borrar
+
+**Restricciones:**
+- Solo directores pueden crear eventos, agregar canciones, crear notas
+- Si no hay evento activo, el primer `+` (agregar canción) crea uno automáticamente
+
+---
+
+### PANTALLA: Crear/editar evento (`abrirNuevaReunion()`, `abrirEditarReunion()`)
+
+**Función que la dibuja/abre:** 
+- Nueva: `abrirNuevaReunion()` (~1424)
+- Editar existente: `abrirEditarReunion(r)` (~1409)
+**Función que guarda:** `guardarEditarReunion()` (~1454)
+
+**Campos:**
+- **Nombre** (text input, requerido)
+  - Validación: no puede estar vacío (~1456)
+- **Fecha** (date input, en formato aaaa-mm-dd)
+  - Valor por defecto: hoy
+  - Opcional, pero si se pone se procesa
+- **Hora** (time input, en formato hh:mm)
+  - Valor por defecto: 00:00
+  - Se combina con fecha para calcular timestamp
+
+**Botones:**
+- Guardar → `guardarEditarReunion()` (~1454)
+  - Si es nueva: crea evento vacío, llama a `crearReunion()`
+  - Si es existente: edita nombre/fecha con `guardarDatosReunion()`
+  - Cierra diálogo, navega a pestaña Evento
+- Cancelar → `cerrarEditarReunion()` (~1448)
+
+**Restricciones:**
+- Solo directores pueden crear/editar eventos (~1486, 1467)
+- Nombre obligatorio (~1456)
+
+---
+
+### PANTALLA: Crear/editar nota (`mostrarDialogoNota()`)
+
+**Función que la dibuja/abre:** `mostrarDialogoNota(notaInicial, onGuardar)` (~2159)
+
+**Campos:**
+- **Nombre** (text input, requerido)
+  - Ej: "Pausa", "Lectura", "Advertencia"
+- **Contenido** (textarea, opcional)
+  - Multilinea, respeta saltos de línea
+  - Ej: "Esperar 5 segundos", "Leer Juan 3:16"
+
+**Botones:**
+- Guardar → guarda en `est.lista.notas[idNota]` y en Firestore
+- Cancelar → cierra sin guardar
+
+**Restricciones:**
+- Solo directores pueden crear/editar notas
+- Nombre requerido
+
+---
+
+### PESTAÑA: Transmisión (si hay director transmitiendo)
+
+**Función que la dibuja:** `renderOnline()` (~2200)
+
+**Elementos:**
+- **Encabezado:** "Transmisión en vivo" o "Sin transmisión"
+- **Contenido:** si hay director:
+  - Nombre de la canción/nota que está transmitiendo
+  - Lector en modo solo lectura (no se puede tocar nada)
+  - Riel de navegación (muestra paso actual)
+
+**Botones:**
+- Si hay transmisión activa: muestra la canción/nota en el lector
+- Si cierra transmisión: se cierra el lector automáticamente
+
+**Restricciones:**
+- No se puede editar nada (modo solo lectura)
+- Si transmisión para: lector se cierra solo
+
+---
+
+### ESTADO GLOBAL (est object) — variables importantes
+
+| Variable | Tipo | Qué controla | Dónde se modifica |
 |---|---|---|---|
-| + Nueva canción | `abrirEditor("nueva")` | ~1810 | Abre editor para crear canción nueva |
-| + Nuevo evento | `abrirNuevaReunion()` | ~1809 | Abre diálogo: poner nombre, fecha, hora del evento |
+| `est.pestana` | string | Cuál pestaña está activa ("canciones", "reunion", "online") | Al tocar botones de pestaña (~3393) |
+| `est.lista` | object | Evento activo: `{id, nombre, ids, semis, notas, ...}` | `abrirNuevaReunion()`, `guardarEditarReunion()` |
+| `est.esDirector` | boolean | Si puede crear/editar eventos, canciones, transmitir | `alternarDirector()` (~3544), listener (~1579) |
+| `est.enReunion` | boolean | Si está dentro de un evento (bloquea ediciones) | `abrir(id, true/false)` (~3250) |
+| `est.editando` | string | ID de canción que se está editando, o "nueva" | `abrirEditor(id)` (~3120) |
+| `est.semis` | number | Transporte actual de la canción abierta (+/- semitonos) | `transportar(delta)` (~2750) |
+| `est.cambios` | object | Canciones nuevas/editadas localmente: `{nuevas:[], editados:{}, borradas:[]}` | Listener de Firestore (~1077), `guardarEditor()` |
+| `est.reordenando` | boolean | Si modo arrastrar está activo | Al tocar botón "Reordenar" |
+| `est.abierta` | string | ID de canción actualmente en el lector | `abrir(id, enReunion)` (~3250) |
 
-### Pestaña Evento (reunión activa)
+---
 
-| Botón | Función | Línea aprox. | Qué hace |
-|---|---|---|---|
-| + Agregar (al tocar canción) | `alternarEnLista(id)` | ~2572 | Suma canción a la lista del evento, o la saca si estaba |
-| + Nota | `mostrarDialogoNota()` | ~1917 | Abre diálogo para agregar anotación entre canciones |
-| ♭/♯ (transporte) | `transportar(semis)` | ~2750 | Cambia el tono de la canción activa (+/- semitonos, solo si eres director) |
-| ◀ Anterior / Siguiente ▶ | `paso(delta)` | ~2900 | Navega por canciones/notas del evento |
-| Reordenar | `est.reordenando = true` | ~2628 | Activa modo: arrastra para cambiar orden de canciones |
-| D (chip director) | `alternarDirector()` | ~3544 | Prende/apaga: modo director (transmisión en vivo) |
-| Editar evento | `abrirEditarReunion()` | ~1409 | Abre diálogo para cambiar nombre/fecha del evento |
+### FLUJOS COMPLETOS
 
-### Pestaña Transmisión (si hay director)
+**Flujo 1: Agregar canción nueva**
+1. Toca `+ Nueva canción` en Canciones
+2. Se abre **Pantalla: Editor**
+3. Completa nombre, tono, BPM, contenido
+4. Toca Guardar
+5. Se guarda en `est.cambios.nuevas` (local)
+6. Se escribe en Firestore con `guardarCancion()` (~1521)
+7. Listener (~1077) la detecta y la suma a `est.cambios.nuevas`
+8. Aparece en lista de Canciones inmediatamente
 
-| Botón | Función | Línea aprox. | Qué hace |
-|---|---|---|---|
-| O (chip online, solo director) | `transmitirEstado()` | ~2710 | Transmite la canción que estás viendo **ahora en vivo** |
+**Flujo 2: Crear evento y agregar canciones**
+1. Toca `+ Nuevo evento` en Canciones
+2. Se abre **Pantalla: Crear evento** con fecha de hoy pre-llenada
+3. Pone nombre, opcionalmente fecha/hora
+4. Toca Guardar → se crea evento, navega a pestaña Evento
+5. Toca canciones en la lista de Canciones → se suman al evento
+6. Para cada canción: `alternarEnLista(id)` (~2572) la agrega a `est.lista.ids`
+7. Toca Anterior/Siguiente para navegar
+8. Toca ♭/♯ para transportar (solo si es director)
 
-### Pie de pantalla (dentro del lector)
-
-| Botón | Función | Línea aprox. | Qué hace |
-|---|---|---|---|
-| 📋 (Copiar link) | `compartirLink()` | ~2310 | Copia URL de la canción al portapapeles |
-| 📄 (Descargar PDF) | `compartirPDF()` | ~2290 | Genera y descarga PDF de la canción (acordes + letra) |
-| 🔗 (Compartir evento) | `compartirLinkEvento()` | ~2330 | Copia URL del evento actual |
-
-### Estado central (est object)
-
-Estas variables controlan lo que ves y cómo se guarda:
-
-| Variable | Qué es | Dónde se usa |
-|---|---|---|
-| `est.pestana` | Cuál pestaña está activa ("canciones", "reunion", "online") | Renderizado principal |
-| `est.lista` | La reunión (evento) activa: `{id, nombre, ids, semis, notas, ...}` | `guardarLista()`, `crearReunion()` |
-| `est.esDirector` | Si este dispositivo es director (puede transmitir, crear eventos) | Muchas funciones lo chequean |
-| `est.enReunion` | Si estás dentro de un evento (bloquea ediciones) | `pintarLector()` |
-| `est.semis` | Transporte actual (+/- semitonos de la canción) | `transportar()`, `guardarSemisSiCorresponde()` |
-| `est.cambios` | Canciones nuevas/editadas en Firestore: `{nuevas, editados, borradas}` | Listener de canciones (~1077) |
+**Flujo 3: Transmitir en vivo**
+1. Estar en pestaña Evento
+2. Tocar chip **D** → pasa a ser director
+3. Abrir la canción que quieres transmitir (en el lector)
+4. Tocar chip **O** (online) → transmite esta canción
+5. Otros ven en pestaña Transmisión: la canción en tiempo real
+6. Al navegar con ◀/▶ la transmisión se actualiza automáticamente (si ya era la canción activa)
+7. Tocar **O** de nuevo para dejar de transmitir
