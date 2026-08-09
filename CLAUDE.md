@@ -552,483 +552,483 @@ Forma de trabajo esperada:
 
 ### 1. BÚSQUEDA Y FILTRADO
 
-**filtrarCanciones(query, catalogo)** (~758)
+`filtrarCanciones(query, catalogo)` (~758)
 - Busca en nombre, tono y letra de canciones
-- **Llamada desde:** Campo buscador en Canciones; panel Agregar canción
+- Llamada desde: campo buscador en **Canciones**; panel **Agregar canción**
 
-**obtenerContexto(cancion, query)** (~778)
+`obtenerContexto(cancion, query)` (~778)
 - Extrae la línea de letra donde se encontró el resultado
-- **Llamada desde:** renderCatalogo() y renderAgregar() para mostrar contexto
+- Llamada desde: `renderCatalogo()` y `renderAgregar()` para mostrar contexto
 
 ### 2. TRANSPORTE DE ACORDES (cambiar tono)
 
-**moverNota(nota, semis, usarBemoles)** (~814)
+`moverNota(nota, semis, usarBemoles)` (~814)
 - Transporta una nota individual (+/- semitonos)
-- **Llamada desde:** moverAcorde()
+- Llamada desde: moverAcorde()
 
-**moverAcorde(ac, semis, usarBemoles)** (~822)
+`moverAcorde(ac, semis, usarBemoles)` (~822)
 - Transporta un acorde completo (ej: "C" → "D")
-- **Llamada desde:** moverLinea()
+- Llamada desde: moverLinea()
 
-**moverTono(tono, semis)** (~832)
+`moverTono(tono, semis)` (~832)
 - Transporta el tono original de una canción
-- **Llamada desde:** transportarEditor()
+- Llamada desde: transportarEditor()
 
-**moverLinea(linea, semis, usarBemoles)** (~845)
+`moverLinea(linea, semis, usarBemoles)` (~845)
 - Transporta una línea completa de acordes
-- **Llamada desde:** renderBloques()
+- Llamada desde: renderBloques()
 
-**transportar(delta)** (~2750)
+`transportar(delta)` (~2750)
 - Botones ♭/♯ en lector: transporta +/- 1 semitono
-- **Llamada desde:** Botones ♭/♯ en Lector (solo director en evento)
+- Llamada desde: Botones ♭/♯ en Lector (solo director en evento)
 
-**transportarEditor(delta)** (~3170)
+`transportarEditor(delta)` (~3170)
 - Botones ♭/♯ en editor: transporta y reescribe la canción
-- **Llamada desde:** Botones ♭/♯ en pantalla Editor
+- Llamada desde: Botones ♭/♯ en pantalla Editor
 
 ### 3. RENDERIZADO DE CONTENIDO
 
-**renderBloques(destino, bloques, semis, conBemoles)** (~874)
+`renderBloques(destino, bloques, semis, conBemoles)` (~874)
 - Dibuja los bloques de una canción (acordes, letras, rótulos)
-- **Llamada desde:** renderLector()
+- Llamada desde: renderLector()
 
-**bloquesATexto(bloques)** (~911)
+`bloquesATexto(bloques)` (~911)
 - Convierte bloques JSON a texto (para editar)
-- **Llamada desde:** abrirEditor(); compartirPDF()
+- Llamada desde: abrirEditor(); compartirPDF()
 
-**textoABloques(txt)** (~921)
+`textoABloques(txt)` (~921)
 - Convierte texto a bloques JSON (al guardar edición)
-- **Llamada desde:** guardarEditor()
+- Llamada desde: guardarEditor()
 
-**renderCatalogo()** (~1793)
+`renderCatalogo()` (~1793)
 - Dibuja pestaña Canciones (lista con buscador)
-- **Llamada desde:** render() cuando est.pestana === "canciones"
+- Llamada desde: render() cuando est.pestana === "canciones"
 
-**renderLector()** (~2806)
+`renderLector()` (~2806)
 - Dibuja pantalla de lectura de una canción
-- **Llamada desde:** abrir(); paso(); transportar()
+- Llamada desde: abrir(); paso(); transportar()
 
-**renderReunion()** (~1878)
+`renderReunion()` (~1878)
 - Dibuja pestaña Evento (lista de canciones del evento)
-- **Llamada desde:** render() cuando est.pestana === "reunion"
+- Llamada desde: render() cuando est.pestana === "reunion"
 
-**renderAgregar()** (~2337)
+`renderAgregar()` (~2337)
 - Dibuja panel "Agregar canción" dentro de evento
-- **Llamada desde:** abrirAgregar()
+- Llamada desde: abrirAgregar()
 
-**renderGuardadas()** (~2382)
+`renderGuardadas()` (~2382)
 - Dibuja pestaña Guardadas (historial de eventos)
-- **Llamada desde:** render() cuando est.pestana === "guardadas"
+- Llamada desde: render() cuando est.pestana === "guardadas"
 
-**renderOnline()** (~2513)
+`renderOnline()` (~2513)
 - Dibuja pestaña Transmisión (director en vivo)
-- **Llamada desde:** render() cuando est.pestana === "online"
+- Llamada desde: render() cuando est.pestana === "online"
 
-**render()** (~1749)
+`render()` (~1749)
 - Renderiza la pantalla actual según est.pestana
-- **Llamada desde:** Automáticamente en listeners de Firestore y tras cada acción
+- Llamada desde: Automáticamente en listeners de Firestore y tras cada acción
 
 ### 4. LECTOR (lectura de canciones)
 
-**abrir(id, enReunion)** (~2744)
+`abrir(id, enReunion)` (~2744)
 - Abre una canción en el lector
-- **Llamada desde:** Tocar canción en lista (Canciones/Evento); links compartidos
+- Llamada desde: Tocar canción en lista (Canciones/Evento); links compartidos
 
-**cerrar()** (~2758)
+`cerrar()` (~2758)
 - Cierra el lector y vuelve a la pantalla anterior
-- **Llamada desde:** Botón flecha ◀ al abrir canción
+- Llamada desde: Botón flecha ◀ al abrir canción
 
-**paso(delta)** (~3085)
+`paso(delta)` (~3085)
 - Navega anterior/siguiente en evento (+1 o -1 pasos)
-- **Llamada desde:** Botones ◀ Anterior, Siguiente ▶ en lector (modo evento)
+- Llamada desde: Botones ◀ Anterior, Siguiente ▶ en lector (modo evento)
 
-**cerrarLector()** (~2798)
+`cerrarLector()` (~2798)
 - Cierra lector y vuelve a la pantalla anterior
-- **Llamada desde:** Botón ◀ en pie del lector
+- Llamada desde: Botón ◀ en pie del lector
 
-**hacerScrollRiel()** (~2765)
+`hacerScrollRiel()` (~2765)
 - Ajusta scroll del riel (posición dentro del evento)
-- **Llamada desde:** renderLector()
+- Llamada desde: renderLector()
 
-**reiniciarColapsoTope()** (~3034)
+`reiniciarColapsoTope()` (~3034)
 - Reinicia el colapso de encabezado al abrir canción
-- **Llamada desde:** abrir(); cerrar()
+- Llamada desde: abrir(); cerrar()
 
-**actualizarColapsoTope()** (~3045)
+`actualizarColapsoTope()` (~3045)
 - Actualiza si encabezado está colapsado según scroll
-- **Llamada desde:** Listener de scroll en lector
+- Llamada desde: Listener de scroll en lector
 
-**actualizarVisibilidadPie()** (~3051)
+`actualizarVisibilidadPie()` (~3051)
 - Muestra/oculta pie según scroll (para leer)
-- **Llamada desde:** Listener de scroll en lector
+- Llamada desde: Listener de scroll en lector
 
-**actualizarPieCercaFin()** (~3077)
+`actualizarPieCercaFin()` (~3077)
 - Muestra pie completo si está cerca del final
-- **Llamada desde:** Listener de scroll en lector
+- Llamada desde: Listener de scroll en lector
 
 ### 5. EDITOR DE CANCIONES
 
-**abrirEditor(id)** (~3122)
+`abrirEditor(id)` (~3122)
 - Abre editor para nueva canción o editar existente
-- **Llamada desde:** Botón "+ Nueva canción"; menú ⋮ Editar
+- Llamada desde: Botón "+ Nueva canción"; menú ⋮ Editar
 
-**cerrarEditor()** (~3140)
+`cerrarEditor()` (~3140)
 - Cierra editor sin guardar
-- **Llamada desde:** Botón Cancelar en editor
+- Llamada desde: Botón Cancelar en editor
 
-**refrescarPrevia()** (~3147)
+`refrescarPrevia()` (~3147)
 - Actualiza vista previa de la canción mientras se edita
-- **Llamada desde:** Botón Preview; cambio en campos
+- Llamada desde: Botón Preview; cambio en campos
 
-**actualizarBotonesTransporteEditor()** (~3155)
+`actualizarBotonesTransporteEditor()` (~3155)
 - Habilita/deshabilita botones ♭/♯ según si hay tono
-- **Llamada desde:** refrescarPrevia()
+- Llamada desde: refrescarPrevia()
 
-**guardarEditor()** (~3187)
+`guardarEditor()` (~3187)
 - Guarda cambios de la canción
-- **Llamada desde:** Botón Guardar en editor
+- Llamada desde: Botón Guardar en editor
 
 ### 6. EVENTOS (reuniones)
 
-**abrirNuevaReunion()** (~1424)
+`abrirNuevaReunion()` (~1424)
 - Abre diálogo para crear evento nuevo
-- **Llamada desde:** Botón "+ Nuevo evento" en Canciones
+- Llamada desde: Botón "+ Nuevo evento" en Canciones
 
-**abrirEditarReunion(r)** (~1409)
+`abrirEditarReunion(r)` (~1409)
 - Abre diálogo para editar evento existente
-- **Llamada desde:** Menú ⋮ de evento en Guardadas
+- Llamada desde: Menú ⋮ de evento en Guardadas
 
-**abrirCopiarReunion(r)** (~1432)
+`abrirCopiarReunion(r)` (~1432)
 - Abre diálogo para copiar evento como base
-- **Llamada desde:** Menú ⋮ de evento en Guardadas
+- Llamada desde: Menú ⋮ de evento en Guardadas
 
-**llenarCamposReunion(nombre, ms)** (~1440)
+`llenarCamposReunion(nombre, ms)` (~1440)
 - Llena campos de nombre/fecha en diálogo de evento
-- **Llamada desde:** abrirNuevaReunion(); abrirEditarReunion()
+- Llamada desde: abrirNuevaReunion(); abrirEditarReunion()
 
-**cerrarEditarReunion()** (~1448)
+`cerrarEditarReunion()` (~1448)
 - Cierra diálogo sin guardar cambios
-- **Llamada desde:** Botón Cancelar en diálogo evento
+- Llamada desde: Botón Cancelar en diálogo evento
 
-**generarIdReunion()** (~1300)
+`generarIdReunion()` (~1300)
 - Genera ID único para nuevo evento
-- **Llamada desde:** crearReunion()
+- Llamada desde: crearReunion()
 
-**salirDelEvento()** (~1374)
+`salirDelEvento()` (~1374)
 - Marca fin del evento actual (sin borrar)
-- **Llamada desde:** Menú ⋮ evento
+- Llamada desde: Menú ⋮ evento
 
-**renderEncabezadoEvento(cont)** (~1859)
+`renderEncabezadoEvento(cont)` (~1859)
 - Dibuja encabezado de evento (nombre + fecha + menú)
-- **Llamada desde:** renderReunion()
+- Llamada desde: renderReunion()
 
 ### 7. AGREGAR CANCIONES A EVENTO
 
-**abrirAgregar()** (~2095)
+`abrirAgregar()` (~2095)
 - Abre panel flotante para agregar canciones
-- **Llamada desde:** Botón "+ Agregar" en Evento
+- Llamada desde: Botón "+ Agregar" en Evento
 
-**abrirAgregarDesdeCancion(posicionActual)** (~2103)
+`abrirAgregarDesdeCancion(posicionActual)` (~2103)
 - Abre diálogo: ¿Agregar canción o nota?
-- **Llamada desde:** Botón "+ Agregar" en pie de lector
+- Llamada desde: Botón "+ Agregar" en pie de lector
 
-**mostrarDialogoTipo(posicionActual)** (~2108)
+`mostrarDialogoTipo(posicionActual)` (~2108)
 - Diálogo: Canción o Nota
-- **Llamada desde:** abrirAgregarDesdeCancion()
+- Llamada desde: abrirAgregarDesdeCancion()
 
-**mostrarDialogoUbicacion(posicionActual, tipo)** (~2280)
+`mostrarDialogoUbicacion(posicionActual, tipo)` (~2280)
 - Diálogo: dónde insertar (antes/después de qué paso)
-- **Llamada desde:** mostrarDialogoTipo() tras elegir tipo
+- Llamada desde: mostrarDialogoTipo() tras elegir tipo
 
-**cerrarAgregar()** (~2334)
+`cerrarAgregar()` (~2334)
 - Cierra panel de agregar
-- **Llamada desde:** Al agregar algo o hacer clic fuera
+- Llamada desde: Al agregar algo o hacer clic fuera
 
-**alternarEnLista(id)** (~2572)
+`alternarEnLista(id)` (~2572)
 - Suma/quita canción del evento actual
-- **Llamada desde:** Botón +/✓ en lista; panel Agregar
+- Llamada desde: Botón +/✓ en lista; panel Agregar
 
 ### 8. NOTAS/ANOTACIONES
 
-**generarIdNota()** (~741)
+`generarIdNota()` (~741)
 - Genera ID único para nota
-- **Llamada desde:** agregarNota()
+- Llamada desde: agregarNota()
 
-**esNota(id)** (~740)
+`esNota(id)` (~740)
 - Detecta si ID es una nota (prefijo "nota:")
-- **Llamada desde:** soloCanciones(); renderReunion(); paso()
+- Llamada desde: soloCanciones(); renderReunion(); paso()
 
-**mostrarDialogoNota(notaInicial, onGuardar)** (~2149)
+`mostrarDialogoNota(notaInicial, onGuardar)` (~2149)
 - Abre diálogo para crear/editar nota
-- **Llamada desde:** Botón "+ Nota"; menú ⋮ Editar nota
+- Llamada desde: Botón "+ Nota"; menú ⋮ Editar nota
 
-**agregarNota(nota)** (~2250)
+`agregarNota(nota)` (~2250)
 - Guarda nueva nota en evento
-- **Llamada desde:** Diálogo crear/editar nota
+- Llamada desde: Diálogo crear/editar nota
 
-**quitarNota(idNota)** (~2061)
+`quitarNota(idNota)` (~2061)
 - Elimina nota del evento
-- **Llamada desde:** Menú ⋮ de nota "Eliminar anotación"
+- Llamada desde: Menú ⋮ de nota "Eliminar anotación"
 
-**mostrarMenuNota(e, idNota, indice)** (~2050)
+`mostrarMenuNota(e, idNota, indice)` (~2050)
 - Menú ⋮ de una nota (editar, eliminar)
-- **Llamada desde:** Tocar ⋮ en fila de nota
+- Llamada desde: Tocar ⋮ en fila de nota
 
-**soloCanciones(ids)** (~742)
+`soloCanciones(ids)` (~742)
 - Filtra array para contar solo canciones (excluye notas)
-- **Llamada desde:** renderReunion() para mostrador
+- Llamada desde: renderReunion() para mostrador
 
 ### 9. DIRECTOR / TRANSMISIÓN EN VIVO
 
-**alternarDirector()** (~3544)
+`alternarDirector()` (~3544)
 - Prende/apaga chip "D" (director)
-- **Llamada desde:** Chip D en lector
+- Llamada desde: Chip D en lector
 
-**transmitirEstado()** (~2710)
+`transmitirEstado()` (~2710)
 - Transmite la canción actual en vivo
-- **Llamada desde:** Chip O (online) en lector
+- Llamada desde: Chip O (online) en lector
 
-**mostrarVistaOnline(d)** (~1207)
+`mostrarVistaOnline(d)` (~1207)
 - Abre lector en modo transmisión en vivo
-- **Llamada desde:** Listener de directorEnVivo (cambio en Firestore)
+- Llamada desde: Listener de directorEnVivo (cambio en Firestore)
 
-**cerrarVistaOnline()** (~1171)
+`cerrarVistaOnline()` (~1171)
 - Cierra vista de transmisión (sin tocar el lector normal)
-- **Llamada desde:** Listener de Firestore cuando termina transmisión
+- Llamada desde: Listener de Firestore cuando termina transmisión
 
-**transmitirDesdeElPrincipio()** (~1189)
+`transmitirDesdeElPrincipio()` (~1189)
 - Transmite el primer paso del evento
-- **Llamada desde:** mostrarVistaOnline()
+- Llamada desde: mostrarVistaOnline()
 
-**retransmitirSiYaEstaEnVivo()** (~1293)
+`retransmitirSiYaEstaEnVivo()` (~1293)
 - Si la canción abierta ya es la transmitida, actualiza transporte
-- **Llamada desde:** transportar() dentro de reunión como director
+- Llamada desde: transportar() dentro de reunión como director
 
-**fondoOnline()** (~2487)
+`fondoOnline()` (~2487)
 - Dibuja fondo/aviso en pestaña Transmisión (sin director)
-- **Llamada desde:** renderOnline()
+- Llamada desde: renderOnline()
 
 ### 10. MENÚS CONTEXTUALES
 
-**mostrarMenu(anchorEl, opciones)** (~2013)
+`mostrarMenu(anchorEl, opciones)` (~2013)
 - Menú flotante genérico (posición, opciones)
-- **Llamada desde:** Todos los menús ⋮
+- Llamada desde: Todos los menús ⋮
 
-**mostrarMenuCancion(e, idCancion, indice)** (~2041)
+`mostrarMenuCancion(e, idCancion, indice)` (~2041)
 - Menú ⋮ de canción en evento (quitar, editar, copiar link)
-- **Llamada desde:** Tocar ⋮ en fila de canción
+- Llamada desde: Tocar ⋮ en fila de canción
 
-**mostrarMenuEvento(e)** (~2072)
+`mostrarMenuEvento(e)` (~2072)
 - Menú ⋮ de evento (editar, copiar, borrar)
-- **Llamada desde:** Tocar ⋮ en encabezado Evento
+- Llamada desde: Tocar ⋮ en encabezado Evento
 
-**mostrarMenuCancionCatalogo(e, idCancion)** (~2082)
+`mostrarMenuCancionCatalogo(e, idCancion)` (~2082)
 - Menú ⋮ de canción en Canciones (editar, borrar, compartir)
-- **Llamada desde:** Tocar ⋮ en fila de Canciones
+- Llamada desde: Tocar ⋮ en fila de Canciones
 
-**mostrarMenuReunion(r, btnMenu, activa)** (~2448)
+`mostrarMenuReunion(r, btnMenu, activa)` (~2448)
 - Menú ⋮ de reunión en Guardadas
-- **Llamada desde:** Tocar ⋮ en fila de reunión
+- Llamada desde: Tocar ⋮ en fila de reunión
 
 ### 11. ARRASTRAR Y REORDENAR
 
-**iniciarArrastre(e, i, filaEl)** (~2623)
+`iniciarArrastre(e, i, filaEl)` (~2623)
 - Inicia drag&drop de una fila
-- **Llamada desde:** mousedown en fila cuando est.reordenando = true
+- Llamada desde: mousedown en fila cuando est.reordenando = true
 
-**moverArrastre(e)** (~2632)
+`moverArrastre(e)` (~2632)
 - Actualiza posición visual mientras se arrastra
-- **Llamada desde:** mousemove mientras hay arrastre
+- Llamada desde: mousemove mientras hay arrastre
 
-**soltarArrastre()** (~2676)
+`soltarArrastre()` (~2676)
 - Termina arrastre y guarda orden nuevo
-- **Llamada desde:** mouseup
+- Llamada desde: mouseup
 
-**actualizarNumerosOrden()** (~2628)
+`actualizarNumerosOrden()` (~2628)
 - Actualiza números de paso después de reordenar
-- **Llamada desde:** soltarArrastre()
+- Llamada desde: soltarArrastre()
 
 ### 12. COMPARTIR / EXPORTAR
 
-**compartirPDF(cancion)** (~3334)
+`compartirPDF(cancion)` (~3334)
 - Descarga canción como PDF
-- **Llamada desde:** Botón 📄 en pie de lector
+- Llamada desde: Botón 📄 en pie de lector
 
-**compartirLink(cancion)** (~2310)
+`compartirLink(cancion)` (~2310)
 - Copia link a canción en clipboard
-- **Llamada desde:** Botón 📋 en pie de lector
+- Llamada desde: Botón 📋 en pie de lector
 
-**compartirLinkEvento(evento)** (~2330)
+`compartirLinkEvento(evento)` (~2330)
 - Copia link a evento en clipboard
-- **Llamada desde:** Botón 🔗 en pie de lector (modo evento)
+- Llamada desde: Botón 🔗 en pie de lector (modo evento)
 
-**mostrarMenuCompartir(e, idCancion)** (~3342)
+`mostrarMenuCompartir(e, idCancion)` (~3342)
 - Menú de opciones de compartir
-- **Llamada desde:** Botón de compartir
+- Llamada desde: Botón de compartir
 
-**abrirExportar()** (~3257)
+`abrirExportar()` (~3257)
 - Pantalla de exportación (obsoleta, no visible)
-- **Llamada desde:** No usada en interfaz
+- Llamada desde: No usada en interfaz
 
 ### 13. FIRESTORE / SINCRONIZACIÓN
 
-**escuchar()** (~1046)
+`escuchar()` (~1046)
 - Inicia listeners de Firestore (canciones, eventos, director)
-- **Llamada desde:** arrancar() al iniciar app
+- Llamada desde: arrancar() al iniciar app
 
-**escucharReunionActiva(id)** (~1104)
+`escucharReunionActiva(id)` (~1104)
 - Listener de cambios en reunión activa
-- **Llamada desde:** escuchar() o cuando cambia reunión activa
+- Llamada desde: escuchar() o cuando cambia reunión activa
 
-**manejarCambioEnVivo()** (~1707)
+`manejarCambioEnVivo()` (~1707)
 - Procesa cambios en directorio activo
-- **Llamada desde:** Listener de directorEnVivo
+- Llamada desde: Listener de directorEnVivo
 
-**iniciarLatido(eventoId)** (~1655)
+`iniciarLatido(eventoId)` (~1655)
 - Envía heartbeat periódico (marca que dispositivo está activo)
-- **Llamada desde:** escucharReunionActiva()
+- Llamada desde: escucharReunionActiva()
 
-**detenerLatido()** (~1679)
+`detenerLatido()` (~1679)
 - Detiene heartbeat
-- **Llamada desde:** salirDelEvento(); cerrarVistaOnline()
+- Llamada desde: salirDelEvento(); cerrarVistaOnline()
 
-**hayDirectorActivo(lista)** (~1699)
+`hayDirectorActivo(lista)` (~1699)
 - Verifica si hay al menos un director (el contador > 0)
-- **Llamada desde:** renderOnline()
+- Llamada desde: renderOnline()
 
-**recalcular()** (~710)
+`recalcular()` (~710)
 - Recalcula catálogo fusionando base + cambios de Firestore
-- **Llamada desde:** Listener de Firestore
+- Llamada desde: Listener de Firestore
 
-**contarCambios()** (~723)
+`contarCambios()` (~723)
 - Cuenta canciones nuevas/editadas/borradas localmente
-- **Llamada desde:** Mostrador de cambios
+- Llamada desde: Mostrador de cambios
 
-**marcarSync(clase, texto)** (~1729)
+`marcarSync(clase, texto)` (~1729)
 - Muestra indicador de sincronización (ej "✓ guardado")
-- **Llamada desde:** Tras guardar en Firestore
+- Llamada desde: Tras guardar en Firestore
 
 ### 14. ALMACENAMIENTO LOCAL
 
-**leerAjustes()** (~1559)
+`leerAjustes()` (~1559)
 - Lee preferencias (tamaño de fuente, orden, etc) de localStorage
-- **Llamada desde:** arrancar()
+- Llamada desde: arrancar()
 
-**guardarAjustes()** (~1566)
+`guardarAjustes()` (~1566)
 - Guarda preferencias
-- **Llamada desde:** Tras cambiar ajustes (tamaño fuente, orden)
+- Llamada desde: Tras cambiar ajustes (tamaño fuente, orden)
 
-**leerRol()** (~1575)
+`leerRol()` (~1575)
 - Lee si dispositivo es director de localStorage
-- **Llamada desde:** arrancar()
+- Llamada desde: arrancar()
 
-**guardarRol(esDirector)** (~1584)
+`guardarRol(esDirector)` (~1584)
 - Guarda rol de dispositivo
-- **Llamada desde:** alternarDirector()
+- Llamada desde: alternarDirector()
 
-**leerEventoLocal()** (~1603)
+`leerEventoLocal()` (~1603)
 - Lee ID del evento activo local (fallback si Firestore no carga)
-- **Llamada desde:** arrancar()
+- Llamada desde: arrancar()
 
-**guardarEventoLocal(id)** (~1609)
+`guardarEventoLocal(id)` (~1609)
 - Guarda ID del evento activo local
-- **Llamada desde:** usarReunion(); salirDelEvento()
+- Llamada desde: usarReunion(); salirDelEvento()
 
-**obtenerDispositivoId()** (~1591)
+`obtenerDispositivoId()` (~1591)
 - Genera/lee ID único del dispositivo
-- **Llamada desde:** leerRol(); heartbeat
+- Llamada desde: leerRol(); heartbeat
 
 ### 15. UTILIDADES
 
-**flotar(msg)** (~1735)
+`flotar(msg)` (~1735)
 - Muestra notificación flotante (toast)
-- **Llamada desde:** Tras acciones (guardar, error, etc)
+- Llamada desde: Tras acciones (guardar, error, etc)
 
-**fechaHoraTexto(ms)** (~2532)
+`fechaHoraTexto(ms)` (~2532)
 - Convierte timestamp a texto legible (ej "hoy a las 19:30")
-- **Llamada desde:** renderReunion(); renderGuardadas()
+- Llamada desde: renderReunion(); renderGuardadas()
 
-**metaDe(s, semis)** (~2544)
+`metaDe(s, semis)` (~2544)
 - Texto meta de canción (tono, BPM, si hay cambios)
-- **Llamada desde:** renderCatalogo(); renderReunion(); renderAgregar()
+- Llamada desde: renderCatalogo(); renderReunion(); renderAgregar()
 
-**escapar(t)** (~2557)
+`escapar(t)` (~2557)
 - Escapa HTML especial (previene XSS)
-- **Llamada desde:** Antes de poner texto en HTML
+- Llamada desde: Antes de poner texto en HTML
 
-**nuevoId(nombre, tono)** (~729)
+`nuevoId(nombre, tono)` (~729)
 - Genera ID de canción (nombre-tono normalizado)
-- **Llamada desde:** guardarCancion()
+- Llamada desde: guardarCancion()
 
-**esCifrado(tok)** (~896)
+`esCifrado(tok)` (~896)
 - Detecta si token es cifrado latino (DO RE MI) vs anglosajón
-- **Llamada desde:** renderBloques()
+- Llamada desde: renderBloques()
 
-**esLineaDeAcordes(t)** (~901)
+`esLineaDeAcordes(t)` (~901)
 - Detecta si línea es de acordes
-- **Llamada desde:** textoABloques()
+- Llamada desde: textoABloques()
 
 ### 16. PANTALLA COMPLETA / INTERFAZ
 
-**pedirPantallaCompletaSiCelular()** (~3397)
+`pedirPantallaCompletaSiCelular()` (~3397)
 - Pide permiso de pantalla completa (DESACTIVADO, solo manual)
-- **Llamada desde:** (removido de abrir() y mostrarVistaOnline())
+- Llamada desde: (removido de abrir() y mostrarVistaOnline())
 
-**alternarPantallaCompleta()** (~3403)
+`alternarPantallaCompleta()` (~3403)
 - Botón ⛶ en lector: activa/desactiva pantalla completa
-- **Llamada desde:** Chip expandir (⛶) en pie del lector
+- Llamada desde: Chip expandir (⛶) en pie del lector
 
-**esCelular()** (~3515)
+`esCelular()` (~3515)
 - Detecta si es dispositivo móvil
-- **Llamada desde:** pedirPantallaCompletaSiCelular(); lógica responsiva
+- Llamada desde: pedirPantallaCompletaSiCelular(); lógica responsiva
 
 ### 17. LINKS COMPARTIDOS
 
-**abrirDesdeLink()** (~3530)
+`abrirDesdeLink()` (~3530)
 - Abre canción cuando se accede desde link compartido
-- **Llamada desde:** Si URL contiene parámetro cancion=...
+- Llamada desde: Si URL contiene parámetro cancion=...
 
-**abrirEventoDesdeLink()** (~3543)
+`abrirEventoDesdeLink()` (~3543)
 - Abre evento cuando se accede desde link compartido
-- **Llamada desde:** Si URL contiene parámetro evento=...
+- Llamada desde: Si URL contiene parámetro evento=...
 
 ### 18. ROLES / CONFIGURACIÓN
 
-**mostrarPantallaRol()** (~3490)
+`mostrarPantallaRol()` (~3490)
 - Abre diálogo para elegir rol (director o músico)
-- **Llamada desde:** Botón de rol; arranque sin rol definido
+- Llamada desde: Botón de rol; arranque sin rol definido
 
-**fijarRol(esDirector)** (~3496)
+`fijarRol(esDirector)` (~3496)
 - Guarda rol elegido
-- **Llamada desde:** Diálogo de rol
+- Llamada desde: Diálogo de rol
 
 ### 19. COMPARADORES (ordenamiento)
 
-**compararNombre(a, b)** (~1779)
+`compararNombre(a, b)` (~1779)
 - Comparador para ordenar alfabéticamente
-- **Llamada desde:** sort() en renderCatalogo()
+- Llamada desde: sort() en renderCatalogo()
 
-**compararTono(a, b)** (~1782)
+`compararTono(a, b)` (~1782)
 - Comparador para ordenar por tono
-- **Llamada desde:** sort() en renderCatalogo()
+- Llamada desde: sort() en renderCatalogo()
 
-**compararBpm(a, b)** (~1786)
+`compararBpm(a, b)` (~1786)
 - Comparador para ordenar por BPM
-- **Llamada desde:** sort() en renderCatalogo()
+- Llamada desde: sort() en renderCatalogo()
 
 ### 20. OTROS
 
-**quitar(id)** (~2600)
+`quitar(id)` (~2600)
 - Quita canción/nota del evento
-- **Llamada desde:** Menú ⋮ Quitar; alternarEnLista()
+- Llamada desde: Menú ⋮ Quitar; alternarEnLista()
 
-**vaciar()** (~2686)
+`vaciar()` (~2686)
 - Vacía el evento actual (borra todos los pasos)
-- **Llamada desde:** Menú ⋮ Vaciar evento
+- Llamada desde: Menú ⋮ Vaciar evento
 
-**semisGuardado(id)** (~2701)
+`semisGuardado(id)` (~2701)
 - Lee transporte guardado de una canción en evento
-- **Llamada desde:** abrir(); mostrarVistaOnline()
+- Llamada desde: abrir(); mostrarVistaOnline()
 
 ---
 
