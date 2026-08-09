@@ -1529,7 +1529,6 @@ async function guardarCancion(cancion, esNueva){
       bloques: cancion.bloques,
       nueva: !!esNueva,
       borrada: false,
-      exportado: false,
       cuando: Date.now(),
     });
     marcarSync("ok", "al día");
@@ -3290,46 +3289,6 @@ function abrirExportar(){
   $("exportar").classList.add("abierto");
 }
 
-async function copiarExportado(){
-  const t = $("ex-texto");
-  try{
-    await navigator.clipboard.writeText(t.value);
-    flotar("Copiado");
-
-    /* Marcar cambios como exportados en Firestore */
-    const c = est.cambios;
-    const ahora = new Date().toISOString();
-    const promesas = [];
-
-    Object.values(c.editados || {}).forEach(cancion => {
-      promesas.push(fs.setDoc(fs.doc(db, "canciones", cancion.id), {
-        exportado: true,
-        exportadoEn: ahora
-      }, { merge: true }));
-    });
-
-    (c.nuevas || []).forEach(cancion => {
-      promesas.push(fs.setDoc(fs.doc(db, "canciones", cancion.id), {
-        exportado: true,
-        exportadoEn: ahora
-      }, { merge: true }));
-    });
-
-    await Promise.all(promesas);
-
-    /* Forzar recalculación local inmediatamente */
-    est.cambios = {editados: {}, nuevas: [], borradas: []};
-    recalcular();
-    render();
-
-    $("exportar").classList.remove("abierto");
-  }catch(e){
-    console.error("Error al exportar:", e);
-    t.focus(); t.select();
-    flotar("Error: " + e.message);
-  }
-}
-
 /* Genera el link de una canción y lo comparte: usa el selector nativo
    (navigator.share) si el navegador lo tiene — en celular abre WhatsApp,
    Mensajes, etc. directo — y si no, cae a copiar al portapapeles, mismo
@@ -3412,7 +3371,6 @@ $("ed-sostenido").onclick = () => transportarEditor(+1);
 
 /* Exportación */
 $("ex-cerrar").onclick = () => $("exportar").classList.remove("abierto");
-$("ex-copiar").onclick = copiarExportado;
 
 /* Panel "Agregar canciones" */
 $("ag-cerrar").onclick = cerrarAgregar;
