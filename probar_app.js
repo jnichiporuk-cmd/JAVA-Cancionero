@@ -116,8 +116,8 @@ setImmediate(() => {
     catch (e) { pasos.push(["FALLA", nombre + " -> " + e.message]); }
   }
 
-  paso("catálogo cargado (484 canciones)", () => {
-    if (__app.CATALOGO.length !== 484) throw new Error("hay " + __app.CATALOGO.length);
+  paso("catálogo cargado (426 canciones)", () => {
+    if (__app.CATALOGO.length !== 426) throw new Error("hay " + __app.CATALOGO.length);
   });
   paso("dibujar la lista de canciones", () => __app.renderCatalogo());
   paso("sumar una canción a la reunión", () => __app.alternarEnLista(__app.CATALOGO[0].id));
