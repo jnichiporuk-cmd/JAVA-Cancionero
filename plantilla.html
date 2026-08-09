@@ -2355,14 +2355,17 @@ function renderAgregar(){
     const puesta = est.lista.ids.includes(s.id);
     const fila = document.createElement("div");
     fila.className = "fila";
+    const contexto = obtenerContexto(s, est.filtroAgregar);
+    const contextoHTML = contexto
+      ? `<div class="fila-contexto">${escapar(contexto)}</div>`
+      : "";
     fila.innerHTML = `
       <button class="fila-txt">
         <div class="fila-nombre">${escapar(s.nombre)}</div>
         <div class="fila-meta">${metaDe(s)}</div>
+        ${contextoHTML}
       </button>
       <button class="sumar${puesta ? " puesta" : ""}">${puesta ? "✓" : "+"}</button>`;
-    /* Acá el toque suma o saca directo, sin abrir la canción: es un
-       panel para armar la lista rápido, no para leer letras. */
     const alternar = () => { alternarEnLista(s.id); renderAgregar(); };
     fila.querySelector(".fila-txt").onclick = alternar;
     fila.querySelector(".sumar").onclick = alternar;
