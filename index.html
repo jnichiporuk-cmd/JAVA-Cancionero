@@ -520,7 +520,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v283</span></div>
+    <div class="marca">Cancionero <span class="ver">v284</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -1196,7 +1196,6 @@ function transmitirDesdeElPrincipio(){
   est.pestana = "online";
   est.semis = semisGuardado(id);
   $("lector").classList.add("abierto");
-  pedirPantallaCompletaSiCelular();
   $("cuerpo").scrollTop = 0;
   reiniciarColapsoTope();
   scrollAnterior = 0;
@@ -2745,7 +2744,6 @@ function abrir(id, enReunion){
   est.soloLectura = false;  // abrir algo por cuenta propia siempre sale del modo sólo lectura
   est.semis = enReunion ? semisGuardado(id) : 0;
   $("lector").classList.add("abierto");
-  pedirPantallaCompletaSiCelular();
   $("cuerpo").scrollTop = 0;
   reiniciarColapsoTope();
   scrollAnterior = 0;  /* Reset para mostrar pie al abrir */
@@ -3273,7 +3271,7 @@ function abrirExportar(){
   $("ex-resumen-contenido").innerHTML = resumenHTML;
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v283",
+    origen: "cancionero v284",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
