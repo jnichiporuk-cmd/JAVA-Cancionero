@@ -543,3 +543,55 @@ Forma de trabajo esperada:
   repetirlos.
 - Respuestas sin relleno. Tablas cuando ordenan mejor los datos. Código
   completo salvo que se pida una parte.
+
+---
+
+## 10. Referencia rápida de botones y funciones
+
+Índice de qué hace cada botón, qué función lo activa y dónde encontrarlo. Esto es tu mapa para no olvidar funcionalidades.
+
+### Pestaña Canciones
+
+| Botón | Función | Línea aprox. | Qué hace |
+|---|---|---|---|
+| + Nueva canción | `abrirEditor("nueva")` | ~1810 | Abre editor para crear canción nueva |
+| + Nuevo evento | `abrirNuevaReunion()` | ~1809 | Abre diálogo: poner nombre, fecha, hora del evento |
+
+### Pestaña Evento (reunión activa)
+
+| Botón | Función | Línea aprox. | Qué hace |
+|---|---|---|---|
+| + Agregar (al tocar canción) | `alternarEnLista(id)` | ~2572 | Suma canción a la lista del evento, o la saca si estaba |
+| + Nota | `mostrarDialogoNota()` | ~1917 | Abre diálogo para agregar anotación entre canciones |
+| ♭/♯ (transporte) | `transportar(semis)` | ~2750 | Cambia el tono de la canción activa (+/- semitonos, solo si eres director) |
+| ◀ Anterior / Siguiente ▶ | `paso(delta)` | ~2900 | Navega por canciones/notas del evento |
+| Reordenar | `est.reordenando = true` | ~2628 | Activa modo: arrastra para cambiar orden de canciones |
+| D (chip director) | `alternarDirector()` | ~3544 | Prende/apaga: modo director (transmisión en vivo) |
+| Editar evento | `abrirEditarReunion()` | ~1409 | Abre diálogo para cambiar nombre/fecha del evento |
+
+### Pestaña Transmisión (si hay director)
+
+| Botón | Función | Línea aprox. | Qué hace |
+|---|---|---|---|
+| O (chip online, solo director) | `transmitirEstado()` | ~2710 | Transmite la canción que estás viendo **ahora en vivo** |
+
+### Pie de pantalla (dentro del lector)
+
+| Botón | Función | Línea aprox. | Qué hace |
+|---|---|---|---|
+| 📋 (Copiar link) | `compartirLink()` | ~2310 | Copia URL de la canción al portapapeles |
+| 📄 (Descargar PDF) | `compartirPDF()` | ~2290 | Genera y descarga PDF de la canción (acordes + letra) |
+| 🔗 (Compartir evento) | `compartirLinkEvento()` | ~2330 | Copia URL del evento actual |
+
+### Estado central (est object)
+
+Estas variables controlan lo que ves y cómo se guarda:
+
+| Variable | Qué es | Dónde se usa |
+|---|---|---|
+| `est.pestana` | Cuál pestaña está activa ("canciones", "reunion", "online") | Renderizado principal |
+| `est.lista` | La reunión (evento) activa: `{id, nombre, ids, semis, notas, ...}` | `guardarLista()`, `crearReunion()` |
+| `est.esDirector` | Si este dispositivo es director (puede transmitir, crear eventos) | Muchas funciones lo chequean |
+| `est.enReunion` | Si estás dentro de un evento (bloquea ediciones) | `pintarLector()` |
+| `est.semis` | Transporte actual (+/- semitonos de la canción) | `transportar()`, `guardarSemisSiCorresponde()` |
+| `est.cambios` | Canciones nuevas/editadas en Firestore: `{nuevas, editados, borradas}` | Listener de canciones (~1077) |
