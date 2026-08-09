@@ -564,19 +564,19 @@ Forma de trabajo esperada:
 
 `moverNota(nota, semis, usarBemoles)` (~814)
 - Transporta una nota individual (+/- semitonos)
-- Llamada desde: moverAcorde()
+- Llamada desde: `moverAcorde()`
 
 `moverAcorde(ac, semis, usarBemoles)` (~822)
 - Transporta un acorde completo (ej: "C" → "D")
-- Llamada desde: moverLinea()
+- Llamada desde: `moverLinea()`
 
 `moverTono(tono, semis)` (~832)
 - Transporta el tono original de una canción
-- Llamada desde: transportarEditor()
+- Llamada desde: `transportarEditor()`
 
 `moverLinea(linea, semis, usarBemoles)` (~845)
 - Transporta una línea completa de acordes
-- Llamada desde: renderBloques()
+- Llamada desde: `renderBloques()`
 
 `transportar(delta)` (~2750)
 - Botones ♭/♯ en lector: transporta +/- 1 semitono
@@ -590,39 +590,39 @@ Forma de trabajo esperada:
 
 `renderBloques(destino, bloques, semis, conBemoles)` (~874)
 - Dibuja los bloques de una canción (acordes, letras, rótulos)
-- Llamada desde: renderLector()
+- Llamada desde: `renderLector()`
 
 `bloquesATexto(bloques)` (~911)
 - Convierte bloques JSON a texto (para editar)
-- Llamada desde: abrirEditor(); compartirPDF()
+- Llamada desde: `abrirEditor()`; compartirPDF()
 
 `textoABloques(txt)` (~921)
 - Convierte texto a bloques JSON (al guardar edición)
-- Llamada desde: guardarEditor()
+- Llamada desde: `guardarEditor()`
 
 `renderCatalogo()` (~1793)
 - Dibuja pestaña Canciones (lista con buscador)
-- Llamada desde: render() cuando est.pestana === "canciones"
+- Llamada desde: `render()` cuando est.pestana === "canciones"
 
 `renderLector()` (~2806)
 - Dibuja pantalla de lectura de una canción
-- Llamada desde: abrir(); paso(); transportar()
+- Llamada desde: `abrir()`; paso(); transportar()
 
 `renderReunion()` (~1878)
 - Dibuja pestaña Evento (lista de canciones del evento)
-- Llamada desde: render() cuando est.pestana === "reunion"
+- Llamada desde: `render()` cuando est.pestana === "reunion"
 
 `renderAgregar()` (~2337)
 - Dibuja panel "Agregar canción" dentro de evento
-- Llamada desde: abrirAgregar()
+- Llamada desde: `abrirAgregar()`
 
 `renderGuardadas()` (~2382)
 - Dibuja pestaña Guardadas (historial de eventos)
-- Llamada desde: render() cuando est.pestana === "guardadas"
+- Llamada desde: `render()` cuando est.pestana === "guardadas"
 
 `renderOnline()` (~2513)
 - Dibuja pestaña Transmisión (director en vivo)
-- Llamada desde: render() cuando est.pestana === "online"
+- Llamada desde: `render()` cuando est.pestana === "online"
 
 `render()` (~1749)
 - Renderiza la pantalla actual según est.pestana
@@ -648,11 +648,11 @@ Forma de trabajo esperada:
 
 `hacerScrollRiel()` (~2765)
 - Ajusta scroll del riel (posición dentro del evento)
-- Llamada desde: renderLector()
+- Llamada desde: `renderLector()`
 
 `reiniciarColapsoTope()` (~3034)
 - Reinicia el colapso de encabezado al abrir canción
-- Llamada desde: abrir(); cerrar()
+- Llamada desde: `abrir()`; cerrar()
 
 `actualizarColapsoTope()` (~3045)
 - Actualiza si encabezado está colapsado según scroll
@@ -682,7 +682,7 @@ Forma de trabajo esperada:
 
 `actualizarBotonesTransporteEditor()` (~3155)
 - Habilita/deshabilita botones ♭/♯ según si hay tono
-- Llamada desde: refrescarPrevia()
+- Llamada desde: `refrescarPrevia()`
 
 `guardarEditor()` (~3187)
 - Guarda cambios de la canción
@@ -704,7 +704,7 @@ Forma de trabajo esperada:
 
 `llenarCamposReunion(nombre, ms)` (~1440)
 - Llena campos de nombre/fecha en diálogo de evento
-- Llamada desde: abrirNuevaReunion(); abrirEditarReunion()
+- Llamada desde: `abrirNuevaReunion()`; abrirEditarReunion()
 
 `cerrarEditarReunion()` (~1448)
 - Cierra diálogo sin guardar cambios
@@ -712,7 +712,7 @@ Forma de trabajo esperada:
 
 `generarIdReunion()` (~1300)
 - Genera ID único para nuevo evento
-- Llamada desde: crearReunion()
+- Llamada desde: `crearReunion()`
 
 `salirDelEvento()` (~1374)
 - Marca fin del evento actual (sin borrar)
@@ -720,7 +720,7 @@ Forma de trabajo esperada:
 
 `renderEncabezadoEvento(cont)` (~1859)
 - Dibuja encabezado de evento (nombre + fecha + menú)
-- Llamada desde: renderReunion()
+- Llamada desde: `renderReunion()`
 
 ### 7. AGREGAR CANCIONES A EVENTO
 
@@ -734,11 +734,11 @@ Forma de trabajo esperada:
 
 `mostrarDialogoTipo(posicionActual)` (~2108)
 - Diálogo: Canción o Nota
-- Llamada desde: abrirAgregarDesdeCancion()
+- Llamada desde: `abrirAgregarDesdeCancion()`
 
 `mostrarDialogoUbicacion(posicionActual, tipo)` (~2280)
 - Diálogo: dónde insertar (antes/después de qué paso)
-- Llamada desde: mostrarDialogoTipo() tras elegir tipo
+- Llamada desde: `mostrarDialogoTipo()` tras elegir tipo
 
 `cerrarAgregar()` (~2334)
 - Cierra panel de agregar
@@ -752,11 +752,11 @@ Forma de trabajo esperada:
 
 `generarIdNota()` (~741)
 - Genera ID único para nota
-- Llamada desde: agregarNota()
+- Llamada desde: `agregarNota()`
 
 `esNota(id)` (~740)
 - Detecta si ID es una nota (prefijo "nota:")
-- Llamada desde: soloCanciones(); renderReunion(); paso()
+- Llamada desde: `soloCanciones()`; renderReunion(); paso()
 
 `mostrarDialogoNota(notaInicial, onGuardar)` (~2149)
 - Abre diálogo para crear/editar nota
@@ -776,7 +776,7 @@ Forma de trabajo esperada:
 
 `soloCanciones(ids)` (~742)
 - Filtra array para contar solo canciones (excluye notas)
-- Llamada desde: renderReunion() para mostrador
+- Llamada desde: `renderReunion()` para mostrador
 
 ### 9. DIRECTOR / TRANSMISIÓN EN VIVO
 
@@ -798,15 +798,15 @@ Forma de trabajo esperada:
 
 `transmitirDesdeElPrincipio()` (~1189)
 - Transmite el primer paso del evento
-- Llamada desde: mostrarVistaOnline()
+- Llamada desde: `mostrarVistaOnline()`
 
 `retransmitirSiYaEstaEnVivo()` (~1293)
 - Si la canción abierta ya es la transmitida, actualiza transporte
-- Llamada desde: transportar() dentro de reunión como director
+- Llamada desde: `transportar()` dentro de reunión como director
 
 `fondoOnline()` (~2487)
 - Dibuja fondo/aviso en pestaña Transmisión (sin director)
-- Llamada desde: renderOnline()
+- Llamada desde: `renderOnline()`
 
 ### 10. MENÚS CONTEXTUALES
 
@@ -846,7 +846,7 @@ Forma de trabajo esperada:
 
 `actualizarNumerosOrden()` (~2628)
 - Actualiza números de paso después de reordenar
-- Llamada desde: soltarArrastre()
+- Llamada desde: `soltarArrastre()`
 
 ### 12. COMPARTIR / EXPORTAR
 
@@ -874,11 +874,11 @@ Forma de trabajo esperada:
 
 `escuchar()` (~1046)
 - Inicia listeners de Firestore (canciones, eventos, director)
-- Llamada desde: arrancar() al iniciar app
+- Llamada desde: `arrancar()` al iniciar app
 
 `escucharReunionActiva(id)` (~1104)
 - Listener de cambios en reunión activa
-- Llamada desde: escuchar() o cuando cambia reunión activa
+- Llamada desde: `escuchar()` o cuando cambia reunión activa
 
 `manejarCambioEnVivo()` (~1707)
 - Procesa cambios en directorio activo
@@ -886,15 +886,15 @@ Forma de trabajo esperada:
 
 `iniciarLatido(eventoId)` (~1655)
 - Envía heartbeat periódico (marca que dispositivo está activo)
-- Llamada desde: escucharReunionActiva()
+- Llamada desde: `escucharReunionActiva()`
 
 `detenerLatido()` (~1679)
 - Detiene heartbeat
-- Llamada desde: salirDelEvento(); cerrarVistaOnline()
+- Llamada desde: `salirDelEvento()`; cerrarVistaOnline()
 
 `hayDirectorActivo(lista)` (~1699)
 - Verifica si hay al menos un director (el contador > 0)
-- Llamada desde: renderOnline()
+- Llamada desde: `renderOnline()`
 
 `recalcular()` (~710)
 - Recalcula catálogo fusionando base + cambios de Firestore
@@ -912,7 +912,7 @@ Forma de trabajo esperada:
 
 `leerAjustes()` (~1559)
 - Lee preferencias (tamaño de fuente, orden, etc) de localStorage
-- Llamada desde: arrancar()
+- Llamada desde: `arrancar()`
 
 `guardarAjustes()` (~1566)
 - Guarda preferencias
@@ -920,23 +920,23 @@ Forma de trabajo esperada:
 
 `leerRol()` (~1575)
 - Lee si dispositivo es director de localStorage
-- Llamada desde: arrancar()
+- Llamada desde: `arrancar()`
 
 `guardarRol(esDirector)` (~1584)
 - Guarda rol de dispositivo
-- Llamada desde: alternarDirector()
+- Llamada desde: `alternarDirector()`
 
 `leerEventoLocal()` (~1603)
 - Lee ID del evento activo local (fallback si Firestore no carga)
-- Llamada desde: arrancar()
+- Llamada desde: `arrancar()`
 
 `guardarEventoLocal(id)` (~1609)
 - Guarda ID del evento activo local
-- Llamada desde: usarReunion(); salirDelEvento()
+- Llamada desde: `usarReunion()`; salirDelEvento()
 
 `obtenerDispositivoId()` (~1591)
 - Genera/lee ID único del dispositivo
-- Llamada desde: leerRol(); heartbeat
+- Llamada desde: `leerRol()`; heartbeat
 
 ### 15. UTILIDADES
 
@@ -946,11 +946,11 @@ Forma de trabajo esperada:
 
 `fechaHoraTexto(ms)` (~2532)
 - Convierte timestamp a texto legible (ej "hoy a las 19:30")
-- Llamada desde: renderReunion(); renderGuardadas()
+- Llamada desde: `renderReunion()`; renderGuardadas()
 
 `metaDe(s, semis)` (~2544)
 - Texto meta de canción (tono, BPM, si hay cambios)
-- Llamada desde: renderCatalogo(); renderReunion(); renderAgregar()
+- Llamada desde: `renderCatalogo()`; renderReunion(); renderAgregar()
 
 `escapar(t)` (~2557)
 - Escapa HTML especial (previene XSS)
@@ -958,15 +958,15 @@ Forma de trabajo esperada:
 
 `nuevoId(nombre, tono)` (~729)
 - Genera ID de canción (nombre-tono normalizado)
-- Llamada desde: guardarCancion()
+- Llamada desde: `guardarCancion()`
 
 `esCifrado(tok)` (~896)
 - Detecta si token es cifrado latino (DO RE MI) vs anglosajón
-- Llamada desde: renderBloques()
+- Llamada desde: `renderBloques()`
 
 `esLineaDeAcordes(t)` (~901)
 - Detecta si línea es de acordes
-- Llamada desde: textoABloques()
+- Llamada desde: `textoABloques()`
 
 ### 16. PANTALLA COMPLETA / INTERFAZ
 
@@ -980,7 +980,7 @@ Forma de trabajo esperada:
 
 `esCelular()` (~3515)
 - Detecta si es dispositivo móvil
-- Llamada desde: pedirPantallaCompletaSiCelular(); lógica responsiva
+- Llamada desde: `pedirPantallaCompletaSiCelular()`; lógica responsiva
 
 ### 17. LINKS COMPARTIDOS
 
@@ -1006,15 +1006,15 @@ Forma de trabajo esperada:
 
 `compararNombre(a, b)` (~1779)
 - Comparador para ordenar alfabéticamente
-- Llamada desde: sort() en renderCatalogo()
+- Llamada desde: `sort()` en renderCatalogo()
 
 `compararTono(a, b)` (~1782)
 - Comparador para ordenar por tono
-- Llamada desde: sort() en renderCatalogo()
+- Llamada desde: `sort()` en renderCatalogo()
 
 `compararBpm(a, b)` (~1786)
 - Comparador para ordenar por BPM
-- Llamada desde: sort() en renderCatalogo()
+- Llamada desde: `sort()` en renderCatalogo()
 
 ### 20. OTROS
 
@@ -1028,7 +1028,7 @@ Forma de trabajo esperada:
 
 `semisGuardado(id)` (~2701)
 - Lee transporte guardado de una canción en evento
-- Llamada desde: abrir(); mostrarVistaOnline()
+- Llamada desde: `abrir()`; mostrarVistaOnline()
 
 ---
 
