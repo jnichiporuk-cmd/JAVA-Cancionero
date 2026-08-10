@@ -141,11 +141,24 @@ Authentication con cuenta de Google y cambiar `allow write` por
 Ese link es el que le pasás al grupo. No caduca, no depende de Claude y no se
 puede borrar por accidente como pasaba al despublicar un artifact.
 
-### Que se abra a pantalla completa
+### Instalar en el celular (sin barra de navegador)
 
-En el celular, abrí el link en Chrome → menú **⋮** → **Agregar a pantalla de
-inicio**. La app ya trae las etiquetas para arrancar sin la barra del
-navegador. Adentro también está el botón `⛶`.
+**Opción 1 (recomendada): Instalar como PWA**
+
+En el celular, abrí el link en Chrome/Firefox → menú **⋮** → **Agregar a
+pantalla de inicio**. Se descarga e instala como app nativa. Al abrirla desde
+el home screen, **no aparece la barra superior del navegador** — se ve como una
+app cualquiera.
+
+**Opción 2: Usar pantalla completa manual**
+
+Dentro de la app hay un botón `⛶` en el encabezado que activa pantalla
+completa en el navegador (toca nuevamente para salir).
+
+---
+
+**En PC/escritorio:** Abrí el link en cualquier navegador. Si querés una PWA
+también en la PC, algunos navegadores (Chrome) ofrecen instalar desde el menú.
 
 ---
 
