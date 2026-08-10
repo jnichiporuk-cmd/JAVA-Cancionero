@@ -1,0 +1,20 @@
+{
+  "name": "Cancionero - Letra y acordes",
+  "short_name": "Cancionero",
+  "description": "App para leer y dirigir canciones en reuniones. Catálogo de 392 canciones con acordes y letra.",
+  "start_url": "/JAVA-Cancionero/",
+  "scope": "/JAVA-Cancionero/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#0a0a0a",
+  "background_color": "#0a0a0a",
+  "categories": ["music"],
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%23FF6B35' width='192' height='192'/><text x='50%' y='50%' font-size='80' font-weight='bold' fill='white' text-anchor='middle' dominant-baseline='central'>♪</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

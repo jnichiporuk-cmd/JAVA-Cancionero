@@ -5,6 +5,7 @@
 <meta name="theme-color" content="#0E1116">
 <title>Cancionero</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="manifest" href="manifest.json">
 
 <!--
   CANCIONERO — app de escenario
@@ -520,7 +521,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v287</span></div>
+    <div class="marca">Cancionero <span class="ver">v288</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -3278,7 +3279,7 @@ function abrirExportar(){
   $("ex-resumen-contenido").innerHTML = resumenHTML;
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v287",
+    origen: "cancionero v288",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
