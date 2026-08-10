@@ -60,6 +60,7 @@ global.document = {
   },
   createElement: () => elemento("creado"),
   addEventListener() {},
+  querySelectorAll() { return []; },
   documentElement: { requestFullscreen: async () => {} },
   exitFullscreen: async () => {},
   fullscreenElement: null,

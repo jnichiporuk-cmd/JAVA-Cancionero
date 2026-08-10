@@ -2804,6 +2804,9 @@ function cerrarLector(){
 }
 
 function renderLector(){
+  /* Limpiar diálogos de nota previos (evita "fantasmas" al cambiar de nota a canción) */
+  document.querySelectorAll(".dialogo-nota").forEach(d => d.remove());
+
   /* Manejar notas (texto libre) */
   if (esNota(est.abierta)){
     const nota = est.lista.notas[est.abierta] || {nombre: "", contenido: ""};
@@ -2925,6 +2928,7 @@ function renderLector(){
     $(k).classList.toggle("on", puedeTransportar && est.semis !== 0);
   });
   $("editar").style.display = bloqueado ? "none" : "";
+  $("editar").onclick = () => abrirEditor(est.abierta);
 
   /* Botón Online/Offline: visible para el director en cualquier canción del evento
      (para poder transmitirla a propósito) y para cualquiera que esté en
