@@ -521,7 +521,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v291</span></div>
+    <div class="marca">Cancionero <span class="ver">v292</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -3279,7 +3279,7 @@ function abrirExportar(){
   $("ex-resumen-contenido").innerHTML = resumenHTML;
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v291",
+    origen: "cancionero v292",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
@@ -3569,23 +3569,6 @@ async function continuarArranque(){
 
   if (await conectar()) {
     escuchar();   // a partir de acá los cambios llegan solos
-
-    /* Botón atrás del celular: prevenir que cierre la app
-       Cuando se presiona atrás:
-       - Si hay lector/nota abierto: cerrar
-       - Si está en otra pestaña: volver a Canciones
-       - Si está en Canciones: no hacer nada (SO minimiza) */
-    window.addEventListener("beforeunload", (e) => {
-      if (est.abierta){
-        e.preventDefault();
-        cerrar();
-      } else if (est.pestana !== "canciones"){
-        e.preventDefault();
-        est.pestana = "canciones";
-        render();
-      }
-      /* Si estamos en Canciones con nada abierto, permitir cerrar */
-    });
 
     abrirEventoDesdeLink();  // si la URL trae ?evento=id, activar ese evento
 
