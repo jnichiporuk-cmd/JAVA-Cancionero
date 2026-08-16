@@ -66,6 +66,54 @@ Nota:    Innecesario para el caso de uso actual
 
 ---
 
+## PWA — instalación en el celular sin barra de navegador (2026-08)
+
+Cancionero es instalable como **PWA (Progressive Web App)**: desde Chrome en
+Android, menú **⋮ → Instalar app**, queda como app real con ícono propio,
+sin la barra de URL del navegador, con su propio ciclo de vida (botón atrás
+minimiza en vez de cerrar, aparece en Ajustes → Apps con opción
+Desinstalar).
+
+**Archivos involucrados** (todos en la raíz del repo, servidos como
+estáticos por GitHub Pages — `build.py` no los toca):
+
+| Archivo | Rol |
+|---|---|
+| `manifest.json` | Metadatos de la PWA: nombre, `display: standalone`, íconos |
+| `sw.js` | Service Worker: cachea recursos, permite degradar sin red |
+| `icon-192.png`, `icon-512.png` | Íconos reales para el ícono de la app |
+
+**Decisión importante — los íconos tienen que ser PNG reales, nunca SVG en
+`data:` URI.** La primera versión de `manifest.json` tenía los íconos como
+SVG embebido (`data:image/svg+xml,...`). Resultado: Android instalaba sólo
+un **acceso directo** (bookmark), no una app real — sin "Desinstalar", sin
+minimizar con el botón atrás, sin aparecer en Ajustes → Apps. Sin ningún
+error visible.
+
+Motivo: el servicio de Google que empaqueta el WebAPK (el paquete que
+Android trata como app instalada de verdad) necesita **rasterizar un PNG**
+para meterlo en el `.apk`. Con SVG en `data:` URI esa generación falla en
+silencio y Chrome degrada a un acceso directo simple.
+
+Como no había Pillow ni `canvas` de Node disponibles, los PNG se generaron
+con un script de un solo uso usando sólo `struct` + `zlib` de la stdlib de
+Python (sin dependencias) — un PNG válido es solo firma + chunks
+IHDR/IDAT/IEND con los píxeles crudos comprimidos con zlib deflate.
+
+**Cómo verificar que instala como WebAPK real y no como acceso directo:**
+en el menú ⋮ de Chrome, el texto tiene que decir **"Instalar app"** (no
+sólo "Agregar a pantalla de inicio"). Esa diferencia de wording es la señal
+de que el sitio pasó los criterios de instalabilidad de Chrome.
+
+**Trampa al volver a probar:** Chrome/Android cachean el resultado de
+instalabilidad anterior. Después de cualquier cambio en `manifest.json` o
+`sw.js`, para reprobar en un celular que ya lo tenía instalado hace falta:
+desinstalar el acceso directo/app vieja, borrar caché + cookies del sitio
+en Chrome, cerrar Chrome del todo (no sólo la pestaña), y recién ahí volver
+a visitar el link e instalar.
+
+---
+
 ## Datos del proyecto
 
 Cuando algo falle, lo primero es tener esto a mano.
