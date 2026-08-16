@@ -37,12 +37,18 @@ sigue actualizando cada tanto.
 
 | Capa | Dónde vive | Se modifica |
 |---|---|---|
-| Base: 96 canciones del `.docx` | Dentro del HTML, como JSON | Nunca en runtime |
+| Base: 458 canciones (`catalogo.json`) | Dentro del HTML, como JSON | Nunca en runtime |
 | Cambios: ediciones, nuevas, borradas | Firestore | Desde la app |
 
 Al abrir, la app suma las dos (`recalcular()`). La capa base intacta es la red
 de seguridad: si la capa de cambios se corrompe, se borra y vuelve el
 cancionero original.
+
+**La capa base ya no sale sólo del `.docx`.** Arrancó así (96 canciones vía
+`extraer.py`), pero hoy se alimenta también de importaciones externas
+—dumps de otros cancioneros, canciones sueltas de sitios de acordes— y de
+la **graduación** de canciones cargadas desde la app. Todo eso entra por
+`importar.py` (ver sección 5b), nunca editando `catalogo.json` a mano.
 
 ### Firestore
 
@@ -157,8 +163,16 @@ ya se discutió:
   aparecer en el tono en que se dejó. Distinto de transportar desde el
   editor (`transportarEditor()`), que reescribe el tono y los acordes de la
   canción en sí: ese cambio es permanente y para todas las reuniones.
-- **El catálogo no se edita a mano.** Sale del `.docx` vía `extraer.py`. Editar
-  `catalogo.json` directo se pierde en el próximo build.
+- **El catálogo no se edita a mano**, pero ya no tiene una sola fuente.
+  Entra por `extraer.py` (desde el `.docx`) o por `importar.py` (dumps de
+  otros cancioneros, links de sitios de acordes, graduación desde
+  Firestore). Editar `catalogo.json` a mano se pierde o se pisa.
+- **Toda decisión de duplicado la toma una persona, no el script.**
+  `importar.py` sólo propone: compara por título y por letra y clasifica en
+  duplicada / dudosa / nueva, pero nunca descarta ni pisa una canción por su
+  cuenta. Lo dudoso se revisa en la página que genera `revisor.py`, con las
+  dos canciones completas lado a lado. Comparar fragmentos ya llevó a
+  errores concretos (ver sección 5b).
 - **El id de una canción se genera del nombre y el tono** (`hacer_id()` en
   `extraer.py`), y no se guarda en ningún lado entre un build y el siguiente.
   Corregir un título o transportar el original cambia el id, y eso rompe la
@@ -212,6 +226,100 @@ python3 -m http.server 8000
 
 ---
 
+## 5b. Importar y exportar canciones
+
+Una sola herramienta para entrar (`importar.py`) y una sola para salir
+(`exportar.py`). Reemplazan los scripts sueltos de un solo uso que se
+fueron acumulando (`comparar_duplicados.py`, `limpiar_bien.py`,
+`remover_duplicados_verdaderos.py`).
+
+```bash
+python importar.py --fuente "Cancionero completo.txt"      # dump de otro cancionero
+python importar.py --fuente https://www.cifraclub.com/...  # canción suelta de un sitio
+python importar.py --fuente firestore                      # graduar lo cargado en la app
+```
+
+**El límite de CORS es del navegador, no de Python.** Un script local
+puede pedirle la página a cifraclub/lacuerda directamente, sin proxy ni
+backend: por eso `--fuente <url>` funciona sin infraestructura extra.
+
+### Las piezas
+
+| Archivo | Rol |
+|---|---|
+| `cancionero_io.py` | Puerto a Python de `textoABloques()`/`bloquesATexto()` de la app, generación de ids y motor de deduplicación |
+| `importar.py` | Único importador: parsea, deduplica, reporta, y sólo escribe con confirmación |
+| `revisor.py` | Genera la página local de revisión de los casos dudosos |
+| `exportar.py` | Único exportador (JSON o TXT en el dialecto del editor) |
+
+`cancionero_io.py` es un **puerto de la lógica que ya usa el editor**, no
+una implementación paralela: el dialecto de texto (`:Rótulo`, `>acorde`,
+`.letra`, autodetección de líneas de acordes) es el mismo que ve el
+usuario al editar, y por eso sirve tal cual para texto pegado de sitios de
+acordes, que ponen el acorde en su propia línea arriba de la letra.
+
+### Cómo decide si algo está duplicado
+
+Compara **por título y por letra**, nunca sólo por título, y clasifica en
+`duplicada` / `dudosa` / `nueva`. Detalles que costaron corregir:
+
+- **Compara por palabras, no por caracteres.** `SequenceMatcher` sobre
+  caracteres daba 75% entre canciones sin relación que compartían letras
+  sueltas.
+- **El vocabulario común se calcula del propio catálogo**, no de una lista
+  escrita a mano. Palabras como *señor*, *dios*, *gloria* aparecen en casi
+  todas y no distinguen nada: se detectan solas (las que superan
+  `UMBRAL_PALABRA_COMUN`) y se ignoran al comparar.
+- **Los títulos cortos no alcanzan.** "A ti" contra cualquier título que lo
+  contenga daba coincidencia alta sin significar nada.
+- **Un título idéntico no gana si la letra lo desmiente.** Pasó de verdad:
+  *"alabare al señor"* y *"alabare a mi señor"* reducen al mismo par de
+  palabras y son canciones distintas.
+- **Los umbrales están calibrados contra casos reales revisados a mano**
+  (ver los comentarios en `cancionero_io.py`): 47% de letra distintiva
+  resultó ser "canciones distintas" y 54% "la misma con otro título". El
+  margen es angosto a propósito — de más, hace revisar casos obvios.
+
+### La revisión la hace una persona
+
+`--revisar` genera `revisar_duplicados.html`, una página local (no se
+publica) con **un par por pantalla, las dos canciones completas**, lo que
+no aparece del otro lado resaltado, y un botón bajo cada columna para
+elegir cuál se queda: **la elegida se queda, la otra se elimina**.
+
+Es local a propósito: son datos del cancionero, no van a ningún servidor.
+
+**Mostrar fragmentos en vez de la canción entera llevó a errores reales**
+—cantos distintos sobre el mismo versículo parecen iguales en un extracto—
+así que la página siempre muestra el texto completo de los dos lados.
+
+Al terminar da un `veredictos.json` que se aplica con:
+
+```bash
+python importar.py --fuente firestore --veredictos veredictos.json
+```
+
+### Graduar canciones de la app a la capa base
+
+Lo cargado desde **+ Nueva canción** vive sólo en Firestore (`nueva:true`).
+Graduarlo lo pasa a `catalogo.json`, y ahí **se conserva el id original**:
+es lo que referencian las reuniones guardadas, y cambiarlo las rompería
+("Canción no encontrada"). Es seguro porque `nuevoId()` (la app) y
+`hacer_id()` (`extraer.py`) son el mismo algoritmo.
+
+Después de graduar, el documento de Firestore se marca **`nueva:false`**,
+no se borra ni se marca `borrada:true`:
+
+- No se puede borrar: las reglas lo prohíben para `canciones` a propósito.
+- `borrada:true` tampoco sirve: `recalcular()` usa el mismo set de ids
+  borrados para filtrar la base, así que ocultaría también la copia recién
+  agregada al catálogo.
+- Con `nueva:false` queda como una "edición" de un id que ya no está en la
+  capa de nuevas: el `.map()` de `recalcular()` nunca la usa y desaparece
+  sin dejar rastro visible.
+
+---
+
 ## 6. Trampas conocidas
 
 - **`file://` rompe Firebase.** Ver arriba.
@@ -246,8 +354,31 @@ python3 -m http.server 8000
 
 ## 7. Estado actual
 
-**96 canciones en la app, de 133 en el `.docx`.** 37 quedaron afuera, con el
-motivo de cada una en `pendientes.json`:
+**458 canciones en `catalogo.json`; 453 visibles en la app** (la diferencia
+son 5 marcadas `borrada` desde la app). Ya no queda nada en la capa de
+cambios: las 84 que se habían cargado desde **+ Nueva canción** se
+graduaron a la base (2026-08-16), así que hoy `nueva:true` está en cero.
+
+Cómo se llegó a ese número, para que el desglose no se pierda:
+
+| | |
+|---|---|
+| Base original del `.docx` (`extraer.py`) | 96 |
+| Importación de agosto desde archivo externo | +296 → 392 |
+| Graduación de lo cargado en la app | +75 |
+| Eliminadas al resolver duplicados con revisión a mano | −9 |
+| **`catalogo.json` hoy** | **458** |
+
+De las 84 candidatas graduadas, 9 se descartaron por perder la
+comparación contra una versión mejor, y 9 canciones del catálogo se
+eliminaron porque la versión cargada en la app era la buena. Las 29
+comparaciones dudosas se revisaron una por una en la página de
+`revisor.py`; ninguna se resolvió por regla automática.
+
+### Lo que sigue pendiente del `.docx` original
+
+De las 133 del `.docx`, 37 nunca entraron, con el motivo de cada una en
+`pendientes.json`:
 
 | Motivo | Canciones |
 |---|---|

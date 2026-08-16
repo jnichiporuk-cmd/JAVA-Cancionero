@@ -117,8 +117,12 @@ setImmediate(() => {
     catch (e) { pasos.push(["FALLA", nombre + " -> " + e.message]); }
   }
 
-  paso("catálogo cargado (392 canciones)", () => {
-    if (__app.CATALOGO.length !== 392) throw new Error("hay " + __app.CATALOGO.length);
+  // El número sale de catalogo.json, no de una constante escrita a mano:
+  // importar.py cambia esa cantidad cada vez que se suman canciones, y
+  // tener el número fijo obligaba a corregir esta línea en cada import.
+  const esperadas = JSON.parse(catalogo).length;
+  paso(`catálogo cargado (${esperadas} canciones)`, () => {
+    if (__app.CATALOGO.length !== esperadas) throw new Error("hay " + __app.CATALOGO.length);
   });
   paso("dibujar la lista de canciones", () => __app.renderCatalogo());
   paso("sumar una canción a la reunión", () => __app.alternarEnLista(__app.CATALOGO[0].id));

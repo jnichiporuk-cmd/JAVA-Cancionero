@@ -1,200 +1,558 @@
-#!/usr/bin/env python3
+# ============================================================================
+# NIVEL 1: importar.py — el único importador de canciones
+# ============================================================================
+# Reemplaza los scripts sueltos de un solo uso (comparar_duplicados.py,
+# limpiar_bien.py, remover_duplicados_verdaderos.py). Una sola fuente de
+# verdad para: archivo TXT/JSON, URL directa, o graduar desde Firestore.
+# Siempre el mismo flujo: parsear -> deduplicar por título Y letra ->
+# reporte -> confirmación explícita -> recién ahí escribir.
+#
+# Uso:
+#   python importar.py --fuente "Cancionero completo.txt"
+#   python importar.py --fuente https://www.cifraclub.com/artista/cancion
+#   python importar.py --fuente firestore
+
 import sys
 import json
 import re
+import argparse
+import subprocess
+import urllib.request
+
+import cancionero_io as cio
+import revisor as rev
+
 sys.stdout.reconfigure(encoding="utf-8")
 sys.stderr.reconfigure(encoding="utf-8")
 
+PROJECT_ID = "cancionero-peniel"
+
+
 # ============================================================================
-# Importar canciones desde archivo TXT y detectar duplicados
+# NIVEL 2: Parsers — cada fuente devuelve una lista de candidatas
+# {nombre, tono, bpm, bloques, [id_original si viene de Firestore]}
 # ============================================================================
 
-def normalizar_nombre(nombre):
-    """Normalizar nombre para comparación (minúsculas, sin tildes, etc)"""
-    nombre = nombre.lower().strip()
-    # Remover tildes
-    nombre = nombre.replace('á', 'a').replace('é', 'e').replace('í', 'i')
-    nombre = nombre.replace('ó', 'o').replace('ú', 'u').replace('ü', 'u')
-    # Remover caracteres especiales múltiples
-    nombre = re.sub(r'\s+', ' ', nombre)
-    return nombre
-
-def parsear_txt(archivo):
-    """Parsear archivo TXT y extraer canciones"""
-    canciones = []
-
-    with open(archivo, 'r', encoding='utf-8') as f:
-        contenido = f.read()
-
-    # Split por separador de canciones (líneas de =)
-    bloques = re.split(r'\n={30,}\n', contenido)
-
-    for bloque in bloques:
-        lineas = bloque.strip().split('\n')
-        if not lineas:
+def _letra_a_bloques_simple(letra):
+    """Letra sin acordes: cada línea no vacía es 'l', párrafos separados
+    por 'v'. No pasa por texto_a_bloques() porque acá ya sabemos que no
+    hay acordes -- una línea corta en mayúsculas no debe interpretarse
+    como cifrado por error."""
+    salida = []
+    vacio_pendiente = False
+    for linea in letra.replace("\r", "").split("\n"):
+        if not linea.strip():
+            vacio_pendiente = True
             continue
+        if vacio_pendiente and salida:
+            salida.append({"t": "v"})
+        vacio_pendiente = False
+        salida.append({"t": "l", "v": linea.strip()})
+    return salida
 
-        # Primera línea debe ser "Título: ..."
-        if not lineas[0].startswith('Título:'):
-            continue
 
-        titulo = lineas[0].replace('Título:', '').strip()
-
-        # Ignorar títulos vacíos o placeholder
-        if not titulo or titulo == '.' or len(titulo) < 2:
-            continue
-
-        # Resto es letra
-        letra = '\n'.join(lineas[1:]).strip()
-
-        if letra and titulo:
-            canciones.append({
-                'titulo': titulo,
-                'letra': letra,
-                'nombre_normalizado': normalizar_nombre(titulo)
+def parsear_easyworship_dump(contenido):
+    """Estructura del dump recuperado de EasyWorship: bloques separados
+    por '====', alternando 'NNNN. Título' y el cuerpo de letra (sin
+    acordes). Detectado y verificado sobre 'Cancionero completo.txt'."""
+    bloques = re.split(r"\n=+\n", contenido)
+    patron = re.compile(r"^(\d{4})\.\s*(.*)$")
+    candidatas = []
+    i = 0
+    while i < len(bloques):
+        b = bloques[i].strip()
+        m = patron.match(b)
+        if m:
+            titulo = m.group(2).strip()
+            letra = bloques[i + 1].strip() if i + 1 < len(bloques) else ""
+            candidatas.append({
+                "nombre": titulo, "tono": None, "bpm": None,
+                "bloques": _letra_a_bloques_simple(letra),
+                "letra_cruda": letra,
             })
+            i += 2
+        else:
+            i += 1
+    return candidatas
 
-    return canciones
 
-# ============================================================================
-# MAIN
-# ============================================================================
+def es_dump_easyworship(contenido):
+    """Detecta el dialecto por su forma: varios bloques 'NNNN. Título'."""
+    return len(re.findall(r"^\d{4}\.\s", contenido, re.MULTILINE)) >= 3
 
-print("🎵 Importador de canciones\n")
 
-# Parsear archivo TXT
-print("1. Parseando archivo TXT...")
-canciones_nuevas = parsear_txt('Importadas 2026-08-09_10-03-06.txt')
-print(f"   ✓ {len(canciones_nuevas)} canciones encontradas\n")
+# Formato que escribe exportar.py: separador, 'Nombre - Tono - BPM',
+# separador, y el cuerpo en el dialecto del editor.
+RE_EXPORT = re.compile(
+    r"^={10,}\n(?P<enc>.+?)\n={10,}\n(?P<cuerpo>.*?)(?=\n={10,}\n|\Z)",
+    re.MULTILINE | re.DOTALL,
+)
 
-# Cargar catálogo actual
-print("2. Cargando catálogo actual...")
-with open('catalogo.json', 'r', encoding='utf-8') as f:
-    catalogo = json.load(f)
-print(f"   ✓ {len(catalogo)} canciones en catálogo\n")
 
-# Normalizar nombres del catálogo
-catalogo_normalizados = {
-    normalizar_nombre(c['nombre']): c['nombre']
-    for c in catalogo
-}
+def es_export_cancionero(contenido):
+    return len(RE_EXPORT.findall(contenido)) >= 1 and "\n====" in contenido
 
-# Detectar duplicados
-print("3. Detectando duplicados...\n")
-duplicados = []
-nuevas = []
 
-for cancion in canciones_nuevas:
-    if cancion['nombre_normalizado'] in catalogo_normalizados:
-        duplicados.append({
-            'nueva': cancion['titulo'],
-            'existente': catalogo_normalizados[cancion['nombre_normalizado']]
+def _partir_encabezado(enc):
+    """'Nombre - Tono - BPM' -> (nombre, tono, bpm). Se parte desde la
+    derecha porque el nombre puede tener guiones ('Alaba - Evan Craft'):
+    sólo se consume la última parte si es un número (bpm) y la anterior
+    si es un tono válido."""
+    partes = [p.strip() for p in enc.split(" - ")]
+    bpm = None
+    if len(partes) > 1 and partes[-1].isdigit():
+        bpm = int(partes.pop())
+    tono = None
+    if len(partes) > 1 and cio.RE_CIFRADO.match(partes[-1]):
+        tono = partes.pop()
+    return " - ".join(partes).strip(), tono, bpm
+
+
+def parsear_export_cancionero(contenido):
+    """Lee lo que genera exportar.py -- cierra la ida y vuelta
+    export -> import sin pérdida."""
+    candidatas = []
+    for m in RE_EXPORT.finditer(contenido):
+        nombre, tono, bpm = _partir_encabezado(m.group("enc"))
+        if not nombre:
+            continue
+        candidatas.append({
+            "nombre": nombre, "tono": tono, "bpm": bpm,
+            "bloques": cio.texto_a_bloques(m.group("cuerpo").strip("\n")),
         })
-    else:
-        nuevas.append(cancion)
+    return candidatas
 
-# Reporte
-print(f"   Duplicadas (ya existen): {len(duplicados)}")
-print(f"   Nuevas (se pueden agregar): {len(nuevas)}\n")
 
-# Mostrar duplicados
-if duplicados:
-    print("━" * 70)
-    print("DUPLICADAS (ya están en el catálogo):")
-    print("━" * 70)
-    for d in duplicados[:10]:  # Mostrar primeras 10
-        print(f"  • {d['nueva']}")
-        print(f"    → {d['existente']}")
-    if len(duplicados) > 10:
-        print(f"  ... y {len(duplicados) - 10} más")
+def parsear_json(contenido):
+    datos = json.loads(contenido)
+    if isinstance(datos, dict):
+        datos = [datos]
+    return [{
+        "nombre": (d.get("nombre") or "").strip(),
+        "tono": d.get("tono"), "bpm": d.get("bpm"),
+        "bloques": d.get("bloques", []),
+    } for d in datos]
+
+
+def parsear_txt_cancion_unica(contenido, nombre_por_defecto):
+    """Un TXT que no es el dump de EasyWorship = una sola canción, en el
+    dialecto Cancionero/cifra-style (texto_a_bloques) -- cubre lo pegado
+    tal cual de cifraclub/lacuerda (acorde en línea propia arriba de la
+    letra, sin marcas)."""
+    bloques = cio.texto_a_bloques(contenido)
+    nombre = nombre_por_defecto
+    if bloques and bloques[0]["t"] == "l" and len(bloques[0]["v"]) < 80:
+        nombre = bloques[0]["v"]
+        bloques = bloques[1:]
+        if bloques and bloques[0]["t"] == "v":
+            bloques = bloques[1:]
+    return [{"nombre": nombre, "tono": None, "bpm": None, "bloques": bloques}]
+
+
+def parsear_archivo(ruta):
+    with open(ruta, encoding="utf-8") as f:
+        contenido = f.read()
+    if ruta.lower().endswith(".json"):
+        return parsear_json(contenido)
+    if es_dump_easyworship(contenido):
+        print("Formato detectado: dump tipo EasyWorship (múltiples canciones numeradas)\n")
+        return parsear_easyworship_dump(contenido)
+    if es_export_cancionero(contenido):
+        print("Formato detectado: export de este mismo cancionero\n")
+        return parsear_export_cancionero(contenido)
+    print("Formato detectado: canción única, dialecto Cancionero/cifra-style\n")
+    import os
+    nombre_archivo = os.path.splitext(os.path.basename(ruta))[0]
+    return parsear_txt_cancion_unica(contenido, nombre_archivo)
+
+
+def parsear_url(url):
+    """Descarga la página y extrae texto plano. Funciona sin proxy: la
+    restricción de CORS es del navegador, no de un script Python."""
+    import lxml.html
+
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+    with urllib.request.urlopen(req, timeout=15) as resp:
+        html_bytes = resp.read()
+    doc = lxml.html.fromstring(html_bytes)
+
+    titulo_tag = doc.findtext(".//title") or ""
+    nombre = re.split(r"[-|–]", titulo_tag)[0].strip() or "Sin título"
+
+    for tag in doc.xpath("//script | //style | //nav | //header | //footer"):
+        tag.drop_tree()
+
+    texto = doc.text_content()
+    texto = re.sub(r"\n{3,}", "\n\n", texto)
+    bloques = cio.texto_a_bloques(texto)
+    return [{"nombre": nombre, "tono": None, "bpm": None, "bloques": bloques}]
+
+
+def parsear_firestore():
+    """Trae las canciones marcadas nueva=true (sin las borradas) para
+    graduarlas a la capa base. Conserva id_original: es clave para no
+    romper referencias en reuniones guardadas (nuevoId() de la app y
+    generar_id() acá son el mismo algoritmo, así que el ID ya es
+    estable -- no hace falta regenerarlo)."""
+    print("Actualizando snapshot de Firestore...")
+    subprocess.run([sys.executable, "descargar_firestore.py"], check=True)
     print()
+    with open("firestore_canciones.json", encoding="utf-8") as f:
+        docs = json.load(f)
+    return [{
+        "nombre": d["nombre"], "tono": d.get("tono"), "bpm": d.get("bpm"),
+        "bloques": d.get("bloques", []), "id_original": d["id"],
+    } for d in docs if d.get("nueva") and not d.get("borrada")]
 
-# Mostrar nuevas
-if nuevas:
-    print("━" * 70)
-    print("NUEVAS (se pueden agregar):")
-    print("━" * 70)
-    for n in nuevas[:10]:  # Mostrar primeras 10
-        print(f"  • {n['titulo']}")
-    if len(nuevas) > 10:
-        print(f"  ... y {len(nuevas) - 10} más")
-    print()
-
-# Resumen
-print("━" * 70)
-print("RESUMEN")
-print("━" * 70)
-print(f"Total en TXT:        {len(canciones_nuevas)}")
-print(f"Duplicadas:          {len(duplicados)}")
-print(f"Nuevas para agregar: {len(nuevas)}")
-print(f"Catálogo actual:     {len(catalogo)}")
-print(f"Total si agrega:     {len(catalogo) + len(nuevas)}")
-print()
-
-if nuevas:
-    print("✓ Hay canciones nuevas para agregar.")
-    print("  Ejecutá: python importar.py --hacer")
-else:
-    print("✗ Todas las canciones ya están en el catálogo.")
 
 # ============================================================================
-# MODO: --hacer (agregar las canciones nuevas)
+# NIVEL 2: Filtro de basura evidente (nunca se descarta en silencio)
 # ============================================================================
 
-if len(sys.argv) > 1 and sys.argv[1] == '--hacer':
-    print("\n" + "=" * 70)
-    print("AGREGANDO CANCIONES NUEVAS AL CATÁLOGO")
-    print("=" * 70 + "\n")
+def es_candidata_basura(candidata):
+    letra = candidata.get("letra_cruda") or cio.bloques_a_texto(candidata["bloques"])
+    nombre = candidata["nombre"]
+    if len(letra.strip()) < 25:
+        return True
+    if not re.search(r"[a-zA-ZáéíóúÁÉÍÓÚñÑ]{3,}", nombre):
+        return True
+    return False
 
-    def hacer_id(nombre, tono=""):
-        """Generar ID de canción (nombre-tono)"""
-        # Normalizar nombre
-        id_parte = nombre.lower()
-        id_parte = id_parte.replace('á', 'a').replace('é', 'e').replace('í', 'i')
-        id_parte = id_parte.replace('ó', 'o').replace('ú', 'u').replace('ü', 'u')
-        id_parte = re.sub(r'[^a-z0-9]+', '-', id_parte)
-        id_parte = id_parte.strip('-')
 
-        if tono:
-            tono_norm = tono.lower()
-            return f"{id_parte}-{tono_norm}"
-        return id_parte
+# ============================================================================
+# NIVEL 2: Marcar como no-nueva en Firestore (graduación)
+# No se puede borrar el documento (regla del proyecto: allow delete: if
+# false para 'canciones', a propósito -- no se borran, se marcan). Marcar
+# borrada:true tampoco sirve: recalcular() usa el mismo set de IDs
+# borrados para filtrar tanto la base como las nuevas, así que ocultaría
+# también la versión recién agregada a catalogo.json. La solución segura
+# es nueva:false: dado que el contenido copiado a catalogo.json es
+# idéntico, queda como una "edición" redundante mismo dato, sin duplicar
+# ni desaparecer.
+# ============================================================================
 
-    def textoABloques(texto):
-        """Convertir texto a bloques (como hace extraer.py)"""
-        bloques = []
-        lineas = texto.split('\n')
+def marcar_no_nueva_en_firestore(doc_id):
+    url = f"https://firestore.googleapis.com/v1/projects/{PROJECT_ID}/databases/(default)/documents/canciones/{doc_id}?updateMask.fieldPaths=nueva"
+    body = json.dumps({"fields": {"nueva": {"booleanValue": False}}}).encode("utf-8")
+    req = urllib.request.Request(url, data=body, method="PATCH",
+                                  headers={"Content-Type": "application/json"})
+    urllib.request.urlopen(req, timeout=10)
 
-        for linea in lineas:
-            if not linea.strip():
-                # Línea vacía
-                bloques.append({"t": "v"})
+
+# ============================================================================
+# NIVEL 2: Reporte y escritura
+# ============================================================================
+
+def clasificar_todas(candidatas, indice):
+    """Clasifica cada candidata contra el índice existente Y contra las
+    candidatas ya aceptadas como 'nueva' en esta misma corrida -- si no,
+    dos candidatas que son la misma canción entre sí (ej. la misma
+    letra cargada dos veces con mayúsculas distintas) pasarían las dos
+    como 'nueva' sin que nada las cruce entre sí."""
+    resultado = {"duplicado": [], "dudoso": [], "nueva": []}
+    comunes = indice["palabras_comunes"]
+    indice_extendido = {
+        "canciones": list(indice["canciones"]),
+        "palabras_comunes": comunes,
+    }
+    for c in candidatas:
+        nombre_norm = cio.normalizar_nombre(c["nombre"])
+        letra_norm = cio.normalizar_letra(cio.extraer_letra(c["bloques"]))
+        categoria, detalle = cio.clasificar_duplicado(nombre_norm, letra_norm, indice_extendido)
+        resultado[categoria].append((c, detalle))
+        if categoria == "nueva":
+            letra_palabras = cio.palabras_significativas(letra_norm)
+            indice_extendido["canciones"].append({
+                "id": None, "nombre": c["nombre"], "nombre_norm": nombre_norm,
+                "nombre_palabras": cio.palabras_significativas(nombre_norm),
+                "letra_palabras": letra_palabras,
+                "letra_distintiva": letra_palabras - comunes,
+                "origen": "misma-fuente",
+            })
+    return resultado
+
+
+def imprimir_reporte(candidatas, basura, clasificadas):
+    print("=" * 70)
+    print("REPORTE DE IMPORTACIÓN")
+    print("=" * 70)
+    print(f"\nTotal candidatas: {len(candidatas)}")
+    print(f"Basura evidente (excluidas, listadas abajo): {len(basura)}")
+    print(f"Duplicadas: {len(clasificadas['duplicado'])}")
+    print(f"Dudosas (revisar a mano): {len(clasificadas['dudoso'])}")
+    print(f"Nuevas reales: {len(clasificadas['nueva'])}")
+
+    if basura:
+        print("\n" + "-" * 70)
+        print(f"BASURA EVIDENTE ({len(basura)}) -- no se van a importar:")
+        print("-" * 70)
+        for c in basura:
+            print(f"  • {c['nombre']!r}")
+
+    if clasificadas["dudoso"]:
+        print("\n" + "-" * 70)
+        print(f"DUDOSAS ({len(clasificadas['dudoso'])}) -- similitud media, revisar:")
+        print("-" * 70)
+        for c, det in clasificadas["dudoso"]:
+            print(f"  • {c['nombre']!r}")
+            print(f"    ~ {det['existente']!r} (por {det['por']}, {det['ratio']:.0%})")
+
+    if clasificadas["duplicado"]:
+        print("\n" + "-" * 70)
+        print(f"DUPLICADAS ({len(clasificadas['duplicado'])}) -- no se importan:")
+        print("-" * 70)
+        for c, det in clasificadas["duplicado"][:20]:
+            print(f"  • {c['nombre']!r} = {det['existente']!r} (por {det['por']})")
+        if len(clasificadas["duplicado"]) > 20:
+            print(f"  ... y {len(clasificadas['duplicado']) - 20} más")
+
+    if clasificadas["nueva"]:
+        print("\n" + "-" * 70)
+        print(f"NUEVAS REALES ({len(clasificadas['nueva'])}) -- se van a importar:")
+        print("-" * 70)
+        for c, _ in clasificadas["nueva"]:
+            print(f"  • {c['nombre']!r}")
+
+
+def armar_pares_para_revisar(clasificadas, indice, candidatas_por_nombre):
+    """Junta duplicadas + dudosas con las dos canciones COMPLETAS, para
+    que revisor.py arme la página de comparación. La heurística de texto
+    propone; la decisión final se toma mirando las dos letras enteras
+    lado a lado -- comparar fragmentos ya demostró llevar a error."""
+    # El lado "existente" no siempre sale de catalogo.json: puede ser otra
+    # candidata del mismo lote (la misma canción cargada dos veces desde la
+    # app). Hay que decir de dónde sale cada lado, o se elige con una
+    # etiqueta equivocada.
+    bloques_existente, origen_existente = {}, {}
+    with open("catalogo.json", encoding="utf-8") as f:
+        for c in json.load(f):
+            bloques_existente[c["nombre"]] = c
+            origen_existente[c["nombre"]] = "catálogo del archivo"
+    for nombre, c in candidatas_por_nombre.items():
+        if nombre not in bloques_existente:
+            bloques_existente[nombre] = c
+            origen_existente[nombre] = "cargada en la app (Firestore)"
+
+    pares = []
+    for clase in ("duplicado", "dudoso"):
+        for c, det in clasificadas[clase]:
+            ex = bloques_existente.get(det["existente"], {})
+            pares.append({
+                "id": f"{clase}:{c['nombre']}",
+                "clase": clase,
+                "por": det["por"],
+                "ratio": round(det["ratio"] * 100),
+                "cand_nombre": c["nombre"],
+                "cand_meta": rev.meta_de(c),
+                "cand_bloques": c["bloques"],
+                "cand_origen": "cargada en la app (Firestore)",
+                "ex_nombre": det["existente"],
+                "ex_meta": rev.meta_de(ex),
+                "ex_bloques": ex.get("bloques", []),
+                "ex_origen": origen_existente.get(det["existente"], "?"),
+            })
+    return pares
+
+
+def planificar_veredictos(veredictos, candidatas_validas, clasificadas):
+    """Traduce los veredictos a un plan concreto, sin tocar nada todavía.
+
+    Regla del usuario: "la correcta se queda, la otra se borra".
+      - distintas                  -> las dos quedan; la candidata se importa
+      - misma / gana la candidata  -> se importa la candidata y se elimina
+                                      la perdedora (del catálogo o de la
+                                      capa de cambios, según dónde viva)
+      - misma / gana la existente  -> la candidata se descarta
+
+    Las que el detector clasificó como 'nueva' (sin par que revisar) se
+    importan sin más: nadie las cuestionó.
+
+    Devuelve (a_importar, borrar_del_catalogo, descartar_candidatas).
+    """
+    por_nombre = {c["nombre"]: c for c in candidatas_validas}
+    descartar = set()          # candidatas que perdieron: no se importan
+    borrar_catalogo = set()    # nombres del catálogo que se eliminan
+
+    with open("catalogo.json", encoding="utf-8") as f:
+        nombres_catalogo = {c["nombre"] for c in json.load(f)}
+
+    for v in veredictos:
+        if v["tipo"] != "misma":
+            continue
+        if v["quedarse"] == "candidata":
+            perdedora = v["existente"]
+            if perdedora in nombres_catalogo:
+                borrar_catalogo.add(perdedora)
             else:
-                # Línea con contenido = letra
-                bloques.append({"t": "l", "v": linea})
+                descartar.add(perdedora)   # era otra candidata del mismo lote
+        else:
+            descartar.add(v["candidata"])
 
-        return bloques
+    a_importar = [c for c in candidatas_validas if c["nombre"] not in descartar]
+    return a_importar, borrar_catalogo, descartar
 
-    # Crear canciones nuevas en formato catálogo
-    canciones_a_agregar = []
-    for cancion in nuevas:
-        nueva = {
-            "id": hacer_id(cancion['titulo']),
-            "nombre": cancion['titulo'],
-            "tono": None,
-            "bpm": None,
-            "bloques": textoABloques(cancion['letra'])
-        }
-        canciones_a_agregar.append(nueva)
 
-    # Mergear con catálogo
-    catalogo_actualizado = catalogo + canciones_a_agregar
+def aplicar_veredictos(ruta_veredictos, candidatas_validas, clasificadas, es_graduacion):
+    """Ejecuta el plan de planificar_veredictos() sobre catalogo.json y,
+    si la fuente fue Firestore, deja de marcar como 'nueva' a TODAS las
+    candidatas procesadas: las que ganaron ya viven en el catálogo (si
+    siguieran como nueva=true aparecerían duplicadas) y las que perdieron
+    no deben seguir a la vista. Los documentos no se borran porque las
+    reglas del proyecto no lo permiten para 'canciones'."""
+    with open(ruta_veredictos, encoding="utf-8") as f:
+        veredictos = json.load(f)
 
-    # Guardar
-    with open('catalogo.json', 'w', encoding='utf-8') as f:
-        json.dump(catalogo_actualizado, f, ensure_ascii=False, indent=2)
+    pendientes = [v for v in veredictos if v["tipo"] == "pendiente"]
+    if pendientes:
+        print(f"\n⚠ {len(pendientes)} pares sin decidir: esas candidatas se importan igual.")
 
-    print(f"✓ {len(canciones_a_agregar)} canciones agregadas")
-    print(f"✓ Nuevo total: {len(catalogo_actualizado)} canciones")
-    print(f"✓ Guardado en catalogo.json\n")
-    print("Próximo paso: python build.py")
+    a_importar, borrar_catalogo, descartar = planificar_veredictos(
+        veredictos, candidatas_validas, clasificadas)
+
+    with open("catalogo.json", encoding="utf-8") as f:
+        catalogo = json.load(f)
+    antes = len(catalogo)
+
+    catalogo = [c for c in catalogo if c["nombre"] not in borrar_catalogo]
+    usados = {c["id"] for c in catalogo}
+
+    for cand in a_importar:
+        id_final = (cand["id_original"] if "id_original" in cand
+                    else cio.generar_id(cand["nombre"], cand["tono"], usados))
+        usados.add(id_final)
+        catalogo.append({
+            "id": id_final, "nombre": cand["nombre"], "tono": cand["tono"],
+            "bpm": cand["bpm"], "bloques": cand["bloques"],
+        })
+
+    with open("catalogo.json", "w", encoding="utf-8") as f:
+        json.dump(catalogo, f, ensure_ascii=False, indent=2)
+
+    print(f"\n✓ {len(borrar_catalogo)} eliminadas del catálogo (perdieron la comparación)")
+    print(f"✓ {len(descartar)} candidatas descartadas (perdieron la comparación)")
+    print(f"✓ {len(a_importar)} candidatas agregadas al catálogo")
+    print(f"✓ catalogo.json: {antes} → {len(catalogo)} canciones")
+
+    if es_graduacion:
+        ids = [c["id_original"] for c in candidatas_validas if "id_original" in c]
+        print(f"\nMarcando {len(ids)} documentos como no-nueva en Firestore...")
+        for doc_id in ids:
+            marcar_no_nueva_en_firestore(doc_id)
+        print("✓ Firestore actualizado")
+
+
+def escribir(nuevas, es_graduacion):
+    with open("catalogo.json", encoding="utf-8") as f:
+        catalogo = json.load(f)
+    usados = {c["id"] for c in catalogo}
+
+    for c, _ in nuevas:
+        if es_graduacion:
+            id_final = c["id_original"]
+        else:
+            id_final = cio.generar_id(c["nombre"], c["tono"], usados)
+        catalogo.append({
+            "id": id_final, "nombre": c["nombre"], "tono": c["tono"],
+            "bpm": c["bpm"], "bloques": c["bloques"],
+        })
+
+    with open("catalogo.json", "w", encoding="utf-8") as f:
+        json.dump(catalogo, f, ensure_ascii=False, indent=2)
+    print(f"\n✓ {len(nuevas)} canciones agregadas a catalogo.json ({len(catalogo)} en total)")
+
+    if es_graduacion:
+        print("Marcando como no-nueva en Firestore (no se puede borrar: regla del proyecto)...")
+        for c, _ in nuevas:
+            marcar_no_nueva_en_firestore(c["id_original"])
+        print(f"✓ {len(nuevas)} documentos actualizados en Firestore")
+
+
+# ============================================================================
+# NIVEL 1: main
+# ============================================================================
+
+def main():
+    ap = argparse.ArgumentParser(description="Importador único de canciones")
+    ap.add_argument("--fuente", required=True,
+                     help="Archivo (.txt/.json), URL (http/https), o 'firestore'")
+    ap.add_argument("--revisar", action="store_true",
+                     help="Genera la página local de revisión (duplicadas y dudosas, "
+                          "lado a lado y completas) y termina, sin escribir nada")
+    ap.add_argument("--veredictos",
+                     help="Aplica el veredictos.json que descargaste de la página "
+                          "de revisión: importa las distintas y reemplaza donde "
+                          "hayas elegido la versión candidata")
+    args = ap.parse_args()
+
+    fuente = args.fuente
+    es_graduacion = False
+
+    if fuente == "firestore":
+        candidatas = parsear_firestore()
+        es_graduacion = True
+    elif fuente.startswith("http://") or fuente.startswith("https://"):
+        candidatas = parsear_url(fuente)
+    else:
+        candidatas = parsear_archivo(fuente)
+
+    if not candidatas:
+        print("No se encontraron canciones para importar.")
+        return
+
+    basura, candidatas_validas = [], []
+    for c in candidatas:
+        if not es_graduacion and es_candidata_basura(c):
+            basura.append(c)
+        else:
+            candidatas_validas.append(c)
+
+    print("Cargando catálogo existente (esto puede tardar por la comparación de letras)...\n")
+    indice = cio.cargar_catalogo_existente(
+        refrescar_firestore=not es_graduacion,
+        incluir_firestore_nuevas=not es_graduacion,
+    )
+    clasificadas = clasificar_todas(candidatas_validas, indice)
+
+    imprimir_reporte(candidatas_validas, basura, clasificadas)
+
+    if args.revisar:
+        candidatas_por_nombre = {c["nombre"]: c for c in candidatas_validas}
+        pares = armar_pares_para_revisar(clasificadas, indice, candidatas_por_nombre)
+        if not pares:
+            print("\nNo hay nada para revisar: ninguna duplicada ni dudosa.")
+            return
+        ruta = rev.generar(pares)
+        print("\n" + "=" * 70)
+        print(f"Página de revisión generada: {ruta}")
+        print(f"{len(pares)} pares para revisar (duplicadas + dudosas).")
+        print("Abrila en el navegador, revisá una por una y copiá el resultado final.")
+        print("No se escribió nada en el catálogo.")
+        return
+
+    if args.veredictos:
+        print("\n" + "=" * 70)
+        print(f"Aplicando veredictos de {args.veredictos}")
+        respuesta = input("¿Confirmar? Esto modifica catalogo.json (s/n): ").strip().lower()
+        if respuesta != "s":
+            print("Cancelado. No se escribió nada.")
+            return
+        aplicar_veredictos(args.veredictos, candidatas_validas, clasificadas, es_graduacion)
+        print("\nCorré 'python build.py' para regenerar index.html.")
+        return
+
+    if not clasificadas["nueva"]:
+        print("\nNada nuevo para importar.")
+        return
+
+    print("\n" + "=" * 70)
+    respuesta = input(f"¿Confirmar import de {len(clasificadas['nueva'])} canciones? (s/n): ").strip().lower()
+    if respuesta != "s":
+        print("Cancelado. No se escribió nada.")
+        return
+
+    escribir(clasificadas["nueva"], es_graduacion)
+    print("\nCorré 'python build.py' para regenerar index.html.")
+
+
+if __name__ == "__main__":
+    main()

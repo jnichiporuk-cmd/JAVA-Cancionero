@@ -2,3 +2,13 @@ desarmado/
 _prueba.html
 __pycache__/
 .venv/
+.claude/
+
+# Archivos de trabajo del flujo de importación: se regeneran solos, no
+# son fuente de verdad. El resultado de una importación queda en
+# catalogo.json, que sí se versiona.
+firestore_canciones.json    # snapshot, lo baja descargar_firestore.py
+revisar_duplicados.html     # página de revisión, la genera importar.py --revisar
+veredictos.json             # decisiones de una revisión puntual, ya aplicadas
+cancionero.txt
+cancionero.json

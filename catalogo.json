@@ -16353,164 +16353,6 @@
     ]
   },
   {
-    "id": "cantad-dios-esta-aqui",
-    "nombre": "Cantad Dios esta aquí",
-    "tono": null,
-    "bpm": null,
-    "bloques": [
-      {
-        "t": "l",
-        "v": "¡Cantad!"
-      },
-      {
-        "t": "l",
-        "v": "Dios está aquí"
-      },
-      {
-        "t": "l",
-        "v": "Hazle un altar en ti"
-      },
-      {
-        "t": "l",
-        "v": "Construye un trono"
-      },
-      {
-        "t": "l",
-        "v": "Con tu alabanza"
-      },
-      {
-        "t": "l",
-        "v": "Dad gratitud al rey"
-      },
-      {
-        "t": "v"
-      },
-      {
-        "t": "l",
-        "v": "¡Cantad!"
-      },
-      {
-        "t": "l",
-        "v": "Con gozo hoy"
-      },
-      {
-        "t": "l",
-        "v": "Por siempre en su amor"
-      },
-      {
-        "t": "l",
-        "v": "Y mientras cantamos"
-      },
-      {
-        "t": "l",
-        "v": "Su gloria desciende"
-      },
-      {
-        "t": "l",
-        "v": "Llenando este lugar"
-      },
-      {
-        "t": "v"
-      },
-      {
-        "t": "l",
-        "v": "¡Canta!"
-      },
-      {
-        "t": "l",
-        "v": "Dios esta aquí"
-      },
-      {
-        "t": "v"
-      },
-      {
-        "t": "l",
-        "v": "Señor tu habitas en la adoración"
-      },
-      {
-        "t": "l",
-        "v": "Que juntos te damos"
-      },
-      {
-        "t": "l",
-        "v": "Señor unidos venimos a ti"
-      },
-      {
-        "t": "l",
-        "v": "Y te alabamos y nos regocijamos"
-      },
-      {
-        "t": "l",
-        "v": "Al ver todo lo que has hecho"
-      }
-    ]
-  },
-  {
-    "id": "cantare-de-tu-nombre-ohh-dios",
-    "nombre": "cantare de tu nombre ohh Dios",
-    "tono": null,
-    "bpm": null,
-    "bloques": [
-      {
-        "t": "l",
-        "v": "Cantare de Tu nombre oh Señor,"
-      },
-      {
-        "t": "l",
-        "v": "De tus maravillas contare,"
-      },
-      {
-        "t": "l",
-        "v": "y solo en ti me alegrare,"
-      },
-      {
-        "t": "v"
-      },
-      {
-        "t": "l",
-        "v": "En tu presencia danzare,"
-      },
-      {
-        "t": "l",
-        "v": "Y con regocijo entrare,"
-      },
-      {
-        "t": "l",
-        "v": "Ante tus puertas mi Señor"
-      },
-      {
-        "t": "v"
-      },
-      {
-        "t": "l",
-        "v": "Con alegria y con gozo en mi corazon,"
-      },
-      {
-        "t": "l",
-        "v": "Te alabare y declarare al mundo que..."
-      },
-      {
-        "t": "v"
-      },
-      {
-        "t": "l",
-        "v": "No puedo dejar de cantar,"
-      },
-      {
-        "t": "l",
-        "v": "No puedo dejar de brincar,"
-      },
-      {
-        "t": "l",
-        "v": "No puedo dejar de alabar "
-      },
-      {
-        "t": "l",
-        "v": "Y bendecir Tu nombre//"
-      }
-    ]
-  },
-  {
     "id": "cielo-y-tierra-podran-pasar",
     "nombre": "cielo y tierra podran pasar",
     "tono": null,
@@ -16725,149 +16567,6 @@
     ]
   },
   {
-    "id": "cristo-es-la-pe-a",
-    "nombre": "cristo es la peña",
-    "tono": null,
-    "bpm": null,
-    "bloques": [
-      {
-        "t": "l",
-        "v": "Cristo es la peña de horeb que está brotando"
-      },
-      {
-        "t": "l",
-        "v": "Agua de vida saludable para mi//"
-      },
-      {
-        "t": "v"
-      },
-      {
-        "t": "l",
-        "v": "Ven, a beberla que es más dulce que la miel"
-      },
-      {
-        "t": "l",
-        "v": "Refresca el alma, refresca todo mi ser"
-      },
-      {
-        "t": "l",
-        "v": "Cristo es la peña de horeb que está brotando"
-      },
-      {
-        "t": "l",
-        "v": "Agua de vida saludable para ti"
-      },
-      {
-        "t": "v"
-      },
-      {
-        "t": "l",
-        "v": "Cristo es el lirio del valle de las flores"
-      },
-      {
-        "t": "l",
-        "v": "Él es la rosa blanca y pura de sharon"
-      },
-      {
-        "t": "l",
-        "v": "Cristo es la vida y amor de los amores"
-      },
-      {
-        "t": "l",
-        "v": "Él es la eterna fuente de la salvación"
-      }
-    ]
-  },
-  {
-    "id": "cristo-vive-hoy",
-    "nombre": "cristo vive hoy",
-    "tono": null,
-    "bpm": null,
-    "bloques": [
-      {
-        "t": "l",
-        "v": "Aleluya, Cristo vive hoy,"
-      },
-      {
-        "t": "l",
-        "v": "La muerte fue vencida"
-      },
-      {
-        "t": "l",
-        "v": "y el sepulcro lo negó,"
-      },
-      {
-        "t": "l",
-        "v": "Jesús vive por siempre,"
-      },
-      {
-        "t": "l",
-        "v": "vive hoy, vive hoy"
-      },
-      {
-        "t": "v"
-      },
-      {
-        "t": "l",
-        "v": "Es el alfa y la omega,"
-      },
-      {
-        "t": "l",
-        "v": "el principio y el fin,"
-      },
-      {
-        "t": "l",
-        "v": "La maldición fue rota"
-      },
-      {
-        "t": "l",
-        "v": "y hay perfecta libertad,"
-      },
-      {
-        "t": "l",
-        "v": "Resucito el Cordero,"
-      },
-      {
-        "t": "l",
-        "v": "vive hoy, vive hoy"
-      },
-      {
-        "t": "v"
-      },
-      {
-        "t": "l",
-        "v": "maravilloso "
-      },
-      {
-        "t": "l",
-        "v": "consolador es el "
-      },
-      {
-        "t": "l",
-        "v": "nuestro padre eterno "
-      },
-      {
-        "t": "l",
-        "v": "es el principe de paz"
-      },
-      {
-        "t": "l",
-        "v": "el cordero ya ha vencido "
-      },
-      {
-        "t": "l",
-        "v": "vive hoy, vive hoy "
-      },
-      {
-        "t": "v"
-      },
-      {
-        "t": "l",
-        "v": "Aleluya, Cristo vive hoy"
-      }
-    ]
-  },
-  {
     "id": "cristo-vive-ya",
     "nombre": "Cristo vive ya",
     "tono": null,
@@ -16953,37 +16652,6 @@
       {
         "t": "l",
         "v": "Aleluya, Cristo vive ya"
-      }
-    ]
-  },
-  {
-    "id": "cuando-el-pueblo-del-se-or",
-    "nombre": "cuando el pueblo del señor",
-    "tono": null,
-    "bpm": null,
-    "bloques": [
-      {
-        "t": "l",
-        "v": "Cuando el pueblo del Señor alaba a Dios"
-      },
-      {
-        "t": "l",
-        "v": "Suceden cosas//"
-      },
-      {
-        "t": "l",
-        "v": "Maravillosas"
-      },
-      {
-        "t": "v"
-      },
-      {
-        "t": "l",
-        "v": "Hay sanidad, poder, liberación"
-      },
-      {
-        "t": "l",
-        "v": "se siente la presencia de Dios.//"
       }
     ]
   },
@@ -18315,95 +17983,6 @@
       {
         "t": "l",
         "v": "No hay Dios como Jehova"
-      }
-    ]
-  },
-  {
-    "id": "digno-de-alabar-cristo",
-    "nombre": "digno de alabar Cristo",
-    "tono": null,
-    "bpm": null,
-    "bloques": [
-      {
-        "t": "l",
-        "v": "Cargaste Tú mi cruz"
-      },
-      {
-        "t": "l",
-        "v": "Mi libertad, con Tu vida compraste"
-      },
-      {
-        "t": "l",
-        "v": "Y ahora Tuyo soy"
-      },
-      {
-        "t": "l",
-        "v": "Proclamaré Tu bondad para siempre"
-      },
-      {
-        "t": "v"
-      },
-      {
-        "t": "l",
-        "v": "Digno de alabar, Cristo"
-      },
-      {
-        "t": "l",
-        "v": "Nombre sin igual"
-      },
-      {
-        "t": "l",
-        "v": "Digno de alabar"
-      },
-      {
-        "t": "v"
-      },
-      {
-        "t": "l",
-        "v": "Vergüenza huye hoy"
-      },
-      {
-        "t": "l",
-        "v": "Rendido estoy ante "
-      },
-      {
-        "t": "l",
-        "v": "Tu amor innegable"
-      },
-      {
-        "t": "l",
-        "v": "Tu gracia eterna es"
-      },
-      {
-        "t": "l",
-        "v": "Proclamaré "
-      },
-      {
-        "t": "l",
-        "v": "Tu bondad para siempre"
-      },
-      {
-        "t": "v"
-      },
-      {
-        "t": "l",
-        "v": "Sé exaltado hoy "
-      },
-      {
-        "t": "l",
-        "v": "en los cielos"
-      },
-      {
-        "t": "l",
-        "v": "Ven y llena este lugar"
-      },
-      {
-        "t": "l",
-        "v": "Eres digno de alabar"
-      },
-      {
-        "t": "l",
-        "v": "No hay otro nombre igual"
       }
     ]
   },
@@ -20544,110 +20123,6 @@
       {
         "t": "l",
         "v": "Tomame aqui estoy"
-      }
-    ]
-  },
-  {
-    "id": "entrad-con-accion-de-gracias",
-    "nombre": "entrad con accion de gracias",
-    "tono": null,
-    "bpm": null,
-    "bloques": [
-      {
-        "t": "l",
-        "v": "Entrad con acción de gracias"
-      },
-      {
-        "t": "l",
-        "v": "Por sus atrios alabad"
-      },
-      {
-        "t": "l",
-        "v": "Entrad en su presencia "
-      },
-      {
-        "t": "l",
-        "v": "con gozo"
-      },
-      {
-        "t": "l",
-        "v": "Cantando grande y fuerte "
-      },
-      {
-        "t": "l",
-        "v": "es Jehová "
-      },
-      {
-        "t": "v"
-      },
-      {
-        "t": "l",
-        "v": "Alabadle al son de trompetas"
-      },
-      {
-        "t": "l",
-        "v": "Con pandero y arpa también"
-      },
-      {
-        "t": "l",
-        "v": "Que toda la creación "
-      },
-      {
-        "t": "l",
-        "v": "cante hoy"
-      },
-      {
-        "t": "l",
-        "v": "Alabándole con el corazón"
-      },
-      {
-        "t": "v"
-      },
-      {
-        "t": "l",
-        "v": "Porque bueno es Dios"
-      },
-      {
-        "t": "l",
-        "v": "Porque bueno es Dios"
-      },
-      {
-        "t": "l",
-        "v": "Porque bueno es Dios"
-      },
-      {
-        "t": "l",
-        "v": "Para siempre es su misericordia"
-      },
-      {
-        "t": "v"
-      },
-      {
-        "t": "l",
-        "v": "Cristo es por siempre exaltado"
-      },
-      {
-        "t": "l",
-        "v": "Creador de todo es Él"
-      },
-      {
-        "t": "l",
-        "v": "Ven ante Él a postrarte"
-      },
-      {
-        "t": "l",
-        "v": "manos levantad y la voz alzad"
-      },
-      {
-        "t": "v"
-      },
-      {
-        "t": "l",
-        "v": "Porque bueno es Dios"
-      },
-      {
-        "t": "l",
-        "v": "Para siempre es su misericordia"
       }
     ]
   },
@@ -37511,44 +36986,6 @@
     ]
   },
   {
-    "id": "todo-lo-has-hecho-bien",
-    "nombre": "todo lo has hecho bien",
-    "tono": null,
-    "bpm": null,
-    "bloques": [
-      {
-        "t": "l",
-        "v": "Quiero darte gloria Señor "
-      },
-      {
-        "t": "l",
-        "v": "Porque todo lo has hecho bien//"
-      },
-      {
-        "t": "v"
-      },
-      {
-        "t": "l",
-        "v": "Todo lo has hecho bien Señor"
-      },
-      {
-        "t": "l",
-        "v": "Incluso todos los males "
-      },
-      {
-        "t": "l",
-        "v": "han sido para bien"
-      },
-      {
-        "t": "v"
-      },
-      {
-        "t": "l",
-        "v": "Incluso todos los males han sido para bien"
-      }
-    ]
-  },
-  {
     "id": "todo-se-lo-debo-a-el",
     "nombre": "todo se lo debo a el",
     "tono": null,
@@ -41490,72 +40927,6 @@
     ]
   },
   {
-    "id": "yo-tengo-gozo-en-mi-alma",
-    "nombre": "yo tengo gozo en mi alma",
-    "tono": null,
-    "bpm": null,
-    "bloques": [
-      {
-        "t": "l",
-        "v": "Yo tengo gozo "
-      },
-      {
-        "t": "l",
-        "v": "en mi alma"
-      },
-      {
-        "t": "l",
-        "v": "Gozo en mi alma"
-      },
-      {
-        "t": "l",
-        "v": "Gozo en mi alma y en mi ser"
-      },
-      {
-        "t": "v"
-      },
-      {
-        "t": "l",
-        "v": "Son como ríos "
-      },
-      {
-        "t": "l",
-        "v": "Ríos"
-      },
-      {
-        "t": "l",
-        "v": "Ríos de agua viva "
-      },
-      {
-        "t": "l",
-        "v": "en mi ser"
-      },
-      {
-        "t": "v"
-      },
-      {
-        "t": "l",
-        "v": "Es como ríos "
-      },
-      {
-        "t": "l",
-        "v": "de agua viva"
-      },
-      {
-        "t": "l",
-        "v": "Ríos de agua viva"
-      },
-      {
-        "t": "l",
-        "v": "Ríos de agua viva "
-      },
-      {
-        "t": "l",
-        "v": "en mi ser"
-      }
-    ]
-  },
-  {
     "id": "yo-tengo-un-amigo-que-me-ama",
     "nombre": "yo tengo un amigo que me ama",
     "tono": null,
@@ -41862,6 +41233,6219 @@
       {
         "t": "l",
         "v": "Más que amor mi dulce paz"
+      }
+    ]
+  },
+  {
+    "id": "a-el-sea-la-gloria",
+    "nombre": "a el sea la gloria",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "v": "A El Sea la Gloria",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "A El sea la honra"
+      },
+      {
+        "v": "A El sea el dominio",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Por lo que ha hecho y hará"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "su sangre me ha salvado,"
+      },
+      {
+        "t": "l",
+        "v": "Su poder me ha librado,"
+      },
+      {
+        "v": "A Él sea la gloria",
+        "t": "l"
+      },
+      {
+        "v": "Por lo que ha hecho y hará",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Con su sangre me ha librado,"
+      },
+      {
+        "t": "l",
+        "v": "Su poder me ha salvado,"
+      },
+      {
+        "v": "A Él sea la gloria",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Por lo que ha hecho y hará"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "A Dios sea la Gloria"
+      },
+      {
+        "t": "l",
+        "v": "A Dios sea la honra"
+      },
+      {
+        "v": "A Dios sea el dominio",
+        "t": "l"
+      },
+      {
+        "v": "Por lo que Él hizo y hará",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Su sangre me salvo",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "y me compro por siempre"
+      },
+      {
+        "t": "l",
+        "v": "Gloria sea a nuestro Dios"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "A El Sea la Gloria"
+      },
+      {
+        "t": "l",
+        "v": "A El sea la honra"
+      },
+      {
+        "t": "l",
+        "v": "A El sea el dominio"
+      },
+      {
+        "v": "Por lo que lo hizo por mi",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Con su sangre me ha salvado,",
+        "t": "l"
+      },
+      {
+        "v": "Su poder me ha librado,",
+        "t": "l"
+      },
+      {
+        "v": "A Él sea la gloria",
+        "t": "l"
+      },
+      {
+        "v": "Por lo que ha hecho y hará",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "a-ti-atribuimos",
+    "nombre": "a ti atribuimos",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "t": "l",
+        "v": "A Ti atribuimos la Gloria"
+      },
+      {
+        "v": "A Ti atribuimos la honra",
+        "t": "l"
+      },
+      {
+        "v": "A Ti atribuimos",
+        "t": "l"
+      },
+      {
+        "v": "Poder y majestad",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Santo Es El Señor"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "A Ti atribuimos"
+      },
+      {
+        "t": "l",
+        "v": "Poder y majestad"
+      },
+      {
+        "v": "Santo Es El Señor",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Santo Es El Señor"
+      }
+    ]
+  },
+  {
+    "id": "a-tu-nombre-alabare",
+    "nombre": "a tu nombre alabare",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "t": "l",
+        "v": "A Tu nombre alabare"
+      },
+      {
+        "v": "Oh Dios",
+        "t": "l"
+      },
+      {
+        "v": "Yo te alabare",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Oh Dios"
+      },
+      {
+        "v": "Porque grande es",
+        "t": "l"
+      },
+      {
+        "v": "Tu nombre alabare",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "aaa-a",
+    "nombre": "Aaa",
+    "tono": "A",
+    "bpm": null,
+    "bloques": [
+      {
+        "v": "A",
+        "t": "a"
+      }
+    ]
+  },
+  {
+    "id": "abre-mis-ojos",
+    "nombre": "abre mis ojos",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "t": "l",
+        "v": "Abre mis ojos,"
+      },
+      {
+        "t": "l",
+        "v": "oh, Cristo"
+      },
+      {
+        "t": "l",
+        "v": "Abre mis ojos, te pido"
+      },
+      {
+        "v": "Yo quiero verte",
+        "t": "l"
+      },
+      {
+        "v": "Yo quiero verte",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Y contemplar Tu majestad",
+        "t": "l"
+      },
+      {
+        "v": "Y el resplandor",
+        "t": "l"
+      },
+      {
+        "v": "de Tu gloria",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Derrama Tu amor y poder"
+      },
+      {
+        "t": "l",
+        "v": "Cuando cantamos"
+      },
+      {
+        "v": "Santo, Santo",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Santo, Santo, Santo",
+        "t": "l"
+      },
+      {
+        "v": "Santo, Santo, Santo",
+        "t": "l"
+      },
+      {
+        "v": "Santo, Santo, Santo",
+        "t": "l"
+      },
+      {
+        "v": "Yo quiero verte",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "al-mundo-paz",
+    "nombre": "al mundo paz",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "t": "l",
+        "v": "Al mundo Paz, nació Jesús"
+      },
+      {
+        "v": "nació ya nuestro Rey,",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "el corazón ya tiene luz,"
+      },
+      {
+        "t": "l",
+        "v": "y paz su Santa Grey,"
+      },
+      {
+        "v": "y paz su Santa Grey,",
+        "t": "l"
+      },
+      {
+        "v": "y paz, y paz su Santa Grey",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Al mundo Paz, el salvador"
+      },
+      {
+        "t": "l",
+        "v": "en Tierra reinará"
+      },
+      {
+        "v": "ya es feliz el pecador",
+        "t": "l"
+      },
+      {
+        "v": "Jesús perdón le da",
+        "t": "l"
+      },
+      {
+        "v": "Jesús perdón le da",
+        "t": "l"
+      },
+      {
+        "v": "Jesús, Jesús perdón le da",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Al mundo Paz, gobernará"
+      },
+      {
+        "t": "l",
+        "v": "con Gracia y con poder:"
+      },
+      {
+        "t": "l",
+        "v": "a las naciones el probará"
+      },
+      {
+        "v": "su amor y su poder",
+        "t": "l"
+      },
+      {
+        "v": "su amor y su poder",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "su amor, su amor y su poder"
+      }
+    ]
+  },
+  {
+    "id": "al-que-es-digno",
+    "nombre": "al que es digno",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "t": "l",
+        "v": "Al que es Digno"
+      },
+      {
+        "t": "l",
+        "v": "De recibir la gloria"
+      },
+      {
+        "v": "Al que es Digno",
+        "t": "l"
+      },
+      {
+        "v": "De recibir el honor//",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Levantemos",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "nuestras manos"
+      },
+      {
+        "t": "l",
+        "v": "Y adoremos"
+      },
+      {
+        "t": "l",
+        "v": "A Jesus"
+      },
+      {
+        "v": "Cordero de gloria",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Y exaltemos"
+      },
+      {
+        "v": "Su incomparable majestad",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Al que vive por siempre"
+      },
+      {
+        "v": "Al gran yo soy",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "A Jesus"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Al que vive por siempre"
+      },
+      {
+        "v": "Al gran yo soy//",
+        "t": "l"
+      },
+      {
+        "v": "A Jesus",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "al-que-me-cine-de-poder",
+    "nombre": "al que me ciñe de poder",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "t": "l",
+        "v": "Al que me ciñe de poder"
+      },
+      {
+        "t": "l",
+        "v": "Aquel que mi victoria es"
+      },
+      {
+        "v": "Solo a Él alabaré",
+        "t": "l"
+      },
+      {
+        "v": "Solo a Él exaltaré",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "De Ti será mi alabanza"
+      },
+      {
+        "t": "l",
+        "v": "En la congregación"
+      },
+      {
+        "v": "Cantaré y alabaré",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Tu nombre, Señor"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Cantaré y alabaré"
+      },
+      {
+        "v": "Tu nombre, Señor",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Tu nombre, Señor"
+      }
+    ]
+  },
+  {
+    "id": "alaba",
+    "nombre": "Alaba",
+    "tono": "E",
+    "bpm": 127,
+    "bloques": [
+      {
+        "v": "Intro",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "a",
+        "v": "E "
+      },
+      {
+        "v": "Que toda la",
+        "t": "l"
+      },
+      {
+        "v": "Creación",
+        "t": "l"
+      },
+      {
+        "v": "Alabe a Dios",
+        "t": "l"
+      },
+      {
+        "v": "Alabe a Dios x2",
+        "t": "l"
+      },
+      {
+        "v": "______",
+        "t": "l"
+      },
+      {
+        "v": "Verso 1",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "a",
+        "v": "     E                      F#m/E        E "
+      },
+      {
+        "t": "l",
+        "v": "Te alabo en el valle, Te alabo en el monte"
+      },
+      {
+        "v": "     B/E             A/E              E ",
+        "t": "a"
+      },
+      {
+        "t": "l",
+        "v": "Te alabo en el día, Te alabo en la noche"
+      },
+      {
+        "t": "a",
+        "v": "      E                    F#m/E      E "
+      },
+      {
+        "t": "l",
+        "v": "Te alabo en el medio, Estando rodeado"
+      },
+      {
+        "t": "a",
+        "v": "     B/E           A/E                E "
+      },
+      {
+        "t": "l",
+        "v": "Porque cuando alabo, Tú estás a mi lado"
+      },
+      {
+        "v": "       B                 A ",
+        "t": "a"
+      },
+      {
+        "v": "Mientras tenga aliento, Mi alma canta y",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "______"
+      },
+      {
+        "t": "l",
+        "v": "Coro 1ro"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "a",
+        "v": "C#m       A    E "
+      },
+      {
+        "v": "Aaaaa - la - ba a Dios",
+        "t": "l"
+      },
+      {
+        "t": "a",
+        "v": "        B "
+      },
+      {
+        "t": "l",
+        "v": "Mi corazón  //"
+      },
+      {
+        "v": "______",
+        "t": "l"
+      },
+      {
+        "v": "Verso 2: (Despues del 1er Coro)",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "     E                F#m           E ",
+        "t": "a"
+      },
+      {
+        "v": "Te alabo al sentirlo, Y aun cuando no,",
+        "t": "l"
+      },
+      {
+        "t": "a",
+        "v": "     B             A             E "
+      },
+      {
+        "t": "l",
+        "v": "Te alabo y sé, que estás en control,"
+      },
+      {
+        "v": "      E              F#m        E ",
+        "t": "a"
+      },
+      {
+        "v": "Es más que un sonido, es adoración,",
+        "t": "l"
+      },
+      {
+        "t": "a",
+        "v": "     B          A              E "
+      },
+      {
+        "v": "Y cuando alabamos Caerá Jericó.",
+        "t": "l"
+      },
+      {
+        "v": "      B                     A ",
+        "t": "a"
+      },
+      {
+        "v": "Mientras tenga aliento, Mi alma canta y…",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "_______"
+      },
+      {
+        "t": "l",
+        "v": "Coro"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "a",
+        "v": "C#m      A       E "
+      },
+      {
+        "v": "Aaaaa - la - ba a Dios",
+        "t": "l"
+      },
+      {
+        "v": "       B ",
+        "t": "a"
+      },
+      {
+        "t": "l",
+        "v": "Mi corazón  //"
+      },
+      {
+        "v": "  C#m                        A ",
+        "t": "a"
+      },
+      {
+        "t": "l",
+        "v": "No me detengo, Mi Dios vivo está"
+      },
+      {
+        "v": "  E                B ",
+        "t": "a"
+      },
+      {
+        "v": "Cómo me voy a callar",
+        "t": "l"
+      },
+      {
+        "v": "______",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Coro"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "a",
+        "v": "C#m      A       E "
+      },
+      {
+        "t": "l",
+        "v": "Aaaaa - la - ba a Dios"
+      },
+      {
+        "t": "a",
+        "v": "       B "
+      },
+      {
+        "t": "l",
+        "v": "Mi corazón  //"
+      },
+      {
+        "v": "  C#m                        A ",
+        "t": "a"
+      },
+      {
+        "t": "l",
+        "v": "No me detengo, Mi Dios vivo está"
+      },
+      {
+        "t": "a",
+        "v": "  E                B "
+      },
+      {
+        "t": "l",
+        "v": "Cómo me voy a callar"
+      },
+      {
+        "v": "______",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Puente"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "a",
+        "v": "  E                A/E "
+      },
+      {
+        "t": "l",
+        "v": "Alabo al que reina, Alabo al Señor"
+      },
+      {
+        "t": "a",
+        "v": "B/E                 A/E "
+      },
+      {
+        "v": "Alabo a aquel que la tumba venció.",
+        "t": "l"
+      },
+      {
+        "t": "a",
+        "v": "    E                A/E "
+      },
+      {
+        "v": "Alabo al que es bueno, Alabo al que es fiel,",
+        "t": "l"
+      },
+      {
+        "v": " B/E              A/E ",
+        "t": "a"
+      },
+      {
+        "t": "l",
+        "v": "Le alabo porque no hay otro como él."
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "(DROP)"
+      },
+      {
+        "v": "  E                 F#m ",
+        "t": "a"
+      },
+      {
+        "v": "Alabo al que reina, Alabo al Señor,",
+        "t": "l"
+      },
+      {
+        "t": "a",
+        "v": "C#m7                 A "
+      },
+      {
+        "t": "l",
+        "v": "Alabo a aquel que la tumba venció."
+      },
+      {
+        "v": "    E                 F#m ",
+        "t": "a"
+      },
+      {
+        "t": "l",
+        "v": "Alabo al que es bueno, Alabo al que es fiel,"
+      },
+      {
+        "t": "a",
+        "v": "C#m7            A "
+      },
+      {
+        "v": "Le alabo porque no hay otro como él.",
+        "t": "l"
+      },
+      {
+        "v": "______",
+        "t": "l"
+      },
+      {
+        "v": "(Final)",
+        "t": "l"
+      },
+      {
+        "v": "E ",
+        "t": "a"
+      },
+      {
+        "v": "Que toda la (Que toda la)",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Creación (Creación)"
+      },
+      {
+        "v": "Alabe a Dios (Alabe a Dios)",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Alabe a Dios (Alabe a Dios)"
+      }
+    ]
+  },
+  {
+    "id": "alaba-a-dios",
+    "nombre": "alaba a Dios",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "v": "Dios no rechaza oración",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Oración es alimento"
+      },
+      {
+        "v": "Nunca vi un justo",
+        "t": "l"
+      },
+      {
+        "v": "sin respuesta",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "O quedar en sufrimiento"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Basta solamente esperar"
+      },
+      {
+        "v": "Lo que Dios irá a hacer",
+        "t": "l"
+      },
+      {
+        "v": "Cuando Él levanta",
+        "t": "l"
+      },
+      {
+        "v": "sus manos",
+        "t": "l"
+      },
+      {
+        "v": "Es hora de vencer",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Oh, alaba",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Simplemente alaba"
+      },
+      {
+        "t": "l",
+        "v": "Estás llorando, alaba"
+      },
+      {
+        "t": "l",
+        "v": "En la prueba, alaba"
+      },
+      {
+        "t": "l",
+        "v": "Estás sufriendo, alaba"
+      },
+      {
+        "t": "l",
+        "v": "No importa, alaba"
+      },
+      {
+        "v": "Tu alabanza, Él escuchará",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Dios va al frente abriendo caminos"
+      },
+      {
+        "v": "Quebrando cadenas,",
+        "t": "l"
+      },
+      {
+        "v": "sacando espinas",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Manda sus Ángeles,"
+      },
+      {
+        "t": "l",
+        "v": "contigo a luchar"
+      },
+      {
+        "v": "Él abre puertas,",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "nadie puede cerrar"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Él trabaja para los que confían",
+        "t": "l"
+      },
+      {
+        "v": "Camina contigo",
+        "t": "l"
+      },
+      {
+        "v": "de noche y de día",
+        "t": "l"
+      },
+      {
+        "v": "Levanta tus manos,",
+        "t": "l"
+      },
+      {
+        "v": "tu victoria llegó",
+        "t": "l"
+      },
+      {
+        "v": "Comienza a cantar",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "y alaba a Dios"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Alaba a Dios",
+        "t": "l"
+      },
+      {
+        "v": "Alaba a Dios",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Alaba a Dios"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "La gente necesita entender"
+      },
+      {
+        "t": "l",
+        "v": "Lo que Dios está hablando"
+      },
+      {
+        "v": "Cuando Él queda en silencio",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Es porque está trabajando"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Basta solamente esperar"
+      },
+      {
+        "v": "Lo que Dios irá a hacer",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Cuando Él extiende sus manos"
+      },
+      {
+        "t": "l",
+        "v": "Es hora de vencer"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Oh, alaba"
+      },
+      {
+        "t": "l",
+        "v": "Simplemente alaba"
+      },
+      {
+        "t": "l",
+        "v": "Estás llorando alaba"
+      },
+      {
+        "v": "En la prueba alaba",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Estás sufriendo alaba"
+      },
+      {
+        "v": "No importa alaba",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Tu alabanza, Él escuchará"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Dios va al frente abriendo caminos",
+        "t": "l"
+      },
+      {
+        "v": "Quebrando cadenas, sacando espinas",
+        "t": "l"
+      },
+      {
+        "v": "Manda sus Ángeles, contigo a luchar",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Él abre puertas, nadie puede cerrar"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Él trabaja para los que confían"
+      },
+      {
+        "v": "Camina contigo de noche y de día",
+        "t": "l"
+      },
+      {
+        "v": "Levanta tus manos, tu victoria llegó",
+        "t": "l"
+      },
+      {
+        "v": "Comienza a cantar y alaba a Dios",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Alaba a Dios"
+      },
+      {
+        "t": "l",
+        "v": "Alaba a Dios"
+      },
+      {
+        "v": "Alaba a Dios",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Alaba a Dios"
+      }
+    ]
+  },
+  {
+    "id": "alabad-a-jehova-naciones-todas",
+    "nombre": "alabad a jehova naciones todas",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "v": "Alabad a Jehova",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Naciones todas,"
+      },
+      {
+        "t": "l",
+        "v": "Pueblos todos alabadle"
+      },
+      {
+        "v": "Porque ha engradecido",
+        "t": "l"
+      },
+      {
+        "v": "Sobre nosotros su Misericordia",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Y la verdad",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "de Jehova"
+      },
+      {
+        "v": "es para siempre",
+        "t": "l"
+      },
+      {
+        "v": "Aleluya, Amen//",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "alabad-a-jehova-todas-las-naciones",
+    "nombre": "alabad a jehova todas las naciones",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "v": "Alabad a Jehova",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Todas las naciones"
+      },
+      {
+        "v": "Alabadle",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Porque grande ha sido"
+      },
+      {
+        "t": "l",
+        "v": "Su misericordia"
+      },
+      {
+        "v": "y la verdad de Jehova",
+        "t": "l"
+      },
+      {
+        "v": "Es para siempre",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "alabad-alabad",
+    "nombre": "alabad alabad",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "t": "l",
+        "v": "Alabad, Alabad"
+      },
+      {
+        "t": "l",
+        "v": "Alabad de dia"
+      },
+      {
+        "t": "l",
+        "v": "Alabad de noche"
+      },
+      {
+        "v": "Alabad, Alabad",
+        "t": "l"
+      },
+      {
+        "v": "Alabad a Jehova",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "alabare-a-mi-senor",
+    "nombre": "alabare a mi señor",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "v": "Alabare//",
+        "t": "l"
+      },
+      {
+        "v": "Alabare a mi Señor",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Juan vio el numero"
+      },
+      {
+        "v": "de los redimidos",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "y todos alababan al Señor"
+      },
+      {
+        "v": "Unos cantaban",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "otros oraban"
+      },
+      {
+        "t": "l",
+        "v": "Mas todos alababan al Señor"
+      }
+    ]
+  },
+  {
+    "id": "alabare-al-senor",
+    "nombre": "alabare al señor",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "t": "l",
+        "v": "Recordaré aquella cruz"
+      },
+      {
+        "t": "l",
+        "v": "Donde sangró y murió Jesús"
+      },
+      {
+        "t": "l",
+        "v": "Heridas que por mí sufrió"
+      },
+      {
+        "t": "l",
+        "v": "Crucificado salvador"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Su cuerpo envuelto en dolor",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "En el sepulcro reposó"
+      },
+      {
+        "t": "l",
+        "v": "En soledad El se quedó"
+      },
+      {
+        "v": "Jesús, Mesías, el Señor",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Alabaré al Señor, mi Dios",
+        "t": "l"
+      },
+      {
+        "v": "Tu nombre yo proclamaré",
+        "t": "l"
+      },
+      {
+        "v": "Eternamente te cantaré",
+        "t": "l"
+      },
+      {
+        "v": "Señor, Señor, mi Dios",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Pero al tercer amanecer"
+      },
+      {
+        "t": "l",
+        "v": "Un gran estruendo se escuchó"
+      },
+      {
+        "t": "l",
+        "v": "¿Dónde está muerte tu aguijón?"
+      },
+      {
+        "t": "l",
+        "v": "Cristo Jesús resucitó"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Muy pronto El regresará"
+      },
+      {
+        "v": "Su rostro resplandecerá",
+        "t": "l"
+      },
+      {
+        "v": "En su presencia estaré",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Y cara a cara le veré"
+      }
+    ]
+  },
+  {
+    "id": "alegrate-israel",
+    "nombre": "alegrate Israel",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "t": "l",
+        "v": "Alégrate Israel,"
+      },
+      {
+        "v": "alégrate Israel",
+        "t": "l"
+      },
+      {
+        "v": "Alégrate Israel en tu Creador",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Porque El te dio la salvación",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Y te ungió con su poder//"
+      }
+    ]
+  },
+  {
+    "id": "alegre-es-la-gente-que-ama-a-dios",
+    "nombre": "alegre es la gente que ama a Dios",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "v": "Alegre, alegre es la gente que ama a Dios//",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Pronto yo le seguiré y su rostro le veré"
+      },
+      {
+        "t": "l",
+        "v": "Voy a confiar en Dios pronto lo veré."
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Alegre, alegre es la gente que ama a Dios//"
+      },
+      {
+        "v": "Pronto yo le seguiré y su gloria alli vere",
+        "t": "l"
+      },
+      {
+        "v": "Voy a confiar en Dios pronto lo veré.",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "aleluya",
+    "nombre": "aleluya",
+    "tono": "G",
+    "bpm": null,
+    "bloques": [
+      {
+        "v": "Aleluya",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Aleluya"
+      },
+      {
+        "t": "l",
+        "v": "Aleluya"
+      },
+      {
+        "v": "Aleluya",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "aleluya-a-nuestro-dios",
+    "nombre": "Aleluya a nuestro Dios",
+    "tono": "C",
+    "bpm": null,
+    "bloques": [
+      {
+        "v": "Aleluya, aleluya,",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Aleluya a nuestro Dios"
+      },
+      {
+        "v": "Aleluya, aleluya,",
+        "t": "l"
+      },
+      {
+        "v": "Aleluya a nuestro Dios",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Todos sus siervos,"
+      },
+      {
+        "v": "Los que le temen",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Los pequeños y grandes,"
+      },
+      {
+        "v": "Alabad a nuestro Dios",
+        "t": "l"
+      },
+      {
+        "v": "Él es Dios Santo,",
+        "t": "l"
+      },
+      {
+        "v": "Justos son sus juicios",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Es fiel y verdadero,"
+      },
+      {
+        "v": "Alabad a nuestro Dios",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Démosle gloria,"
+      },
+      {
+        "t": "l",
+        "v": "Démosle honra"
+      },
+      {
+        "v": "La hora ha llegado,",
+        "t": "l"
+      },
+      {
+        "v": "Al cordero exaltad",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Su trono es firme,"
+      },
+      {
+        "v": "siempre eterno",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Cetro de justicia,"
+      },
+      {
+        "t": "l",
+        "v": "Es el cetro del Gran Rey"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Gran multitud",
+        "t": "l"
+      },
+      {
+        "v": "Estruendo de muchas aguas",
+        "t": "l"
+      },
+      {
+        "v": "Levantan su voz",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Den voces de jubilo al Rey"
+      },
+      {
+        "v": "Del Norte al Sur",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Declaren por siempre su gloria"
+      },
+      {
+        "v": "Él es nuestro Dios",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Todopoderoso Gran Rey"
+      }
+    ]
+  },
+  {
+    "id": "aleluya-cristo-vive-hoy",
+    "nombre": "Aleluya Cristo vive hoy",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "t": "l",
+        "v": "Aleluya, Cristo vive hoy,"
+      },
+      {
+        "t": "l",
+        "v": "La muerte fue vencida"
+      },
+      {
+        "t": "l",
+        "v": "y el sepulcro lo negó,"
+      },
+      {
+        "v": "Jesús vive por siempre,",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "vive hoy, vive hoy"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Es el alfa y la omega,",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "el principio y el fin,"
+      },
+      {
+        "v": "La maldición fue rota",
+        "t": "l"
+      },
+      {
+        "v": "y hay perfecta libertad,",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Resucito el Cordero,"
+      },
+      {
+        "v": "vive hoy, vive hoy",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "maravilloso"
+      },
+      {
+        "v": "consolador es el",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "nuestro padre eterno"
+      },
+      {
+        "v": "es el principe de paz",
+        "t": "l"
+      },
+      {
+        "v": "el cordero ya ha vencido",
+        "t": "l"
+      },
+      {
+        "v": "vive hoy, vive hoy",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Aleluya, Cristo vive hoy"
+      }
+    ]
+  },
+  {
+    "id": "aleluya-cristo-vive-ya",
+    "nombre": "Aleluya cristo vive ya",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "v": "Aleluya, Cristo vive ya,",
+        "t": "l"
+      },
+      {
+        "v": "La muerte fue vencida",
+        "t": "l"
+      },
+      {
+        "v": "y el sepulcro lo negó,",
+        "t": "l"
+      },
+      {
+        "v": "Jesús vive por siempre,",
+        "t": "l"
+      },
+      {
+        "v": "vive ya, vive ya.",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Es el alfa y la omega,",
+        "t": "l"
+      },
+      {
+        "v": "el principio y el fin,",
+        "t": "l"
+      },
+      {
+        "v": "La maldición fue rota",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "y hay perfecta libertad,"
+      },
+      {
+        "t": "l",
+        "v": "Resucito el Cordero,"
+      },
+      {
+        "v": "vive ya, vive ya.",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "maravilloso",
+        "t": "l"
+      },
+      {
+        "v": "consolador es el",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "nuestro padre eterno"
+      },
+      {
+        "t": "l",
+        "v": "es el principe de paz"
+      },
+      {
+        "v": "el cordero ya ha vencido",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "vive hoy, vive hoy"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Aleluya, Cristo vive ya"
+      }
+    ]
+  },
+  {
+    "id": "algo-esta-cayendo-aqui",
+    "nombre": "algo esta cayendo aqui",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "t": "l",
+        "v": "Algo está cayendo aquí"
+      },
+      {
+        "v": "Es tan fuerte sobre mí",
+        "t": "l"
+      },
+      {
+        "v": "Mis manos levantaré",
+        "t": "l"
+      },
+      {
+        "v": "Y su gloria tocaré",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Está cayendo",
+        "t": "l"
+      },
+      {
+        "v": "Su gloria sobre mí",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Sanando heridas"
+      },
+      {
+        "t": "l",
+        "v": "levantando al caído"
+      },
+      {
+        "v": "Su gloria está aquí",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Su gloria está aquí",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "algo-nuevo-hara-en-mi",
+    "nombre": "algo nuevo hara en mi",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "t": "l",
+        "v": "Algo nuevo"
+      },
+      {
+        "t": "l",
+        "v": "hara en mi"
+      },
+      {
+        "v": "Algo nuevo hara en ti",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Si confias solo en El"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Son solos gotas",
+        "t": "l"
+      },
+      {
+        "v": "Pero vienen",
+        "t": "l"
+      },
+      {
+        "v": "de un gran rio",
+        "t": "l"
+      },
+      {
+        "v": "Que transformara",
+        "t": "l"
+      },
+      {
+        "v": "tu ser",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "alza-tu-voz-y-canta",
+    "nombre": "alza tu voz y canta",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "t": "l",
+        "v": "Alza tu voz y canta"
+      },
+      {
+        "v": "Alabanzas al Rey",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Que el clamor ascienda"
+      },
+      {
+        "v": "Al Rey al mesías le damos honor",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Alza hoy tu voz y canta",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Canta Aleluya"
+      },
+      {
+        "v": "Canta Aleluya",
+        "t": "l"
+      },
+      {
+        "v": "Canta Aleluya",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "A El Rey"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "A El Rey"
+      }
+    ]
+  },
+  {
+    "id": "amigos-en-lugares-altos",
+    "nombre": "amigos en lugares altos",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "t": "l",
+        "v": "Estaba solo y buscaba un amigo"
+      },
+      {
+        "v": "Una mano en mi soledad",
+        "t": "l"
+      },
+      {
+        "v": "Y de mi dolor el me rescato",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Dios tiene mucho para mi"
+      },
+      {
+        "t": "l",
+        "v": "Sus misericordias nuevas son"
+      },
+      {
+        "t": "l",
+        "v": "Pues su ayuda viene a mi"
+      },
+      {
+        "t": "l",
+        "v": "En oración"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Por la Fé ahora creo",
+        "t": "l"
+      },
+      {
+        "v": "Llena mi necesidad",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Yo camino solo por Fé"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Tengo un Amigo a quien le hablo"
+      },
+      {
+        "v": "A Jesus puedo clamar",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Seguro estoy que Dios cuida de mi"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Yo camino solo por Fé",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Pues mi Dios tiene el control"
+      },
+      {
+        "t": "l",
+        "v": "Seguro estoy que Dios cuida de mi"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Dios tiene mucho para mi.",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Sus misericordias nuevas son"
+      },
+      {
+        "v": "Pues su ayuda viene a mi",
+        "t": "l"
+      },
+      {
+        "v": "En oración",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "ancianos-dias",
+    "nombre": "ancianos dias",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "t": "l",
+        "v": "Bendición y gloria"
+      },
+      {
+        "t": "l",
+        "v": "Poder y honra,"
+      },
+      {
+        "t": "l",
+        "v": "Al anciano De días será"
+      },
+      {
+        "t": "l",
+        "v": "Toda nación y la creación"
+      },
+      {
+        "v": "Al anciano de días se postrará",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Toda lengua confesará",
+        "t": "l"
+      },
+      {
+        "v": "Declarará Tu Gloria,",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Toda rodilla se doblará"
+      },
+      {
+        "v": "Adorando,",
+        "t": "l"
+      },
+      {
+        "v": "Tu nombre exaltado será",
+        "t": "l"
+      },
+      {
+        "v": "Y Tu reino anciano de días",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "No pasará"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Sobre la tierra Tu reinaras"
+      },
+      {
+        "v": "Al anciano de días cantad",
+        "t": "l"
+      },
+      {
+        "v": "Tu gran dignidad",
+        "t": "l"
+      },
+      {
+        "v": "Dios es sin igual",
+        "t": "l"
+      },
+      {
+        "v": "Al anciano de días cantad",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "anhelo-conocerte-espiritu-santo",
+    "nombre": "anhelo conocerte Espiritu Santo",
+    "tono": "G",
+    "bpm": null,
+    "bloques": [
+      {
+        "t": "l",
+        "v": "Anhelo conocerte,"
+      },
+      {
+        "t": "l",
+        "v": "Espíritu Santo"
+      },
+      {
+        "t": "l",
+        "v": "Anhelo siempre estar cerca de ti"
+      },
+      {
+        "t": "l",
+        "v": "Más yo sé que he fallado"
+      },
+      {
+        "v": "Tu presencia he descuidado",
+        "t": "l"
+      },
+      {
+        "v": "Ven y limpia todo lo que hay en mí",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Como paloma con tu gracia"
+      },
+      {
+        "t": "l",
+        "v": "hoy desciende"
+      },
+      {
+        "t": "l",
+        "v": "Como aceite derramado"
+      },
+      {
+        "t": "l",
+        "v": "úngeme"
+      },
+      {
+        "t": "l",
+        "v": "Como fuente de agua de viva"
+      },
+      {
+        "t": "l",
+        "v": "Sacia mi sed,"
+      },
+      {
+        "t": "l",
+        "v": "llama de fuego ven y purifícame"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Más yo sé que he fallado",
+        "t": "l"
+      },
+      {
+        "v": "No quiero estar lejos de ti",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Llama de fuego ven y purifícame"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "llama de fuego ven y purifícame",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "aquel-que-la-nueva-obra-empezo",
+    "nombre": "aquel que la nueva obra empezo",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "v": "Aquel que la buena obra empezo//",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Sera fiel en completarla"
+      },
+      {
+        "t": "l",
+        "v": "El es fiel en completarla"
+      },
+      {
+        "t": "l",
+        "v": "El que la comenzo sera fiel"
+      },
+      {
+        "t": "l",
+        "v": "En completarla en mi"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Si la lucha que enfrentas"
+      },
+      {
+        "t": "l",
+        "v": "A tu esperanza torno, ya sin paz"
+      },
+      {
+        "t": "l",
+        "v": "O de tanto esperar ya perdiendo"
+      },
+      {
+        "v": "Tu canción estas",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Puedes creer que su mano está en ti"
+      },
+      {
+        "v": "Seguro estás",
+        "t": "l"
+      },
+      {
+        "v": "Nunca te ha de abandonar",
+        "t": "l"
+      },
+      {
+        "v": "Eres su gozo",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Y su gran tesoro aquí"
+      }
+    ]
+  },
+  {
+    "id": "atraeme-a-ti",
+    "nombre": "Atraeme a ti",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "t": "l",
+        "v": "Atráeme a ti, no me dejes ir"
+      },
+      {
+        "t": "l",
+        "v": "Te entrego todo una vez más"
+      },
+      {
+        "v": "A cambio de tu amistad",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Yo te anhelo a ti, solamente a ti"
+      },
+      {
+        "t": "l",
+        "v": "Pues nadie más en tu lugar"
+      },
+      {
+        "t": "l",
+        "v": "Me abrazará con tanto amor"
+      },
+      {
+        "v": "Guíame, señor, de regreso a ti",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Te anhelo a ti, señor te necesito",
+        "t": "l"
+      },
+      {
+        "v": "Te anhelo a ti, dime que cerca estás",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Atráeme a ti, no me dejes ir"
+      },
+      {
+        "v": "Rindo todo a mi Señor",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "A cambio de tu amistad"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Yo te anhelo a ti, solamente a ti",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Pues nadie más en tu lugar"
+      },
+      {
+        "t": "l",
+        "v": "Me abrazará con tanto amor"
+      },
+      {
+        "v": "Guíame señor de regreso a ti",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Te anhelo a ti, señor te necesito",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Te anhelo a ti, dime que cerca estás"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Te anhelo a ti, señor te necesito",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Te anhelo a ti, dime que cerca estás"
+      }
+    ]
+  },
+  {
+    "id": "bellas-palabras-de-vida",
+    "nombre": "Bellas palabras de vida",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "t": "l",
+        "v": "Oh, cantádmelas otra vez"
+      },
+      {
+        "t": "l",
+        "v": "Bellas palabras de vida"
+      },
+      {
+        "t": "l",
+        "v": "Hallo en ellas mi gozo y luz"
+      },
+      {
+        "v": "Bellas palabras de vida",
+        "t": "l"
+      },
+      {
+        "v": "Sí, de luz y vida",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Son sostén y guía"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "¡Qué bellas son! ¡Qué bellas son!",
+        "t": "l"
+      },
+      {
+        "v": "Bellas palabras de vida",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Jesucristo a todos da"
+      },
+      {
+        "v": "Bellas palabras de vida",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Hoy escúchalas pecador"
+      },
+      {
+        "t": "l",
+        "v": "Bellas palabras de vida"
+      },
+      {
+        "v": "Bondadoso te salva",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Y al cielo te llama"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "¡Qué bellas son! ¡Qué bellas son!"
+      },
+      {
+        "t": "l",
+        "v": "Bellas palabras de vida"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Grato el cántico sonará",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Bellas palabras de vida"
+      },
+      {
+        "t": "l",
+        "v": "Tus pecados perdonará"
+      },
+      {
+        "v": "Bellas palabras de vida",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Sí de luz y vida"
+      },
+      {
+        "t": "l",
+        "v": "Son sostén y guía."
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Sí, de luz y vida"
+      },
+      {
+        "t": "l",
+        "v": "Son sostén y guía"
+      },
+      {
+        "v": "¡Qué bellas son! ¡Qué bellas son!",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Bellas palabras de vida"
+      },
+      {
+        "v": "¡Qué bellas son! ¡Qué bellas son!",
+        "t": "l"
+      },
+      {
+        "v": "Bellas palabras de vida",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "bendecire-a-jehova",
+    "nombre": "Bendecire a Jehova",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "v": "Bendecire a Jehova",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "En todo, en todo tiempo"
+      },
+      {
+        "t": "l",
+        "v": "Su alabanza estará"
+      },
+      {
+        "v": "De continuo en mi boca",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "En Jehova se gloriara mi alma"
+      },
+      {
+        "t": "l",
+        "v": "Engrandeced a Jehova conmigo"
+      },
+      {
+        "t": "l",
+        "v": "Y exaltemos a un a Su Nombre"
+      },
+      {
+        "v": "Y bendigamos a Jehova",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Y exaltemos a un a Su Nombre"
+      },
+      {
+        "v": "Y bendigamos a Jehova",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "bendito-sea-jehova-la-roca",
+    "nombre": "Bendito sea Jehova la roca",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "v": "Bendito sea",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Jehová la roca"
+      },
+      {
+        "t": "l",
+        "v": "Por toda la eternidad"
+      },
+      {
+        "v": "Mi escondedero",
+        "t": "l"
+      },
+      {
+        "v": "y mi refugio",
+        "t": "l"
+      },
+      {
+        "v": "Eres Tú bendito Señor",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "En Tu Palabra",
+        "t": "l"
+      },
+      {
+        "v": "yo me deleito",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Y mi confianza en Ti pondré"
+      },
+      {
+        "t": "l",
+        "v": "Oh gloria, gloria aleluya"
+      },
+      {
+        "t": "l",
+        "v": "Amén, amén"
+      },
+      {
+        "v": "Amén, amén",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "bueno-es-dios",
+    "nombre": "Bueno es Dios",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "t": "l",
+        "v": "Bueno es Dios siempre fiel"
+      },
+      {
+        "v": "Puso un canto nuevo",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "en mi corazón"
+      },
+      {
+        "v": "Bueno es Dios siempre fiel",
+        "t": "l"
+      },
+      {
+        "v": "En la oscuridad brillara su amor",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Bueno es Dios bueno es Dios"
+      },
+      {
+        "t": "l",
+        "v": "Siempre fiel"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Si tu vas por el valle"
+      },
+      {
+        "t": "l",
+        "v": "Y hay sombras alrededor"
+      },
+      {
+        "t": "l",
+        "v": "Di adios al temor"
+      },
+      {
+        "v": "Pues seguro en el estas",
+        "t": "l"
+      },
+      {
+        "v": "el Prometio nunca dejarte",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Ni abandonarte y el no mentira"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Y aun sin merecerle",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Su sangre derramo por mi"
+      },
+      {
+        "v": "Me lleno de su presencia",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Y ahora puedo compartir"
+      },
+      {
+        "v": "Que su amor nunca termina",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Y su favor siempre me dara"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Buenos es Dios ///"
+      },
+      {
+        "v": "grande es el",
+        "t": "l"
+      },
+      {
+        "v": "siempre fiel",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "No puedo entender tus planes para mi",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Mi dueño eres tu y por la fe veo"
+      },
+      {
+        "v": "Claramente que",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Buenos es Dios ///"
+      },
+      {
+        "v": "siempre fiel",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "cada-manana-al-despertar",
+    "nombre": "Cada mañana al despertar",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "v": "Cada mañana al despertar",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Y por la noche al descansar"
+      },
+      {
+        "t": "l",
+        "v": "Agradezco tus bondades a mi vida"
+      },
+      {
+        "v": "Por todo lo que me permites disfrutar",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Aleluya, Aleluya, Aleluya"
+      },
+      {
+        "v": "Agradecido estoy por tu bondad",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Ale-lu-u-ya, alelu-u-ya, alelu-u-ya",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Agradecido estoy por tu bondad"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Agradecido estoy por tu bondad",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Agradecido estoy por tu bondad"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Agradecido estoy por tu bondad",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "cambiame-y-hazme-otra-vez",
+    "nombre": "Cambiame y hazme otra vez",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "t": "l",
+        "v": "Cristo moriste"
+      },
+      {
+        "t": "l",
+        "v": "en una cruz"
+      },
+      {
+        "v": "resucitaste con poder",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Perdona mis pecados hoy"
+      },
+      {
+        "v": "se mi Señor y Salvador",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Cámbiame y hazme otra vez",
+        "t": "l"
+      },
+      {
+        "v": "y ayúdame a serte fiel",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Cámbiame y hazme otra vez"
+      },
+      {
+        "v": "y ayúdame a serte fiel",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "cambiare-mi-tristeza",
+    "nombre": "Cambiaré mi tristeza",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "v": "Cambiaré mi tristeza",
+        "t": "l"
+      },
+      {
+        "v": "Cambiaré",
+        "t": "l"
+      },
+      {
+        "v": "mi vergüenza",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Los entregaré por el gozo de Dios"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Cambiaré mi dolor",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Y mi enfermedad"
+      },
+      {
+        "t": "l",
+        "v": "Los entregaré por el gozo de Dios"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Sí, Señor, sí, sí, Señor"
+      },
+      {
+        "t": "l",
+        "v": "Sí, Señor, sí, sí, Señor"
+      },
+      {
+        "t": "l",
+        "v": "Sí, Señor, sí, sí, Señor"
+      },
+      {
+        "t": "l",
+        "v": "Amén"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Estando atribulado,"
+      },
+      {
+        "v": "pero nunca derrotado",
+        "t": "l"
+      },
+      {
+        "v": "Y perseguido esté",
+        "t": "l"
+      },
+      {
+        "v": "Maldiciones no me afectan",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Pues yo sé a quien voy"
+      },
+      {
+        "t": "l",
+        "v": "En Su gozo fuerte soy"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Aunque en la noche triste yo este",
+        "t": "l"
+      },
+      {
+        "v": "El Gozo viene en la mañana",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "camino-al-cielo-yo-voy",
+    "nombre": "Camino al cielo yo voy",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "t": "l",
+        "v": "Esta alegría que yo siento"
+      },
+      {
+        "t": "l",
+        "v": "aqui en mi vida"
+      },
+      {
+        "v": "yo no la cambio por la gloria",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "de este mundo"
+      },
+      {
+        "t": "l",
+        "v": "Estaba muerto pero Dios me dio la vida"
+      },
+      {
+        "t": "l",
+        "v": "camino al cielo yo voy"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "yo tengo gozo, tengo alegría"
+      },
+      {
+        "v": "tengo a Jesus, tengo la paz",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "tengo la vida"
+      },
+      {
+        "v": "yo tengo gozo, tengo alegría",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "camino al cielo yo voy"
+      }
+    ]
+  },
+  {
+    "id": "cansado-del-camino",
+    "nombre": "Cansado del camino",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "v": "Cansado del camino",
+        "t": "l"
+      },
+      {
+        "v": "Sediento de ti",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Un desierto he cruzado,"
+      },
+      {
+        "t": "l",
+        "v": "sin fuerzas he quedado"
+      },
+      {
+        "t": "l",
+        "v": "Vengo a ti"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Luché como soldado",
+        "t": "l"
+      },
+      {
+        "v": "y a veces sufrí",
+        "t": "l"
+      },
+      {
+        "v": "Y aunque la lucha he ganado,",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "mi armadura he desgastado"
+      },
+      {
+        "v": "Vengo a ti",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Sumérgeme en el río de tu Espíritu"
+      },
+      {
+        "t": "l",
+        "v": "Necesito refrescar este seco corazón,"
+      },
+      {
+        "v": "sediento de ti",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Sumérgeme en río de tu espíritu"
+      },
+      {
+        "t": "l",
+        "v": "Necesito refrescar este seco corazón"
+      },
+      {
+        "v": "Sediento de ti",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "de ti"
+      }
+    ]
+  },
+  {
+    "id": "cantad",
+    "nombre": "Cantad",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "t": "l",
+        "v": "¡Cantad!"
+      },
+      {
+        "v": "Dios está aquí",
+        "t": "l"
+      },
+      {
+        "v": "Hazle un altar en ti",
+        "t": "l"
+      },
+      {
+        "v": "Construye un trono",
+        "t": "l"
+      },
+      {
+        "v": "Con tu alabanza",
+        "t": "l"
+      },
+      {
+        "v": "Dad gratitud al rey",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "¡Cantad!"
+      },
+      {
+        "v": "Con gozo hoy",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Por siempre en su amor"
+      },
+      {
+        "v": "Y mientras cantamos",
+        "t": "l"
+      },
+      {
+        "v": "Su gloria desciende",
+        "t": "l"
+      },
+      {
+        "v": "Llenando este lugar",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "¡Canta!"
+      },
+      {
+        "t": "l",
+        "v": "Dios esta aquí"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Señor tu habitas en la adoración",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Que juntos te damos"
+      },
+      {
+        "v": "Señor unidos venimos a ti",
+        "t": "l"
+      },
+      {
+        "v": "Y te alabamos",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "cantare-a-mi-senor",
+    "nombre": "Cantare a mi Señor",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "t": "l",
+        "v": "Cantare a mi Señor"
+      },
+      {
+        "v": "Que me hace vivir",
+        "t": "l"
+      },
+      {
+        "v": "Con alabanzas vendre",
+        "t": "l"
+      },
+      {
+        "v": "Toda mi vida",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Mis pensamientos"
+      },
+      {
+        "v": "de El",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Muy dulce seran"
+      },
+      {
+        "v": "Yo alabare",
+        "t": "l"
+      },
+      {
+        "v": "Alabare a mi Señor",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Bendice mi alma Jehova",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Bendice"
+      },
+      {
+        "v": "a Jehova //",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "cantare-al-senor-por-siempre",
+    "nombre": "Cantare al Señor por siempre",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "v": "Cantare al Señor por siempre",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "su diestra es todo poder"
+      },
+      {
+        "t": "l",
+        "v": "cantare al Señor por siempre"
+      },
+      {
+        "v": "su diestra es todo poder",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Echo a la mar"
+      },
+      {
+        "v": "quien los perseguia",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "jinete y caballo"
+      },
+      {
+        "v": "echo a la mar",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "echo a la mar"
+      },
+      {
+        "t": "l",
+        "v": "los carros del faraon"
+      },
+      {
+        "t": "l",
+        "v": "hey hey"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Lalalá, lalá",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Lalalá, lalá"
+      },
+      {
+        "t": "l",
+        "v": "Lalalalá, lálalala"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Mi padre es Dios",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "y yo le exalto"
+      },
+      {
+        "t": "l",
+        "v": "mi padre es Dios"
+      },
+      {
+        "v": "y le exaltare",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "cantare-de-tu-amor",
+    "nombre": "Cantaré de tu amor",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "t": "l",
+        "v": "Por mucho tiempo busqué"
+      },
+      {
+        "t": "l",
+        "v": "Una razón de vivir"
+      },
+      {
+        "v": "En medio de mil preguntas",
+        "t": "l"
+      },
+      {
+        "v": "Tu amor me respondió",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Y ahora veo la luz",
+        "t": "l"
+      },
+      {
+        "v": "Y ya no tengo temor",
+        "t": "l"
+      },
+      {
+        "v": "Tu reino vino a mi vida",
+        "t": "l"
+      },
+      {
+        "v": "Y ahora vivo para ti",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Cantaré de tu amor"
+      },
+      {
+        "t": "l",
+        "v": "Rendiré mi corazón ante ti"
+      },
+      {
+        "v": "Tú serás mi pasión",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Y mis pasos se guiarán por tu voz"
+      },
+      {
+        "v": "Mi Jesús, y mi Rey",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "De tu gran amor cantaré"
+      }
+    ]
+  },
+  {
+    "id": "cantare-de-tu-nombre-oh-senor",
+    "nombre": "Cantare de Tu nombre oh Señor",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "v": "Cantare de Tu nombre oh Señor,",
+        "t": "l"
+      },
+      {
+        "v": "De tus maravillas contare,",
+        "t": "l"
+      },
+      {
+        "v": "y solo en ti me alegrare,",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "En tu presencia danzare,",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Y con regocijo entrare,"
+      },
+      {
+        "t": "l",
+        "v": "Ante tus puertas mi Señor"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Con alegria y con gozo en mi corazon,"
+      },
+      {
+        "v": "Te alabare y declarare al mundo que...",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "No puedo dejar de cantar,",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "No puedo dejar de brincar,"
+      },
+      {
+        "t": "l",
+        "v": "No puedo dejar de alabar"
+      },
+      {
+        "v": "Y bendecir Tu nombre//",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "cantare-me-gozare",
+    "nombre": "Cantare me gozare",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "v": "cantare",
+        "t": "l"
+      },
+      {
+        "v": "me alegrare",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "me gozare delante del señor"
+      },
+      {
+        "v": "reiran",
+        "t": "l"
+      },
+      {
+        "v": "burlaran",
+        "t": "l"
+      },
+      {
+        "v": "los hombres me veran",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "mas yo sere mas vil"
+      }
+    ]
+  },
+  {
+    "id": "cante-al-senor-toda-la-creacion",
+    "nombre": "Cante al Señor toda la creación",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "t": "l",
+        "v": "Mi Cristo, mi Rey"
+      },
+      {
+        "t": "l",
+        "v": "Nadie es como Tú"
+      },
+      {
+        "v": "Toda mi vida",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Quiero exaltar"
+      },
+      {
+        "t": "l",
+        "v": "Las maravillas de Tu amor"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Consuelo, refugio"
+      },
+      {
+        "v": "Torre de fuerza y poder",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Todo mi ser,"
+      },
+      {
+        "v": "lo que yo soy",
+        "t": "l"
+      },
+      {
+        "v": "Nunca cese de adorar",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Cante al Señor toda la creación",
+        "t": "l"
+      },
+      {
+        "v": "Honra y poder,",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "majestad sea al Rey"
+      },
+      {
+        "v": "Montes caerán y el mar rugirá",
+        "t": "l"
+      },
+      {
+        "v": "Al sonar de su nombre",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Canto con gozo"
+      },
+      {
+        "t": "l",
+        "v": "al mirar Tu poder"
+      },
+      {
+        "v": "Por siempre yo te amaré",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "y diré"
+      },
+      {
+        "v": "Incomparables promesas",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "me das, Señor"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Incomparables promesas"
+      },
+      {
+        "v": "me das///",
+        "t": "l"
+      },
+      {
+        "v": "Señor",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "cielo-y-tierra-pasaran",
+    "nombre": "Cielo y tierra pasaran",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "t": "l",
+        "v": "Cielo y tierra podran pasar"
+      },
+      {
+        "t": "l",
+        "v": "mas su palabra no pasará//"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "No, no, no pasará"
+      },
+      {
+        "t": "l",
+        "v": "No, no, no pasará"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Dios es nuestro amparo,"
+      },
+      {
+        "t": "l",
+        "v": "nuestra fortaleza"
+      },
+      {
+        "v": "Nuestro pronto auxilio",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "En la tribulación"
+      },
+      {
+        "t": "l",
+        "v": "Aunque se traspasen los montes a la mar"
+      },
+      {
+        "v": "Aunque la tierra tiemble",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "tenemos que confiar//"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "hay un rio limpio",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "de aguas cristalinas"
+      },
+      {
+        "t": "l",
+        "v": "en la cuidad santa,"
+      },
+      {
+        "t": "l",
+        "v": "morada de Jehova"
+      },
+      {
+        "t": "l",
+        "v": "Dios esta en ella, firme estara"
+      },
+      {
+        "v": "al clarear la mañana",
+        "t": "l"
+      },
+      {
+        "v": "su ayuda traera//",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "bramaron las naciones,",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "reinos titubearon"
+      },
+      {
+        "v": "el dio la palabra,",
+        "t": "l"
+      },
+      {
+        "v": "la tierra derritio",
+        "t": "l"
+      },
+      {
+        "v": "con nosotros siempre Jehova esta",
+        "t": "l"
+      },
+      {
+        "v": "el es nuestro refugio,",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "tenemos que confiar//"
+      }
+    ]
+  },
+  {
+    "id": "con-mis-manos-levantadas",
+    "nombre": "Con mis manos levantadas",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "t": "l",
+        "v": "Con mis manos levantadas"
+      },
+      {
+        "v": "Hacia el cielo",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Me presento ante ti"
+      },
+      {
+        "v": "Hoy mi Señor",
+        "t": "l"
+      },
+      {
+        "v": "Para recibir de ti",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "La fuerza y el poder"
+      },
+      {
+        "v": "Para vivir junto a ti",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Llenas hoy mi corazón",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Con Tu presencia"
+      },
+      {
+        "v": "Llenas de alegria y paz",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Todo mi ser"
+      },
+      {
+        "v": "De cualquier necesidad",
+        "t": "l"
+      },
+      {
+        "v": "Tu me responderas",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Porque me amas"
+      },
+      {
+        "t": "l",
+        "v": "Me amas"
+      }
+    ]
+  },
+  {
+    "id": "cosas-poderosas-suceden",
+    "nombre": "Cosas poderosas  suceden",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "t": "l",
+        "v": "Cosas poderosas,"
+      },
+      {
+        "v": "suceden cuando alabamos al rey",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "El sordo oye el ciego ve"
+      },
+      {
+        "v": "Cadenas rotas por su poder",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Alzemos juntos"
+      },
+      {
+        "t": "l",
+        "v": "nuestra voz"
+      },
+      {
+        "v": "Y exaltemos a nuestro rey...",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Adoremos al rey////",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "cristo-es-la-pena-de-horeb",
+    "nombre": "Cristo es la peña de Horeb",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "t": "l",
+        "v": "Cristo es la peña de horeb que está brotando"
+      },
+      {
+        "t": "l",
+        "v": "Agua de vida saludable para mi//"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Ven, a beberla que es más dulce que la miel"
+      },
+      {
+        "t": "l",
+        "v": "Refresca el alma, refresca todo mi ser"
+      },
+      {
+        "t": "l",
+        "v": "Cristo es la peña de horeb que está brotando"
+      },
+      {
+        "t": "l",
+        "v": "Agua de vida saludable para ti"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Cristo es el lirio del valle de las flores",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Él es la rosa blanca y pura de sharon"
+      },
+      {
+        "t": "l",
+        "v": "Cristo es la vida y amor de los amores"
+      },
+      {
+        "v": "Él es la eterna fuente de la salvación",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "cristo-es-sin-igual",
+    "nombre": "Cristo es sin igual",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "v": "Cristo es sin igual,",
+        "t": "l"
+      },
+      {
+        "v": "sin igual, sin igual",
+        "t": "l"
+      },
+      {
+        "v": "Cristo es sin igual para mi",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "No hay otro salvador"
+      },
+      {
+        "v": "No hay otro sanador",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Cristo es sin igual para mi"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Hay un canto nuevo"
+      },
+      {
+        "t": "l",
+        "v": "en mi ser"
+      },
+      {
+        "v": "Es la voz de mi Jesús",
+        "t": "l"
+      },
+      {
+        "v": "Que me dice ven a descansar",
+        "t": "l"
+      },
+      {
+        "v": "Tú paz conquiste en la Cruz",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Cristo, Cristo, Cristo",
+        "t": "l"
+      },
+      {
+        "v": "Nombre sin igual",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Llena siempre mi alma"
+      },
+      {
+        "v": "De esta nota sin igual",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Cristo en las nubes, Volverá",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Bajo el bello cielo azul"
+      },
+      {
+        "t": "l",
+        "v": "El entonces mi alma llevará"
+      },
+      {
+        "v": "a vivir en gloria y luz",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Él vino a mi corazón //"
+      },
+      {
+        "t": "l",
+        "v": "soy feliz con la vida que Cristo me dio"
+      },
+      {
+        "v": "Cuando Él vino",
+        "t": "l"
+      },
+      {
+        "v": "a mi corazón",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "No hay otro salvador"
+      },
+      {
+        "v": "No hay otro sanador",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Cristo es sin igual para mi"
+      }
+    ]
+  },
+  {
+    "id": "cristo-me-dijo-que-venia-otra-vez",
+    "nombre": "Cristo me dijo que venía otra vez",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "v": "Cristo me dijo que venía otra vez,",
+        "t": "l"
+      },
+      {
+        "v": "Que venía otra vez//",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Que no me desesperara,"
+      },
+      {
+        "v": "Sino que tuviera fe,",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Y yo le estoy,"
+      },
+      {
+        "v": "Y yo le estoy esperando,",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Y tú le estas,",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Y tú le estas esperando."
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Alábale, alábale,",
+        "t": "l"
+      },
+      {
+        "v": "Alábale de corazón//.",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "cristo-mi-roca-es-el",
+    "nombre": "Cristo mi roca es el",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "t": "l",
+        "v": "Cristo mi roca es El///"
+      },
+      {
+        "v": "El no me desempara",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Cristo no me deja"
+      },
+      {
+        "v": "Cristo mi roca es El",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "cristo-no-esta-muerto",
+    "nombre": "Cristo no esta muerto",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "v": "Cristo no está muerto",
+        "t": "l"
+      },
+      {
+        "v": "¡Él está vivo !",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Cristo no está muerto"
+      },
+      {
+        "v": "¡Él está vivo!",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Lo siento en mis manos",
+        "t": "l"
+      },
+      {
+        "v": "Lo siento en mis pies",
+        "t": "l"
+      },
+      {
+        "v": "Lo siento en todo mi ser",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "La tengo, Sí la tengo",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "La tengo, La tengo"
+      },
+      {
+        "t": "l",
+        "v": "La unción esta sobre mí"
+      },
+      {
+        "t": "l",
+        "v": "Gloria a Dios porque la tengo"
+      }
+    ]
+  },
+  {
+    "id": "cristo-rompe-las-cadenas",
+    "nombre": "Cristo rompe las cadenas",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "t": "l",
+        "v": "Cristo rompe las cadenas///"
+      },
+      {
+        "v": "Y me da su libertad",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Como es posible yo vivir sin mi Jesús"
+      },
+      {
+        "v": "Si el fundamento de mi vida eres tu",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Tú me salvaste y me libraste de la muerte"
+      },
+      {
+        "t": "l",
+        "v": "Como es posible yo vivir sin mi Jesus"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Tú me salvaste y me libraste de la muerte"
+      },
+      {
+        "t": "l",
+        "v": "Como es posible yo vivir sin mi Jesus"
+      }
+    ]
+  },
+  {
+    "id": "cristo-yo-te-amo",
+    "nombre": "Cristo yo te amo",
+    "tono": "G",
+    "bpm": null,
+    "bloques": [
+      {
+        "t": "l",
+        "v": "Cristo yo te amo//"
+      },
+      {
+        "v": "No hay nadie como Tu",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Jesus"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Y no se donde estuviera"
+      },
+      {
+        "v": "Si yo a Ti no te tuviera",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Si no hubiera conocido"
+      },
+      {
+        "v": "Al Dios que me ama",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "cuan-grande-es-dios",
+    "nombre": "Cuan grande es Dios",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "v": "El esplendor de un Rey",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Vestido en majestad"
+      },
+      {
+        "v": "La tierra alegre está",
+        "t": "l"
+      },
+      {
+        "v": "La tierra alegre está",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Cubierto está de luz",
+        "t": "l"
+      },
+      {
+        "v": "Venció la oscuridad",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Y tiembla a su voz"
+      },
+      {
+        "v": "Y tiembla a su voz",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Cuan grande es Dios",
+        "t": "l"
+      },
+      {
+        "v": "Cántale, cuan grande es Dios",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Y todos lo verán"
+      },
+      {
+        "v": "Cuan grande es Dios",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Día a día Él está",
+        "t": "l"
+      },
+      {
+        "v": "Y el tiempo está en Él",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Principio y el fin"
+      },
+      {
+        "v": "Principio y el fin",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "La Trinidad en Dios"
+      },
+      {
+        "t": "l",
+        "v": "El Padre, Hijo, Espíritu"
+      },
+      {
+        "v": "Cordero y el León",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Cordero y el León"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Tu Nombre sobre",
+        "t": "l"
+      },
+      {
+        "v": "todo es",
+        "t": "l"
+      },
+      {
+        "v": "Eres digno de alabar",
+        "t": "l"
+      },
+      {
+        "v": "Y mi ser dirá",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Cuan grande es Dios"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Su Nombre sobre",
+        "t": "l"
+      },
+      {
+        "v": "todo es",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Eres digno de alabar"
+      },
+      {
+        "v": "Y mi ser dirá",
+        "t": "l"
+      },
+      {
+        "v": "Cuan grande es Dios",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Mi corazón entona la canción"
+      },
+      {
+        "t": "l",
+        "v": "Cuan grande es Él"
+      },
+      {
+        "v": "Cuan grande es Él",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "cuan-grande-es-dios-su-nombre-tambien",
+    "nombre": "Cuan grande es Dios  su nombre tambien",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "t": "l",
+        "v": "cuan grande es Dios"
+      },
+      {
+        "t": "l",
+        "v": "su nombre tambien"
+      },
+      {
+        "v": "poderoso es el",
+        "t": "l"
+      },
+      {
+        "v": "por siempre fiel",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "poderoso mar rojo"
+      },
+      {
+        "t": "l",
+        "v": "el separo"
+      },
+      {
+        "t": "l",
+        "v": "promete estar conmigo"
+      },
+      {
+        "v": "si confio en el",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "cuando-alla-se-pase-lista",
+    "nombre": "Cuando allá se pase lista",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "v": "Cuando los santos",
+        "t": "l"
+      },
+      {
+        "v": "marchen ya",
+        "t": "l"
+      },
+      {
+        "v": "con su corona en vez de cruz",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Señor yo quiero estar allí"
+      },
+      {
+        "v": "cuando los santos",
+        "t": "l"
+      },
+      {
+        "v": "marchen ya",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Cuando la iglesia"
+      },
+      {
+        "v": "marche ya",
+        "t": "l"
+      },
+      {
+        "v": "hacia la patria celestial",
+        "t": "l"
+      },
+      {
+        "v": "Señor yo quiero estar allí",
+        "t": "l"
+      },
+      {
+        "v": "cuando la iglesia  marche ya",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Cuando la trompeta suene"
+      },
+      {
+        "t": "l",
+        "v": "en aquel día final"
+      },
+      {
+        "t": "l",
+        "v": "y que el alba eterna rompa en claridad;"
+      },
+      {
+        "t": "l",
+        "v": "Cuando las naciones salvas"
+      },
+      {
+        "t": "l",
+        "v": "a su patria lleguen"
+      },
+      {
+        "v": "y que sea pasada lista allí he de estar",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "En aquel dia sin nieblas,",
+        "t": "l"
+      },
+      {
+        "v": "en que muerte ya no habrá",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "y su gloria el Salvador impartirá;"
+      },
+      {
+        "t": "l",
+        "v": "Cuando los llamados entren"
+      },
+      {
+        "t": "l",
+        "v": "a su celestial hogar,"
+      },
+      {
+        "t": "l",
+        "v": "y que sea pasada lista allí he de estar"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Cuando allá se pase lista///",
+        "t": "l"
+      },
+      {
+        "v": "A mi nombre yo feliz responderé",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Trabajemos por el maestro,"
+      },
+      {
+        "t": "l",
+        "v": "desde el alba al vislumbrar;"
+      },
+      {
+        "v": "Siempre hablemos de su amor y fiel bondad.",
+        "t": "l"
+      },
+      {
+        "v": "Cuando todo aqui perezca",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "y nuestra obra cese ya,"
+      },
+      {
+        "v": "y que sea pasada lista allí he de estar",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "cuando-el-pueblo-del-senor-alaba-a-dios",
+    "nombre": "Cuando el pueblo del Señor alaba a Dios",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "t": "l",
+        "v": "Cuando el pueblo del Señor alaba a Dios"
+      },
+      {
+        "t": "l",
+        "v": "Suceden cosas//"
+      },
+      {
+        "t": "l",
+        "v": "Maravillosas"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Hay sanidad, poder, liberación"
+      },
+      {
+        "t": "l",
+        "v": "se siente la presencia de Dios.//"
+      }
+    ]
+  },
+  {
+    "id": "cuando-el-senor-hiciera-volver-la-cautividad",
+    "nombre": "Cuando el Señor hiciera volver la cautividad",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "v": "Cuando el Señor hiciere volver la cautividad",
+        "t": "l"
+      },
+      {
+        "v": "seremos como los que sueñan.//",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Mi boca llenará de risa,"
+      },
+      {
+        "v": "Mis labios de alabanza,",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Entonces dirán las naciones:"
+      },
+      {
+        "t": "l",
+        "v": "Grandes cosas ha hecho el Señor//"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Me gozaré, me gozaré,",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "me gozaré,"
+      },
+      {
+        "t": "l",
+        "v": "Me gozaré en Jehová"
+      },
+      {
+        "t": "l",
+        "v": "Pues ha llevado"
+      },
+      {
+        "v": "todo mi dolor,",
+        "t": "l"
+      },
+      {
+        "v": "Me ha hecho libre//",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Así como David cantaba,"
+      },
+      {
+        "t": "l",
+        "v": "Así como David danzaba,"
+      },
+      {
+        "v": "Así como David fluía en su presencia//",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Yo cantaré, yo danzaré"
+      },
+      {
+        "t": "l",
+        "v": "En tu presencia me gozaré,"
+      },
+      {
+        "t": "l",
+        "v": "Y solo en ti, me alegraré"
+      },
+      {
+        "v": "Porque tu eres mi Dios y mi rey.",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "cuando-esta-iglesia-te-alaba",
+    "nombre": "Cuando esta iglesia te alaba",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "t": "l",
+        "v": "Cuando esta iglesia"
+      },
+      {
+        "t": "l",
+        "v": "te alaba"
+      },
+      {
+        "t": "l",
+        "v": "Cuando esta iglesia"
+      },
+      {
+        "v": "te exalta",
+        "t": "l"
+      },
+      {
+        "v": "Se desata desde el cielo",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Tu poder"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Cuando tus hijos"
+      },
+      {
+        "v": "te alaban",
+        "t": "l"
+      },
+      {
+        "v": "Y Tu palabra proclaman",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Desciende Tu presencia aquí"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Decimos Santo",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Roca fuerte eres Tú"
+      },
+      {
+        "v": "Somos Tu pueblo",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Y queremos llevar"
+      },
+      {
+        "v": "Tu luz",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Desciende Tu presencia/// aquí"
+      }
+    ]
+  },
+  {
+    "id": "cuando-levanto-mis-manos",
+    "nombre": "Cuando levanto mis manos",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "v": "Levanto mis manos",
+        "t": "l"
+      },
+      {
+        "v": "Aunque no tenga fuerzas",
+        "t": "l"
+      },
+      {
+        "v": "Levanto mis manos",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Aunque tenga mil problemas"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Cuando levanto mis manos",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Comienzo a sentir"
+      },
+      {
+        "t": "l",
+        "v": "Una unción"
+      },
+      {
+        "v": "Que me hace cantar",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Cuando levanto mis manos"
+      },
+      {
+        "v": "Comienzo a sentir",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "El fuego"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Cuando levanto mis manos"
+      },
+      {
+        "v": "Mis cargas se van",
+        "t": "l"
+      },
+      {
+        "v": "Nuevas fuerzas, tú me das",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Todo esto es posible",
+        "t": "l"
+      },
+      {
+        "v": "Todo esto es posible",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Cuando levanto mis manos"
+      }
+    ]
+  },
+  {
+    "id": "digno-de-alabar",
+    "nombre": "Digno de alabar",
+    "tono": "D",
+    "bpm": null,
+    "bloques": [
+      {
+        "v": "Cargaste Tú mi cruz",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Mi libertad, con Tu vida compraste"
+      },
+      {
+        "v": "Y ahora Tuyo soy",
+        "t": "l"
+      },
+      {
+        "v": "Proclamaré Tu bondad para siempre",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Digno de alabar, Cristo",
+        "t": "l"
+      },
+      {
+        "v": "Nombre sin igual",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Digno de alabar"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Vergüenza huye hoy",
+        "t": "l"
+      },
+      {
+        "v": "Rendido estoy ante",
+        "t": "l"
+      },
+      {
+        "v": "Tu amor innegable",
+        "t": "l"
+      },
+      {
+        "v": "Tu gracia eterna es",
+        "t": "l"
+      },
+      {
+        "v": "Proclamaré",
+        "t": "l"
+      },
+      {
+        "v": "Tu bondad para siempre",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Sé exaltado hoy en los cielos"
+      },
+      {
+        "v": "Ven y llena este lugar",
+        "t": "l"
+      },
+      {
+        "v": "Eres digno de alabar",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "No hay otro nombre igual"
+      }
+    ]
+  },
+  {
+    "id": "en-el-monte-calvario",
+    "nombre": "En el monte calvario",
+    "tono": "G",
+    "bpm": null,
+    "bloques": [
+      {
+        "v": "En el monte calvario",
+        "t": "l"
+      },
+      {
+        "v": "estaba una cruz",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Emblema de afrenta y dolor"
+      },
+      {
+        "t": "l",
+        "v": "Más yo amo esa cruz"
+      },
+      {
+        "t": "l",
+        "v": "Do murió mi Jesús"
+      },
+      {
+        "v": "Por salvar al más vil pecador",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Oh yo siempre amaré esa cruz",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "en sus triunfos"
+      },
+      {
+        "v": "mi gloria será",
+        "t": "l"
+      },
+      {
+        "v": "y algún dia en vez de una cruz",
+        "t": "l"
+      },
+      {
+        "v": "Mi corona Jesús me dará",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Y aunque el mundo"
+      },
+      {
+        "v": "desprecie la cruz de Jesús",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Para mí tiene suma atracción"
+      },
+      {
+        "t": "l",
+        "v": "Pues en ella llevo"
+      },
+      {
+        "t": "l",
+        "v": "El cordero de Dios"
+      },
+      {
+        "t": "l",
+        "v": "De mi alma, la condenación"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "En la cruz de Jesús"
+      },
+      {
+        "t": "l",
+        "v": "Do su sangre vertió"
+      },
+      {
+        "t": "l",
+        "v": "hermosura contemplo sin par"
+      },
+      {
+        "v": "pues en ella triunfante",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "a la muerte venció"
+      },
+      {
+        "v": "y mi ser pudo santificar",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Yo sere siempre fiel"
+      },
+      {
+        "t": "l",
+        "v": "a la cruz de Jesús"
+      },
+      {
+        "v": "sus desprecios con Él llevaré",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "y algun dia feliz"
+      },
+      {
+        "v": "con los santos en luz",
+        "t": "l"
+      },
+      {
+        "v": "para siempre su gloria veré",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Mi corona Jesús me dará",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "entra-con-accion-de-gracias",
+    "nombre": "Entrad con acción  de gracias",
+    "tono": "D",
+    "bpm": null,
+    "bloques": [
+      {
+        "v": "D",
+        "t": "a"
+      },
+      {
+        "t": "l",
+        "v": "Entrad con acción de gracias"
+      },
+      {
+        "v": "Por sus atrios alabad",
+        "t": "l"
+      },
+      {
+        "t": "a",
+        "v": "Bm"
+      },
+      {
+        "v": "Entrad en su presencia",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "con gozo"
+      },
+      {
+        "t": "a",
+        "v": "      G"
+      },
+      {
+        "v": "Cantando grande y fuerte",
+        "t": "l"
+      },
+      {
+        "v": "     A",
+        "t": "a"
+      },
+      {
+        "t": "l",
+        "v": "es Jehová"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "a",
+        "v": "D"
+      },
+      {
+        "t": "l",
+        "v": "Alabadle al son de trompetas"
+      },
+      {
+        "v": "Con pandero y arpa también",
+        "t": "l"
+      },
+      {
+        "t": "a",
+        "v": "Bm"
+      },
+      {
+        "v": "Que toda la creación",
+        "t": "l"
+      },
+      {
+        "v": "cante hoy",
+        "t": "l"
+      },
+      {
+        "v": "G                  A",
+        "t": "a"
+      },
+      {
+        "t": "l",
+        "v": "Alabándole con el corazón"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "G",
+        "t": "a"
+      },
+      {
+        "t": "l",
+        "v": "Porque bueno es Dios"
+      },
+      {
+        "t": "a",
+        "v": "D"
+      },
+      {
+        "v": "Porque bueno es Dios",
+        "t": "l"
+      },
+      {
+        "v": "Bm",
+        "t": "a"
+      },
+      {
+        "t": "l",
+        "v": "Porque bueno es Dios"
+      },
+      {
+        "v": "G                  A           D-D7",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Para siempre es su misericordia"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "D",
+        "t": "a"
+      },
+      {
+        "v": "Cristo es por siempre exaltado",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Creador de todo es Él"
+      },
+      {
+        "v": "Bm",
+        "t": "a"
+      },
+      {
+        "t": "l",
+        "v": "Ven ante Él a postrarte"
+      },
+      {
+        "v": "G                  A",
+        "t": "a"
+      },
+      {
+        "v": "manos levantad y la voz alzad",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "a",
+        "v": "Bm"
+      },
+      {
+        "t": "l",
+        "v": "Porque bueno es Dios"
+      },
+      {
+        "v": "G                 A            D",
+        "t": "a"
+      },
+      {
+        "t": "l",
+        "v": "Para siempre es su misericordia"
+      }
+    ]
+  },
+  {
+    "id": "eres-tu-la-unica-razon",
+    "nombre": "Eres tu la unica razon",
+    "tono": "D",
+    "bpm": null,
+    "bloques": [
+      {
+        "v": "Eres Tú la única razón",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "De mi adoración oh Jesús"
+      },
+      {
+        "t": "l",
+        "v": "Eres Tú la esperanza"
+      },
+      {
+        "v": "que anhele tener",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "oh Jesús"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Confié en ti me has ayudado",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Tu salvación me has regalado"
+      },
+      {
+        "t": "l",
+        "v": "Hoy hay gozo en mi corazón"
+      },
+      {
+        "t": "l",
+        "v": "Con mi canto te alabare"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Te alabare,",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "te glorificare"
+      },
+      {
+        "v": "Te alabare",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "mi buen Jesús"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "En todo tiempo",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "te alabare"
+      },
+      {
+        "t": "l",
+        "v": "En todo tiempo"
+      },
+      {
+        "t": "l",
+        "v": "te adorare"
+      }
+    ]
+  },
+  {
+    "id": "gozo-en-mi-alma",
+    "nombre": "Gozo en mi alma",
+    "tono": "G",
+    "bpm": null,
+    "bloques": [
+      {
+        "t": "l",
+        "v": "Yo tengo gozo"
+      },
+      {
+        "v": "en mi alma",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Gozo en mi alma"
+      },
+      {
+        "t": "l",
+        "v": "Gozo en mi alma y en mi ser"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Son como ríos",
+        "t": "l"
+      },
+      {
+        "v": "Ríos",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Ríos de agua viva"
+      },
+      {
+        "v": "en mi ser",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Es como ríos"
+      },
+      {
+        "t": "l",
+        "v": "de agua viva"
+      },
+      {
+        "v": "Ríos de agua viva",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Ríos de agua viva"
+      },
+      {
+        "t": "l",
+        "v": "en mi ser"
+      }
+    ]
+  },
+  {
+    "id": "la-unica-razon",
+    "nombre": "La unica razon",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "v": "La unica razón de mi adoración",
+        "t": "l"
+      },
+      {
+        "v": "Eres Tú, mi Jesús",
+        "t": "l"
+      },
+      {
+        "v": "El único motivo para vivir",
+        "t": "l"
+      },
+      {
+        "v": "Eres Tú, mi Señor",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Mi única verdad está en ti"
+      },
+      {
+        "v": "Eres mi luz y mi salvación",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Mi único amor,"
+      },
+      {
+        "t": "l",
+        "v": "eres Tú, Señor"
+      },
+      {
+        "v": "Y por siempre te alabaré",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Tú eres todo poderoso",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Eres grande y majestuoso"
+      },
+      {
+        "v": "Eres fuerte, invencible",
+        "t": "l"
+      },
+      {
+        "v": "Y no hay nadie como Tú",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "no-hay-dios-tan-grande-como-tu",
+    "nombre": "No hay Dios tan grande como Tu",
+    "tono": "G",
+    "bpm": null,
+    "bloques": [
+      {
+        "v": "No hay Dios tan grande como Tu",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "No lo hay//"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "No hay Dios que pueda hacer las obras"
+      },
+      {
+        "v": "Como las que haces Tu//",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "No es con ejercito, ni con espada"
+      },
+      {
+        "v": "Mas con su Santo Espiritu//",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Y esos montes se moveran///",
+        "t": "l"
+      },
+      {
+        "v": "Por su Santo Espiritu",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "nos-hemos-congregado-2",
+    "nombre": "Nos hemos congregado",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "v": "Nos hemos congregado",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "En este día"
+      },
+      {
+        "v": "Para darle gloria",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "La música tocamos"
+      },
+      {
+        "v": "Las voces elevamos",
+        "t": "l"
+      },
+      {
+        "v": "Para darle gloria",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Un son de júbilo"
+      },
+      {
+        "v": "Ha llenado este lugar",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Con el propósito"
+      },
+      {
+        "t": "l",
+        "v": "De su nombre levantar"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "¡Alabadle, alabadle!"
+      },
+      {
+        "t": "l",
+        "v": "Sólo a Él"
+      },
+      {
+        "v": "¡Adoradle, adoradle!",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Él ha sido fiel"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Cantad la gloria de su nombre",
+        "t": "l"
+      },
+      {
+        "v": "Pues es digno de exaltar",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Declaremos a los pueblos"
+      },
+      {
+        "t": "l",
+        "v": "De su amor y majestad"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "¡Alabadle, adorad!",
+        "t": "l"
+      },
+      {
+        "v": "A Jesús el Rey",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Las manos levantadas"
+      },
+      {
+        "v": "Corazones hacia el cielo esperando",
+        "t": "l"
+      },
+      {
+        "v": "Sin duda lo sabemos",
+        "t": "l"
+      },
+      {
+        "v": "Que su presencia",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Se está manifestando"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Al sentarse sobre el trono",
+        "t": "l"
+      },
+      {
+        "v": "De nuestra adoración",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Dejamos que Él gobierne"
+      },
+      {
+        "v": "Sobre toda creación",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "¡Alabadle, alabadle!",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Sólo a Él"
+      },
+      {
+        "t": "l",
+        "v": "¡Adoradle, adoradle!"
+      },
+      {
+        "v": "Él ha sido fiel",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "quiero-darte-gloria-senor",
+    "nombre": "quiero darte gloria señor",
+    "tono": "F",
+    "bpm": null,
+    "bloques": [
+      {
+        "v": "Quiero darte gloria Señor",
+        "t": "l"
+      },
+      {
+        "v": "Porque todo lo has hecho bien//",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Todo lo has hecho bien Señor",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Incluso todos los males"
+      },
+      {
+        "v": "han sido para bien",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Incluso todos los males han sido para bien"
+      }
+    ]
+  },
+  {
+    "id": "recibe-toda-la-gloria",
+    "nombre": "Recibe toda la gloria",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "v": "Quiero levantar a ti mis manos",
+        "t": "l"
+      },
+      {
+        "v": "Maravilloso Jesus",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Milagroso Señor"
+      },
+      {
+        "v": "Llena este lugar",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "de tu presencia"
+      },
+      {
+        "t": "l",
+        "v": "Y haz descender Tu poder"
+      },
+      {
+        "v": "A los que estamos aqui",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Creo en ti Jesús",
+        "t": "l"
+      },
+      {
+        "v": "Y en lo que harás en mi",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "En mi...",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Recibe",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "toda la Gloria"
+      },
+      {
+        "t": "l",
+        "v": "Recibe toda la Honra"
+      },
+      {
+        "v": "Precioso hijo de Dios",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Creo en ti Jesús",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Y en lo que hecho en mi"
+      }
+    ]
+  },
+  {
+    "id": "santo-por-siempre",
+    "nombre": "Santo por siempre",
+    "tono": "G",
+    "bpm": null,
+    "bloques": [
+      {
+        "t": "l",
+        "v": "Mil generaciones"
+      },
+      {
+        "t": "l",
+        "v": "Se postran"
+      },
+      {
+        "v": "a adorarle",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Le cantan al Cordero que venció"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Los que nos precedieron",
+        "t": "l"
+      },
+      {
+        "v": "Y los que en Él creerán",
+        "t": "l"
+      },
+      {
+        "v": "Le cantarán a Aquel que ya venció",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Tu nombre es más alto"
+      },
+      {
+        "t": "l",
+        "v": "Tu nombre es"
+      },
+      {
+        "v": "más grande",
+        "t": "l"
+      },
+      {
+        "v": "Tu nombre",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "sobre todo es"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Sean tronos,"
+      },
+      {
+        "v": "dominios",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Poderes,"
+      },
+      {
+        "v": "potestades",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Tu nombre sobre todo es"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Claman ángeles,",
+        "t": "l"
+      },
+      {
+        "v": "Santo",
+        "t": "l"
+      },
+      {
+        "v": "Clama la creación, Santo",
+        "t": "l"
+      },
+      {
+        "v": "Exaltado Dios, Santo",
+        "t": "l"
+      },
+      {
+        "v": "Santo por siempre",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Canta el pueblo"
+      },
+      {
+        "t": "l",
+        "v": "al Rey, Santo"
+      },
+      {
+        "v": "Soberano es Él, Santo",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Y por siempre es, Santo"
+      },
+      {
+        "v": "Santo por siempre",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "t": "l",
+        "v": "Si te ha perdonado"
+      },
+      {
+        "t": "l",
+        "v": "Y tienes salvación"
+      },
+      {
+        "v": "Cántale al Cordero que venció",
+        "t": "l"
+      },
+      {
+        "v": "Si te ha libertado",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Su nombre ha puesto en ti"
+      },
+      {
+        "v": "Cántale al Cordero que venció",
+        "t": "l"
+      },
+      {
+        "v": "cantaremos siempre amen",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "te-alabare-oh-senor",
+    "nombre": "Te alabare oh Señor",
+    "tono": null,
+    "bpm": null,
+    "bloques": [
+      {
+        "v": "te alabaré, oh señor",
+        "t": "l"
+      },
+      {
+        "v": "invocaré",
+        "t": "l"
+      },
+      {
+        "v": "tu santo nombre",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "siempre daré a conocer"
+      },
+      {
+        "v": "en los pueblos tus obras",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "grande son ///",
+        "t": "l"
+      },
+      {
+        "v": "tus maravillas",
+        "t": "l"
+      }
+    ]
+  },
+  {
+    "id": "ven-espiritu-ven",
+    "nombre": "Ven Espiritu ven",
+    "tono": "G",
+    "bpm": null,
+    "bloques": [
+      {
+        "t": "l",
+        "v": "Ven, Espiritu, ven"
+      },
+      {
+        "v": "Y llename, Señor",
+        "t": "l"
+      },
+      {
+        "v": "con tu preciosa uncion",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Purificame y lavame",
+        "t": "l"
+      },
+      {
+        "v": "Renuevame,",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Restaurame Señor,"
+      },
+      {
+        "t": "l",
+        "v": "Con Tu poder"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Purificame y lavame",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Renuevame,"
+      },
+      {
+        "v": "Restaurame Señor,",
+        "t": "l"
+      },
+      {
+        "v": "Te quiero conocer",
+        "t": "l"
+      },
+      {
+        "t": "v"
+      },
+      {
+        "v": "Purificame y lavame",
+        "t": "l"
+      },
+      {
+        "t": "l",
+        "v": "Renuevame, restaurame"
+      },
+      {
+        "t": "l",
+        "v": "Señor, con Tu preciosa uncion"
       }
     ]
   }
