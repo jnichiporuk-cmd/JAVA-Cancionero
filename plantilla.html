@@ -3589,6 +3589,13 @@ async function continuarArranque(){
 
 arrancar();
 
+/* Registrar Service Worker para que Android reconozca como PWA instalable */
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => {
+    /* Si falla el SW, la app sigue funcionando igual (solo sin offline) */
+  });
+}
+
 /* Antes acá había un sondeo cada 4 segundos. Ya no hace falta: onSnapshot
    avisa en el momento en que alguien cambia algo. */
 </script>
