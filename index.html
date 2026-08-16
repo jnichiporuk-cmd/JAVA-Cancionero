@@ -521,7 +521,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v288</span></div>
+    <div class="marca">Cancionero <span class="ver">v289</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -3279,7 +3279,7 @@ function abrirExportar(){
   $("ex-resumen-contenido").innerHTML = resumenHTML;
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v288",
+    origen: "cancionero v289",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
@@ -3569,6 +3569,23 @@ async function continuarArranque(){
 
   if (await conectar()) {
     escuchar();   // a partir de acá los cambios llegan solos
+
+    /* Botón atrás del celular: minimiza la app en lugar de cerrarla */
+    window.addEventListener("popstate", () => {
+      if (est.abierta){
+        /* Si hay una canción/nota abierta, cerrarla */
+        cerrar();
+        history.pushState({}, "", location.href);
+      } else if (est.pestana !== "canciones"){
+        /* Si estamos en otra pestaña, volver a Canciones */
+        est.pestana = "canciones";
+        render();
+        history.pushState({}, "", location.href);
+      }
+      /* Si estamos en Canciones, no hacer nada: minimizar es tarea del SO */
+    });
+    /* Initial history push para que el popstate funcione */
+    history.pushState({}, "", location.href);
 
     abrirEventoDesdeLink();  // si la URL trae ?evento=id, activar ese evento
 

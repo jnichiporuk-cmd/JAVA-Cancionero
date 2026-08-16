@@ -3570,6 +3570,23 @@ async function continuarArranque(){
   if (await conectar()) {
     escuchar();   // a partir de acá los cambios llegan solos
 
+    /* Botón atrás del celular: minimiza la app en lugar de cerrarla */
+    window.addEventListener("popstate", () => {
+      if (est.abierta){
+        /* Si hay una canción/nota abierta, cerrarla */
+        cerrar();
+        history.pushState({}, "", location.href);
+      } else if (est.pestana !== "canciones"){
+        /* Si estamos en otra pestaña, volver a Canciones */
+        est.pestana = "canciones";
+        render();
+        history.pushState({}, "", location.href);
+      }
+      /* Si estamos en Canciones, no hacer nada: minimizar es tarea del SO */
+    });
+    /* Initial history push para que el popstate funcione */
+    history.pushState({}, "", location.href);
+
     abrirEventoDesdeLink();  // si la URL trae ?evento=id, activar ese evento
 
     /* Revisar vigencia de latidos cada ~15s. Firestore sólo notifica
