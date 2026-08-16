@@ -583,8 +583,8 @@ Forma de trabajo esperada:
 - Transporta una línea completa de acordes
 - Llamada desde: `renderBloques()`
 
-`transportar(delta)` (~2750)
-- Botones ♭/♯ en lector: transporta +/- 1 semitono
+Botones ♭/♯ del lector (`$("mas-t").onclick`, `$("menos-t").onclick`) (~3388)
+- Transporta +/- 1 semitono; llama `guardarSemisSiCorresponde()` y `retransmitirSiYaEstaEnVivo()`
 - Llamada desde: Botones ♭/♯ en **Lector** (solo director en evento)
 
 `transportarEditor(delta)` (~3170)
@@ -805,9 +805,11 @@ Forma de trabajo esperada:
 - Transmite el primer paso del evento
 - Llamada desde: `mostrarVistaOnline()`
 
-`retransmitirSiYaEstaEnVivo()` (~1293)
-- Si la canción abierta ya es la transmitida, actualiza transporte
-- Llamada desde: `transportar()` dentro de reunión como director
+`retransmitirSiYaEstaEnVivo()` (~1294)
+- Si la canción abierta ya es la transmitida, actualiza el tono transmitido
+  llamando a `activarTransmision()` (nunca a `transmitirEstado()`: esa es un
+  toggle y apagaría la transmisión en vez de actualizarla)
+- Llamada desde: Botones ♭/♯ en **Lector** dentro de reunión como director
 
 `fondoOnline()` (~2487)
 - Dibuja fondo/aviso en pestaña Transmisión (sin director)
@@ -1127,7 +1129,7 @@ Forma de trabajo esperada:
 - **O** (online, solo si es director) → `transmitirEstado()` (~2710) transmite esta canción en vivo
 
 **Transporte (si en evento y es director):**
-- Botones ♭ / ♯ → `transportar(delta)` (~2750)
+- Botones ♭ / ♯ → `$("mas-t").onclick` / `$("menos-t").onclick` (~3388)
 - Muestra semitono actual (ej "+2")
 - Se guarda en `est.lista.semis[id]` (solo para esta reunión)
 
@@ -1248,7 +1250,7 @@ Forma de trabajo esperada:
 | `est.esDirector` | boolean | Si puede crear/editar eventos, canciones, transmitir | `alternarDirector()` (~3544), listener (~1579) |
 | `est.enReunion` | boolean | Si está dentro de un evento (bloquea ediciones) | `abrir(id, true/false)` (~3250) |
 | `est.editando` | string | ID de canción que se está editando, o "nueva" | `abrirEditor(id)` (~3120) |
-| `est.semis` | number | Transporte actual de la canción abierta (+/- semitonos) | `transportar(delta)` (~2750) |
+| `est.semis` | number | Transporte actual de la canción abierta (+/- semitonos) | `$("mas-t")/$("menos-t").onclick` (~3388) |
 | `est.cambios` | object | Canciones nuevas/editadas localmente: `{nuevas:[], editados:{}, borradas:[]}` | Listener de Firestore (~1077), `guardarEditor()` |
 | `est.reordenando` | boolean | Si modo arrastrar está activo | Al tocar botón "Reordenar" |
 | `est.abierta` | string | ID de canción actualmente en el lector | `abrir(id, enReunion)` (~3250) |

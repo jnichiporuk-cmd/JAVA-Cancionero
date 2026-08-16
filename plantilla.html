@@ -1292,7 +1292,7 @@ async function transmitirEstado(){
    transmitida, transportarla es sólo mirar: no dispara nada, para no
    arrancar una transmisión por accidente al tocar ♭/♯. */
 function retransmitirSiYaEstaEnVivo(){
-  if (est.lista.enVivo && est.lista.enVivo.cancionId === est.abierta) transmitirEstado();
+  if (est.lista.enVivo && est.lista.enVivo.cancionId === est.abierta) activarTransmision();
 }
 
 /* Id nuevo para una reunión: si hay conexión, lo genera Firestore (así no
