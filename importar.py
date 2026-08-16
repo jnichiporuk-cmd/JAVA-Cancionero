@@ -489,9 +489,26 @@ def aplicar_veredictos(ruta_veredictos, candidatas_validas, clasificadas, es_gra
         print("  Eran posibles duplicados, así que ante la duda quedan afuera.")
         print("  El archivo de origen sigue estando: se puede retomar la revisión.")
 
+    # Correcciones de letra hechas a mano durante la revisión. Se aplican
+    # antes de decidir nada más, así el resto del flujo trabaja ya con el
+    # texto corregido.
+    correcciones_cand = {v["candidata"]: v["correccion_candidata"]
+                         for v in veredictos if v.get("correccion_candidata")}
+    correcciones_exist = {v["existente"]: v["correccion_existente"]
+                          for v in veredictos if v.get("correccion_existente")}
+    for c in candidatas_validas:
+        if c["nombre"] in correcciones_cand:
+            c["bloques"] = correcciones_cand[c["nombre"]]
+
     with open("catalogo.json", encoding="utf-8") as f:
         catalogo = json.load(f)
     antes = len(catalogo)
+
+    corregidas_catalogo = 0
+    for c in catalogo:
+        if c["nombre"] in correcciones_exist:
+            c["bloques"] = correcciones_exist[c["nombre"]]
+            corregidas_catalogo += 1
 
     catalogo = [c for c in catalogo if c["nombre"] not in borrar_catalogo]
     usados = {c["id"] for c in catalogo} | ids_borrados_en_firestore()
@@ -508,6 +525,9 @@ def aplicar_veredictos(ruta_veredictos, candidatas_validas, clasificadas, es_gra
     with open("catalogo.json", "w", encoding="utf-8") as f:
         json.dump(catalogo, f, ensure_ascii=False, indent=2)
 
+    if correcciones_cand or corregidas_catalogo:
+        print(f"\n✓ {len(correcciones_cand)} letras corregidas a mano en las que entran")
+        print(f"✓ {corregidas_catalogo} letras corregidas a mano en el catálogo")
     print(f"\n✓ {len(borrar_catalogo)} eliminadas del catálogo (perdieron la comparación)")
     print(f"✓ {len(descartar)} candidatas descartadas (perdieron la comparación)")
     print(f"✓ {len(postergar)} candidatas postergadas (sin decidir)")

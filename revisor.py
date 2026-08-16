@@ -57,8 +57,20 @@ PLANTILLA = """<!doctype html>
   .acordes{color:var(--acento)}
   .rotulo{color:#BFBFBF;font-style:italic}
   .elegir{margin:0;padding:12px 14px;border-top:1px solid var(--borde);
-          background:var(--superficie-alta)}
-  .elegir button{width:100%}
+          background:var(--superficie-alta);display:flex;gap:8px}
+  .elegir button{flex:1}
+  .elegir button.editar{flex:0 0 auto}
+  button.editar{border-color:var(--tenue);color:var(--tenue)}
+  button.editar.activo{border-color:var(--duda);color:var(--duda)}
+  /* La letra se edita con la misma tipografía monoespaciada con que se
+     muestra: los espacios son contenido (alinean el acorde sobre la
+     sílaba), así que el textarea tiene que respetarlos igual. */
+  .editor{width:100%;min-height:340px;background:var(--fondo);
+          color:var(--letra);border:1px solid var(--duda);border-radius:6px;
+          padding:12px 14px;font-family:ui-monospace,Consolas,monospace;
+          font-size:14px;line-height:1.7;white-space:pre;overflow-wrap:normal;
+          overflow-x:auto;resize:vertical}
+  .editado{font-size:11px;color:var(--duda);padding:0 14px 10px}
   footer{position:sticky;bottom:0;background:var(--superficie);
          border-top:1px solid var(--borde);padding:12px 16px;
          display:flex;gap:10px;align-items:center;flex-wrap:wrap}
@@ -103,19 +115,27 @@ PLANTILLA = """<!doctype html>
   <div class="par">
     <div class="lado" id="lado-izq">
       <h2 id="t-izq"></h2>
+      <div class="editado oculto" id="marca-ed-izq">letra corregida</div>
       <div class="cuerpo" id="c-izq"></div>
       <div class="elegir">
         <button class="quedarme" id="btn-izq" onclick="quedarme('candidata')">
           Quedarme con ESTA
         </button>
+        <button class="editar" id="ed-izq" onclick="alternarEdicion('izq')">
+          Corregir letra
+        </button>
       </div>
     </div>
     <div class="lado" id="lado-der">
       <h2 id="t-der"></h2>
+      <div class="editado oculto" id="marca-ed-der">letra corregida</div>
       <div class="cuerpo" id="c-der"></div>
       <div class="elegir">
         <button class="quedarme" id="btn-der" onclick="quedarme('existente')">
           Quedarme con ESTA
+        </button>
+        <button class="editar" id="ed-der" onclick="alternarEdicion('der')">
+          Corregir letra
         </button>
       </div>
     </div>
@@ -166,10 +186,17 @@ const PARES = __DATOS__;
    cantidad de pares para no mezclar dos revisiones distintas. */
 const CLAVE = "cancionero:revision:" + PARES.length;
 let veredictos = {};
-try { veredictos = JSON.parse(localStorage.getItem(CLAVE)) || {}; } catch(e){}
+let ediciones = {};   /* id -> {izq:[bloques], der:[bloques]} corregidos a mano */
+try {
+  const g = JSON.parse(localStorage.getItem(CLAVE)) || {};
+  veredictos = g.veredictos || g;   /* 'g' pelado: formato viejo, sin ediciones */
+  ediciones = g.ediciones || {};
+} catch(e){}
+
+const editando = {izq:false, der:false};
 
 function guardar(){
-  try { localStorage.setItem(CLAVE, JSON.stringify(veredictos)); } catch(e){}
+  try { localStorage.setItem(CLAVE, JSON.stringify({veredictos, ediciones})); } catch(e){}
 }
 
 /* Arranca en el primero sin decidir, no en el 1: al volver se sigue
@@ -198,6 +225,90 @@ function pintar(bloques, otrasLineas){
 }
 function lineasDe(bloques){ return bloques.filter(b => b.t === "l").map(b => b.v || ""); }
 
+/* --- Corregir la letra -------------------------------------------------
+   Mismo dialecto que el editor de la app (':Rótulo', '>fuerza acorde',
+   '.fuerza letra', linea en blanco = separador, sin marca = se detecta
+   solo). Es un puerto de textoABloques()/bloquesATexto(): si acá se
+   usara otro formato, lo corregido no volveria igual al cancionero. */
+const RE_CIFRADO = /^[A-G](?:#|b)?(?:maj|Maj|M|min|m|sus|add|dim|aug|°|ø|\\+|-|[0-9]|#|b|\\(|\\)|,)*$/;
+const RE_ADORNO = /^(\\|\\||\\||\\/\\/|\\/|-|–|x\\d+|\\(x\\d+\\))$/;
+
+function esCifrado(tok){
+  if (RE_ADORNO.test(tok)) return true;
+  const partes = tok.split("/");
+  return partes.length > 0 && partes.every(p => p && RE_CIFRADO.test(p));
+}
+function esLineaDeAcordes(t){
+  const toks = t.split(/\\s+/).filter(Boolean);
+  return toks.length > 0 && toks.every(esCifrado);
+}
+function bloquesATexto(bloques){
+  return bloques.map(b => {
+    if (b.t === "v") return "";
+    const v = b.v || "";
+    if (b.t === "r") return ":" + v;
+    if (b.t === "a") return esLineaDeAcordes(v) ? v : ">" + v;
+    return esLineaDeAcordes(v) ? "." + v : v;
+  }).join("\\n");
+}
+function textoABloques(txt){
+  const salida = [];
+  let vacioPendiente = false;
+  txt.replace(/\\r/g, "").split("\\n").forEach(linea => {
+    if (!linea.trim()){ vacioPendiente = true; return; }
+    if (vacioPendiente && salida.length) salida.push({t:"v"});
+    vacioPendiente = false;
+    const marca = linea[0];
+    if (marca === ":") salida.push({t:"r", v: linea.slice(1).trim()});
+    else if (marca === ">") salida.push({t:"a", v: linea.slice(1)});
+    else if (marca === ".") salida.push({t:"l", v: linea.slice(1).trim()});
+    else if (esLineaDeAcordes(linea)) salida.push({t:"a", v: linea});
+    else salida.push({t:"l", v: linea.trim()});
+  });
+  return salida;
+}
+
+/* Bloques efectivos de un lado: los corregidos si se editó, si no los
+   originales. Todo lo que dibuja o compara pasa por acá. */
+function bloquesDe(p, lado){
+  const ed = ediciones[p.id] && ediciones[p.id][lado];
+  return ed ? ed : (lado === "izq" ? p.cand_bloques : p.ex_bloques);
+}
+
+function alternarEdicion(lado){
+  if (editando[lado]) { guardarEdicion(lado); return; }
+  const p = PARES[i];
+  const cont = document.getElementById("c-" + lado);
+  const ta = document.createElement("textarea");
+  ta.className = "editor";
+  ta.id = "ta-" + lado;
+  ta.value = bloquesATexto(bloquesDe(p, lado));
+  cont.innerHTML = "";
+  cont.appendChild(ta);
+  editando[lado] = true;
+  document.getElementById("ed-" + lado).textContent = "Guardar corrección";
+  document.getElementById("ed-" + lado).className = "editar activo";
+}
+
+function guardarEdicion(lado){
+  const p = PARES[i];
+  const ta = document.getElementById("ta-" + lado);
+  if (ta){
+    const bloques = textoABloques(ta.value);
+    const original = lado === "izq" ? p.cand_bloques : p.ex_bloques;
+    if (!ediciones[p.id]) ediciones[p.id] = {};
+    if (JSON.stringify(bloques) === JSON.stringify(original)){
+      delete ediciones[p.id][lado];                       /* volvió al original */
+      if (!Object.keys(ediciones[p.id]).length) delete ediciones[p.id];
+    } else {
+      ediciones[p.id][lado] = bloques;
+    }
+    guardar();
+  }
+  editando[lado] = false;
+  render();
+}
+
 function render(){
   const p = PARES[i];
   const decididas = Object.keys(veredictos).length;
@@ -221,8 +332,20 @@ function render(){
     rotulo(p.cand_nombre, p.cand_origen, p.cand_meta);
   document.getElementById("t-der").innerHTML =
     rotulo(p.ex_nombre, p.ex_origen, p.ex_meta);
-  document.getElementById("c-izq").innerHTML = pintar(p.cand_bloques, lineasDe(p.ex_bloques));
-  document.getElementById("c-der").innerHTML = pintar(p.ex_bloques, lineasDe(p.cand_bloques));
+  /* Se dibuja lo corregido, no lo original: el resaltado de diferencias
+     tiene que reflejar el texto que realmente se va a guardar. */
+  const bIzq = bloquesDe(p, "izq"), bDer = bloquesDe(p, "der");
+  document.getElementById("c-izq").innerHTML = pintar(bIzq, lineasDe(bDer));
+  document.getElementById("c-der").innerHTML = pintar(bDer, lineasDe(bIzq));
+  editando.izq = editando.der = false;
+  for (const lado of ["izq", "der"]){
+    const btn = document.getElementById("ed-" + lado);
+    btn.textContent = "Corregir letra";
+    btn.className = "editar";
+    const marca = document.getElementById("marca-ed-" + lado);
+    const hay = ediciones[p.id] && ediciones[p.id][lado];
+    marca.className = hay ? "editado" : "editado oculto";
+  }
 
   const v = veredictos[p.id];
   const li = document.getElementById("lado-izq"), ld = document.getElementById("lado-der");
@@ -272,8 +395,13 @@ function ir(d){
 function datosVeredictos(){
   return PARES.map(p => {
     const v = veredictos[p.id] || {tipo:"pendiente"};
+    const e = ediciones[p.id] || {};
     return {id:p.id, candidata:p.cand_nombre, existente:p.ex_nombre,
-            tipo:v.tipo, quedarse:v.quedarse || null};
+            tipo:v.tipo, quedarse:v.quedarse || null,
+            /* Bloques corregidos a mano, si los hay. El importador los
+               aplica sobre la version que corresponda. */
+            correccion_candidata: e.izq || null,
+            correccion_existente: e.der || null};
   });
 }
 function terminar(){
@@ -295,6 +423,17 @@ function terminar(){
   if (pendientes.length){
     t += "\\nSIN DECIDIR: " + pendientes.length + "\\n";
     pendientes.forEach(s => t += "  - " + s + "\\n");
+  }
+  const nEd = Object.keys(ediciones).length;
+  if (nEd){
+    t += "\\nCON LETRA CORREGIDA A MANO: " + nEd + "\\n";
+    t += "  (para que se apliquen hace falta el archivo, no este texto:\\n";
+    t += "   usá 'Descargar veredictos.json')\\n";
+    PARES.forEach(p => {
+      const e = ediciones[p.id]; if (!e) return;
+      const lados = [e.izq ? "izquierda" : null, e.der ? "derecha" : null].filter(Boolean);
+      t += "  - " + p.cand_nombre + "  [" + lados.join(" y ") + "]\\n";
+    });
   }
   document.getElementById("salida").value = t;
   document.getElementById("listo-titulo").textContent =
