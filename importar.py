@@ -231,6 +231,50 @@ def es_candidata_basura(candidata):
 # ni desaparecer.
 # ============================================================================
 
+def consolidar_borrados():
+    """Aplica en la capa base los borrados que hoy sólo viven en la capa
+    de cambios: saca de catalogo.json las canciones cuyo id está marcado
+    `borrada:true` en Firestore.
+
+    No es sólo cosmético. Sin esto, esas canciones **siguen dentro del
+    HTML** y sólo desaparecen cuando llega el listener de Firestore, así
+    que:
+      - al abrir se ve el total viejo y baja unos instantes después, como
+        si algo estuviera roto;
+      - y sin internet -- el caso que la app está pensada para aguantar --
+        los borrados nunca llegan y las canciones eliminadas reaparecen.
+
+    Los documentos de Firestore no se tocan: no se pueden borrar (regla
+    del proyecto) y quedan como marcas huérfanas, inofensivas, que ya no
+    apuntan a nada.
+    """
+    with open("catalogo.json", encoding="utf-8") as f:
+        catalogo = json.load(f)
+    with open("firestore_canciones.json", encoding="utf-8") as f:
+        borradas = {d["id"] for d in json.load(f) if d.get("borrada")}
+
+    quitar = [c for c in catalogo if c["id"] in borradas]
+    if not quitar:
+        print("No hay borrados pendientes de consolidar.")
+        return
+
+    print(f"\n{len(quitar)} canciones están marcadas como borradas y todavía")
+    print("viven en catalogo.json (por eso el total baja al cargar la app):\n")
+    for c in quitar:
+        print(f"  • {c['nombre']!r}")
+
+    print()
+    if input(f"¿Sacarlas de catalogo.json? (s/n): ").strip().lower() != "s":
+        print("Cancelado. No se escribió nada.")
+        return
+
+    quedan = [c for c in catalogo if c["id"] not in borradas]
+    with open("catalogo.json", "w", encoding="utf-8") as f:
+        json.dump(quedan, f, ensure_ascii=False, indent=2)
+    print(f"\n✓ catalogo.json: {len(catalogo)} → {len(quedan)} canciones")
+    print("  Ahora el número no cambia al cargar, y los borrados también valen sin internet.")
+
+
 def marcar_no_nueva_en_firestore(doc_id):
     url = f"https://firestore.googleapis.com/v1/projects/{PROJECT_ID}/databases/(default)/documents/canciones/{doc_id}?updateMask.fieldPaths=nueva"
     body = json.dumps({"fields": {"nueva": {"booleanValue": False}}}).encode("utf-8")
@@ -473,7 +517,7 @@ def escribir(nuevas, es_graduacion):
 
 def main():
     ap = argparse.ArgumentParser(description="Importador único de canciones")
-    ap.add_argument("--fuente", required=True,
+    ap.add_argument("--fuente",
                      help="Archivo (.txt/.json), URL (http/https), o 'firestore'")
     ap.add_argument("--revisar", action="store_true",
                      help="Genera la página local de revisión (duplicadas y dudosas, "
@@ -482,7 +526,23 @@ def main():
                      help="Aplica el veredictos.json que descargaste de la página "
                           "de revisión: importa las distintas y reemplaza donde "
                           "hayas elegido la versión candidata")
+    ap.add_argument("--consolidar-borrados", action="store_true",
+                     help="Saca de catalogo.json las canciones borradas desde la app. "
+                          "Sin esto siguen dentro del HTML: el total baja al cargar y "
+                          "reaparecen sin internet")
     args = ap.parse_args()
+
+    if args.consolidar_borrados:
+        print("Actualizando snapshot de Firestore...")
+        subprocess.run([sys.executable, "descargar_firestore.py"], check=True,
+                       stdout=subprocess.DEVNULL)
+        consolidar_borrados()
+        if not args.fuente:
+            print("\nCorré 'python build.py' para regenerar index.html.")
+            return
+
+    if not args.fuente:
+        ap.error("hace falta --fuente (o --consolidar-borrados)")
 
     fuente = args.fuente
     es_graduacion = False
