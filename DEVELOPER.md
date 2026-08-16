@@ -112,6 +112,24 @@ desinstalar el acceso directo/app vieja, borrar caché + cookies del sitio
 en Chrome, cerrar Chrome del todo (no sólo la pestaña), y recién ahí volver
 a visitar el link e instalar.
 
+**Decisión importante — el Service Worker tiene que ser `network-first`,
+nunca `cache-first`, para `index.html`.** La primera versión de `sw.js`
+servía `index.html` **desde el caché primero**, y sólo iba a la red si no
+había nada cacheado. Resultado: una vez instalada la PWA, quedaba pegada
+para siempre a la versión del build que estaba corriendo la primera vez
+que el Service Worker guardó el caché — recargar la app no traía builds
+nuevos (`build.py` numera cada build y lo muestra en el encabezado
+justamente para detectar esto: un celular mostraba v294 mientras la PC ya
+tenía v295).
+
+El fix es invertir la estrategia: **primero intenta la red, y sólo cae al
+caché si falla** (sin wifi, que es el caso real que le importa a este
+proyecto — la reunión en la iglesia). Así, con conexión siempre se ve el
+build más nuevo; sin conexión, se sigue viendo la última versión que
+llegó a guardarse. El `CACHE_NAME` también se versionó (`cancionero-v1` →
+`cancionero-v2`) para que el `activate` del SW borre el caché viejo
+guardado con la estrategia incorrecta.
+
 ---
 
 ## Datos del proyecto
