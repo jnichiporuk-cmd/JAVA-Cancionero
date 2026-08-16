@@ -44,8 +44,12 @@ PLANTILLA = """<!doctype html>
   .lado.elegida{border-color:var(--si)}
   .lado h2{margin:0;padding:12px 14px;font-size:15px;
            border-bottom:1px solid var(--borde);background:var(--superficie-alta)}
-  .lado .origen{display:block;font-weight:400;font-size:12px;
-                color:var(--tenue);margin-top:3px}
+  .lado .origen{display:block;font-weight:600;font-size:11px;
+                margin-top:5px;letter-spacing:.4px;text-transform:uppercase}
+  .lado .origen.ya{color:var(--acento)}      /* ya está en el cancionero */
+  .lado .origen.nueva{color:var(--duda)}     /* viene del archivo a importar */
+  .lado .origen .meta{color:var(--tenue);font-weight:400;text-transform:none;
+                      letter-spacing:0}
   .cuerpo{padding:12px 14px;white-space:pre-wrap;overflow-wrap:anywhere;
           font-family:ui-monospace,Consolas,monospace;font-size:14px;line-height:1.7}
   .cuerpo .dif{background:rgba(210,153,34,.22);border-radius:3px;
@@ -88,10 +92,14 @@ PLANTILLA = """<!doctype html>
 </header>
 
 <main id="vista">
-  <p class="ayuda">Si son la <b>misma canción</b>, elegí abajo de cada una cuál es
-     la correcta: esa se queda y la otra se elimina. Si son <b>dos canciones
-     distintas</b>, usá el botón de abajo y quedan las dos.
-     Lo resaltado en amarillo es lo que <b>no</b> aparece del otro lado.</p>
+  <p class="ayuda">A la <b>izquierda</b>, la que <span style="color:var(--duda)">recién
+     llega</span> y todavía no está guardada. A la <b>derecha</b>, la que
+     <span style="color:var(--acento)">ya está en el cancionero</span>
+     (salvo que el rótulo diga otra cosa: a veces las dos son nuevas, porque el
+     archivo trae la misma canción repetida).<br>
+     Si son la <b>misma canción</b>, elegí cuál se queda: la otra se elimina.
+     Si son <b>dos canciones distintas</b>, quedan las dos.
+     En amarillo, lo que <b>no</b> aparece del otro lado.</p>
   <div class="par">
     <div class="lado" id="lado-izq">
       <h2 id="t-izq"></h2>
@@ -201,10 +209,18 @@ function render(){
   document.getElementById("motivo").textContent =
     "coincide por " + p.por + " (" + p.ratio + "%)";
 
-  document.getElementById("t-izq").innerHTML = esc(p.cand_nombre) +
-    '<span class="origen">' + esc(p.cand_origen) + ' &middot; ' + esc(p.cand_meta) + '</span>';
-  document.getElementById("t-der").innerHTML = esc(p.ex_nombre) +
-    '<span class="origen">' + esc(p.ex_origen) + ' &middot; ' + esc(p.ex_meta) + '</span>';
+  /* El rótulo dice si esa versión ya está guardada o si recién llega:
+     es el dato con el que se decide, así que va destacado y con color
+     propio, no como texto gris al lado del título. */
+  const rotulo = (nombre, origen, meta) => {
+    const ya = origen.startsWith("YA ");
+    return esc(nombre) + '<span class="origen ' + (ya ? "ya" : "nueva") + '">'
+         + esc(origen) + ' <span class="meta">· ' + esc(meta) + '</span></span>';
+  };
+  document.getElementById("t-izq").innerHTML =
+    rotulo(p.cand_nombre, p.cand_origen, p.cand_meta);
+  document.getElementById("t-der").innerHTML =
+    rotulo(p.ex_nombre, p.ex_origen, p.ex_meta);
   document.getElementById("c-izq").innerHTML = pintar(p.cand_bloques, lineasDe(p.ex_bloques));
   document.getElementById("c-der").innerHTML = pintar(p.ex_bloques, lineasDe(p.cand_bloques));
 

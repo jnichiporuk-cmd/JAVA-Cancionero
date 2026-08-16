@@ -12,6 +12,7 @@
 #   python importar.py --fuente https://www.cifraclub.com/artista/cancion
 #   python importar.py --fuente firestore
 
+import os
 import sys
 import json
 import re
@@ -161,7 +162,6 @@ def parsear_archivo(ruta):
         print("Formato detectado: export de este mismo cancionero\n")
         return parsear_export_cancionero(contenido)
     print("Formato detectado: canción única, dialecto Cancionero/cifra-style\n")
-    import os
     nombre_archivo = os.path.splitext(os.path.basename(ruta))[0]
     return parsear_txt_cancion_unica(contenido, nombre_archivo)
 
@@ -359,24 +359,29 @@ def imprimir_reporte(candidatas, basura, clasificadas):
 
 
 def armar_pares_para_revisar(clasificadas, indice, candidatas_por_nombre,
-                              techo_revision=100):
+                              techo_revision=100, fuente="el archivo que estás importando"):
     """Junta duplicadas + dudosas con las dos canciones COMPLETAS, para
     que revisor.py arme la página de comparación. La heurística de texto
     propone; la decisión final se toma mirando las dos letras enteras
-    lado a lado -- comparar fragmentos ya demostró llevar a error."""
-    # El lado "existente" no siempre sale de catalogo.json: puede ser otra
-    # candidata del mismo lote (la misma canción cargada dos veces desde la
-    # app). Hay que decir de dónde sale cada lado, o se elige con una
-    # etiqueta equivocada.
+    lado a lado -- comparar fragmentos ya demostró llevar a error.
+
+    `fuente` describe de dónde salen las candidatas, para rotularlas bien.
+    Estuvo hardcodeado como "cargada en la app (Firestore)" y quedó
+    mintiendo en cuanto la fuente pasó a ser un archivo: la etiqueta tiene
+    que decir la verdad, o se decide mirando un dato falso."""
+    # El lado "existente" no siempre está ya en el cancionero: puede ser
+    # otra candidata del mismo lote (la misma canción repetida dentro del
+    # archivo que se importa).
+    etiqueta_nueva = "NUEVA · viene de " + fuente
     bloques_existente, origen_existente = {}, {}
     with open("catalogo.json", encoding="utf-8") as f:
         for c in json.load(f):
             bloques_existente[c["nombre"]] = c
-            origen_existente[c["nombre"]] = "catálogo del archivo"
+            origen_existente[c["nombre"]] = "YA ESTÁ EN EL CANCIONERO"
     for nombre, c in candidatas_por_nombre.items():
         if nombre not in bloques_existente:
             bloques_existente[nombre] = c
-            origen_existente[nombre] = "cargada en la app (Firestore)"
+            origen_existente[nombre] = etiqueta_nueva
 
     pares = []
     for clase in ("duplicado", "dudoso"):
@@ -397,7 +402,7 @@ def armar_pares_para_revisar(clasificadas, indice, candidatas_por_nombre,
                 "cand_nombre": c["nombre"],
                 "cand_meta": rev.meta_de(c),
                 "cand_bloques": c["bloques"],
-                "cand_origen": "cargada en la app (Firestore)",
+                "cand_origen": etiqueta_nueva,
                 "ex_nombre": det["existente"],
                 "ex_meta": rev.meta_de(ex),
                 "ex_bloques": ex.get("bloques", []),
@@ -595,6 +600,18 @@ def main():
         print("No se encontraron canciones para importar.")
         return
 
+    # Con --revisar + --veredictos se retoma una revisión a medio hacer:
+    # sólo se vuelven a mirar las que quedaron pendientes. Sin esto, tras
+    # importar una tanda las ya importadas volverían a aparecer,
+    # comparándose contra sí mismas.
+    if args.revisar and args.veredictos:
+        with open(args.veredictos, encoding="utf-8") as f:
+            pendientes = {v["candidata"] for v in json.load(f)
+                          if v["tipo"] == "pendiente"}
+        antes = len(candidatas)
+        candidatas = [c for c in candidatas if c["nombre"] in pendientes]
+        print(f"Retomando revisión: {len(candidatas)} pendientes de {antes} del archivo\n")
+
     basura, candidatas_validas = [], []
     for c in candidatas:
         if not es_graduacion and es_candidata_basura(c):
@@ -612,9 +629,16 @@ def main():
     imprimir_reporte(candidatas_validas, basura, clasificadas)
 
     if args.revisar:
+        if es_graduacion:
+            desc_fuente = "la app (cargada por alguien del grupo)"
+        elif fuente.startswith("http"):
+            desc_fuente = re.sub(r"^https?://(www\.)?([^/]+).*", r"\2", fuente)
+        else:
+            desc_fuente = os.path.basename(fuente)
         candidatas_por_nombre = {c["nombre"]: c for c in candidatas_validas}
         pares = armar_pares_para_revisar(clasificadas, indice, candidatas_por_nombre,
-                                          techo_revision=args.revisar_hasta)
+                                          techo_revision=args.revisar_hasta,
+                                          fuente=desc_fuente)
         if not pares:
             print("\nNo hay nada para revisar: ninguna duplicada ni dudosa.")
             return
