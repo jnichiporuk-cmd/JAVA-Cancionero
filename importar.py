@@ -358,7 +358,8 @@ def imprimir_reporte(candidatas, basura, clasificadas):
             print(f"  • {c['nombre']!r}")
 
 
-def armar_pares_para_revisar(clasificadas, indice, candidatas_por_nombre):
+def armar_pares_para_revisar(clasificadas, indice, candidatas_por_nombre,
+                              techo_revision=100):
     """Junta duplicadas + dudosas con las dos canciones COMPLETAS, para
     que revisor.py arme la página de comparación. La heurística de texto
     propone; la decisión final se toma mirando las dos letras enteras
@@ -380,6 +381,13 @@ def armar_pares_para_revisar(clasificadas, indice, candidatas_por_nombre):
     pares = []
     for clase in ("duplicado", "dudoso"):
         for c, det in clasificadas[clase]:
+            # Las duplicadas de confianza muy alta no aportan nada a la
+            # revisión: son las que comparten TODO el vocabulario propio.
+            # Meterlas obligaría a pasar por cientos de pantallas obvias y
+            # a que la revisión se abandone por larga, que es peor que no
+            # revisar las dudosas de verdad.
+            if clase == "duplicado" and det["ratio"] * 100 > techo_revision:
+                continue
             ex = bloques_existente.get(det["existente"], {})
             pares.append({
                 "id": f"{clase}:{c['nombre']}",
@@ -530,6 +538,10 @@ def main():
                      help="Saca de catalogo.json las canciones borradas desde la app. "
                           "Sin esto siguen dentro del HTML: el total baja al cargar y "
                           "reaparecen sin internet")
+    ap.add_argument("--revisar-hasta", type=int, default=100, metavar="N",
+                     help="Con --revisar: incluir las duplicadas con menos de N%% de "
+                          "confianza (default 100, o sea todas). Bajarlo deja fuera de "
+                          "la revisión las coincidencias obvias")
     args = ap.parse_args()
 
     if args.consolidar_borrados:
@@ -577,7 +589,8 @@ def main():
 
     if args.revisar:
         candidatas_por_nombre = {c["nombre"]: c for c in candidatas_validas}
-        pares = armar_pares_para_revisar(clasificadas, indice, candidatas_por_nombre)
+        pares = armar_pares_para_revisar(clasificadas, indice, candidatas_por_nombre,
+                                          techo_revision=args.revisar_hasta)
         if not pares:
             print("\nNo hay nada para revisar: ninguna duplicada ni dudosa.")
             return

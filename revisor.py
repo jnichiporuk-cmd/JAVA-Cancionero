@@ -67,6 +67,7 @@ PLANTILLA = """<!doctype html>
   button.distintas{border-color:var(--acento);color:var(--acento)}
   button.distintas.activa{background:rgba(0,176,240,.18)}
   button.saltear{color:var(--tenue)}
+  button.cortar{border-color:var(--duda);color:var(--duda)}
   .nav{margin-left:auto;display:flex;gap:8px}
   .marca{font-size:13px;padding:4px 10px;border-radius:6px;color:var(--tenue)}
   #resumen{padding:16px;max-width:1400px;margin:0 auto}
@@ -114,8 +115,10 @@ PLANTILLA = """<!doctype html>
 </main>
 
 <div class="listo oculto" id="listo">
-  <h1>Revisión terminada</h1>
-  <p>Copiá este resultado y pegámelo en el chat.</p>
+  <h1 id="listo-titulo">Revisión terminada</h1>
+  <p>Copiá este resultado y pegámelo en el chat.<br>
+     <span style="color:var(--tenue);font-size:13px">Lo decidido queda guardado:
+     si volvés a abrir esta página, seguís donde dejaste.</span></p>
 </div>
 
 <div id="resumen" class="oculto">
@@ -128,21 +131,43 @@ PLANTILLA = """<!doctype html>
 </div>
 
 <footer id="pie">
+  <button class="quedarme" id="pie-izq" onclick="quedarme('candidata')">
+    ← Queda la izquierda
+  </button>
+  <button class="quedarme" id="pie-der" onclick="quedarme('existente')">
+    Queda la derecha →
+  </button>
   <button class="distintas" id="btn-dist" onclick="marcarDistintas()">
-    Son DOS canciones distintas (quedan las dos)
+    Son DOS distintas
   </button>
   <button class="saltear" onclick="saltear()">Decidir después</button>
   <span class="marca" id="marca"></span>
   <span class="nav">
-    <button onclick="ir(-1)">← Anterior</button>
-    <button onclick="ir(1)">Siguiente →</button>
+    <button onclick="ir(-1)">←</button>
+    <button onclick="ir(1)">→</button>
+    <button class="cortar" onclick="terminar()">Cortar acá y guardar</button>
   </span>
 </footer>
 
 <script>
 const PARES = __DATOS__;
-const veredictos = {};   /* id -> {tipo:'misma', quedarse:'candidata'|'existente'} | {tipo:'distintas'} */
-let i = 0;
+
+/* Las decisiones se guardan en localStorage después de cada una: una
+   revisión de cientos de pares no puede perderse por recargar sin
+   querer, cerrar la pestaña o que se corte la luz. La clave incluye la
+   cantidad de pares para no mezclar dos revisiones distintas. */
+const CLAVE = "cancionero:revision:" + PARES.length;
+let veredictos = {};
+try { veredictos = JSON.parse(localStorage.getItem(CLAVE)) || {}; } catch(e){}
+
+function guardar(){
+  try { localStorage.setItem(CLAVE, JSON.stringify(veredictos)); } catch(e){}
+}
+
+/* Arranca en el primero sin decidir, no en el 1: al volver se sigue
+   donde se dejó en vez de recorrer de nuevo lo ya revisado. */
+let i = PARES.findIndex(p => !veredictos[p.id]);
+if (i < 0) i = 0;
 
 function esc(s){ return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 
@@ -167,7 +192,9 @@ function lineasDe(bloques){ return bloques.filter(b => b.t === "l").map(b => b.v
 
 function render(){
   const p = PARES[i];
-  document.getElementById("contador").textContent = (i+1) + " / " + PARES.length;
+  const decididas = Object.keys(veredictos).length;
+  document.getElementById("contador").textContent =
+    (i+1) + " / " + PARES.length + "  ·  " + decididas + " decididas";
   const cl = document.getElementById("clase");
   cl.textContent = p.clase === "duplicado" ? "yo dije: duplicada" : "yo dije: dudosa";
   cl.className = "clase " + p.clase;
@@ -207,14 +234,17 @@ function avanzar(){
 }
 function quedarme(cual){
   veredictos[PARES[i].id] = {tipo:"misma", quedarse:cual};
+  guardar();
   avanzar();
 }
 function marcarDistintas(){
   veredictos[PARES[i].id] = {tipo:"distintas"};
+  guardar();
   avanzar();
 }
 function saltear(){
   delete veredictos[PARES[i].id];
+  guardar();
   avanzar();
 }
 function ir(d){
@@ -251,6 +281,8 @@ function terminar(){
     pendientes.forEach(s => t += "  - " + s + "\\n");
   }
   document.getElementById("salida").value = t;
+  document.getElementById("listo-titulo").textContent =
+    pendientes.length ? "Revisión cortada acá" : "Revisión terminada";
   document.getElementById("vista").classList.add("oculto");
   document.getElementById("pie").classList.add("oculto");
   document.getElementById("listo").classList.remove("oculto");
