@@ -3570,6 +3570,23 @@ async function continuarArranque(){
   if (await conectar()) {
     escuchar();   // a partir de acá los cambios llegan solos
 
+    /* Botón atrás del celular: prevenir que cierre la app
+       Cuando se presiona atrás:
+       - Si hay lector/nota abierto: cerrar
+       - Si está en otra pestaña: volver a Canciones
+       - Si está en Canciones: no hacer nada (SO minimiza) */
+    window.addEventListener("beforeunload", (e) => {
+      if (est.abierta){
+        e.preventDefault();
+        cerrar();
+      } else if (est.pestana !== "canciones"){
+        e.preventDefault();
+        est.pestana = "canciones";
+        render();
+      }
+      /* Si estamos en Canciones con nada abierto, permitir cerrar */
+    });
+
     abrirEventoDesdeLink();  // si la URL trae ?evento=id, activar ese evento
 
     /* Revisar vigencia de latidos cada ~15s. Firestore sólo notifica
