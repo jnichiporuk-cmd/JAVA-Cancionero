@@ -406,6 +406,20 @@ def armar_pares_para_revisar(clasificadas, indice, candidatas_por_nombre,
     return pares
 
 
+def ids_borrados_en_firestore():
+    """Ids marcados `borrada:true`. Un id nuevo NUNCA puede reusar uno de
+    estos: `recalcular()` filtra por id, así que la canción recién
+    importada heredaría el borrado de la vieja y quedaría invisible en la
+    app aunque esté en catalogo.json. Pasó de verdad con 'Cielo y tierra
+    podrán pasar': la version anterior se habia borrado desde la app, y
+    la nueva generaba el mismo slug."""
+    try:
+        with open("firestore_canciones.json", encoding="utf-8") as f:
+            return {d["id"] for d in json.load(f) if d.get("borrada")}
+    except FileNotFoundError:
+        return set()
+
+
 def planificar_veredictos(veredictos, candidatas_validas, clasificadas):
     """Traduce los veredictos a un plan concreto, sin tocar nada todavía.
 
@@ -419,29 +433,37 @@ def planificar_veredictos(veredictos, candidatas_validas, clasificadas):
     Las que el detector clasificó como 'nueva' (sin par que revisar) se
     importan sin más: nadie las cuestionó.
 
+    **Lo que quedó sin decidir NO se importa.** Todas esas son casos que
+    el detector marcó como posible duplicado, así que ante la duda se
+    dejan afuera: importarlas meteria cientos de repetidas en el catálogo,
+    y no importarlas no pierde nada -- el archivo de origen sigue estando
+    y se puede retomar la revisión cuando se quiera.
+
     Devuelve (a_importar, borrar_del_catalogo, descartar_candidatas).
     """
-    por_nombre = {c["nombre"]: c for c in candidatas_validas}
     descartar = set()          # candidatas que perdieron: no se importan
+    postergar = set()          # candidatas sin decidir: quedan para otra vuelta
     borrar_catalogo = set()    # nombres del catálogo que se eliminan
 
     with open("catalogo.json", encoding="utf-8") as f:
         nombres_catalogo = {c["nombre"] for c in json.load(f)}
 
     for v in veredictos:
-        if v["tipo"] != "misma":
-            continue
-        if v["quedarse"] == "candidata":
-            perdedora = v["existente"]
-            if perdedora in nombres_catalogo:
-                borrar_catalogo.add(perdedora)
+        if v["tipo"] == "pendiente":
+            postergar.add(v["candidata"])
+        elif v["tipo"] == "misma":
+            if v["quedarse"] == "candidata":
+                perdedora = v["existente"]
+                if perdedora in nombres_catalogo:
+                    borrar_catalogo.add(perdedora)
+                else:
+                    descartar.add(perdedora)   # era otra candidata del mismo lote
             else:
-                descartar.add(perdedora)   # era otra candidata del mismo lote
-        else:
-            descartar.add(v["candidata"])
+                descartar.add(v["candidata"])
 
-    a_importar = [c for c in candidatas_validas if c["nombre"] not in descartar]
-    return a_importar, borrar_catalogo, descartar
+    afuera = descartar | postergar
+    a_importar = [c for c in candidatas_validas if c["nombre"] not in afuera]
+    return a_importar, borrar_catalogo, descartar, postergar
 
 
 def aplicar_veredictos(ruta_veredictos, candidatas_validas, clasificadas, es_graduacion):
@@ -454,19 +476,20 @@ def aplicar_veredictos(ruta_veredictos, candidatas_validas, clasificadas, es_gra
     with open(ruta_veredictos, encoding="utf-8") as f:
         veredictos = json.load(f)
 
-    pendientes = [v for v in veredictos if v["tipo"] == "pendiente"]
-    if pendientes:
-        print(f"\n⚠ {len(pendientes)} pares sin decidir: esas candidatas se importan igual.")
-
-    a_importar, borrar_catalogo, descartar = planificar_veredictos(
+    a_importar, borrar_catalogo, descartar, postergar = planificar_veredictos(
         veredictos, candidatas_validas, clasificadas)
+
+    if postergar:
+        print(f"\n⚠ {len(postergar)} pares quedaron sin decidir: NO se importan.")
+        print("  Eran posibles duplicados, así que ante la duda quedan afuera.")
+        print("  El archivo de origen sigue estando: se puede retomar la revisión.")
 
     with open("catalogo.json", encoding="utf-8") as f:
         catalogo = json.load(f)
     antes = len(catalogo)
 
     catalogo = [c for c in catalogo if c["nombre"] not in borrar_catalogo]
-    usados = {c["id"] for c in catalogo}
+    usados = {c["id"] for c in catalogo} | ids_borrados_en_firestore()
 
     for cand in a_importar:
         id_final = (cand["id_original"] if "id_original" in cand
@@ -482,6 +505,7 @@ def aplicar_veredictos(ruta_veredictos, candidatas_validas, clasificadas, es_gra
 
     print(f"\n✓ {len(borrar_catalogo)} eliminadas del catálogo (perdieron la comparación)")
     print(f"✓ {len(descartar)} candidatas descartadas (perdieron la comparación)")
+    print(f"✓ {len(postergar)} candidatas postergadas (sin decidir)")
     print(f"✓ {len(a_importar)} candidatas agregadas al catálogo")
     print(f"✓ catalogo.json: {antes} → {len(catalogo)} canciones")
 
