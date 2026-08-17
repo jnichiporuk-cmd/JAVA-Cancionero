@@ -81,7 +81,9 @@ estáticos por GitHub Pages — `build.py` no los toca):
 |---|---|
 | `manifest.json` | Metadatos de la PWA: nombre, `display: standalone`, íconos |
 | `sw.js` | Service Worker: cachea recursos, permite degradar sin red |
-| `icon-192.png`, `icon-512.png` | Íconos reales para el ícono de la app |
+| `icon-192.png`, `icon-512.png` | Íconos que lee Android desde el manifest |
+| `icon-180.png` | Ícono que lee iOS vía `apple-touch-icon` (ver más abajo) |
+| `generar_iconos.py` | Genera los anteriores a partir de `icon-512.png` |
 
 **Decisión importante — los íconos tienen que ser PNG reales, nunca SVG en
 `data:` URI.** La primera versión de `manifest.json` tenía los íconos como
@@ -95,10 +97,17 @@ Android trata como app instalada de verdad) necesita **rasterizar un PNG**
 para meterlo en el `.apk`. Con SVG en `data:` URI esa generación falla en
 silencio y Chrome degrada a un acceso directo simple.
 
-Como no había Pillow ni `canvas` de Node disponibles, los PNG se generaron
-con un script de un solo uso usando sólo `struct` + `zlib` de la stdlib de
+Como no había Pillow ni `canvas` de Node disponibles, los PNG se generan
+con `generar_iconos.py`, que usa sólo `struct` + `zlib` de la stdlib de
 Python (sin dependencias) — un PNG válido es solo firma + chunks
 IHDR/IDAT/IEND con los píxeles crudos comprimidos con zlib deflate.
+
+La primera versión de esos PNG se hizo con código suelto pegado en una
+conversación, que después no quedó en ningún lado: al necesitar una medida
+nueva (los 180 de iOS) hubo que reconstruirlo. Por eso ahora es un script
+versionado. `icon-512.png` es la única fuente; el resto se deriva
+promediando el área de origen de cada píxel destino, no muestreando un
+píxel suelto — sin ese promedio el borde de la nota queda dentado.
 
 **Cómo verificar que instala como WebAPK real y no como acceso directo:**
 en el menú ⋮ de Chrome, el texto tiene que decir **"Instalar app"** (no
@@ -111,6 +120,45 @@ instalabilidad anterior. Después de cualquier cambio en `manifest.json` o
 desinstalar el acceso directo/app vieja, borrar caché + cookies del sitio
 en Chrome, cerrar Chrome del todo (no sólo la pestaña), y recién ahí volver
 a visitar el link e instalar.
+
+### iOS / iPhone — no usa el `manifest.json` igual que Android
+
+**iOS ignora los íconos declarados en `manifest.json`.** Lee una etiqueta
+propia de Apple, `apple-touch-icon`, y sólo esa. Sin ella, al hacer
+"Agregar a inicio" iOS toma **una captura de pantalla de la página** y la
+usa como ícono de escritorio — no da ningún error, simplemente queda una
+miniatura ilegible de la lista de canciones.
+
+Por eso el `<head>` de `plantilla.html` lleva, además del `manifest`:
+
+```html
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-title" content="Cancionero">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+```
+
+180×180 es la medida que pide iOS. Las dos últimas ya estaban desde la
+primera versión de la PWA y son las que hacen que abra sin la barra de
+Safari.
+
+Diferencias operativas con Android, que importan al explicárselo al grupo:
+
+| | Android | iOS |
+|---|---|---|
+| Navegador | Chrome/Firefox | **Safari únicamente** |
+| Cómo se instala | Menú **⋮ → Instalar app** | **Compartir → Agregar a inicio** |
+| ¿Ofrece instalar solo? | Sí, con un cartel | **No** — hay que saber dónde está |
+| Ícono | `manifest.json` | `apple-touch-icon` |
+
+**Sin verificar todavía — `black-translucent` en un iPhone real.** Ese
+valor hace que el contenido se dibuje *por debajo* del reloj y la batería
+en vez de arrancar abajo. En Android el valor se ignora y no pasa nada; en
+iPhone puede tapar la parte de arriba del encabezado (nombre de la canción
+y tono). Si aparece, la corrección es `viewport-fit=cover` en el viewport
+más `padding-top: env(safe-area-inset-top)` en el encabezado, o cambiar el
+valor a `default`. **No se tocó a ciegas**: elegir entre esas opciones sin
+un iPhone a mano es adivinar.
 
 **Decisión importante — el Service Worker tiene que ser `network-first`,
 nunca `cache-first`, para `index.html`.** La primera versión de `sw.js`

@@ -143,12 +143,24 @@ puede borrar por accidente como pasaba al despublicar un artifact.
 
 ### Instalar en el celular (sin barra de navegador)
 
-**Opción 1 (recomendada): Instalar como PWA**
+**Opción 1 (recomendada): Instalar como app**
 
-En el celular, abrí el link en Chrome/Firefox → menú **⋮** → **Agregar a
-pantalla de inicio**. Se descarga e instala como app nativa. Al abrirla desde
-el home screen, **no aparece la barra superior del navegador** — se ve como una
-app cualquiera.
+Al abrirla desde el ícono, **no aparece la barra superior del navegador** — se
+ve como una app cualquiera. Los pasos cambian según el teléfono.
+
+**En Android:** abrí el link en Chrome → menú **⋮** → **Instalar app**.
+
+Que diga *Instalar app* y no sólo *Agregar a pantalla de inicio* es la señal
+de que quedó instalada de verdad: aparece en Ajustes → Apps, se puede
+desinstalar, y el botón atrás la deja en segundo plano en vez de cerrarla.
+
+**En iPhone:** abrí el link **en Safari** (desde Chrome puede no aparecer la
+opción) → botón **Compartir** (el cuadrado con la flecha hacia arriba, abajo
+en el centro) → bajá en la lista hasta **Agregar a inicio** → **Agregar**.
+
+En iPhone **no sale ningún cartel ofreciendo instalar**, así que si no
+conocés el camino parece que no se pudiera. Hay que ir a buscarlo al menú
+Compartir.
 
 **Opción 2: Usar pantalla completa manual**
 

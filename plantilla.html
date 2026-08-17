@@ -6,6 +6,12 @@
 <title>Cancionero</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <link rel="manifest" href="manifest.json">
+<!-- iOS NO lee los iconos del manifest.json: apple-touch-icon es la unica
+     etiqueta que mira para el icono de escritorio. Sin esto, al hacer
+     "Agregar a inicio" usa una captura de pantalla de la pagina como icono.
+     180x180 es la medida que pide iOS; la genera generar_iconos.py -->
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-title" content="Cancionero">
 
 <!--
   CANCIONERO — app de escenario

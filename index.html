@@ -6,6 +6,12 @@
 <title>Cancionero</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <link rel="manifest" href="manifest.json">
+<!-- iOS NO lee los iconos del manifest.json: apple-touch-icon es la unica
+     etiqueta que mira para el icono de escritorio. Sin esto, al hacer
+     "Agregar a inicio" usa una captura de pantalla de la pagina como icono.
+     180x180 es la medida que pide iOS; la genera generar_iconos.py -->
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-title" content="Cancionero">
 
 <!--
   CANCIONERO — app de escenario
@@ -521,7 +527,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v300</span></div>
+    <div class="marca">Cancionero <span class="ver">v301</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -3279,7 +3285,7 @@ function abrirExportar(){
   $("ex-resumen-contenido").innerHTML = resumenHTML;
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v300",
+    origen: "cancionero v301",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
