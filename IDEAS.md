@@ -6,6 +6,12 @@ Registro de ideas/mejoras para trabajar, con estado (abierta/resuelta) y fecha d
 
 ## Abiertos
 
+- **[2026-09-25] Reclasificar en `catalogo.json` las líneas de acordes con
+  barras de repetición o guiones que quedaron como letra**
+  — El detector ya las reconoce al escribir en el editor, pero las que ya
+  están guardadas como letra siguen en blanco en vez de azul. Falta decidir
+  si se reclasifican y cómo: revisadas una por una, no por regla. (prioridad: media)
+
 - **[2026-08-04] Permitir reordenar desde mobile sin entrar en modo Reordenar**
   — Hoy hay que tocar un botón y entrar en un modo especial. Sería más rápido poder
   arrastrar directamente desde la lista del evento. (prioridad: media)
@@ -17,6 +23,12 @@ Registro de ideas/mejoras para trabajar, con estado (abierta/resuelta) y fecha d
 ---
 
 ## Resueltos
+
+- **[2026-09-25] Reconocer `//C#/A – D//` y `G-D` como líneas de acordes**
+  — Barras de repetición y guiones pegados al acorde: el detector los pela
+  antes de validar y el transporte los conserva, moviendo cada acorde por
+  separado. Decisión en DEVELOPER.md ("Barras de repetición y guiones
+  pegados al acorde").
 
 - **[2026-09-25] Editor con formato en el lugar y a pantalla completa**
   — El cuerpo de la canción se ve con los colores del cancionero mientras se

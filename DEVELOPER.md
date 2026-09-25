@@ -105,6 +105,36 @@ textarea no tiene scroll vertical propio y que el scroll horizontal se copia.
 [VERIFICAR] en el teléfono: que Safari en iPhone muestre el cursor sobre el
 texto transparente.
 
+### Barras de repetición y guiones pegados al acorde (2026-09)
+
+El cancionero escribe `//C#/A – D//` para "se toca tantas veces como barras
+hay", con las barras pegadas al acorde, y `G-D` para dos acordes seguidos.
+El detector partía cada token por `/` para separar el bajo (`D/F#`), y las
+barras pegadas dejaban pedazos vacíos: la línea caía como letra. `G-D`
+tampoco pasaba, porque `-` sólo se aceptaba como sufijo (`C-7`). Y aunque
+se forzara con `>`, el transporte se salteaba `//C#/A` (el token no empieza
+con letra) y en `G-D` movía la G dejando la D en su lugar.
+
+La solución son dos funciones de pelado que usan tanto el detector como el
+transporte, así los dos ven lo mismo:
+
+- `partirAdornos()` devuelve `[adorno inicial, acorde, adorno final]`. Pela
+  `//` o más y `|` o más en cualquiera de las dos puntas. Una sola `/` no,
+  porque es el bajo.
+- `partirGuiones()` parte `G-D` en `["G", "-", "D"]` (acordes en los
+  índices pares). El guión separa sólo cuando lo sigue una nota, así `C-7`
+  sigue siendo un solo acorde.
+- La misma notación de barras se usa en la letra (`//Y la victoria//`, 589
+  líneas del catálogo). Por eso pelar no alcanza para que una línea sea de
+  acordes: lo que queda adentro tiene que seguir siendo un acorde válido.
+- Los ports en `cancionero_io.py` (`partir_adornos()`, `es_cifrado()`) y
+  `extraer.py` (`es_acorde()`) cambian a la par, con los mismos regex.
+
+Qué se probó: `probar_app.js` corre trece líneas (ocho que deben dar
+acordes, cinco de letra con la misma notación, varias sacadas del catálogo
+real) y verifica el transporte de `//C#/A – D//`, `Em      G-D` y `C-7  F-7`
+a +2 semitonos.
+
 ---
 
 ## PWA — instalación en el celular sin barra de navegador (2026-08)

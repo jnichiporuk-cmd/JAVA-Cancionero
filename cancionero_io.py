@@ -26,15 +26,38 @@ sys.stderr.reconfigure(encoding="utf-8")
 RE_CIFRADO = re.compile(
     r"^[A-G](?:#|b)?(?:maj|Maj|M|min|m|sus|add|dim|aug|°|ø|\+|-|[0-9]|#|b|\(|\)|,)*$"
 )
-RE_ADORNO = re.compile(r"^(\|\||\||\/\/|\/|-|–|x\d+|\(x\d+\))$")
+RE_ADORNO = re.compile(r"^(\|+|\/+|-|–|x\d+|\(x\d+\))$")
+# Barras de repetición o de compás pegadas al acorde ("//C#/A", "D//", "|G").
+# Una sola "/" no se pela: es el bajo (D/F#).
+RE_PEGADO = re.compile(r"^(\/{2,}|\|+)?(.*?)(\/{2,}|\|+)?$")
+# Guión entre dos acordes ("G-D": se tocan seguidos). Separa sólo si lo
+# sigue una nota, así "C-7" (menor con guión) queda entero.
+RE_GUION_ENTRE_ACORDES = re.compile(r"([-–](?=[A-G]))")
+
+
+def partir_adornos(tok):
+    """Devuelve (adorno inicial, acorde, adorno final): "//C#/A" -> ("//", "C#/A", "")."""
+    # Puerto de partirAdornos(): la misma notación se usa en la letra
+    # ("//Y la victoria//"), así que lo que queda adentro tiene que seguir
+    # siendo un acorde válido para que cuente como cifrado.
+    m = RE_PEGADO.match(tok)
+    return (m.group(1) or "", m.group(2), m.group(3) or "")
 
 
 def es_cifrado(tok):
-    """Un token es acorde válido, o un adorno de ritmo (| // x2 etc)."""
+    """Un token es acorde válido (con barras o guiones pegados o no), o un adorno (| // x2)."""
+    # Puerto de esCifrado(): los acordes quedan en los índices pares del
+    # split, los guiones en los impares.
     if RE_ADORNO.match(tok):
         return True
-    partes = tok.split("/")
-    return all(p and RE_CIFRADO.match(p) for p in partes)
+    nucleo = partir_adornos(tok)[1]
+    if not nucleo:
+        return False
+    piezas = RE_GUION_ENTRE_ACORDES.split(nucleo)
+    return all(
+        i % 2 == 1 or all(p and RE_CIFRADO.match(p) for p in ac.split("/"))
+        for i, ac in enumerate(piezas)
+    )
 
 
 def es_linea_de_acordes(linea):

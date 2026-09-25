@@ -96,6 +96,7 @@ try {
       bloquesATexto, textoABloques, guardarEditor,
       compartirLink, compartirPDF, compartirLinkEvento,
       generarIdNota, esNota,
+      esLineaDeAcordes, moverLinea, partirAdornos,
     };
   `);
 } catch (e) {
@@ -169,6 +170,38 @@ setImmediate(() => {
     document.getElementById("ed-nombre").value = "Prueba";
     document.getElementById("ed-cuerpo").value = ":Coro\n| G | D |\nletra de prueba";
     __app.guardarEditor();
+  });
+  paso("barras de repetición y guiones pegados al acorde", () => {
+    const casos = [
+      ["//C#/A – D//", true],
+      ["/// G – Gsus4 ///", true],
+      ["C    G   //G - Gsus4//", true],
+      ["//// B - A - F# - G ////", true],
+      ["|G  D|  |Em  C|", true],
+      ["D/F#  G", true],
+      ["Em      G-D", true],          // dos acordes seguidos pegados con guión
+      ["C-7  F-7  Bb-", true],        // menor con guión: un solo acorde cada uno
+      // La misma notación en la letra sigue siendo letra
+      ["//Y la victoria//", false],
+      ["//Aquí estas Te vemos mover", false],
+      ["Siempre estas, siempre estas obrando// X4", false],
+      ["D-Dios", false],
+      ["D/", false],
+    ];
+    for (const [linea, esperado] of casos) {
+      if (__app.esLineaDeAcordes(linea) !== esperado) throw new Error("detector: " + JSON.stringify(linea));
+    }
+    // El transporte mueve cada acorde y deja barras y guiones donde estaban
+    const pruebas = [
+      ["//C#/A – D//", "//D#/B – E//"],
+      ["Em      G-D", "F#m     A-E"],
+      ["C-7  F-7", "D-7  G-7"],
+    ];
+    for (const [antes, esperado] of pruebas) {
+      const t = __app.moverLinea(antes, 2, false);
+      if (t !== esperado) throw new Error("transporte: " + JSON.stringify(antes) + " -> " + JSON.stringify(t));
+    }
+    if (JSON.stringify(__app.partirAdornos("//C#/A")) !== JSON.stringify(["//", "C#/A", ""])) throw new Error("partirAdornos");
   });
   paso("ida y vuelta de una canción real", () => {
     const c = __app.CATALOGO[5];

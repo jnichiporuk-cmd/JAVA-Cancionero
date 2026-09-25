@@ -136,6 +136,18 @@ Aclaración pegada a la sección se fusiona en minúscula:
 compás, juntos con espacios: `| Bm  D | G  A |`. Secuencia sin compás, con
 espacios y sin barras: `C  G  Am  F`. **Sin guiones**: `D - Bm` → `D  Bm`.
 
+**Repetición con barras**: `//C#/A – D//` se toca tantas veces como barras
+hay (`///` = 3 veces). Las barras pueden ir pegadas al acorde; la app las
+reconoce y las transporta igual (`partirAdornos()`). La misma notación se
+usa en la letra (`//Y la victoria//`) y ahí sigue siendo letra: para que
+la línea cuente como acordes, lo que queda entre las barras tiene que ser
+un acorde válido.
+
+**Dos acordes seguidos pegados con guión**: `G-D`. La regla de estilo del
+`.docx` sigue siendo sin guiones, pero la app los reconoce y los transporta
+de a uno (`partirGuiones()`). El guión separa sólo cuando lo sigue una
+nota: `C-7` (menor en notación con guión) es un solo acorde.
+
 **Aclaraciones de ejecución**: nota gris, entre paréntesis, en línea propia:
 `(Mantenido durante 4 compases)`, `(Drop)`.
 
@@ -209,7 +221,7 @@ python3 build.py                                 # plantilla + catálogo -> inde
 3. Todos los `id` que busca el JavaScript existen en el HTML.
 4. Las funciones clave están en el `<script>` y no dentro del `<style>`.
 5. `localStorage` solo se usa para `cancionero:ajustes`.
-6. `probar_app.js` ejecuta la app en Node con un DOM simulado y recorre 19
+6. `probar_app.js` ejecuta la app en Node con un DOM simulado y recorre 20
    caminos de uso sin errores.
 
 Cada verificación existe porque un error de esa clase ya se escapó una vez.
@@ -356,6 +368,15 @@ no se borra ni se marca `borrada:true`:
   corre el cursor respecto de lo que se ve. Por eso comparten una única regla
   CSS (`.ed-editor > *`), y por eso los rótulos ahí van monoespaciados y sin
   cursiva aunque en el lector no.
+- **El detector de acordes pela lo que viene pegado al acorde antes de
+  validar**: barras de repetición y de compás (`//C#/A`, `D//`, `|G`, con
+  `partirAdornos()`) y guiones entre acordes (`G-D`, con `partirGuiones()`),
+  además de partir el `/` del bajo. Una sola `/` pegada no se pela porque es
+  el bajo (`D/F#`), y el guión separa sólo si lo sigue una nota, porque `C-7`
+  es un solo acorde. El transporte (`moverLinea()`) usa las mismas dos
+  funciones: sin eso `//C#/A` quedaba sin transportar por no empezar con
+  letra, y en `G-D` se movía la G y la D quedaba donde estaba. Los ports en
+  `cancionero_io.py` y `extraer.py` cambian a la par.
 
 ---
 
@@ -397,7 +418,11 @@ De las 133 del `.docx`, 37 nunca entraron, con el motivo de cada una en
 Dentro de las 96 que sí entraron hay ~40 líneas que se ven en el color
 equivocado: rótulos que quedaron como letra (`[Verso 1]`), acordes en cifrado
 latino (`DO RE MI`) y acordes con barras de repetición (`//Em - D - G - C //`).
-No pierden información; salen en blanco en vez de gris o azul.
+No pierden información; salen en blanco en vez de gris o azul. Desde
+2026-09 el detector reconoce las barras de repetición y los guiones pegados
+al acorde, pero eso aplica a lo que se escribe en el editor: las líneas que
+ya están guardadas como letra en `catalogo.json` siguen como letra hasta
+que se reclasifiquen, decisión pendiente en IDEAS.md.
 
 ### Pendiente concreto: notación de 9 canciones
 
@@ -684,7 +709,7 @@ Forma de trabajo esperada:
 
 ---
 
-## 10. Referencia exhaustiva de funciones (108 totales)
+## 10. Referencia exhaustiva de funciones (110 totales)
 
 Índice completo de TODAS las funciones. **Formato:** `` `función()` `` (código/azul) | **UI** (negrita) | texto normal.
 
@@ -717,7 +742,7 @@ Forma de trabajo esperada:
 - Transporta el tono original de una canción
 - Llamada desde: `transportarEditor()`
 
-`moverLinea(linea, semis, usarBemoles)` (~845)
+`moverLinea(linea, semis, usarBemoles)` (~909)
 - Transporta una línea completa de acordes
 - Llamada desde: `renderBloques()`
 
@@ -1121,13 +1146,21 @@ Botones ♭/♯ del lector (`$("mas-t").onclick`, `$("menos-t").onclick`) (~3388
 - Genera ID de canción (nombre-tono normalizado)
 - Llamada desde: `guardarCancion()`
 
-`esCifrado(tok)` (~896)
-- Detecta si token es cifrado latino (DO RE MI) vs anglosajón
-- Llamada desde: `renderBloques()`
+`partirAdornos(tok)` (~981)
+- Separa un token en [adorno inicial, acorde, adorno final]: `//C#/A` → `["//", "C#/A", ""]`. Pela barras de repetición (`//`, `///`) y de compás (`|`) pegadas; una sola `/` es el bajo y no se pela
+- Llamada desde: `esCifrado()`; `moverLinea()`
 
-`esLineaDeAcordes(t)` (~901)
-- Detecta si línea es de acordes
-- Llamada desde: `textoABloques()`
+`partirGuiones(nucleo)` (~991)
+- Parte `G-D` en `["G", "-", "D"]`: acordes en los índices pares, guiones en los impares. El guión separa sólo si lo sigue una nota, así `C-7` queda entero
+- Llamada desde: `esCifrado()`; `moverLinea()`
+
+`esCifrado(tok)` (~995)
+- Decide si un token es un acorde válido (con barras o guiones pegados o no, con bajo `D/F#` o no) o un adorno suelto (`|`, `//`, `-`, `x2`)
+- Llamada desde: `esLineaDeAcordes()`
+
+`esLineaDeAcordes(t)` (~1002)
+- Una línea es de acordes si TODOS sus tokens pasan `esCifrado()`. Estricto a propósito: "Dios" no pasa por acorde, y `//Y la victoria//` sigue siendo letra
+- Llamada desde: `textoABloques()`; `bloquesATexto()`; `clasificarLinea()`
 
 ### 16. PANTALLA COMPLETA / INTERFAZ
 

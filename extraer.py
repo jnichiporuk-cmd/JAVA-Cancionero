@@ -39,14 +39,27 @@ def texto_de(p):
 NOTA = r"[A-G](?:#|b)?"
 SUFIJO = r"(?:maj|Maj|M|min|m|sus|add|dim|aug|°|ø|\+|\-|[0-9]|#|b|\(|\)|,)*"
 RE_ACORDE = re.compile(rf"^{NOTA}{SUFIJO}$")
-RE_ADORNO = re.compile(r"^(\||\|\||//|/|-|–|x\d+|\(x\d+\)|:)$")
+RE_ADORNO = re.compile(r"^(\|+|/+|-|–|x\d+|\(x\d+\)|:)$")
+# Barras de repetición o de compás pegadas al acorde ("//C#/A", "D//") y
+# guión entre dos acordes seguidos ("G-D"). Mismo criterio que
+# partirAdornos()/partirGuiones() en la app y cancionero_io.py: una sola
+# "/" es el bajo (D/F#) y no se pela; el guión separa sólo si lo sigue una
+# nota, así "C-7" queda entero.
+RE_PEGADO = re.compile(r"^(/{2,}|\|+)?(.*?)(/{2,}|\|+)?$")
+RE_GUION_ENTRE_ACORDES = re.compile(r"([-–](?=[A-G]))")
 
 
 def es_acorde(tok):
     if RE_ADORNO.match(tok):
         return True
-    partes = tok.split("/")
-    return all(partes) and all(RE_ACORDE.match(x) for x in partes)
+    nucleo = RE_PEGADO.match(tok).group(2)
+    if not nucleo:
+        return False
+    piezas = RE_GUION_ENTRE_ACORDES.split(nucleo)
+    return all(
+        i % 2 == 1 or (all(ac.split("/")) and all(RE_ACORDE.match(x) for x in ac.split("/")))
+        for i, ac in enumerate(piezas)
+    )
 
 
 def es_linea_de_acordes(t):

@@ -915,8 +915,18 @@ function moverLinea(linea, semis, usarBemoles){
        dejamos al menos un espacio para que no se peguen. */
     if (salida.length < m.index) salida += " ".repeat(m.index - salida.length);
     else if (salida.length > 0) salida += " ";
+    /* Las barras pegadas (//C#/A) se sacan para mover el acorde y se
+       vuelven a poner: si no, el token no empieza con letra y quedaba sin
+       transportar mientras el resto de la línea sí se movía. Los acordes
+       pegados con guión (G-D) se mueven de a uno: antes se movía la G y
+       la D quedaba en su lugar. */
     const tok = m[0];
-    salida += /^[A-G][#b]?/.test(tok) ? moverAcorde(tok, semis, usarBemoles) : tok;
+    const [antes, nucleo, despues] = partirAdornos(tok);
+    if (!/^[A-G][#b]?/.test(nucleo)){ salida += tok; continue; }
+    const movido = partirGuiones(nucleo)
+      .map((ac, i) => i % 2 === 1 ? ac : moverAcorde(ac, semis, usarBemoles))
+      .join("");
+    salida += antes + movido + despues;
   }
   return salida;
 }
@@ -955,12 +965,39 @@ function renderBloques(destino, bloques, semis, conBemoles){
    acordes si TODOS sus elementos son cifrados o barras de compás. Es
    estricto a propósito, para que "Dios" no pase por acorde. */
 const RE_CIFRADO = /^[A-G](?:#|b)?(?:maj|Maj|M|min|m|sus|add|dim|aug|°|ø|\+|-|[0-9]|#|b|\(|\)|,)*$/;
-const RE_ADORNO = /^(\||\|\||\/\/|\/|-|–|x\d+|\(x\d+\))$/;
+/* Adornos sueltos: barras de compás (| ||), barras de repetición (// ///
+   ////: se toca tantas veces como barras hay), guiones y "x2". */
+const RE_ADORNO = /^(\|+|\/+|-|–|x\d+|\(x\d+\))$/;
+/* Barras de repetición o de compás pegadas al acorde: "//C#/A", "D//",
+   "|G". Una sola "/" no se pela porque es el bajo (D/F#). */
+const RE_PEGADO = /^(\/{2,}|\|+)?(.*?)(\/{2,}|\|+)?$/;
+
+/* Separa un token en [adorno inicial, acorde, adorno final]. El detector
+   y el transporte miran el acorde limpio y devuelven las barras intactas:
+   el cancionero escribe "//C#/A – D//" con las barras pegadas. La misma
+   notación se usa en la letra ("//Y la victoria//"), así que pelar las
+   barras no puede convertir letra en acordes: lo que queda adentro tiene
+   que seguir siendo un acorde válido. */
+function partirAdornos(tok){
+  const m = RE_PEGADO.exec(tok);
+  return [m[1] || "", m[2], m[3] || ""];
+}
+
+/* Dos acordes pegados con guión ("G-D") se tocan seguidos: son dos
+   acordes, no un sufijo. El guión separa sólo cuando lo sigue una nota;
+   "C-7" (menor en notación con guión) queda entero. Devuelve los acordes
+   en los índices pares y los guiones en los impares, así el transporte
+   reconstruye el token tal cual estaba. */
+function partirGuiones(nucleo){
+  return nucleo.split(/([-–](?=[A-G]))/);
+}
 
 function esCifrado(tok){
   if (RE_ADORNO.test(tok)) return true;
-  const partes = tok.split("/");
-  return partes.every(p => p && RE_CIFRADO.test(p));
+  const nucleo = partirAdornos(tok)[1];
+  if (!nucleo) return false;
+  return partirGuiones(nucleo).every((ac, i) =>
+    i % 2 === 1 || ac.split("/").every(p => p && RE_CIFRADO.test(p)));
 }
 function esLineaDeAcordes(t){
   const toks = t.split(/\s+/).filter(Boolean);
