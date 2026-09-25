@@ -18,6 +18,13 @@ Registro de ideas/mejoras para trabajar, con estado (abierta/resuelta) y fecha d
 
 ## Resueltos
 
+- **[2026-09-25] Editor con formato en el lugar y a pantalla completa**
+  — El cuerpo de la canción se ve con los colores del cancionero mientras se
+  escribe (textarea transparente sobre una capa pintada), mide al menos una
+  pantalla de alto y la vista previa pasó a ser plegable. Decisión y
+  alternativas descartadas en DEVELOPER.md ("Editor de canciones: color en el
+  lugar sin contenteditable").
+
 - **[2026-07-31] Notas/anotaciones intercaladas en eventos**
   — Agregar texto libre entre canciones (pausas, lecturas, instrucciones).
   Resuelto en commits `1c096ce` y posteriores. Documentado en CLAUDE.md sección 8d.

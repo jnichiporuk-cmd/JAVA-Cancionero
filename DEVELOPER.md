@@ -64,6 +64,47 @@ Nota:    Innecesario para el caso de uso actual
 
 **Recomendación:** Si algún día querés cambiar, opción 1 (Supabase + Vercel) es la mejor balance entre portabilidad y esfuerzo.
 
+### Editor de canciones: color en el lugar sin `contenteditable` (2026-09)
+
+El cuerpo de la canción se edita en un `<textarea>` común con el texto
+transparente y, debajo, en la misma celda de una grilla CSS, un `<div>`
+(`ed-fondo`) repite el mismo texto pintado por tipo de línea (acordes,
+rótulo, letra, marcador). Se descartaron dos alternativas:
+
+| Alternativa | Por qué no |
+|---|---|
+| `contenteditable` con formato real | En celular los teclados meten y sacan espacios solos, el cursor salta al repintar y se rompe deshacer. Los espacios son contenido en esta app: demasiado riesgo. |
+| Editor embebido (CodeMirror) | Más de 200 KB adentro del HTML (tiene que funcionar sin internet) y un bundler que el proyecto no tiene, para resaltar cuatro tipos de línea. |
+
+Consecuencias de la técnica elegida:
+
+- **Toda propiedad tipográfica es compartida** entre las dos capas (regla
+  `.ed-editor > *`). Cambiar fuente, tamaño, interlineado, padding o borde
+  en una sola corre el cursor respecto de lo pintado.
+- **La capa de fondo da la altura**: está en flujo con todo el texto, así
+  que la celda crece con el contenido y el textarea nunca tiene scroll
+  vertical propio. Sólo se sincroniza el scroll horizontal (evento `scroll`
+  → `sincronizarFondoEditor()`).
+- **La capa se pinta renglón por renglón desde el texto crudo**
+  (`pintarFondoEditor()`), no con `renderBloques()`: ése descarta los
+  marcadores `:` `>` `.`, recorta la letra y colapsa renglones vacíos, y acá
+  la correspondencia tiene que ser exacta. La clasificación sí es la misma:
+  `clasificarLinea()` usa el mismo criterio que `textoABloques()`.
+- **Rótulos monoespaciados y sin cursiva** en el editor, distinto del
+  lector, por el mismo motivo. La **Vista previa** plegable (cerrada por
+  defecto) sigue existiendo para ver la canción exactamente como la dibuja
+  el lector.
+- **El editor mide al menos una pantalla** (`min-height:100vh`): antes eran
+  210 px, un cuarto de la pantalla del celular.
+
+Qué se probó: `probar_app.js` verifica que la capa pinte las cuatro clases y
+que haya un renglón pintado por cada renglón del textarea, vacío final
+incluido. En Chromium headless a 430 px de ancho se midió que las dos capas
+tienen el mismo rectángulo y las mismas propiedades tipográficas, que el
+textarea no tiene scroll vertical propio y que el scroll horizontal se copia.
+[VERIFICAR] en el teléfono: que Safari en iPhone muestre el cursor sobre el
+texto transparente.
+
 ---
 
 ## PWA — instalación en el celular sin barra de navegador (2026-08)

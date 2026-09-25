@@ -92,7 +92,7 @@ try {
       get est(){ return est },
       get PORID(){ return PORID },
       renderCatalogo, renderReunion, abrir, renderLector, abrirEditor,
-      refrescarPrevia, abrirExportar, alternarEnLista,
+      refrescarPrevia, pintarEditor, abrirExportar, alternarEnLista,
       bloquesATexto, textoABloques, guardarEditor,
       compartirLink, compartirPDF, compartirLinkEvento,
       generarIdNota, esNota,
@@ -132,7 +132,22 @@ setImmediate(() => {
   paso("entrar en modo reunión", () => { __app.est.enReunion = true; __app.est.posicion = 0; __app.renderLector(); });
   paso("abrir el editor de una canción", () => __app.abrirEditor(__app.CATALOGO[0].id));
   paso("abrir el editor de canción nueva", () => __app.abrirEditor("nueva"));
-  paso("vista previa del editor", () => __app.refrescarPrevia());
+  paso("pintar el editor en el lugar (capa de color)", () => {
+    document.getElementById("ed-cuerpo").value = ":Coro\n| G | D |\nletra de prueba\n";
+    __app.pintarEditor();
+    const h = document.getElementById("ed-fondo").innerHTML;
+    for (const clase of ["el-rotulo", "el-acordes", "el-letra", "el-marca"]) {
+      if (!h.includes(clase)) throw new Error("no pinta " + clase);
+    }
+    // Un renglón pintado por cada renglón del textarea, incluido el vacío final:
+    // si no calzan, el cursor se corre respecto de lo pintado.
+    if (h.split("\n").length !== 4) throw new Error("no calza renglón a renglón");
+  });
+  paso("vista previa del editor, desplegada", () => {
+    document.getElementById("ed-previa-caja").open = true;
+    __app.pintarEditor();
+    __app.refrescarPrevia();
+  });
   paso("pantalla de exportar", () => __app.abrirExportar());
   paso("reordenar el evento (modo Reordenar)", () => {
     __app.est.pestana = "reunion";

@@ -468,19 +468,71 @@ input{font-family:inherit;font-size:inherit}
   line-height:1.45;background:var(--superficie);color:var(--tenue);
 }
 .ed-ayuda b{color:var(--acordes);font-family:var(--mono)}
-#ed-cuerpo,#ex-texto{
+#ex-texto{
   width:100%;min-height:210px;padding:11px;border-radius:8px;
   background:var(--superficie);border:1px solid var(--borde);color:var(--letra);
   font-family:var(--mono);font-size:13px;line-height:1.5;
   white-space:pre;overflow-wrap:normal;outline:none;resize:vertical;
 }
-#ed-cuerpo:focus{border-color:var(--acordes)}
-.ed-rotulo-previa{
-  margin:16px 0 7px;font-size:11px;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--tenue);
+
+/* --- Editor: color en el lugar -----------------------------------------
+   El cuerpo sigue siendo un <textarea> común (teclado nativo, pegar,
+   deshacer, selección), pero con el texto transparente. Debajo, en la
+   misma celda de la grilla, #ed-fondo repite el mismo texto con la misma
+   fuente y las mismas medidas, pintado por tipo de línea. Como las dos
+   capas calzan carácter a carácter, se ve el texto del textarea con los
+   colores del cancionero mientras se escribe.
+   Dos consecuencias de la técnica, que no son errores para arreglar:
+   - Toda propiedad tipográfica tiene que ser idéntica en las dos capas
+     (fuente, tamaño, interlineado, padding, borde). Por eso van en una
+     sola regla compartida: una diferencia corre el cursor respecto de lo
+     pintado.
+   - #ed-fondo es el que da la altura. Es un elemento en flujo con todo
+     el texto, así que la celda crece con el contenido y el textarea
+     nunca necesita scroll vertical propio. Sólo se sincroniza el scroll
+     horizontal (líneas de acordes más anchas que la pantalla).
+   Los rótulos acá van en monoespaciada y sin cursiva, distinto del
+   lector: cambiarles la fuente en una sola capa correría el cursor. */
+.ed-editor{
+  display:grid;grid-template-columns:minmax(0,1fr);
+  min-height:100vh;   /* al menos una pantalla de alto: antes eran 210px */
 }
+.ed-editor > *{
+  grid-area:1/1/2/2;min-width:0;
+  padding:11px;border:1px solid var(--borde);border-radius:8px;
+  font-family:var(--mono);font-size:14px;line-height:1.5;
+  white-space:pre;overflow-wrap:normal;
+}
+#ed-fondo{
+  background:var(--superficie);color:var(--letra);border-color:transparent;
+  overflow:hidden;pointer-events:none;
+}
+#ed-cuerpo{
+  width:100%;background:transparent;color:transparent;
+  -webkit-text-fill-color:transparent;caret-color:var(--letra);
+  overflow-x:auto;overflow-y:hidden;resize:none;outline:none;
+  scrollbar-width:none;
+}
+#ed-cuerpo::-webkit-scrollbar{display:none}
+#ed-cuerpo:focus{border-color:var(--acordes)}
+.el-acordes{color:var(--acordes)}
+.el-rotulo{color:var(--rotulo)}
+.el-marca{color:var(--tenue)}
+
+/* Vista previa plegable: muestra la canción tal cual la dibuja el lector
+   (rótulos en cursiva, vacíos colapsados, letra recortada), que difiere
+   en esos detalles de la capa pintada. Cerrada por defecto para que no
+   alargue una pantalla que en el celular ya es larga. */
+.ed-previa-caja{margin-top:16px}
+.ed-previa-caja summary{
+  cursor:pointer;list-style:none;padding:6px 0;
+  font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--tenue);
+}
+.ed-previa-caja summary::-webkit-details-marker{display:none}
+.ed-previa-caja summary::before{content:"▸ "}
+.ed-previa-caja[open] summary::before{content:"▾ "}
 .ed-previa{
-  padding:11px;border-radius:8px;border:1px dashed var(--borde);
+  margin-top:7px;padding:11px;border-radius:8px;border:1px dashed var(--borde);
   font-size:14px;min-height:60px;
 }
 .btn-borrar{
@@ -527,7 +579,7 @@ input{font-family:inherit;font-size:inherit}
      =================================================================== -->
 <div class="tope">
   <div class="tope-fila">
-    <div class="marca">Cancionero <span class="ver">v301</span></div>
+    <div class="marca">Cancionero <span class="ver">v302</span></div>
     <div class="sync"><span class="punto" id="punto"></span><span id="sync-txt">…</span></div>
     <button class="expandir" id="expandir" title="Pantalla completa">⛶</button>
     <button class="rol-btn" id="rol-btn" title="Cambiar rol" style="flex:none">Músico</button>
@@ -611,10 +663,15 @@ input{font-family:inherit;font-size:inherit}
       <b>:</b> rótulo · <b>&gt;</b> acordes · <b>.</b> letra
     </div>
 
-    <textarea id="ed-cuerpo" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea>
+    <div class="ed-editor">
+      <div id="ed-fondo" aria-hidden="true"></div>
+      <textarea id="ed-cuerpo" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea>
+    </div>
 
-    <div class="ed-rotulo-previa">Vista previa</div>
-    <div class="ed-previa" id="ed-previa"></div>
+    <details class="ed-previa-caja" id="ed-previa-caja">
+      <summary>Vista previa, como en el escenario</summary>
+      <div class="ed-previa" id="ed-previa"></div>
+    </details>
 
     <button class="btn-borrar" id="ed-borrar">Borrar esta canción del cancionero</button>
   </div>
@@ -3144,7 +3201,7 @@ function abrirEditor(id){
   $("ed-borrar").style.display = nueva ? "none" : "block";
 
   $("editor").classList.add("abierto");
-  refrescarPrevia();
+  pintarEditor();
   actualizarBotonesTransporteEditor();
 }
 
@@ -3153,12 +3210,60 @@ function cerrarEditor(){
   est.editando = null;
 }
 
-/* Vista previa en vivo: se redibuja en cada tecla. Son pocas líneas, no
-   hace falta esperar a que el usuario deje de escribir. */
+/* --- Pintar el editor en el lugar -----------------------------------------
+   #ed-fondo repite el texto del textarea renglón por renglón con la clase
+   de cada tipo de línea. No usa renderBloques() a propósito: ése descarta
+   los marcadores (:, >, .), recorta la letra y colapsa renglones vacíos, y
+   acá la correspondencia con el textarea tiene que ser exacta, carácter
+   por carácter, o el cursor se corre respecto de lo pintado. La
+   clasificación sí es la misma que la de textoABloques(), para que el
+   color que se ve al escribir sea el que va a tener al guardar. */
+function clasificarLinea(linea){
+  const marca = linea[0];
+  if (marca === ":") return "rotulo";
+  if (marca === ">") return "acordes";
+  if (marca === ".") return "letra";
+  return esLineaDeAcordes(linea) ? "acordes" : "letra";
+}
+
+function pintarFondoEditor(){
+  const html = $("ed-cuerpo").value.split("\n").map(linea => {
+    if (!linea.trim()) return escapar(linea);
+    const forzada = ":>.".includes(linea[0]);
+    const marca = forzada ? `<span class="el-marca">${escapar(linea[0])}</span>` : "";
+    const resto = forzada ? linea.slice(1) : linea;
+    return marca + `<span class="el-${clasificarLinea(linea)}">${escapar(resto)}</span>`;
+  }).join("\n");
+  /* El espacio final hace que un último renglón vacío también ocupe su
+     línea. Sin él la capa de atrás quedaría una línea más baja que el
+     textarea y el cursor caería fuera del recuadro pintado. */
+  $("ed-fondo").innerHTML = html + " ";
+}
+
+/* La capa pintada no recibe eventos: copia el scroll del textarea para
+   seguir calzando cuando una línea de acordes es más ancha que la
+   pantalla. El vertical se copia por las dudas (el textarea no debería
+   tener, ver el CSS de .ed-editor), así nunca queda desfasado. */
+function sincronizarFondoEditor(){
+  const ta = $("ed-cuerpo"), fondo = $("ed-fondo");
+  fondo.scrollLeft = ta.scrollLeft;
+  fondo.scrollTop = ta.scrollTop;
+}
+
+/* Se redibuja en cada tecla: son pocas líneas, no hace falta esperar a
+   que el usuario deje de escribir. La vista previa sólo si está
+   desplegada; plegada no se ve y sería trabajo tirado. */
+function pintarEditor(){
+  pintarFondoEditor();
+  sincronizarFondoEditor();
+  if ($("ed-previa-caja").open) refrescarPrevia();
+}
+
+/* Vista previa tal cual la dibuja el lector: lo que va a quedar guardado.
+   Sin transporte (semis 0), así que el tono no cambia nada acá. */
 function refrescarPrevia(){
   const bloques = textoABloques($("ed-cuerpo").value);
-  const tono = $("ed-tono").value.trim();
-  renderBloques($("ed-previa"), bloques, 0, /^(F|Bb|Eb|Ab|Db|Gb)m?$/.test(tono));
+  renderBloques($("ed-previa"), bloques, 0, false);
 }
 
 /* Sin un tono válido no se sabe desde dónde transportar (mismo motivo
@@ -3191,7 +3296,7 @@ function transportarEditor(delta){
 
   $("ed-tono").value = nuevoTono;
   $("ed-cuerpo").value = bloquesATexto(bloques);
-  refrescarPrevia();
+  pintarEditor();
   flotar(`Transportado a ${nuevoTono}`);
 }
 
@@ -3285,7 +3390,7 @@ function abrirExportar(){
   $("ex-resumen-contenido").innerHTML = resumenHTML;
 
   $("ex-texto").value = JSON.stringify({
-    origen: "cancionero v301",
+    origen: "cancionero v302",
     exportado: new Date().toISOString(),
     cambios: est.cambios,
   }, null, 1);
@@ -3376,8 +3481,10 @@ $("editar").onclick      = () => { if (est.abierta) abrirEditor(est.abierta); };
 $("ed-cancelar").onclick = cerrarEditor;
 $("ed-guardar").onclick  = guardarEditor;
 $("ed-borrar").onclick   = borrarCancion;
-$("ed-cuerpo").oninput   = refrescarPrevia;
-$("ed-tono").oninput     = () => { refrescarPrevia(); actualizarBotonesTransporteEditor(); };
+$("ed-cuerpo").oninput   = pintarEditor;
+$("ed-cuerpo").onscroll  = sincronizarFondoEditor;
+$("ed-previa-caja").ontoggle = () => { if ($("ed-previa-caja").open) refrescarPrevia(); };
+$("ed-tono").oninput     = actualizarBotonesTransporteEditor;
 $("ed-bemol").onclick     = () => transportarEditor(-1);
 $("ed-sostenido").onclick = () => transportarEditor(+1);
 

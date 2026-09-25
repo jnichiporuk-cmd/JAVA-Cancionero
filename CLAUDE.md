@@ -209,7 +209,7 @@ python3 build.py                                 # plantilla + catálogo -> inde
 3. Todos los `id` que busca el JavaScript existen en el HTML.
 4. Las funciones clave están en el `<script>` y no dentro del `<style>`.
 5. `localStorage` solo se usa para `cancionero:ajustes`.
-6. `probar_app.js` ejecuta la app en Node con un DOM simulado y recorre 14
+6. `probar_app.js` ejecuta la app en Node con un DOM simulado y recorre 19
    caminos de uso sin errores.
 
 Cada verificación existe porque un error de esa clase ya se escapó una vez.
@@ -349,6 +349,13 @@ no se borra ni se marca `borrada:true`:
 - **Al transportar hay que conservar las columnas.** Si `G` pasa a `A#` y ocupa
   un carácter más, se come un espacio de al lado en vez de correr toda la línea
   y desalinear la letra.
+- **El editor son dos capas que tienen que calzar carácter a carácter.** El
+  textarea `ed-cuerpo` tiene el texto transparente y debajo `ed-fondo` lo
+  repite pintado por tipo de línea. Cualquier propiedad tipográfica (fuente,
+  tamaño, interlineado, padding, borde) que se cambie en una sola de las dos
+  corre el cursor respecto de lo que se ve. Por eso comparten una única regla
+  CSS (`.ed-editor > *`), y por eso los rótulos ahí van monoespaciados y sin
+  cursiva aunque en el lector no.
 
 ---
 
@@ -677,7 +684,7 @@ Forma de trabajo esperada:
 
 ---
 
-## 10. Referencia exhaustiva de funciones (104 totales)
+## 10. Referencia exhaustiva de funciones (108 totales)
 
 Índice completo de TODAS las funciones. **Formato:** `` `función()` `` (código/azul) | **UI** (negrita) | texto normal.
 
@@ -718,7 +725,7 @@ Botones ♭/♯ del lector (`$("mas-t").onclick`, `$("menos-t").onclick`) (~3388
 - Transporta +/- 1 semitono; llama `guardarSemisSiCorresponde()` y `retransmitirSiYaEstaEnVivo()`
 - Llamada desde: Botones ♭/♯ en **Lector** (solo director en evento)
 
-`transportarEditor(delta)` (~3170)
+`transportarEditor(delta)` (~3286)
 - Botones ♭/♯ en editor: transporta y reescribe la canción
 - Llamada desde: Botones ♭/♯ en **Pantalla Editor**
 
@@ -732,7 +739,7 @@ Botones ♭/♯ del lector (`$("mas-t").onclick`, `$("menos-t").onclick`) (~3388
 - Convierte bloques JSON a texto (para editar)
 - Llamada desde: `abrirEditor()`; `compartirPDF()`
 
-`textoABloques(txt)` (~921)
+`textoABloques(txt)` (~985)
 - Convierte texto a bloques JSON (al guardar edición)
 - Llamada desde: `guardarEditor()`
 
@@ -804,23 +811,39 @@ Botones ♭/♯ del lector (`$("mas-t").onclick`, `$("menos-t").onclick`) (~3388
 
 ### 5. EDITOR DE CANCIONES
 
-`abrirEditor(id)` (~3122)
+`abrirEditor(id)` (~3190)
 - Abre editor para nueva canción o editar existente
 - Llamada desde: **Botón** "+ Nueva canción"; **menú ⋮** Editar
 
-`cerrarEditor()` (~3140)
+`cerrarEditor()` (~3208)
 - Cierra editor sin guardar
 - Llamada desde: **Botón** Cancelar en **Editor**
 
-`refrescarPrevia()` (~3147)
-- Actualiza vista previa de la canción mientras se edita
-- Llamada desde: **Botón** Preview; cambio en campos
+`clasificarLinea(linea)` (~3221)
+- Devuelve el tipo de un renglón crudo del editor (`rotulo` / `acordes` / `letra`) con el mismo criterio que `textoABloques()`: marcador `:` `>` `.` o detector de acordes
+- Llamada desde: `pintarFondoEditor()`
 
-`actualizarBotonesTransporteEditor()` (~3155)
+`pintarFondoEditor()` (~3229)
+- Pinta `ed-fondo`, la capa de color debajo del textarea transparente: repite el texto renglón por renglón con la clase de cada tipo (`el-acordes`, `el-rotulo`, `el-letra`; el marcador en `el-marca`). No usa `renderBloques()` porque ése descarta marcadores y colapsa vacíos, y acá la correspondencia debe ser carácter a carácter
+- Llamada desde: `pintarEditor()`
+
+`sincronizarFondoEditor()` (~3247)
+- Copia el scroll del textarea a `ed-fondo` para que las dos capas sigan calzando con líneas de acordes más anchas que la pantalla
+- Llamada desde: evento `scroll` del textarea; `pintarEditor()`
+
+`pintarEditor()` (~3256)
+- Redibuja el editor en cada tecla: capa de color, scroll y la vista previa si está desplegada
+- Llamada desde: evento `input` del textarea; `abrirEditor()`; `transportarEditor()`
+
+`refrescarPrevia()` (~3264)
+- Dibuja la **Vista previa** plegable con `renderBloques()`, tal cual se ve en el lector (rótulos en cursiva, vacíos colapsados)
+- Llamada desde: `pintarEditor()` si el `<details>` está abierto; evento `toggle` al desplegarla
+
+`actualizarBotonesTransporteEditor()` (~3271)
 - Habilita/deshabilita botones ♭/♯ según si hay tono
-- Llamada desde: `refrescarPrevia()`
+- Llamada desde: `abrirEditor()`; cambio en el campo **Tono**
 
-`guardarEditor()` (~3187)
+`guardarEditor()` (~3303)
 - Guarda cambios de la canción
 - Llamada desde: **Botón** Guardar en **Editor**
 
@@ -1193,8 +1216,8 @@ Botones ♭/♯ del lector (`$("mas-t").onclick`, `$("menos-t").onclick`) (~3388
 
 ### PANTALLA: Editor de canción
 
-**Función que la abre:** `abrirEditor(idOpcional)` (~3120)
-**Función que guarda:** `guardarEditor()` (~3187)
+**Función que la abre:** `abrirEditor(idOpcional)` (~3190)
+**Función que guarda:** `guardarEditor()` (~3303)
 
 **Campos:**
 - **Nombre** (text input, requerido)
@@ -1205,7 +1228,8 @@ Botones ♭/♯ del lector (`$("mas-t").onclick`, `$("menos-t").onclick`) (~3388
 - **BPM** (text input, opcional)
   - Validación: debe ser número o vacío
 - **Cuerpo** (textarea, requerido)
-  - Formato: línea por línea, se convierte con `textoABloques()` (~3560)
+  - Se ve con los colores del cancionero mientras se escribe: el textarea es transparente sobre la capa `ed-fondo` que pinta `pintarFondoEditor()`. Mide al menos una pantalla de alto y crece con el contenido
+  - Formato: línea por línea, se convierte con `textoABloques()` (~985)
   - Tipos de línea:
     - `:Nombre` → rótulo (gris)
     - Acordes (ej `D  Bm  G`) → línea de acordes (azul)
@@ -1218,12 +1242,12 @@ Botones ♭/♯ del lector (`$("mas-t").onclick`, `$("menos-t").onclick`) (~3388
 3. Debe haber contenido (bloques)
 
 **Botones:**
-- Guardar → `guardarEditor()` (~3187)
+- Guardar → `guardarEditor()` (~3303)
   - Guarda en `est.cambios` (local)
   - Llama a `guardarCancion(cancion, esNueva)` (~1521) que escribe en Firestore
   - Muestra "Canción agregada" o "Cambios guardados"
-- Cancelar → `cerrarEditor()` (~3182)
-- Preview → `refrescarPrevia()` (~3160) muestra cómo se verá
+- Cancelar → `cerrarEditor()` (~3208)
+- **Vista previa** (plegable, cerrada por defecto) → `refrescarPrevia()` (~3264) muestra la canción como la dibuja el lector
 
 **Restricciones:**
 - `if (!est.esDirector)` → no permite editar, muestra "Solo directores pueden editar canciones" (~3188)
@@ -1380,7 +1404,7 @@ Botones ♭/♯ del lector (`$("mas-t").onclick`, `$("menos-t").onclick`) (~3388
 | `est.lista` | object | Evento activo: `{id, nombre, ids, semis, notas, ...}` | `abrirNuevaReunion()`, `guardarEditarReunion()` |
 | `est.esDirector` | boolean | Si puede crear/editar eventos, canciones, transmitir | `alternarDirector()` (~3544), listener (~1579) |
 | `est.enReunion` | boolean | Si está dentro de un evento (bloquea ediciones) | `abrir(id, true/false)` (~3250) |
-| `est.editando` | string | ID de canción que se está editando, o "nueva" | `abrirEditor(id)` (~3120) |
+| `est.editando` | string | ID de canción que se está editando, o "nueva" | `abrirEditor(id)` (~3190) |
 | `est.semis` | number | Transporte actual de la canción abierta (+/- semitonos) | `$("mas-t")/$("menos-t").onclick` (~3388) |
 | `est.cambios` | object | Canciones nuevas/editadas localmente: `{nuevas:[], editados:{}, borradas:[]}` | Listener de Firestore (~1077), `guardarEditor()` |
 | `est.reordenando` | boolean | Si modo arrastrar está activo | Al tocar botón "Reordenar" |
