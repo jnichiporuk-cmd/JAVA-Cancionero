@@ -1,0 +1,30 @@
+# Qué NO entra al grafo de graphify. Mismo formato que .gitignore; se suma a
+# lo que ya ignora .gitignore (desarmado/, __pycache__/, etc.), nunca lo
+# re-incluye. La idea: que el grafo hable del código y los docs, no de las
+# 458 canciones ni de archivos de trabajo que ya cumplieron su función.
+
+# Salida del propio graphify
+graphify-out/
+
+# Generado por build.py: es plantilla.html con catalogo.json incrustado.
+# No aporta nada que no esté en plantilla.html y pesa como todo el catálogo.
+index.html
+
+# Datos, no código: el catálogo y los archivos de trabajo de la importación
+catalogo.json
+pendientes.json
+*.docx
+Cancionero completo.txt
+Importadas *
+duplicados_firestore_ids.json
+firestore_canciones.json
+veredictos.json
+revisar_duplicados.html
+
+# Scripts de un solo uso ya reemplazados por importar.py (ver CLAUDE.md, 5b)
+comparar_duplicados.py
+limpiar_bien.py
+remover_duplicados_verdaderos.py
+
+# Iconos de la PWA
+*.png

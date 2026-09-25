@@ -7,8 +7,24 @@ __pycache__/
 # Archivos de trabajo del flujo de importación: se regeneran solos, no
 # son fuente de verdad. El resultado de una importación queda en
 # catalogo.json, que sí se versiona.
-firestore_canciones.json    # snapshot, lo baja descargar_firestore.py
-revisar_duplicados.html     # página de revisión, la genera importar.py --revisar
-veredictos.json             # decisiones de una revisión puntual, ya aplicadas
+#
+# Ojo: en .gitignore el "#" sólo abre comentario al principio de la línea.
+# Un comentario al final de un patrón pasa a formar parte del patrón y el
+# archivo deja de ignorarse sin aviso (pasó con los tres primeros de esta
+# lista). Los comentarios van arriba de cada patrón, nunca al lado.
+
+# snapshot, lo baja descargar_firestore.py
+firestore_canciones.json
+# página de revisión, la genera importar.py --revisar
+revisar_duplicados.html
+# decisiones de una revisión puntual, ya aplicadas
+veredictos.json
 cancionero.txt
 cancionero.json
+# dumps externos que se importaron con --fuente y salidas de esas corridas
+Cancionero completo.txt
+Importadas *
+duplicados_firestore_ids.json
+
+# Salida de graphify (grafo de conocimiento del repo): se regenera con /graphify
+graphify-out/
